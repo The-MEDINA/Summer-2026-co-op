@@ -11,10 +11,12 @@ namespace WinFormsAppOnline
         // me when brainrot
         int port = 6767;
         TcpListener server = null;
-        IPAddress local = null;
+        IPAddress local = IPAddress.Parse("127.0.0.1");
+        IPEndPoint endpoint;
         bool stopped = false;
         public Form1()
         {
+            endpoint = new IPEndPoint(local, port);
             InitializeComponent();
         }
         private void Host_Click(object sender, EventArgs e)
@@ -113,7 +115,10 @@ namespace WinFormsAppOnline
             {
                 update = () => DebugInfoClient.Text += $"Attempting to create TcpClient..." + Environment.NewLine;
                 StatusBox.Invoke(update);
-                TcpClient client = new TcpClient(localAddr, port);
+                TcpClient client = new();
+                update = () => DebugInfoClient.Text += $"Attempting to connect to {endpoint}..." + Environment.NewLine;
+                StatusBox.Invoke(update);
+                client.Connect(endpoint);
                 update = () => DebugInfoClient.Text += $"Created TcpClient successfully!" + Environment.NewLine;
                 StatusBox.Invoke(update);
             }
