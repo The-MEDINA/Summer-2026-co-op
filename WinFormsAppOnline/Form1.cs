@@ -77,14 +77,23 @@ namespace WinFormsAppOnline
 
             update = () => StatusBox.Text = $"Open at {localAddr}: {port}!";
             StatusBox.Invoke(update);
-            TcpClient client;
+            TcpClient client = new();
             while (!stopped)
             {
                 update = () => StatusBox.Text = $"while loop";
                 StatusBox.Invoke(update);
                 try
                 {
-                    client = server.AcceptTcpClient();
+                    //while (client == null)
+                    //{
+                        update = () => StatusBox.Text = $"while client == null";
+                        StatusBox.Invoke(update);
+                        client = server.AcceptTcpClient();
+                        update = () => StatusBox.Text = $"Connection made!";
+                        StatusBox.Invoke(update);
+                        update = () => DebugInfoBox.Text += $"Connection made!" + Environment.NewLine;
+                        DebugInfoBox.Invoke(update);
+                    //}
                 }
                 catch (Exception err)
                 {
@@ -92,10 +101,6 @@ namespace WinFormsAppOnline
                     DebugInfoBox.Invoke(update);
                     StopHosting_Click(this, null);
                 }
-                update = () => StatusBox.Text = $"Connection made!";
-                StatusBox.Invoke(update);
-                update = () => DebugInfoBox.Text += $"Connection made!" + Environment.NewLine;
-                DebugInfoBox.Invoke(update);
             }
             update = () => StatusBox.Text = $"Exit while loop: Disconnected";
             StatusBox.Invoke(update);
@@ -115,10 +120,14 @@ namespace WinFormsAppOnline
             {
                 update = () => DebugInfoClient.Text += $"Attempting to create TcpClient..." + Environment.NewLine;
                 StatusBox.Invoke(update);
+
                 TcpClient client = new();
+
                 update = () => DebugInfoClient.Text += $"Attempting to connect to {endpoint}..." + Environment.NewLine;
                 StatusBox.Invoke(update);
+
                 client.Connect(endpoint);
+
                 update = () => DebugInfoClient.Text += $"Created TcpClient successfully!" + Environment.NewLine;
                 StatusBox.Invoke(update);
             }
