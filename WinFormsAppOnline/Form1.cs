@@ -1,31 +1,27 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WinFormsAppOnline
 {
     public partial class Form1 : Form
     {
+        string localAddr = "127.0.0.1";
+        // me when brainrot
+        int port = 6767;
+        TcpListener server = null;
+        IPAddress local = null;
+        bool stopped = false;
         public Form1()
         {
             InitializeComponent();
-            string hostName = Dns.GetHostName(); // Retrive the Name of HOST
-            // Console.WriteLine(hostName);
-            // Get the IP
-            string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-            IP.Text = $"{hostName}: IP Address is {myIP}\nI don't know if this was needed.\n:>";
-            // Console.WriteLine("My IP Address is :" + myIP);
-            // Console.ReadKey();
         }
-
         private void Host_Click(object sender, EventArgs e)
         {
+            stopped = false;
             DebugInfoBox.Text = "Start hosting..." + Environment.NewLine;
-            // ip address 127.0.0.1 port 6767 (i'm so brainrotted)
-            string localAddr = "127.0.0.1";
-            int port = 6767;
             DebugInfoBox.Text += "Create TCPListener server and IPAddress local that is null..." + Environment.NewLine;
-            TcpListener server = null;
-            IPAddress local = null;
             DebugInfoBox.Text += "\nGetting into the try/catch code..." + Environment.NewLine;
             try
             {
@@ -35,6 +31,9 @@ namespace WinFormsAppOnline
                 server = new TcpListener(local, port);
                 DebugInfoBox.Text += $"\nStart listening..." + Environment.NewLine;
                 server.Start();
+                StatusBox.Text = $"Open at {localAddr}: {port}!";
+                DebugInfoBox.Text += $"\nRunning background worker..." + Environment.NewLine;
+                HostBackgroundWorker.RunWorkerAsync();
             }
             catch (SocketException err)
             {
@@ -48,6 +47,31 @@ namespace WinFormsAppOnline
             {
                 server?.Stop();
             }
+        }
+
+        private void StopHosting_Click(object sender, EventArgs e)
+        {
+            stopped = true;
+            HostBackgroundWorker.CancelAsync();
+            DebugInfoBox.Text += "Stopping host..." + Environment.NewLine;
+            StatusBox.Text = "Disconnected";
+            server?.Stop();
+        }
+
+        /// <summary>
+        /// allegedly a lot of this background worker stuff is windows forms shenanigans.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HostBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            while(!stopped)
+            {
+                Action action = () => StatusBox.Text = $"while loop: waiting for connection...";
+                StatusBox.Invoke(action);
+            }
+            Action exitAction = () => StatusBox.Text = $"Exit while loop: Disconnected";
+            StatusBox.Invoke(exitAction);
         }
     }
 }
