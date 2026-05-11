@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WinFormsAppOnline")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6bf21944bd2bf71e29f5cceebd674d76cd9d5d0e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54ff4c494385d0435f4ca47d791f49c6d553522d")]
 [assembly: System.Reflection.AssemblyProductAttribute("WinFormsAppOnline")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WinFormsAppOnline")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

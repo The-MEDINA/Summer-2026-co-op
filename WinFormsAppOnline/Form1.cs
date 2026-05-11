@@ -30,7 +30,7 @@ namespace WinFormsAppOnline
                 DebugInfoBox.Text += $"\nCreating local address {localAddr}..." + Environment.NewLine;
                 local = IPAddress.Parse(localAddr);
                 DebugInfoBox.Text += $"\nCreating new TCPListener at {localAddr}, {port}..." + Environment.NewLine;
-                server = new TcpListener(local, port);
+                server = new TcpListener(IPAddress.Any, port);
                 DebugInfoBox.Text += $"\nRunning background worker..." + Environment.NewLine;
                 HostBackgroundWorker.RunWorkerAsync();
             }
@@ -77,14 +77,14 @@ namespace WinFormsAppOnline
 
             update = () => StatusBox.Text = $"Open at {localAddr}: {port}!";
             StatusBox.Invoke(update);
-
+            TcpClient client;
             while (!stopped)
             {
                 update = () => StatusBox.Text = $"while loop";
                 StatusBox.Invoke(update);
                 try
                 {
-                    TcpClient client = server.AcceptTcpClient();
+                    client = server.AcceptTcpClient();
                 }
                 catch (Exception err)
                 {
