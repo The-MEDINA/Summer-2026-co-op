@@ -7,6 +7,9 @@ namespace WinFormsAppOnline
 {
     public partial class Form1 : Form
     {
+        // TODO: find a way to fix this.
+        // Allegedly, 127.0.0.1 is this machine only.
+        // find some way to make this your hostname, whilst also letting the client find that.
         string localAddr = "127.0.0.1";
         // me when brainrot
         int port = 6767;
