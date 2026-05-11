@@ -39,6 +39,7 @@
             StatusBox = new TextBox();
             StopHosting = new Button();
             HostBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            ClientBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             HostLog.SuspendLayout();
             ClientLog.SuspendLayout();
             ServerStatus.SuspendLayout();
@@ -110,6 +111,7 @@
             Join.TabIndex = 4;
             Join.Text = "Join";
             Join.UseVisualStyleBackColor = true;
+            Join.Click += Join_Click;
             // 
             // ServerStatus
             // 
@@ -144,6 +146,11 @@
             // 
             HostBackgroundWorker.WorkerSupportsCancellation = true;
             HostBackgroundWorker.DoWork += HostBackgroundWorker_DoWork;
+            // 
+            // ClientBackgroundWorker
+            // 
+            ClientBackgroundWorker.WorkerSupportsCancellation = true;
+            ClientBackgroundWorker.DoWork += ClientBackgroundWorker_DoWork;
             // 
             // Form1
             // 
@@ -184,5 +191,6 @@
         private TextBox StatusBox;
         private Button StopHosting;
         private System.ComponentModel.BackgroundWorker HostBackgroundWorker;
+        private System.ComponentModel.BackgroundWorker ClientBackgroundWorker;
     }
 }

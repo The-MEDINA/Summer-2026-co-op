@@ -29,9 +29,6 @@ namespace WinFormsAppOnline
                 local = IPAddress.Parse(localAddr);
                 DebugInfoBox.Text += $"\nCreating new TCPListener at {localAddr}, {port}..." + Environment.NewLine;
                 server = new TcpListener(local, port);
-                DebugInfoBox.Text += $"\nStart listening..." + Environment.NewLine;
-                server.Start();
-                StatusBox.Text = $"Open at {localAddr}: {port}!";
                 DebugInfoBox.Text += $"\nRunning background worker..." + Environment.NewLine;
                 HostBackgroundWorker.RunWorkerAsync();
             }
@@ -53,8 +50,12 @@ namespace WinFormsAppOnline
         {
             stopped = true;
             HostBackgroundWorker.CancelAsync();
-            DebugInfoBox.Text += "Stopping host..." + Environment.NewLine;
-            StatusBox.Text = "Disconnected";
+            Action update = () => StatusBox.Text = $"Disconnected";
+            StatusBox.Invoke(update);
+            update = () => DebugInfoBox.Text += "Stopping host..." + Environment.NewLine;
+            DebugInfoBox.Invoke(update);
+            //DebugInfoBox.Text += "Stopping host..." + Environment.NewLine;
+            //StatusBox.Text = "Disconnected";
             server?.Stop();
         }
 
@@ -65,13 +66,67 @@ namespace WinFormsAppOnline
         /// <param name="e"></param>
         private void HostBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            while(!stopped)
+            Action update = () => StatusBox.Text = $"while loop: waiting for connection...";
+            StatusBox.Invoke(update);
+
+            update = () => DebugInfoBox.Text += $"\nStart listening..." + Environment.NewLine;
+            DebugInfoBox.Invoke(update);
+            server.Start();
+
+            update = () => StatusBox.Text = $"Open at {localAddr}: {port}!";
+            StatusBox.Invoke(update);
+
+            while (!stopped)
             {
-                Action action = () => StatusBox.Text = $"while loop: waiting for connection...";
-                StatusBox.Invoke(action);
+                update = () => StatusBox.Text = $"while loop";
+                StatusBox.Invoke(update);
+                try
+                {
+                    TcpClient client = server.AcceptTcpClient();
+                }
+                catch (Exception err)
+                {
+                    update = () => DebugInfoBox.Text += $"\nExiting with exception: " + err.Message + Environment.NewLine;
+                    DebugInfoBox.Invoke(update);
+                    StopHosting_Click(this, null);
+                }
+                update = () => StatusBox.Text = $"Connection made!";
+                StatusBox.Invoke(update);
+                update = () => DebugInfoBox.Text += $"Connection made!" + Environment.NewLine;
+                DebugInfoBox.Invoke(update);
             }
-            Action exitAction = () => StatusBox.Text = $"Exit while loop: Disconnected";
-            StatusBox.Invoke(exitAction);
+            update = () => StatusBox.Text = $"Exit while loop: Disconnected";
+            StatusBox.Invoke(update);
+        }
+
+        private void Join_Click(object sender, EventArgs e)
+        {
+            DebugInfoClient.Text = "Start joining..." + Environment.NewLine;
+            ClientBackgroundWorker.RunWorkerAsync();
+        }
+
+        private void ClientBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Action update = () => DebugInfoClient.Text += $"Move to background worker..." + Environment.NewLine;
+            StatusBox.Invoke(update);
+            try
+            {
+                update = () => DebugInfoClient.Text += $"Attempting to create TcpClient..." + Environment.NewLine;
+                StatusBox.Invoke(update);
+                TcpClient client = new TcpClient(localAddr, port);
+                update = () => DebugInfoClient.Text += $"Created TcpClient successfully!" + Environment.NewLine;
+                StatusBox.Invoke(update);
+            }
+            catch (ArgumentNullException err)
+            {
+                update = () => DebugInfoClient.Text += $"Exiting with ArgumentNullException: {err.Message}" + Environment.NewLine;
+                DebugInfoClient.Invoke(update);
+            }
+            catch (SocketException err)
+            {
+                update = () => DebugInfoClient.Text += $"Exiting with SocketException: {err.Message}" + Environment.NewLine;
+                DebugInfoClient.Invoke(update);
+            }
         }
     }
 }
