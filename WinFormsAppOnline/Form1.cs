@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Windows.Forms;
 
@@ -8,7 +9,7 @@ namespace WinFormsAppOnline
     {
         // TODO: Find a way to make the client connect without initially knowing the ip.
         // This sounds a lot harder.
-        string localAddr = "192.168.1.214";
+        string localAddr = "0.0.0.0";
         // me when brainrot
         int port = 6767;
         TcpListener server = null;
@@ -18,6 +19,14 @@ namespace WinFormsAppOnline
         NetworkStream clientStream;
         public Form1()
         {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localAddr = ip.ToString();
+                }
+            }
             local = IPAddress.Parse(localAddr);
             endpoint = new IPEndPoint(local, port);
             InitializeComponent();
@@ -30,7 +39,7 @@ namespace WinFormsAppOnline
             DebugInfoBox.Text += "\nGetting into the try/catch code..." + Environment.NewLine;
             try
             {
-                DebugInfoBox.Text += $"\nCreating local address {localAddr}..." + Environment.NewLine;
+                DebugInfoBox.Text += $"\nParsing local address {localAddr}..." + Environment.NewLine;
                 local = IPAddress.Parse(localAddr);
                 DebugInfoBox.Text += $"\nCreating new TCPListener at {localAddr}, {port}..." + Environment.NewLine;
                 server = new TcpListener(IPAddress.Any, port);
@@ -147,6 +156,18 @@ namespace WinFormsAppOnline
         {
             // Byte[] data = new byte[256];
             Action update = () => DebugInfoClient.Text += $"Move to background worker..." + Environment.NewLine;
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
+
+            foreach (TcpConnectionInformation t in connections)
+            {
+                update = () => DebugInfoClient.Text += $"Local endpoint: {t.LocalEndPoint.Address}" + Environment.NewLine;
+                StatusBox.Invoke(update);
+                update = () => DebugInfoClient.Text += $"Remote endpoint: {t.RemoteEndPoint.Address}" + Environment.NewLine;
+                StatusBox.Invoke(update);
+                update = () => DebugInfoClient.Text += $"{t.State}" + Environment.NewLine;
+                StatusBox.Invoke(update);
+            }
             StatusBox.Invoke(update);
             try
             {
