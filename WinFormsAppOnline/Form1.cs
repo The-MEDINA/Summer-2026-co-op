@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WinFormsAppOnline
 {
@@ -16,6 +15,7 @@ namespace WinFormsAppOnline
         IPAddress local;
         IPEndPoint endpoint;
         bool stopped = false;
+        NetworkStream clientStream;
         public Form1()
         {
             local = IPAddress.Parse(localAddr);
@@ -76,7 +76,10 @@ namespace WinFormsAppOnline
 
             update = () => DebugInfoBox.Text += $"\nStart listening..." + Environment.NewLine;
             DebugInfoBox.Invoke(update);
+
             server.Start();
+            Byte[] bytes = new Byte[256];
+            String data = null;
 
             update = () => StatusBox.Text = $"Open at {localAddr}: {port}!";
             StatusBox.Invoke(update);
@@ -87,16 +90,41 @@ namespace WinFormsAppOnline
                 StatusBox.Invoke(update);
                 try
                 {
-                    //while (client == null)
-                    //{
-                        update = () => StatusBox.Text = $"while client == null";
+                    update = () => StatusBox.Text = $"while client == null";
+                    StatusBox.Invoke(update);
+
+                    client = server.AcceptTcpClient();
+
+                    update = () => StatusBox.Text = $"Connection made!";
+                    StatusBox.Invoke(update);
+                    update = () => DebugInfoBox.Text += $"Connection made!" + Environment.NewLine;
+                    DebugInfoBox.Invoke(update);
+                    update = () => DebugInfoBox.Text += $"Setting up buffer and stream..." + Environment.NewLine;
+                    DebugInfoBox.Invoke(update);
+
+                    NetworkStream stream = client.GetStream();
+                    int i;
+                    while (!stopped)
+                    {
+                        update = () => StatusBox.Text = $"While loop before if i = stream.read != 0";
                         StatusBox.Invoke(update);
-                        client = server.AcceptTcpClient();
-                        update = () => StatusBox.Text = $"Connection made!";
-                        StatusBox.Invoke(update);
-                        update = () => DebugInfoBox.Text += $"Connection made!" + Environment.NewLine;
-                        DebugInfoBox.Invoke(update);
-                    //}
+                        if ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                        {
+                            // Translate data bytes to a ASCII string.
+                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                            update = () => DebugInfoBox.Text += $"Received message: {data}" + Environment.NewLine;
+                            DebugInfoBox.Invoke(update);
+
+                            // Process the data sent by the client.
+                            data = data.ToUpper();
+
+                            // byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+
+                            // Send back a response.
+                            // stream.Write(msg, 0, msg.Length);
+                            // Console.WriteLine("Sent: {0}", data);
+                        }
+                    }
                 }
                 catch (Exception err)
                 {
@@ -117,6 +145,7 @@ namespace WinFormsAppOnline
 
         private void ClientBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            // Byte[] data = new byte[256];
             Action update = () => DebugInfoClient.Text += $"Move to background worker..." + Environment.NewLine;
             StatusBox.Invoke(update);
             try
@@ -133,6 +162,10 @@ namespace WinFormsAppOnline
 
                 update = () => DebugInfoClient.Text += $"Created TcpClient successfully!" + Environment.NewLine;
                 StatusBox.Invoke(update);
+                update = () => DebugInfoClient.Text += $"Initializing stream..." + Environment.NewLine;
+                StatusBox.Invoke(update);
+
+                clientStream = client.GetStream();
             }
             catch (ArgumentNullException err)
             {
@@ -143,6 +176,21 @@ namespace WinFormsAppOnline
             {
                 update = () => DebugInfoClient.Text += $"Exiting with SocketException: {err.Message}" + Environment.NewLine;
                 DebugInfoClient.Invoke(update);
+            }
+        }
+
+        private void ClientSend_Click(object sender, EventArgs e)
+        {
+            DebugInfoClient.Text += $"Attempting to send message: {ClientMessagesBox.Text}" + Environment.NewLine;
+            try
+            {
+                Byte[] data = System.Text.Encoding.ASCII.GetBytes(ClientMessagesBox.Text);
+                clientStream.Write(data, 0, ClientMessagesBox.Text.Length);
+                DebugInfoClient.Text += $"Message sent." + Environment.NewLine;
+            }
+            catch (Exception err)
+            {
+                DebugInfoClient.Text += $"Failed to send message. " + err.Message + Environment.NewLine;
             }
         }
     }

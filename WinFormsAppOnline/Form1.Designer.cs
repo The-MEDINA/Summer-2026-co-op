@@ -40,9 +40,13 @@
             StopHosting = new Button();
             HostBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             ClientBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            ClientMessageGroup = new GroupBox();
+            ClientSend = new Button();
+            ClientMessagesBox = new TextBox();
             HostLog.SuspendLayout();
             ClientLog.SuspendLayout();
             ServerStatus.SuspendLayout();
+            ClientMessageGroup.SuspendLayout();
             SuspendLayout();
             // 
             // IP
@@ -152,11 +156,41 @@
             ClientBackgroundWorker.WorkerSupportsCancellation = true;
             ClientBackgroundWorker.DoWork += ClientBackgroundWorker_DoWork;
             // 
+            // ClientMessageGroup
+            // 
+            ClientMessageGroup.Controls.Add(ClientSend);
+            ClientMessageGroup.Controls.Add(ClientMessagesBox);
+            ClientMessageGroup.Location = new Point(18, 511);
+            ClientMessageGroup.Name = "ClientMessageGroup";
+            ClientMessageGroup.Size = new Size(1048, 63);
+            ClientMessageGroup.TabIndex = 7;
+            ClientMessageGroup.TabStop = false;
+            ClientMessageGroup.Text = "Send Message";
+            // 
+            // ClientSend
+            // 
+            ClientSend.Location = new Point(948, 25);
+            ClientSend.Name = "ClientSend";
+            ClientSend.Size = new Size(94, 29);
+            ClientSend.TabIndex = 1;
+            ClientSend.Text = "Send";
+            ClientSend.UseVisualStyleBackColor = true;
+            ClientSend.Click += ClientSend_Click;
+            // 
+            // ClientMessagesBox
+            // 
+            ClientMessagesBox.Location = new Point(6, 26);
+            ClientMessagesBox.MaxLength = 256;
+            ClientMessagesBox.Name = "ClientMessagesBox";
+            ClientMessagesBox.Size = new Size(936, 27);
+            ClientMessagesBox.TabIndex = 0;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1078, 513);
+            ClientSize = new Size(1078, 586);
+            Controls.Add(ClientMessageGroup);
             Controls.Add(StopHosting);
             Controls.Add(ServerStatus);
             Controls.Add(Join);
@@ -172,6 +206,8 @@
             ClientLog.PerformLayout();
             ServerStatus.ResumeLayout(false);
             ServerStatus.PerformLayout();
+            ClientMessageGroup.ResumeLayout(false);
+            ClientMessageGroup.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -192,5 +228,8 @@
         private Button StopHosting;
         private System.ComponentModel.BackgroundWorker HostBackgroundWorker;
         private System.ComponentModel.BackgroundWorker ClientBackgroundWorker;
+        private GroupBox ClientMessageGroup;
+        private TextBox ClientMessagesBox;
+        private Button ClientSend;
     }
 }
