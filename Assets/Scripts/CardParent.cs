@@ -45,23 +45,29 @@ public class CardParent : MonoBehaviour
         this.cardLocation = cardLocation;
     }    
 
-    void Start()
-    {
-        
-    }
+    //MIGHT BE WORTH TO HAVE A METHOD WITH A SWITCH LEADING INTO EVENT METHODS
+    //for example, click once on card, trigger method, next click on an opponent's card, that triggers Attack() with second card as the target
 
-    void Update()
-    {
-        
-    }
-
+    //triggered by event
     //OnPlay()
     
-    //Attack()
+    //triggered by event
+    public void Attack(CardParent target)
+    {
+        target.TakeDamage(Damage);
+    }
 
-    //TakeDamage()
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+        if (Health <= 0) { Death(); }
+    }
 
-    //Death()
+    public void Death()
+    {
 
+    }
+
+    //triggered by event
     //OnDisplay()
 }
