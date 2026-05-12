@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private int health;
+    [SerializeField] private int health = 50;
     private int energy;
     private List<CardParent> deck = new List<CardParent>();
     private List<CardParent> hand = new List<CardParent>();
     private List<CardParent> inPlay = new List<CardParent>();
     private List<CardParent> discard = new List<CardParent>();
-    private CardParent commander;
+    private CardParent commander; //probably should be its own parent file, not CardParent
     private float timer;
     [SerializeField] private int timeForEnergy = 5;
 
@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
         {
             Energy++;
             timer = 0;
+            //possible int to track energy gain to draw cards
         }
         else
         {
@@ -43,6 +44,6 @@ public class Player : MonoBehaviour
 
     public void Death()
     {
-
+        //might be worth a GameManager method for win/loss
     }
 }
