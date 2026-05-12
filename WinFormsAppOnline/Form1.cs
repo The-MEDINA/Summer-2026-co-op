@@ -19,17 +19,19 @@ namespace WinFormsAppOnline
         NetworkStream clientStream;
         public Form1()
         {
+            InitializeComponent();
             var host = Dns.GetHostEntry(Dns.GetHostName());
+            DebugInfoBox.Text += $"Host name: {Dns.GetHostName()}" + Environment.NewLine;
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
+                    DebugInfoBox.Text += $"ip: {ip}" + Environment.NewLine;
                     localAddr = ip.ToString();
                 }
             }
             local = IPAddress.Parse(localAddr);
             endpoint = new IPEndPoint(local, port);
-            InitializeComponent();
         }
         private void Host_Click(object sender, EventArgs e)
         {
@@ -141,6 +143,10 @@ namespace WinFormsAppOnline
                     DebugInfoBox.Invoke(update);
                     StopHosting_Click(this, null);
                 }
+                finally
+                {
+                    server?.Stop();
+                }
             }
             update = () => StatusBox.Text = $"Exit while loop: Disconnected";
             StatusBox.Invoke(update);
@@ -155,8 +161,9 @@ namespace WinFormsAppOnline
         private void ClientBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Byte[] data = new byte[256];
-            Action update = () => DebugInfoClient.Text += $"Move to background worker..." + Environment.NewLine;
-            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            Action update = () => DebugInfoClient.Text += $"Move to background worker..." + Environment.NewLine; StatusBox.Invoke(update);
+            StatusBox.Invoke(update);
+            /*IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
             TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
 
             foreach (TcpConnectionInformation t in connections)
@@ -167,14 +174,14 @@ namespace WinFormsAppOnline
                 StatusBox.Invoke(update);
                 update = () => DebugInfoClient.Text += $"{t.State}" + Environment.NewLine;
                 StatusBox.Invoke(update);
-            }
-            StatusBox.Invoke(update);
+            }*/
             try
             {
                 update = () => DebugInfoClient.Text += $"Attempting to create TcpClient..." + Environment.NewLine;
                 StatusBox.Invoke(update);
 
                 TcpClient client = new();
+                endpoint = new IPEndPoint(resolve_ip(HostIp.Text), port);
 
                 update = () => DebugInfoClient.Text += $"Attempting to connect to {endpoint}..." + Environment.NewLine;
                 StatusBox.Invoke(update);
@@ -213,6 +220,22 @@ namespace WinFormsAppOnline
             {
                 DebugInfoClient.Text += $"Failed to send message. " + err.Message + Environment.NewLine;
             }
+        }
+
+        private IPAddress resolve_ip(String raw)
+        {
+            IPAddress ip;
+            if (IPAddress.TryParse(raw, out ip)) return ip;
+            IPHostEntry hostEntry = Dns.GetHostEntry(raw);
+            foreach (var ipEntry in hostEntry.AddressList)
+            {
+                if (ipEntry.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ip = ipEntry;
+                }
+            }
+            if (ip == null) throw new Exception("No ipv4 address found.");
+            return ip;
         }
     }
 }

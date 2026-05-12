@@ -43,16 +43,19 @@
             ClientMessageGroup = new GroupBox();
             ClientSend = new Button();
             ClientMessagesBox = new TextBox();
+            HostIpBox = new GroupBox();
+            HostIp = new TextBox();
             HostLog.SuspendLayout();
             ClientLog.SuspendLayout();
             ServerStatus.SuspendLayout();
             ClientMessageGroup.SuspendLayout();
+            HostIpBox.SuspendLayout();
             SuspendLayout();
             // 
             // IP
             // 
             IP.AutoSize = true;
-            IP.Location = new Point(12, 9);
+            IP.Location = new Point(12, 69);
             IP.Name = "IP";
             IP.Size = new Size(0, 20);
             IP.TabIndex = 0;
@@ -60,7 +63,7 @@
             // HostLog
             // 
             HostLog.Controls.Add(DebugInfoBox);
-            HostLog.Location = new Point(558, 12);
+            HostLog.Location = new Point(558, 72);
             HostLog.Name = "HostLog";
             HostLog.Size = new Size(508, 355);
             HostLog.TabIndex = 1;
@@ -79,7 +82,7 @@
             // 
             // Host
             // 
-            Host.Location = new Point(12, 441);
+            Host.Location = new Point(12, 501);
             Host.Name = "Host";
             Host.Size = new Size(540, 29);
             Host.TabIndex = 3;
@@ -90,7 +93,7 @@
             // ClientLog
             // 
             ClientLog.Controls.Add(DebugInfoClient);
-            ClientLog.Location = new Point(12, 12);
+            ClientLog.Location = new Point(12, 72);
             ClientLog.Name = "ClientLog";
             ClientLog.Size = new Size(540, 355);
             ClientLog.TabIndex = 3;
@@ -109,7 +112,7 @@
             // 
             // Join
             // 
-            Join.Location = new Point(12, 476);
+            Join.Location = new Point(12, 536);
             Join.Name = "Join";
             Join.Size = new Size(1054, 29);
             Join.TabIndex = 4;
@@ -120,7 +123,7 @@
             // ServerStatus
             // 
             ServerStatus.Controls.Add(StatusBox);
-            ServerStatus.Location = new Point(12, 372);
+            ServerStatus.Location = new Point(12, 432);
             ServerStatus.Name = "ServerStatus";
             ServerStatus.Size = new Size(1054, 63);
             ServerStatus.TabIndex = 5;
@@ -138,7 +141,7 @@
             // 
             // StopHosting
             // 
-            StopHosting.Location = new Point(558, 441);
+            StopHosting.Location = new Point(558, 501);
             StopHosting.Name = "StopHosting";
             StopHosting.Size = new Size(508, 29);
             StopHosting.TabIndex = 6;
@@ -160,7 +163,7 @@
             // 
             ClientMessageGroup.Controls.Add(ClientSend);
             ClientMessageGroup.Controls.Add(ClientMessagesBox);
-            ClientMessageGroup.Location = new Point(18, 511);
+            ClientMessageGroup.Location = new Point(18, 571);
             ClientMessageGroup.Name = "ClientMessageGroup";
             ClientMessageGroup.Size = new Size(1048, 63);
             ClientMessageGroup.TabIndex = 7;
@@ -185,11 +188,29 @@
             ClientMessagesBox.Size = new Size(936, 27);
             ClientMessagesBox.TabIndex = 0;
             // 
+            // HostIpBox
+            // 
+            HostIpBox.Controls.Add(HostIp);
+            HostIpBox.Location = new Point(18, 12);
+            HostIpBox.Name = "HostIpBox";
+            HostIpBox.Size = new Size(1048, 61);
+            HostIpBox.TabIndex = 8;
+            HostIpBox.TabStop = false;
+            HostIpBox.Text = "Host IP or Hostname (for connecting to host)";
+            // 
+            // HostIp
+            // 
+            HostIp.Location = new Point(6, 21);
+            HostIp.Name = "HostIp";
+            HostIp.Size = new Size(1032, 27);
+            HostIp.TabIndex = 0;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1078, 586);
+            ClientSize = new Size(1078, 640);
+            Controls.Add(HostIpBox);
             Controls.Add(ClientMessageGroup);
             Controls.Add(StopHosting);
             Controls.Add(ServerStatus);
@@ -208,6 +229,8 @@
             ServerStatus.PerformLayout();
             ClientMessageGroup.ResumeLayout(false);
             ClientMessageGroup.PerformLayout();
+            HostIpBox.ResumeLayout(false);
+            HostIpBox.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -231,5 +254,7 @@
         private GroupBox ClientMessageGroup;
         private TextBox ClientMessagesBox;
         private Button ClientSend;
+        private GroupBox HostIpBox;
+        private TextBox HostIp;
     }
 }
