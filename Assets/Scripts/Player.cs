@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private List<CardParent> inPlay = new List<CardParent>();
     private List<CardParent> discard = new List<CardParent>();
     private CardParent commander; //probably should be its own parent file, not CardParent
+    // I think commanders *can* be subclasses of card parent though it also does make sense for it to be a completely separate entity imo
+    // If they're not necessarily being played like cards then they should be separate, else they should be subclasses - Dave
     private float timer;
     [SerializeField] private int timeForEnergy = 5;
 
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
         if (timer > timeForEnergy)
         {
             Energy++;
+            // this line should be timer -= timeForEnergy imo - Dave
             timer = 0;
             //possible int to track energy gain to draw cards
         }

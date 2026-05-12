@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// should be abstract no? - Dave
 public class CardParent : MonoBehaviour
 {
     public enum type
@@ -31,6 +32,7 @@ public class CardParent : MonoBehaviour
     private effect cardEffect;
     private location cardLocation;
 
+    // public int Cost { get { return cost; } } should exist imo - Dave
     public int Health { get { return health; } set { health = value;  } }
     public int Damage { get { return damage; } set { damage = value; } }
 
@@ -51,6 +53,8 @@ public class CardParent : MonoBehaviour
     //triggered by event
     //OnPlay()
     
+    // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
+
     //triggered by event
     public void Attack(CardParent target)
     {
