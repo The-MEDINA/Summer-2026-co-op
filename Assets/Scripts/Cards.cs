@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class Cards : MonoBehaviour
+public abstract class Card : ScriptableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public string cardName;
+    public string description;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public int cost;
+    public int damage;
+    public int health;
+
+    public Sprite cardArt;
+
+    public abstract void OnPlay(Player player, BattlegroundManager battleground);
 }
