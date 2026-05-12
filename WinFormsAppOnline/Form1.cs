@@ -10,15 +10,16 @@ namespace WinFormsAppOnline
         // TODO: find a way to fix this.
         // Allegedly, 127.0.0.1 is this machine only.
         // find some way to make this your hostname, whilst also letting the client find that.
-        string localAddr = "127.0.0.1";
+        string localAddr = "192.168.1.214";
         // me when brainrot
         int port = 6767;
         TcpListener server = null;
-        IPAddress local = IPAddress.Parse("127.0.0.1");
+        IPAddress local;
         IPEndPoint endpoint;
         bool stopped = false;
         public Form1()
         {
+            local = IPAddress.Parse(localAddr);
             endpoint = new IPEndPoint(local, port);
             InitializeComponent();
         }
