@@ -11,6 +11,7 @@ public class CardParent : MonoBehaviour
 
     public enum effect
     {
+        none,
         overkill,
         explode
     }

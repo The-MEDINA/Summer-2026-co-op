@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 
     public int Health {  get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
+    public List<CardParent> Deck { get { return deck; } set { deck = value; } }
 
     void Update()
     {
