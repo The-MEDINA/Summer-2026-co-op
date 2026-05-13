@@ -1,3 +1,17 @@
+
+/*
+ * Networking.cs is where all of the networking is done.
+ * It's a static class, so it's not tied to any object. It's essentially a singleton.
+ * In order to access it from other scripts, you'll need to include the namespace.
+ * using Network; <--- Like this
+ * Then to access something from it, you'll need to use the keyword 'Networking'.
+ * Networking.something <--- Methods, properties, etc
+ * Y'all will likely need to pass stuff like players and cards to Networking.
+ * It's gonna need to directly modify a LOT of stuff.
+ * Anyways if yall have a question about this ASK ME PLEASE!!!
+ *  - Dave :>
+ */
+
 // This #define enables console output, among other helpful debug code.
 // Comment it out to remove any debugging code.
 #define DEBUG_MODE
@@ -9,6 +23,11 @@ using UnityEngine;
 
 namespace Network
 {
+    enum mode
+    {
+        host,
+        client
+    }
     public static class Networking
     {
         private static int port = 6000;
@@ -28,7 +47,7 @@ namespace Network
         } 
         }
         /// <summary>
-        /// Gets the hostname and IPv4 addresses from this PC.
+        /// Sets the local details using the hostname and IPv4 addresses from this PC.
         /// These are used to connect to other machines.
         /// </summary>
         public static void SetLocalDetails()

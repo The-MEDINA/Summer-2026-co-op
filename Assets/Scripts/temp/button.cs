@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Network;
 
-public class switchscene : MonoBehaviour
+public class button : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,7 +15,7 @@ public class switchscene : MonoBehaviour
     {
         
     }
-    public void OnClick()
+    public void switchScene()
     {
         Networking.Details();
         Networking.Port = 6767;
