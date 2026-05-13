@@ -548,6 +548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c863e5055f748406aa293bf99a33b657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
+  cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
