@@ -16,16 +16,18 @@ public class NetworkManager : MonoBehaviour
     // Unity calls Awake when loading an instance of a script component.
     void Awake()
     {
-        
+        DontDestroyOnLoad(this.gameObject);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Initialize.
         IPv4AddressList = new List<IPAddress>();
+
         // get and set the host name and any IPv4 addresses associated with this device.
         // host name.
         localHostName = Dns.GetHostName();
+
         // IPv4 Addresses.
         IPHostEntry host = Dns.GetHostEntry(localHostName);
         // filter out IPv4 and IPv6 addresses.
