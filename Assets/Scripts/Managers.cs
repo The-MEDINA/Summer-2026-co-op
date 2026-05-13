@@ -21,12 +21,12 @@ public class CardSelectionManager : MonoBehaviour
 
         selectedCard = card;
 
-        Debug.Log(card.name + " selected");
+        Debug.Log(card.CardName + " selected");
     }
 
     public void ActivateCard(CardParent card)
     {
-        Debug.Log(card.name + " activated");
+        Debug.Log(card.CardName + " activated");
 
         selectedCard = null;
     }
