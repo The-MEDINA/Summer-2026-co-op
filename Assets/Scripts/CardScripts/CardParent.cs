@@ -28,10 +28,11 @@ public class CardParent
     private int health;
     private int damage;
     private float timer;
-
     private type cardType;
     private effect cardEffect;
     private location cardLocation;
+
+    [SerializeField] private string cardName;
 
     // public int Cost { get { return cost; } } should exist imo - Dave
     public int Health { get { return health; } set { health = value;  } }
@@ -46,7 +47,12 @@ public class CardParent
         this.cardType = cardType;
         this.cardEffect = cardEffect;
         this.cardLocation = cardLocation;
-    }    
+    }  
+
+    public string CardName
+    {
+        get { return cardName; }
+    }  
 
     //MIGHT BE WORTH TO HAVE A METHOD WITH A SWITCH LEADING INTO EVENT METHODS
     //for example, click once on card, trigger method, next click on an opponent's card, that triggers Attack() with second card as the target
