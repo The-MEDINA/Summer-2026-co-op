@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // should be abstract no? - Dave
-public class CardParent : MonoBehaviour
+public class CardParent
 {
     public enum type
     {

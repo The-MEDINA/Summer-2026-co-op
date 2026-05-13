@@ -12,12 +12,18 @@ public class Player : MonoBehaviour
     private CardParent commander; //probably should be its own parent file, not CardParent
     // I think commanders *can* be subclasses of card parent though it also does make sense for it to be a completely separate entity imo
     // If they're not necessarily being played like cards then they should be separate, else they should be subclasses - Dave
+
+    //They won't be in you deck, hand, inPlay, or discard, they won't have health, they won't have types or locations, I don't think we really save anything
+    //by having it a subclass tbh. It's almost definitly going to be its own thing, but this is fine for now as a placed holder - Jake
     private float timer;
     [SerializeField] private int timeForEnergy = 5;
 
     public int Health {  get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
+
     public List<CardParent> Deck { get { return deck; } set { deck = value; } }
+    public List<CardParent> Hand { get { return hand; } set { hand = value; } }
+    public List<CardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
 
     void Update()
     {

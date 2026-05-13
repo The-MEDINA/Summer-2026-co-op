@@ -7,7 +7,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
-        p = new Player();
+        p = gameObject.AddComponent<Player>();
         for(int i = 0; i < 10; i++)
         {
             p.Deck.Add(new CardParent(0, 0, 0, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
@@ -21,6 +21,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("c");
+        p.Hand.Add(p.Deck[0]);
+        p.Deck.RemoveAt(0);
     }
 }
