@@ -17,7 +17,13 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     void Update()
     {
-        
+        if (p.canDraw == true)
+        {
+            p.Hand.Add(p.Deck[0]);
+            p.Deck.RemoveAt(0);
+            Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, 0), Quaternion.identity);
+            p.canDraw = false;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -25,6 +31,5 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         p.Hand.Add(p.Deck[0]);
         p.Deck.RemoveAt(0);
         Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, 0), Quaternion.identity);
-        Debug.Log(-5.75f + ((p.Hand.Count - 1) * 2f));
     }
 }

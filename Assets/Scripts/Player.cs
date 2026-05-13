@@ -15,8 +15,13 @@ public class Player : MonoBehaviour
 
     //They won't be in you deck, hand, inPlay, or discard, they won't have health, they won't have types or locations, I don't think we really save anything
     //by having it a subclass tbh. It's almost definitly going to be its own thing, but this is fine for now as a placed holder - Jake
-    private float timer;
+    private float timer = 0f;
     [SerializeField] private int timeForEnergy = 5;
+
+    //battleground test variables
+    private float drawTimer = 0f;
+    private float timeToDraw = 2f;
+    public bool canDraw = false;
 
     public int Health {  get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
@@ -37,6 +42,16 @@ public class Player : MonoBehaviour
         else
         {
             timer += Time.deltaTime;
+        }
+
+        if(drawTimer >= timeToDraw)
+        {
+            canDraw = true;
+            drawTimer = 0f;
+        }
+        else
+        {
+            drawTimer += Time.deltaTime;
         }
     }
 
