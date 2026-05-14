@@ -33,7 +33,6 @@ public class CardSelectionManager : MonoBehaviour
         {
             selectedCardObject.SetSelectedVisual(false);
         }
-
         selectedCardObject = clickedCard;
         selectedCardObject.SetSelectedVisual(true);
 
@@ -59,7 +58,6 @@ public class CardSelectionManager : MonoBehaviour
         {
             selectedCardObject.SetSelectedVisual(false);
         }
-
         selectedCardObject = null;
     }
 }
