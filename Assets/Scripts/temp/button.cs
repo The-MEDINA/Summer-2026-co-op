@@ -6,7 +6,8 @@ using TMPro;
 
 public class button : MonoBehaviour
 {
-    public TMP_InputField TMP_IF;  
+    public TMP_InputField inputfield;
+    public TextMeshProUGUI modebutton;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,8 +27,30 @@ public class button : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 
+    public void changeMode()
+    {
+        if (Networking.CurrentMode == "unset" || Networking.CurrentMode == "host")
+        {
+            Networking.CurrentMode = "client";
+            modebutton.text = "client";
+        }
+        else
+        {
+            Networking.CurrentMode = "host";
+            modebutton.text = "host";
+        }
+    }
+
     public void SetClientIP()
     {
+        Networking.OtherIPv4Address = Networking.ResolveIP(inputfield.text);
+    }
 
+    public void startConnection()
+    {
+        if (Networking.CurrentMode == "host")
+        {
+            Networking.StartHost();
+        }
     }
 }

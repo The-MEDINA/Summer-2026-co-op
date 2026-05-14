@@ -24,6 +24,11 @@ using UnityEngine;
 
 namespace Network
 {
+    // type of packet in the header.
+    enum packetType
+    {
+        handshake
+    }
     enum mode
     {
         host,
@@ -32,13 +37,61 @@ namespace Network
     }
     public static class Networking
     {
-        private static mode currentMode = mode.unset;
-        private static int port = 6000;
+        private static mode currentMode = mode.client;
+        private static int port = 6767;
         private static string localHostName = Dns.GetHostName();
         private static List<IPAddress> IPv4AddressList = new List<IPAddress>();
-
         private static IPAddress otherIPv4Address = IPAddress.Parse("0.0.0.0");
+        private static TcpListener server;
+        private static TcpClient client;
+        private static NetworkStream stream;
 
+        public static string CurrentMode { 
+            get 
+            {  
+                switch (currentMode)
+                {
+                    case (mode.host): return "host";
+                    case (mode.client): return "client";
+                    case (mode.unset):
+                        {
+#if DEBUG_MODE
+                            Debug.Log("Returning unset state in Networking!");
+#endif
+                            return "unset";
+                        }
+                }
+#if DEBUG_MODE
+                Debug.Log("Returning unset state in Networking!");
+#endif
+                return "unset";
+            } 
+            set
+            {
+                switch (value)
+                {
+                    case ("host"): currentMode = mode.host; break;
+                    case ("client"): currentMode = mode.client; break;
+                    case ("unset"):
+                        {
+#if DEBUG_MODE
+                            Debug.Log("Network manager disallows setting mode to unset. No changes made.");
+#endif
+                            break;
+                        }
+#if DEBUG_MODE
+                    default:
+                        {
+                            Debug.Log($"Expected a mode, found ${value}. No changes made.");
+                            break;
+                        }
+#endif
+                }
+#if DEBUG_MODE
+                Debug.Log($"Network state: {CurrentMode}");
+#endif
+            }
+        }
         public static int Port { get { return port; } 
             set 
             {
@@ -63,7 +116,9 @@ namespace Network
         public static IPAddress ResolveIP(string raw)
         {
             IPAddress ip = null;
+            // return the IPAddress if one was passed.
             if (IPAddress.TryParse(raw, out ip)) return ip;
+            // determine the IPAddress from the hostname otherwise.
             IPHostEntry hostEntry = Dns.GetHostEntry(raw);
             foreach (var ipEntry in hostEntry.AddressList)
             {
@@ -110,6 +165,50 @@ namespace Network
             {
                 Debug.Log(ip.ToString());
             }
+        }
+
+        /// <summary>
+        /// Start up a connection as host, and verify the connection.
+        /// </summary>
+        public static async void StartHost()
+        {
+            server = new TcpListener(IPAddress.Any, port);
+            client = new TcpClient();
+            server.Start();
+#if DEBUG_MODE
+            Debug.Log("Server started, waiting to accept client.");
+#endif
+            client = await server.AcceptTcpClientAsync();
+#if DEBUG_MODE
+            Debug.Log("Client found. Verifying...");
+#endif
+            stream = client.GetStream();
+            byte[] handshake = EncodePacket(packetType.handshake, true);
+        }
+        /*
+         * Packets are 1024 byte long arrays that are split differently depending on their type.
+         * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
+         * HANDSHAKE:
+         * the second byte determines if it's a request or response.
+         */
+
+        private static byte[] EncodePacket(packetType type, bool isRequest)
+        {
+            byte[] packet = new byte[1024];
+            switch (type)
+            {
+                case (packetType.handshake):
+                    {
+                        // the first byte of each packet will always be its type.
+                        packet[0] = (byte) packetType.handshake;
+
+                        // the second byte determines if it's a a request or response. 0 is 
+                        if (isRequest) packet[1] = 0;
+                        else packet[1] = 1;
+                        break;
+                    }
+            }
+            return packet;
         }
     }
 }
