@@ -20,7 +20,12 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         originalScale = transform.localScale;
         //this carddata shouldn't be made here but for testing purposes I have it standerdised - Jake
-        CardData = new CardParent(3, 2, 4, CardParent.type.minion, CardParent.effect.none, CardParent.location.hand);
+        //CardData = new CardParent(3, 20, 4, CardParent.type.minion, CardParent.effect.none, CardParent.location.hand);
+    }
+
+    void Update()
+    {
+        if (CardData.IsDead) { gameObject.SetActive(false); }
     }
 
     public void OnPointerDown(PointerEventData eventData)

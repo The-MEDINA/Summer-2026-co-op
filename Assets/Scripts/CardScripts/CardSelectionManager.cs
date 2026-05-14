@@ -29,10 +29,8 @@ public class CardSelectionManager : MonoBehaviour
 
         if(clickedCard.IsEnemyCard == true)
         {
-            Debug.Log("Attack");
             selectedCardObject.CardData.Attack(clickedCard.CardData);
             Debug.Log(clickedCard.CardData.Health);
-            Debug.Log(clickedCard.CardData.IsDead);
         }
 
         if (selectedCardObject == clickedCard)
