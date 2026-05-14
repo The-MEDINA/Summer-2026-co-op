@@ -9,22 +9,22 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private Vector3 originalScale;
     private CardParent cardData;
 
-    public CardParent CardData
-    {
-        get { return cardData; }
-        set { cardData = value; }
-    }
+    //test var
+    [SerializeField] private bool isEnemyCard = false;
+    //test property
+    public bool IsEnemyCard { get { return isEnemyCard; } }
+
+    public CardParent CardData { get { return cardData; } set { cardData = value; } }
 
     private void Awake()
     {
         originalScale = transform.localScale;
         //this carddata shouldn't be made here but for testing purposes I have it standerdised - Jake
-        CardData = new CardParent(0, 0, 0, CardParent.type.minion, CardParent.effect.none, CardParent.location.hand);
+        CardData = new CardParent(3, 2, 4, CardParent.type.minion, CardParent.effect.none, CardParent.location.hand);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("z");
         transform.localScale = originalScale * magnifiedScale;
     }
 
@@ -32,7 +32,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         if (CardSelectionManager.Instance != null && CardSelectionManager.Instance.SelectedCardObject == this)
         {
-            Debug.Log("y");
             transform.localScale = originalScale * selectedScale;
         }
         else
@@ -45,7 +44,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         if (CardSelectionManager.Instance != null)
         {
-            Debug.Log("v");
             CardSelectionManager.Instance.SelectCard(this);
         }
     }

@@ -33,10 +33,12 @@ public class CardParent
     private location cardLocation;
 
     [SerializeField] private string cardName;
+    private bool isDead = false;
 
     // public int Cost { get { return cost; } } should exist imo - Dave
     public int Health { get { return health; } set { health = value;  } }
     public int Damage { get { return damage; } set { damage = value; } }
+    public bool IsDead { get { return isDead; } }
 
     public CardParent(int cost, int health, int damage, type cardType, effect cardEffect, location cardLocation)
     {
@@ -76,7 +78,7 @@ public class CardParent
 
     public void Death()
     {
-
+        isDead = true;
     }
 
     //triggered by event
