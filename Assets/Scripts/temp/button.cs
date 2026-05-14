@@ -53,5 +53,9 @@ public class button : MonoBehaviour
         {
             Networking.StartHost();
         }
+        if (Networking.CurrentMode == "client")
+        {
+            Networking.StartClient();
+        }
     }
 }

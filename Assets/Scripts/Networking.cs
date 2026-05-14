@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-// using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -49,6 +48,7 @@ namespace Network
         private static IPAddress otherIPv4Address = IPAddress.Parse("0.0.0.0");
         private static TcpListener server;
         private static TcpClient client;
+        private static IPEndPoint endpoint;
         private static NetworkStream stream;
 
         public static string CurrentMode { 
@@ -174,6 +174,7 @@ namespace Network
 
         /// <summary>
         /// Start up a connection as host, and verify the connection.
+        /// CAN AND WILL THROW EXCEPTIONS if a connection cannot be verified.
         /// </summary>
         public static async void StartHost()
         {
@@ -188,7 +189,7 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
 #endif
-            // setup the next step. 
+            // setup the handshake process.
             stream = client.GetStream();
             byte[] handshake = EncodePacket(packetType.handshake, true);
             byte[] response = new byte[1024];
@@ -202,6 +203,7 @@ namespace Network
 #endif
             // start waiting for a response.
             // Will currently close the socket to trigger a response upon timeout.
+            // This will cause a SocketException to exit the function early.
             // can probably change this from stream.close to something else.
             using(cts.Token.Register(() => stream.Close()))
             {
@@ -230,6 +232,31 @@ namespace Network
          * bytes 44 - 1024 are empty so we can use it later to send more info.
          */
 
+        public static async void StartClient()
+        {
+#if DEBUG_MODE
+            Debug.Log("starting client.");
+#endif
+            client = new();
+            // both of these lines of code can and will throw exceptions if the ipaddress or endpoint are invalid.
+            endpoint = new IPEndPoint(OtherIPv4Address, port);
+            client.Connect(endpoint);
+
+            // start the handshake process here.
+            stream = client.GetStream();
+            byte[] handshake = EncodePacket(packetType.handshake, false);
+            byte[] response = new byte[1024];
+
+#if DEBUG_MODE
+            Debug.Log("Connection made, waiting for packet");
+#endif
+
+            await stream.ReadAsync(response, 0, response.Length);
+
+#if DEBUG_MODE
+            Debug.Log("Packet received. Verifying...");
+#endif
+        }
         private static byte[] EncodePacket(packetType type, bool isRequest)
         {
             byte[] packet = new byte[1024];
