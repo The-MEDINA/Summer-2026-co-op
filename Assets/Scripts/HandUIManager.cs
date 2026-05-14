@@ -1,16 +1,28 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HandUIManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private float cardSpacing = 2f;
+    [SerializeField] private float handYPosition = -3.75f;
+    [SerializeField] private float startXPosition = -5.75f;
+
+    private List<GameObject> cardObjects = new List<GameObject>();
+
+    public void AddCardToHand(GameObject cardObject)
     {
-        
+        cardObjects.Add(cardObject);
+        UpdateHandPositions();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveCardFromHand(GameObject cardObject)
     {
-        
+        cardObjects.Remove(cardObject);
+        UpdateHandPositions();
+    }
+
+    public void UpdateHandPositions()
+    {
+        //WILL DO IT TOMORROW
     }
 }
