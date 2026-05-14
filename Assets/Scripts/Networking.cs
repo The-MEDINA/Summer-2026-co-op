@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -255,6 +256,7 @@ namespace Network
 
 #if DEBUG_MODE
             Debug.Log("Packet received. Verifying...");
+
 #endif
         }
         private static byte[] EncodePacket(packetType type, bool isRequest)
@@ -288,18 +290,6 @@ namespace Network
                             // High bytes are in even indexes, low bytes are in odd indexes.
                             packet[2 + (2 * i)] = highByte;
                             packet[3 + (2 * i)] = lowByte;
-
-#if DEBUG_MODE
-                            /*
-                            char reconstructed;
-                            short raw = highByte;
-                            raw <<= 8;
-                            raw += lowByte;
-                            reconstructed = (char) raw;
-                            Debug.Log($"Reconstructed char: {reconstructed}");
-                            Debug.Log($"{3 + (2 * i)}");
-                            */
-#endif
                         }
                         // encode the ip address of this system.
                         byte[] splitIPAddress = IPv4AddressList[0].GetAddressBytes();
@@ -311,6 +301,38 @@ namespace Network
                     }
             }
             return packet;
+        }
+
+        private static void DecodePacket(byte[] packet)
+        {
+            bool brokenPacket = false;
+            Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
+            switch(packet[0])
+            {
+                case((byte) packetType.handshake):
+                {
+                    string handshakeContentFromPacket = "";
+
+                    // check the request / response byte.
+                    if (packet[1] != 0 || packet[1] != 1) brokenPacket = true;
+
+                    // check the handshake text.
+                    for (int i = 0; i < handshakeContent.Length; i++)
+                    {
+                        short rawChar = packet[2 + (2 * i)];
+                        rawChar <<= 8;
+                        rawChar += packet[3 + (2 * i)];
+                        handshakeContentFromPacket += (char) rawChar;
+                    }
+                    if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
+                    break;
+                }
+                default:
+                {
+                    throw e;
+                }
+            }
+            if (brokenPacket) throw e;
         }
     }
 }
