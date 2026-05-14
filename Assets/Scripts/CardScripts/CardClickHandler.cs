@@ -3,67 +3,57 @@ using UnityEngine.EventSystems;
 
 public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
-    private CardParent card;
-
-    private bool isSelected = false;
-    private bool isHolding = false;
+    [SerializeField] private float magnifiedScale = 1.3f;
+    [SerializeField] private float selectedScale = 1.15f;
 
     private Vector3 originalScale;
+    private CardParent cardData;
 
-    [SerializeField] private float magnifiedScale = 1.3f;
+    public CardParent CardData
+    {
+        get { return cardData; }
+        set { cardData = value; }
+    }
 
     private void Awake()
     {
-        card = GetComponent<CardParent>();
         originalScale = transform.localScale;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        isHolding = true;
-        MagnifyCard();
+        transform.localScale = originalScale * magnifiedScale;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        isHolding = false;
-        ShrinkCard();
+        if (CardSelectionManager.Instance != null && CardSelectionManager.Instance.SelectedCardObject == this)
+        {
+            transform.localScale = originalScale * selectedScale;
+        }
+        else
+        {
+            transform.localScale = originalScale;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!isSelected)
+        if (CardSelectionManager.Instance != null)
         {
-            SelectCard();
+            CardSelectionManager.Instance.SelectCard(this);
+        }
+    }
+
+    public void SetSelectedVisual(bool selected)
+    {
+        if (selected)
+        {
+            transform.localScale = originalScale * selectedScale;
         }
         else
         {
-            ActivateCard();
+            transform.localScale = originalScale;
         }
-    }
-
-    private void MagnifyCard()
-    {
-        transform.localScale = originalScale * magnifiedScale;
-        Debug.Log("Magnifying card");
-    }
-
-    private void ShrinkCard()
-    {
-        transform.localScale = originalScale;
-        Debug.Log("Shrinking card");
-    }
-
-    private void SelectCard()
-    {
-        isSelected = true;
-        Debug.Log("Card selected: " + gameObject.name);
-    }
-
-    private void ActivateCard()
-    {
-        isSelected = false;
-        Debug.Log("Card activated: " + gameObject.name);
-        //this can call card.OnPlay() or card.Attack() - Can be done later
     }
 }
