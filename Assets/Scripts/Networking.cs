@@ -37,8 +37,10 @@ namespace Network
     }
     public static class Networking
     {
-        private static mode currentMode = mode.client;
         private static int port = 6767;
+        private static string handshakeContent = "BLITZBURN HANDSHAKE";
+
+        private static mode currentMode = mode.client;
         private static string localHostName = Dns.GetHostName();
         private static List<IPAddress> IPv4AddressList = new List<IPAddress>();
         private static IPAddress otherIPv4Address = IPAddress.Parse("0.0.0.0");
@@ -188,8 +190,10 @@ namespace Network
         /*
          * Packets are 1024 byte long arrays that are split differently depending on their type.
          * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
-         * HANDSHAKE:
+         * --- HANDSHAKE: ---
          * the second byte determines if it's a request or response.
+         * currently bytes 3 - 39 store the handshakeContent variable.
+         * bytes 40 - 1024 are empty so we can use it later to send more info.
          */
 
         private static byte[] EncodePacket(packetType type, bool isRequest)
@@ -202,9 +206,38 @@ namespace Network
                         // the first byte of each packet will always be its type.
                         packet[0] = (byte) packetType.handshake;
 
-                        // the second byte determines if it's a a request or response. 0 is 
+                        // the second byte determines if it's a a request or response.
                         if (isRequest) packet[1] = 0;
                         else packet[1] = 1;
+
+                        for (int i = 0; i < handshakeContent.Length; i++)
+                        {
+                            // prepare the char to encode into two bytes.
+                            char charToEncode = handshakeContent[i];
+                            byte highByte = 0;
+                            byte lowByte = 0;
+
+                            // mask out the top 8 bits.
+                            lowByte = (byte)(charToEncode & 255);
+
+                            // shift right 8 bits and then mask.
+                            highByte = (byte)((charToEncode >> 8) & 255);
+
+                            // High bytes are in even indexes, low bytes are in odd indexes.
+                            packet[2 + (2 * i)] = highByte;
+                            packet[3 + (2 * i)] = lowByte;
+
+#if DEBUG_MODE
+                            char reconstructed;
+                            short raw = highByte;
+                            raw <<= 8;
+                            raw += lowByte;
+                            reconstructed = (char) raw;
+                            Debug.Log($"Reconstructed char: {reconstructed}");
+                            Debug.Log($"{3 + (2 * i)}");
+#endif
+                        }
+
                         break;
                     }
             }
