@@ -219,9 +219,22 @@ namespace Network
                 }
             }
 #if DEBUG_MODE
-            Debug.Log("Post read Async");
+            Debug.Log("Post read Async. Verifying response...");
 #endif
             // double check the received packet is a handshake response.
+            try
+            {
+                DecodePacket(response);
+            }
+            catch
+            {
+#if DEBUG_MODE
+                Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
+#endif  
+                // proper code for terminating a connection here
+                server.Stop();
+                stream.Close();
+            }
         }
         /*
          * Packets are 1024 byte long arrays that are split differently depending on their type.
@@ -256,8 +269,23 @@ namespace Network
 
 #if DEBUG_MODE
             Debug.Log("Packet received. Verifying...");
-
 #endif
+            try
+            {
+                DecodePacket(response);
+            }
+            catch
+            {
+#if DEBUG_MODE
+                Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
+#endif               
+                // proper code for terminating a connection here
+                stream.Close();
+            }
+#if DEBUG_MODE
+            Debug.Log("Success! Valid handshake packet. Sending response.");
+#endif
+            await stream.WriteAsync(handshake, 0, handshake.Length);
         }
         private static byte[] EncodePacket(packetType type, bool isRequest)
         {
