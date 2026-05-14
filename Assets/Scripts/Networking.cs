@@ -206,7 +206,7 @@ namespace Network
             // Will currently close the socket to trigger a response upon timeout.
             // This will cause a SocketException to exit the function early.
             // can probably change this from stream.close to something else.
-            using(cts.Token.Register(() => stream.Close()))
+            using(cts.Token.Register(() => {stream.Close(); server.Stop(); }))
             {
                 int receivedCount;
                 try
@@ -225,6 +225,9 @@ namespace Network
             try
             {
                 DecodePacket(response);
+#if DEBUG_MODE
+            Debug.Log("Success! This is a valid client.");
+#endif
             }
             catch
             {
@@ -246,6 +249,9 @@ namespace Network
          * bytes 44 - 1024 are empty so we can use it later to send more info.
          */
 
+        /// <summary>
+        /// Start a connection as client, and verify the connection.
+        /// </summary>
         public static async void StartClient()
         {
 #if DEBUG_MODE
@@ -273,6 +279,10 @@ namespace Network
             try
             {
                 DecodePacket(response);
+#if DEBUG_MODE
+                Debug.Log("Success! Valid handshake packet. Sending response.");
+#endif
+                await stream.WriteAsync(handshake, 0, handshake.Length);
             }
             catch
             {
@@ -282,11 +292,14 @@ namespace Network
                 // proper code for terminating a connection here
                 stream.Close();
             }
-#if DEBUG_MODE
-            Debug.Log("Success! Valid handshake packet. Sending response.");
-#endif
-            await stream.WriteAsync(handshake, 0, handshake.Length);
         }
+
+        /// <summary>
+        /// Encode a packet to send to someone else.
+        /// </summary>
+        /// <param name="type">packet type.</param>
+        /// <param name="isRequest">whether it's a request or a response. This is mainly for the handshake.</param>
+        /// <returns>a byte[1024] array that is formatted to a certain type of packet, as specified by the type parameter.</returns>
         private static byte[] EncodePacket(packetType type, bool isRequest)
         {
             byte[] packet = new byte[1024];
@@ -331,6 +344,10 @@ namespace Network
             return packet;
         }
 
+/// <summary>
+/// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
+/// </summary>
+/// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
         private static void DecodePacket(byte[] packet)
         {
             bool brokenPacket = false;
@@ -342,28 +359,21 @@ namespace Network
                     string handshakeContentFromPacket = "";
 
                     // check the request / response byte.
-                    if (packet[1] > 1) brokenPacket = true;
-#if DEBUG_MODE
-                        if (packet[1] > 1) Debug.Log($"req/res mismatch: expected 0 or 1, got {packet[1]}");
-#endif
+                    if (packet[1] > 1) 
+                    {
+                        brokenPacket = true;
+                        break;
+                    }
+
                     // check the handshake text.
                     for (int i = 0; i < handshakeContent.Length; i++)
                     {
                         short rawChar = packet[2 + (2 * i)];
                         rawChar <<= 8;
                         rawChar += packet[3 + (2 * i)];
-#if DEBUG_MODE
-                        Debug.Log($"{(char) rawChar}");
-#endif
                         handshakeContentFromPacket += (char) rawChar;
                     }
-#if DEBUG_MODE
-                        Debug.Log($"{handshakeContentFromPacket} vs {handshakeContent}");
-#endif
                     if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
-#if DEBUG_MODE
-                    if (handshakeContentFromPacket != handshakeContent) Debug.Log($"text mismatch: expected {handshakeContent}, got {handshakeContentFromPacket}");
-#endif
                     break;
                 }
                 default:
