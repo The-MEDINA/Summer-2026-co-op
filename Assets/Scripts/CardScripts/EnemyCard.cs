@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyCard : MonoBehaviour
 {
     private CardClickHandler thisClickHandler;
+    [SerializeField] private int health = 11;
 
     //this script exists to test out interactions against opposing cards
     //because card creation is currently handled in battleground, and will eventually be moved to player, enemy cards need a player of their own
@@ -12,6 +13,6 @@ public class EnemyCard : MonoBehaviour
     void Start()
     {
         thisClickHandler = GetComponent<CardClickHandler>();
-        thisClickHandler.CardData = new CardParent(1, 11, 3, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck);
+        thisClickHandler.CardData = new CardParent(1, health, 3, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck);
     }
 }

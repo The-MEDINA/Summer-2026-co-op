@@ -4,18 +4,18 @@ using UnityEngine.EventSystems;
 
 public class Battleground : MonoBehaviour, IPointerClickHandler
 {
-    private Player p;
+    [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
     private List<GameObject> cardList = new List<GameObject>();
     private CardClickHandler currentCard;
 
     void Start()
     {
-        p = gameObject.AddComponent<Player>();
+        /*p = gameObject.AddComponent<Player>();
         for(int i = 0; i < 10; i++)
         {
             p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        }
+        }*/
     }
 
     void Update()

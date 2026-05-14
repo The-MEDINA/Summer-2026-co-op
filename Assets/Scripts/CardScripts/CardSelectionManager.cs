@@ -27,10 +27,13 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if(clickedCard.IsEnemyCard == true)
+        if (selectedCardObject != null)
         {
-            selectedCardObject.CardData.Attack(clickedCard.CardData);
-            Debug.Log(clickedCard.CardData.Health);
+            if (clickedCard.IsEnemyCard == true)
+            {
+                selectedCardObject.CardData.Attack(clickedCard.CardData);
+                Debug.Log(clickedCard.CardData.Health);
+            }
         }
 
         if (selectedCardObject == clickedCard)
