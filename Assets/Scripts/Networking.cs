@@ -342,17 +342,28 @@ namespace Network
                     string handshakeContentFromPacket = "";
 
                     // check the request / response byte.
-                    if (packet[1] != 0 || packet[1] != 1) brokenPacket = true;
-
+                    if (packet[1] > 1) brokenPacket = true;
+#if DEBUG_MODE
+                        if (packet[1] > 1) Debug.Log($"req/res mismatch: expected 0 or 1, got {packet[1]}");
+#endif
                     // check the handshake text.
                     for (int i = 0; i < handshakeContent.Length; i++)
                     {
                         short rawChar = packet[2 + (2 * i)];
                         rawChar <<= 8;
                         rawChar += packet[3 + (2 * i)];
+#if DEBUG_MODE
+                        Debug.Log($"{(char) rawChar}");
+#endif
                         handshakeContentFromPacket += (char) rawChar;
                     }
+#if DEBUG_MODE
+                        Debug.Log($"{handshakeContentFromPacket} vs {handshakeContent}");
+#endif
                     if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
+#if DEBUG_MODE
+                    if (handshakeContentFromPacket != handshakeContent) Debug.Log($"text mismatch: expected {handshakeContent}, got {handshakeContentFromPacket}");
+#endif
                     break;
                 }
                 default:
