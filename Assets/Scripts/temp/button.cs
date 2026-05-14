@@ -13,6 +13,7 @@ public class button : MonoBehaviour
     void Start()
     {
         Networking.SetLocalDetails();
+        Networking.Details();
     }
 
     // Update is called once per frame

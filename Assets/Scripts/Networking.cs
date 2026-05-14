@@ -18,8 +18,11 @@
 
 using System;
 using System.Collections.Generic;
+// using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Network
@@ -38,7 +41,7 @@ namespace Network
     public static class Networking
     {
         private static int port = 6767;
-        private static string handshakeContent = "BLITZBURN HANDSHAKE";
+        private static readonly string handshakeContent = "BLITZBURN HANDSHAKE";
 
         private static mode currentMode = mode.client;
         private static string localHostName = Dns.GetHostName();
@@ -174,6 +177,7 @@ namespace Network
         /// </summary>
         public static async void StartHost()
         {
+            // should probably wrap a lot of this into a do/while loop to retry connections.
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
@@ -184,8 +188,37 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
 #endif
+            // setup the next step. 
             stream = client.GetStream();
             byte[] handshake = EncodePacket(packetType.handshake, true);
+            byte[] response = new byte[1024];
+            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+            // send a handshake packet to the client and wait for a response.
+            await stream.WriteAsync(handshake, 0, handshake.Length);
+
+#if DEBUG_MODE
+            Debug.Log("Post write Async");
+#endif
+            // start waiting for a response.
+            // Will currently close the socket to trigger a response upon timeout.
+            // can probably change this from stream.close to something else.
+            using(cts.Token.Register(() => stream.Close()))
+            {
+                int receivedCount;
+                try
+                {
+                    receivedCount = await stream.ReadAsync(response, 0, response.Length, cts.Token).ConfigureAwait(false);
+                }
+                catch (TimeoutException)
+                {
+                    receivedCount = -1;
+                }
+            }
+#if DEBUG_MODE
+            Debug.Log("Post read Async");
+#endif
+            // double check the received packet is a handshake response.
         }
         /*
          * Packets are 1024 byte long arrays that are split differently depending on their type.
@@ -193,7 +226,8 @@ namespace Network
          * --- HANDSHAKE: ---
          * the second byte determines if it's a request or response.
          * currently bytes 3 - 39 store the handshakeContent variable.
-         * bytes 40 - 1024 are empty so we can use it later to send more info.
+         * bytes 40 - 43 hold the host system's IP Address.
+         * bytes 44 - 1024 are empty so we can use it later to send more info.
          */
 
         private static byte[] EncodePacket(packetType type, bool isRequest)
@@ -210,6 +244,7 @@ namespace Network
                         if (isRequest) packet[1] = 0;
                         else packet[1] = 1;
 
+                        // encode handshakeContent here.
                         for (int i = 0; i < handshakeContent.Length; i++)
                         {
                             // prepare the char to encode into two bytes.
@@ -228,6 +263,7 @@ namespace Network
                             packet[3 + (2 * i)] = lowByte;
 
 #if DEBUG_MODE
+                            /*
                             char reconstructed;
                             short raw = highByte;
                             raw <<= 8;
@@ -235,9 +271,15 @@ namespace Network
                             reconstructed = (char) raw;
                             Debug.Log($"Reconstructed char: {reconstructed}");
                             Debug.Log($"{3 + (2 * i)}");
+                            */
 #endif
                         }
-
+                        // encode the ip address of this system.
+                        byte[] splitIPAddress = IPv4AddressList[0].GetAddressBytes();
+                        for (int i = 0; i < 4; i++)
+                        {
+                            packet[40 + i] = splitIPAddress[i];
+                        }
                         break;
                     }
             }
