@@ -28,18 +28,14 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             p.Hand.Add(p.Deck[0]);
             p.Deck.RemoveAt(0);
 
-            //PROPERLY MERGE THIS LATER
-
-            //Jake Code
-            /*cardList.Add(Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity));
+            GameObject newCard = Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity);
+            cardList.Add(newCard);
             currentCard = cardList[cardList.Count - 1].GetComponent<CardClickHandler>();
-            currentCard.CardData = p.Hand[p.Hand.Count - 1];*/
+            currentCard.CardData = p.Hand[p.Hand.Count - 1];
 
-            //Brandon Code
-            /*
-            GameObject newCard = Instantiate(cardProto);
-            handUIManager.AddCardToHand(newCard);
-            */
+            //error due to no instance of handUIManager in scene
+            //handUIManager.AddCardToHand(newCard);
+    
             p.canDraw = false;
         }
     }
@@ -48,9 +44,12 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     {
         if (p.Deck.Count > 0)
         {
+            //should be refactored to same as update if this is going to continue to be used for testing purposes
             p.Hand.Add(p.Deck[0]);
             p.Deck.RemoveAt(0);
-            Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity);
+            cardList.Add(Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity));
+            currentCard = cardList[cardList.Count - 1].GetComponent<CardClickHandler>();
+            currentCard.CardData = p.Hand[p.Hand.Count - 1];
         }
     }
 }
