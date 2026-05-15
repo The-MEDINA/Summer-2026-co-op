@@ -432,6 +432,9 @@ namespace Network
             {
                 case ((byte) packetType.handshake):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found handshake packet");
+#endif
                     string handshakeContentFromPacket = "";
 
                     // check the request / response byte.
@@ -454,10 +457,18 @@ namespace Network
                 }
                 case ((byte) packetType.keepAlive):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found keepAlive packet");
+#endif
                     // only the host should respond with a packet on receiving a keepalive.
                     if (currentMode == mode.host)
                     {
                         byte[] responsePacket = EncodePacket(packetType.keepAlive);
+
+                        // this is a really ugly workaround.
+                        // currently the client can't seem to make use of the first packet sent if it sent a keepalive packet.
+                        // this is 100% going to cause issues later on, so the sooner a fix can be found the better.
+                        await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                         await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                     }
                     break;
@@ -475,6 +486,7 @@ namespace Network
             Debug.Log($"entering Connection()");
 #endif
             byte[] packet = new byte[1024];
+            bool potentialTimeout = false;
 
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
@@ -491,18 +503,24 @@ namespace Network
                     if (!result.IsCompleted)
                     {
                         server.Stop();
+                        stream.Close();
                         client.Close();
                         CurrentState = state.disconnected;
 #if DEBUG_MODE
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
                     }
+                    // decode the packet if one was received in time.
+                    else
+                    {
+                        DecodePacket(packet);
+                    }
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
-                    // do stuff here when a packet was received if needed.
                 }
             }
+            // run in the background constantly listening as client.
             if (currentMode == mode.client)
             {
                 while (currentState == state.connected)
@@ -512,24 +530,30 @@ namespace Network
                     await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(5)));
 
                     // sends a keepalive packet after 5 seconds
-                    if (!result.IsCompleted)
+                    if (!result.IsCompleted && !potentialTimeout)
                     {
                         byte[] keepalive = EncodePacket(packetType.keepAlive);
                         await stream.WriteAsync(keepalive, 0, keepalive.Length);
-
-                        // waits again
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(5)));
-
-                        // closes after 5 more seconds
-                        if (!result.IsCompleted)
-                        {
-                            server.Stop();
-                            client.Close();
-                            CurrentState = state.disconnected;
+                        potentialTimeout = true;
+#if DEBUG_MODE
+                        Debug.Log($"Post send keepalive");
+#endif
+                    }
+                    // closes the connection after another 5 seconds.
+                    else if (!result.IsCompleted)
+                    {
 #if DEBUG_MODE
                         Debug.LogWarning($"timeout on client, closing connection.");
 #endif
-                        }
+                        client.Close();
+                        stream.Close();
+                        CurrentState = state.disconnected;
+                    }
+                    // Decode the packet if one was found in time.
+                    else if (result.IsCompleted)
+                    {
+                        DecodePacket(packet);
+                        potentialTimeout = false;
                     }
                 }
             }
@@ -543,3 +567,8 @@ namespace Network
         }
     }
 }
+/* TODO: Dispose of connections properly when closing them.
+* It looks like the code's reentering connection() when it disconnects somehow.
+* TODO: Fix the 2 separate readasync bug.
+* client needs 2 writeasyncs to see the packet when it sends a keepalive packet.
+*/
