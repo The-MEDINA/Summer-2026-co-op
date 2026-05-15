@@ -61,7 +61,6 @@ public class button : MonoBehaviour
 
     public void TEMPSendaPacket()
     {
-        int i = 0;
         Networking.TEMPsendpacket();
     }
 }

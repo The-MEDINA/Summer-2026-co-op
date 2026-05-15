@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -291,7 +290,9 @@ namespace Network
          * the second byte determines if it's a request or response.
          * currently bytes 3 - 39 store the handshakeContent variable.
          * bytes 40 - 43 hold the host system's IP Address.
-         * bytes 44 - 1024 are empty so we can use it later to send more info.
+         * bytes 44 - 1023 are empty so we can use it later to send more info.
+         * --- KEEPALIVE: ---
+         * bytes 1 - 1023 are empty so we can use it later to send more info.
          */
 
         /// <summary>
@@ -353,40 +354,68 @@ namespace Network
             switch (type)
             {
                 case (packetType.handshake):
+                {
+                    // the first byte of each packet will always be its type.
+                    packet[0] = (byte) packetType.handshake;
+
+                    // the second byte determines if it's a a request or response.
+                    if (isRequest) packet[1] = 0;
+                    else packet[1] = 1;
+
+                    // encode handshakeContent here.
+                    for (int i = 0; i < handshakeContent.Length; i++)
                     {
-                        // the first byte of each packet will always be its type.
-                        packet[0] = (byte) packetType.handshake;
+                        // prepare the char to encode into two bytes.
+                        char charToEncode = handshakeContent[i];
+                        byte highByte = 0;
+                        byte lowByte = 0;
 
-                        // the second byte determines if it's a a request or response.
-                        if (isRequest) packet[1] = 0;
-                        else packet[1] = 1;
+                        // mask out the top 8 bits.
+                        lowByte = (byte)(charToEncode & 255);
 
-                        // encode handshakeContent here.
-                        for (int i = 0; i < handshakeContent.Length; i++)
-                        {
-                            // prepare the char to encode into two bytes.
-                            char charToEncode = handshakeContent[i];
-                            byte highByte = 0;
-                            byte lowByte = 0;
+                        // shift right 8 bits and then mask.
+                        highByte = (byte)((charToEncode >> 8) & 255);
 
-                            // mask out the top 8 bits.
-                            lowByte = (byte)(charToEncode & 255);
-
-                            // shift right 8 bits and then mask.
-                            highByte = (byte)((charToEncode >> 8) & 255);
-
-                            // High bytes are in even indexes, low bytes are in odd indexes.
-                            packet[2 + (2 * i)] = highByte;
-                            packet[3 + (2 * i)] = lowByte;
-                        }
-                        // encode the ip address of this system.
-                        byte[] splitIPAddress = IPv4AddressList[0].GetAddressBytes();
-                        for (int i = 0; i < 4; i++)
-                        {
-                            packet[40 + i] = splitIPAddress[i];
-                        }
-                        break;
+                        // High bytes are in even indexes, low bytes are in odd indexes.
+                        packet[2 + (2 * i)] = highByte;
+                        packet[3 + (2 * i)] = lowByte;
                     }
+                    // encode the ip address of this system.
+                    byte[] splitIPAddress = IPv4AddressList[0].GetAddressBytes();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        packet[40 + i] = splitIPAddress[i];
+                    }
+                    break;
+                }
+                case (packetType.keepAlive):
+                {
+                    packet = EncodePacket(packetType.keepAlive);
+                    break;
+                }
+            }
+            return packet;
+        }
+        
+        private static byte[] EncodePacket(packetType type)
+        {
+            byte[] packet = new byte[1024];
+            switch (type)
+            {
+                case (packetType.handshake):
+                {
+#if DEBUG_MODE
+                    Debug.LogWarning("No request/response parameter passed for handshake. Assuming request. Please use EncodePacket(type, isRequest).");
+#endif
+                    packet = EncodePacket(packetType.handshake, true);
+                    break;
+                }
+                case (packetType.keepAlive):
+                {
+                    // the first byte will always be its type.
+                    packet[0] = (byte) packetType.keepAlive;
+                    break;
+                }
             }
             return packet;
         }
@@ -395,13 +424,13 @@ namespace Network
 /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
 /// </summary>
 /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
-        private static void DecodePacket(byte[] packet)
+        private static async void DecodePacket(byte[] packet)
         {
             bool brokenPacket = false;
             Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
             switch(packet[0])
             {
-                case((byte) packetType.handshake):
+                case ((byte) packetType.handshake):
                 {
                     string handshakeContentFromPacket = "";
 
@@ -423,6 +452,16 @@ namespace Network
                     if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
                     break;
                 }
+                case ((byte) packetType.keepAlive):
+                {
+                    // only the host should respond with a packet on receiving a keepalive.
+                    if (currentMode == mode.host)
+                    {
+                        byte[] responsePacket = EncodePacket(packetType.keepAlive);
+                        await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
+                    }
+                    break;
+                }
                 default:
                 {
                     throw e;
@@ -436,27 +475,70 @@ namespace Network
             Debug.Log($"entering Connection()");
 #endif
             byte[] packet = new byte[1024];
-            Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
-            await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
-
-            if (!result.IsCompleted)
+            // run in the background constantly listening for info as host.
+            if (currentMode == mode.host)
             {
-                server.Stop();
-                client.Close();
+                while (currentState == state.connected)
+                {
+                    // (As far as I know) Make a task to check if this ever finishes on time.
+                    Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
+
+                    // wait for either the task to finish or for timeout.
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+
+                    // close the connection on timeout.
+                    if (!result.IsCompleted)
+                    {
+                        server.Stop();
+                        client.Close();
+                        CurrentState = state.disconnected;
 #if DEBUG_MODE
-            Debug.Log($"timeout, closing connection.");
+                    Debug.LogWarning($"timeout on host, closing connection.");
 #endif
+                    }
+#if DEBUG_MODE
+                    Debug.Log($"post read");
+#endif
+                    // do stuff here when a packet was received if needed.
+                }
             }
+            if (currentMode == mode.client)
+            {
+                while (currentState == state.connected)
+                {
+                    // waits for a response
+                    Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(5)));
+
+                    // sends a keepalive packet after 5 seconds
+                    if (!result.IsCompleted)
+                    {
+                        byte[] keepalive = EncodePacket(packetType.keepAlive);
+                        await stream.WriteAsync(keepalive, 0, keepalive.Length);
+
+                        // waits again
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(5)));
+
+                        // closes after 5 more seconds
+                        if (!result.IsCompleted)
+                        {
+                            server.Stop();
+                            client.Close();
+                            CurrentState = state.disconnected;
 #if DEBUG_MODE
-            Debug.Log($"post read");
+                        Debug.LogWarning($"timeout on client, closing connection.");
 #endif
+                        }
+                    }
+                }
+            }
         }
 
         public static void TEMPsendpacket()
         {
             byte[] packet = new byte[1024];
-            packet = EncodePacket(packetType.handshake, false);
+            packet = EncodePacket(packetType.keepAlive);
             stream.Write(packet, 0, packet.Length);
         }
     }
