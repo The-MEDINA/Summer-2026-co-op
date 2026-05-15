@@ -20,6 +20,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         originalScale = transform.localScale;
         //this carddata shouldn't be made here but for testing purposes I have it standerdised - Jake
+        //again, this will soon be deleted just like in battleground - Jake
+
         //CardData = new CardParent(3, 20, 4, CardParent.type.minion, CardParent.effect.none, CardParent.location.hand);
     }
 

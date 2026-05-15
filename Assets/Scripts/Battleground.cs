@@ -11,6 +11,8 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
+        //this will probably get deleted soon it just matters based on when I get around to something vaguely related - Jake
+
         /*p = gameObject.AddComponent<Player>();
         for(int i = 0; i < 10; i++)
         {

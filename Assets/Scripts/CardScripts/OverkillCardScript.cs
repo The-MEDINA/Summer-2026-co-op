@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class OverKillCardScript : CardParent
 {
+    //this was just me playing around with stuff. Ignore this code for now, it isn't being used - Jake
     private int onKillDamage;
 
     public int OnKillDamage { get { return onKillDamage; } set { onKillDamage = value; } } 

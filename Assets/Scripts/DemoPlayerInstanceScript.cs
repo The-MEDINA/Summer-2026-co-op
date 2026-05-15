@@ -3,6 +3,7 @@ using UnityEngine;
 public class DemoPlayerInstanceScript : MonoBehaviour
 {
     // this script exists as a replacement for what will eventually be stored decks of cards from the deckbuilder - Jake
+    //(which may be iostream/text files{?})
 
     private Player p;
     void Start()

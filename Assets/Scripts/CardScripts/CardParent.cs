@@ -1,6 +1,9 @@
 using UnityEngine;
 
 // should be abstract no? - Dave
+
+//will be soon. For now we have no specific cards so we're using instances of CardParent to do demo code. Considering all the methods have to work with all cards
+//it makes more sense to focus on the code for now. Changing this to abstract won't be hard - Jake
 public class CardParent
 {
     public enum type
@@ -24,7 +27,7 @@ public class CardParent
         discard
     }
 
-    private int cost; //shouldn't be private - property or public?
+    private int cost;
     private int health;
     private int damage;
     private float timer;
@@ -35,7 +38,7 @@ public class CardParent
     [SerializeField] private string cardName;
     private bool isDead = false;
 
-    // public int Cost { get { return cost; } } should exist imo - Dave
+    public int Cost { get { return cost; } }
     public int Health { get { return health; } set { health = value;  } }
     public int Damage { get { return damage; } set { damage = value; } }
     public bool IsDead { get { return isDead; } }
@@ -51,17 +54,16 @@ public class CardParent
         this.cardType = cardType;
         this.cardEffect = cardEffect;
         this.cardLocation = cardLocation;
-    }  
+    }
 
-    //MIGHT BE WORTH TO HAVE A METHOD WITH A SWITCH LEADING INTO EVENT METHODS
-    //for example, click once on card, trigger method, next click on an opponent's card, that triggers Attack() with second card as the target
-
-    //triggered by event
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
     //OnPlay()
-    
+
     // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
 
-    //triggered by event
+    //OnPlay is for when cards are moved from hand to battleground. I'm not sure what you mean with the state changes - Jake
+
+    //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
     public void Attack(CardParent target)
     {
         target.TakeDamage(Damage);
@@ -78,6 +80,6 @@ public class CardParent
         isDead = true;
     }
 
-    //triggered by event
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
     //OnDisplay()
 }
