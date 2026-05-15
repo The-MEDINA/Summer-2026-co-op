@@ -32,17 +32,28 @@ namespace Network
     {
         handshake
     }
-    enum mode
+    // the mode the machine's set to for networking.
+    public enum mode
     {
         host,
         client,
         unset
     }
+    // the state of the network manager.
+    public enum state
+    {
+        disconnected,
+        connected
+    }
     public static class Networking
     {
+        /// <summary>
+        /// All these variables are for the network manager to actually do the networking.
+        /// </summary>
         private static int port = 6767;
         private static readonly string handshakeContent = "BLITZBURN HANDSHAKE";
 
+        private static state currentState = state.disconnected;
         private static mode currentMode = mode.client;
         private static string localHostName = Dns.GetHostName();
         private static List<IPAddress> IPv4AddressList = new List<IPAddress>();
@@ -52,33 +63,53 @@ namespace Network
         private static IPEndPoint endpoint;
         private static NetworkStream stream;
 
-        public static string CurrentMode { 
+        public static state CurrentState { 
+            get
+            {
+#if DEBUG_MODE
+                Debug.Log($"Current state: {currentState}");          
+#endif
+                return currentState;
+            } 
+            set
+            {
+#if DEBUG_MODE
+                Debug.Log($"changing state to: {value}");          
+#endif
+                currentState = value;
+            } 
+        }
+
+        /// <summary>
+        /// Get/set the current mode of the network manager.
+        /// </summary>
+        public static mode CurrentMode { 
             get 
             {  
                 switch (currentMode)
                 {
-                    case (mode.host): return "host";
-                    case (mode.client): return "client";
+                    case (mode.host): return mode.host;
+                    case (mode.client): return mode.client;
                     case (mode.unset):
                         {
 #if DEBUG_MODE
                             Debug.Log("Returning unset state in Networking!");
 #endif
-                            return "unset";
+                            return mode.unset;
                         }
                 }
 #if DEBUG_MODE
                 Debug.Log("Returning unset state in Networking!");
 #endif
-                return "unset";
+                return mode.unset;
             } 
             set
             {
                 switch (value)
                 {
-                    case ("host"): currentMode = mode.host; break;
-                    case ("client"): currentMode = mode.client; break;
-                    case ("unset"):
+                    case (mode.host): currentMode = mode.host; break;
+                    case (mode.client): currentMode = mode.client; break;
+                    case (mode.unset):
                         {
 #if DEBUG_MODE
                             Debug.Log("Network manager disallows setting mode to unset. No changes made.");
@@ -98,6 +129,9 @@ namespace Network
 #endif
             }
         }
+        /// <summary>
+        /// get/set the current port.
+        /// </summary>
         public static int Port { get { return port; } 
             set 
             {
@@ -225,6 +259,7 @@ namespace Network
             try
             {
                 DecodePacket(response);
+                CurrentState = state.connected;
 #if DEBUG_MODE
             Debug.Log("Success! This is a valid client.");
 #endif
@@ -260,7 +295,7 @@ namespace Network
             client = new();
             // both of these lines of code can and will throw exceptions if the ipaddress or endpoint are invalid.
             endpoint = new IPEndPoint(OtherIPv4Address, port);
-            client.Connect(endpoint);
+            await client.ConnectAsync(OtherIPv4Address, port);
 
             // start the handshake process here.
             stream = client.GetStream();
@@ -283,6 +318,7 @@ namespace Network
                 Debug.Log("Success! Valid handshake packet. Sending response.");
 #endif
                 await stream.WriteAsync(handshake, 0, handshake.Length);
+                CurrentState = state.connected;
             }
             catch
             {

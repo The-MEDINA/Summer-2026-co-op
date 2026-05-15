@@ -30,14 +30,14 @@ public class button : MonoBehaviour
 
     public void changeMode()
     {
-        if (Networking.CurrentMode == "unset" || Networking.CurrentMode == "host")
+        if (Networking.CurrentMode == Network.mode.unset || Networking.CurrentMode == Network.mode.host)
         {
-            Networking.CurrentMode = "client";
+            Networking.CurrentMode = Network.mode.client;
             modebutton.text = "client";
         }
         else
         {
-            Networking.CurrentMode = "host";
+            Networking.CurrentMode = Network.mode.host;
             modebutton.text = "host";
         }
     }
@@ -49,11 +49,11 @@ public class button : MonoBehaviour
 
     public void startConnection()
     {
-        if (Networking.CurrentMode == "host")
+        if (Networking.CurrentMode == Network.mode.host)
         {
             Networking.StartHost();
         }
-        if (Networking.CurrentMode == "client")
+        if (Networking.CurrentMode == Network.mode.client)
         {
             Networking.StartClient();
         }
