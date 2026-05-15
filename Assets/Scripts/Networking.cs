@@ -2,10 +2,16 @@
 /*
  * Networking.cs is where all of the networking is done.
  * It's a static class, so it's not tied to any object. It's essentially a singleton.
+ *
  * In order to access it from other scripts, you'll need to include the namespace.
  * using Network; <--- Like this
+ *
  * Then to access something from it, you'll need to use the keyword 'Networking'.
  * Networking.something <--- Methods, properties, etc
+ *
+ * To access any enums, you'll need to access Network, NOT Networking.
+ * Network.enum.something <--- Like this
+ *
  * Y'all will likely need to pass stuff like players and cards to Networking.
  * It's gonna need to directly modify a LOT of stuff.
  * Anyways if yall have a question about this ASK ME PLEASE!!!
@@ -30,7 +36,8 @@ namespace Network
     // type of packet in the header.
     enum packetType
     {
-        handshake
+        handshake,
+        keepAlive
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -60,8 +67,10 @@ namespace Network
         private static IPAddress otherIPv4Address = IPAddress.Parse("0.0.0.0");
         private static TcpListener server;
         private static TcpClient client;
-        private static IPEndPoint endpoint;
+        // private static IPEndPoint endpoint;
         private static NetworkStream stream;
+        private static CancellationTokenSource lostConnection = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
 
         public static state CurrentState { 
             get
@@ -263,6 +272,7 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log("Success! This is a valid client.");
 #endif
+                Connection();
             }
             catch
             {
@@ -294,7 +304,7 @@ namespace Network
 #endif
             client = new();
             // both of these lines of code can and will throw exceptions if the ipaddress or endpoint are invalid.
-            endpoint = new IPEndPoint(OtherIPv4Address, port);
+            // endpoint = new IPEndPoint(OtherIPv4Address, port);
             await client.ConnectAsync(OtherIPv4Address, port);
 
             // start the handshake process here.
@@ -319,6 +329,7 @@ namespace Network
 #endif
                 await stream.WriteAsync(handshake, 0, handshake.Length);
                 CurrentState = state.connected;
+                Connection();
             }
             catch
             {
@@ -418,6 +429,35 @@ namespace Network
                 }
             }
             if (brokenPacket) throw e;
+        }
+        private static async void Connection()
+        {
+#if DEBUG_MODE
+            Debug.Log($"entering Connection()");
+#endif
+            byte[] packet = new byte[1024];
+            Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
+
+            await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+
+            if (!result.IsCompleted)
+            {
+                server.Stop();
+                client.Close();
+#if DEBUG_MODE
+            Debug.Log($"timeout, closing connection.");
+#endif
+            }
+#if DEBUG_MODE
+            Debug.Log($"post read");
+#endif
+        }
+
+        public static void TEMPsendpackettoself()
+        {
+            byte[] packet = new byte[1024];
+            packet = EncodePacket(packetType.handshake, false);
+            stream.Write(packet, 0, packet.Length);
         }
     }
 }
