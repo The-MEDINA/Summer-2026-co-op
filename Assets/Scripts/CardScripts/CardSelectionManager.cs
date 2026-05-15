@@ -27,7 +27,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject != null)
+        if (selectedCardObject != null && selectedCardObject.IsEnemyCard == false)
         {
             if (clickedCard.IsEnemyCard == true)
             {
@@ -56,10 +56,11 @@ public class CardSelectionManager : MonoBehaviour
     {
         Debug.Log("Activated card object: " + cardObject.gameObject.name);
 
-        if (cardObject.CardData != null)
+        if (cardObject.CardData != null && cardObject.IsEnemyCard == false && cardObject.CardData.CardLocation != CardParent.location.inPlay)
         {
             Debug.Log("Card data activated");
             cardObject.transform.position = new Vector3(-9 + (2 * position), activeCardsRectangle.transform.position.y, -0.1f);
+            cardObject.CardData.CardLocation = CardParent.location.inPlay;
             position++;
         }
 
