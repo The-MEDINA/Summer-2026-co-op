@@ -5,6 +5,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 {
     private Player p;
     [SerializeField] private GameObject cardProto;
+    [SerializeField] private HandUIManager handUIManager;
 
     void Start()
     {
@@ -21,7 +22,8 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         {
             p.Hand.Add(p.Deck[0]);
             p.Deck.RemoveAt(0);
-            Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, 0), Quaternion.identity);
+            GameObject newCard = Instantiate(cardProto);
+            handUIManager.AddCardToHand(newCard);
             p.canDraw = false;
         }
     }

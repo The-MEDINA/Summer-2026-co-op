@@ -23,6 +23,10 @@ public class HandUIManager : MonoBehaviour
 
     public void UpdateHandPositions()
     {
-        //WILL DO IT TOMORROW
+        for (int i = 0; i < cardObjects.Count; i++)
+        {
+            float xPos = startXPosition + (i * cardSpacing);
+            cardObjects[i].transform.position = new Vector3(xPos, handYPosition, 0);
+        }
     }
 }
