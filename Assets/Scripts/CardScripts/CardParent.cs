@@ -52,16 +52,6 @@ public class CardParent
         this.cardLocation = cardLocation;
     }
 
-<<<<<<< HEAD
-    public void Attack(CardParent target)
-    {
-        if (target == null || isDead)
-        {
-            return;
-        }
-
-        target.TakeDamage(Damage);
-=======
     //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
     public void OnPlay()
     {
@@ -75,6 +65,10 @@ public class CardParent
     //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
     public void Attack(CardParent target)
     {
+        if (target == null || isDead)
+        {
+            return;
+        }
         if(cardEffect == effect.deathtouch)
         {
             target.TakeDamage(this, 99999999);
@@ -83,24 +77,17 @@ public class CardParent
         {
             target.TakeDamage(this, Damage);
         }
->>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
     }
 
     public void TakeDamage(CardParent attacker, int damage)
     {
         Health -= damage;
-<<<<<<< HEAD
 
-        if (Health <= 0)
+        if (Health <= 0) 
         {
             Health = 0;
-            Death();
-=======
-        if (Health <= 0) 
-        { 
             if(cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
             Death(); 
->>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
         }
     }
 
@@ -109,12 +96,8 @@ public class CardParent
         isDead = true;
         cardLocation = location.discard;
     }
-<<<<<<< HEAD
-}
-=======
 
     //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
     //if its handled there it might not need to be there
     //OnDisplay()
 }
->>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
