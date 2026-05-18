@@ -58,4 +58,9 @@ public class button : MonoBehaviour
             Networking.StartClient();
         }
     }
+
+    public void TEMPSendaPacket()
+    {
+        Networking.TEMPsendpacket();
+    }
 }

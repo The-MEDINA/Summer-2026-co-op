@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// should be abstract no? - Dave
 public class CardParent
 {
     public enum type
@@ -12,7 +11,7 @@ public class CardParent
     public enum effect
     {
         none,
-        overkill,
+        deathtouch, //just works off base damage for right now, probably want to change this
         explode
     }
 
@@ -24,61 +23,81 @@ public class CardParent
         discard
     }
 
-    private int cost; //shouldn't be private - property or public?
+    private int cost;
     private int health;
     private int damage;
-    private float timer;
     private type cardType;
     private effect cardEffect;
     private location cardLocation;
 
     [SerializeField] private string cardName;
+    private bool isDead = false;
 
-    // public int Cost { get { return cost; } } should exist imo - Dave
-    public int Health { get { return health; } set { health = value;  } }
+    public int Cost { get { return cost; } }
+    public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
+    public bool IsDead { get { return isDead; } }
+    public string CardName { get { return cardName; } }
+    public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
+    public type CardType { get { return cardType; } }
+    public effect CardEffect { get { return cardEffect; } }
 
     public CardParent(int cost, int health, int damage, type cardType, effect cardEffect, location cardLocation)
     {
         this.cost = cost;
         this.health = health;
         this.damage = damage;
-
         this.cardType = cardType;
         this.cardEffect = cardEffect;
         this.cardLocation = cardLocation;
-    }  
-
-    public string CardName
-    {
-        get { return cardName; }
-    }  
-
-    //MIGHT BE WORTH TO HAVE A METHOD WITH A SWITCH LEADING INTO EVENT METHODS
-    //for example, click once on card, trigger method, next click on an opponent's card, that triggers Attack() with second card as the target
-
-    //triggered by event
-    //OnPlay()
-    
-    // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
-
-    //triggered by event
-    public void Attack(CardParent target)
-    {
-        target.TakeDamage(Damage);
     }
 
-    public void TakeDamage(int damage)
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
+    public void OnPlay()
+    {
+        Debug.Log("a");
+    }
+
+    // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
+
+    //OnPlay is for when cards are moved from hand to battleground. I'm not sure what you mean with the state changes - Jake
+
+    //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
+    public void Attack(CardParent target)
+    {
+        if (target == null || isDead)
+        {
+            return;
+        }
+        if(cardEffect == effect.deathtouch)
+        {
+            target.TakeDamage(this, 99999999);
+        }
+        else
+        {
+            target.TakeDamage(this, Damage);
+        }
+    }
+
+    public void TakeDamage(CardParent attacker, int damage)
     {
         Health -= damage;
-        if (Health <= 0) { Death(); }
+
+        if (Health <= 0) 
+        {
+            Health = 0;
+            if(cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            Death(); 
+        }
     }
 
     public void Death()
     {
-
+        isDead = true;
+        cardLocation = location.discard;
     }
 
-    //triggered by event
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
+    //if its handled there it might not need to be there
     //OnDisplay()
 }
