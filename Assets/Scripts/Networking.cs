@@ -528,6 +528,8 @@ namespace Network
                 {
                     // setup
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
+                    // Ok so... what this basically does is run 2 separate thread-like tasks.
+                    // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
                     List<Task> connectionTasks = new List<Task>();
 
                     // read task.
@@ -594,6 +596,9 @@ namespace Network
             }
         }
 
+        /// <summary>
+        /// Closes the connection by stopping, closing and flushing everything networking related.
+        /// </summary>
         public static void CloseConnection()
         {
             try
@@ -638,7 +643,3 @@ namespace Network
         }
     }
 }
-/* 
-* TODO: Fix the 2 separate readasync bug.
-* client needs 2 writeasyncs to see the packet when it sends a keepalive packet.
-*/
