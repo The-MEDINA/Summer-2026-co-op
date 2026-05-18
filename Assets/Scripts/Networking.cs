@@ -506,6 +506,12 @@ namespace Network
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
                     }
+                    // close the connection if 0 was received.
+                    // 0 means the connection was closed cleanly on the other side. (I think?)
+                    else if (result.Result == 0)
+                    {
+                        CloseConnection();
+                    }
                     // decode the packet if one was received in time.
                     else
                     {
@@ -543,6 +549,11 @@ namespace Network
 #endif
                         CloseConnection();
                     }
+                    // Also close if connection was cleanly closed.
+                    else if (result.Result == 0)
+                    {
+                        CloseConnection();
+                    }
                     // Decode the packet if one was found in time.
                     else if (result.IsCompleted)
                     {
@@ -577,6 +588,7 @@ namespace Network
             }
             try
             {
+                stream.Flush();
                 stream.Close();
             }
             catch (Exception e)
