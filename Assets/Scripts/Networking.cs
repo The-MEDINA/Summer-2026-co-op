@@ -278,9 +278,8 @@ namespace Network
 #if DEBUG_MODE
                 Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif  
-                // proper code for terminating a connection here
-                server.Stop();
-                stream.Close();
+                // terminate the connection
+                CloseConnection();
             }
         }
         /*
@@ -337,8 +336,8 @@ namespace Network
 #if DEBUG_MODE
                 Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif               
-                // proper code for terminating a connection here
-                stream.Close();
+                // terminate connection
+                CloseConnection();
             }
         }
 
@@ -502,10 +501,7 @@ namespace Network
                     // close the connection on timeout.
                     if (!result.IsCompleted)
                     {
-                        server.Stop();
-                        stream.Close();
-                        client.Close();
-                        CurrentState = state.disconnected;
+                        CloseConnection();
 #if DEBUG_MODE
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
@@ -545,9 +541,7 @@ namespace Network
 #if DEBUG_MODE
                         Debug.LogWarning($"timeout on client, closing connection.");
 #endif
-                        client.Close();
-                        stream.Close();
-                        CurrentState = state.disconnected;
+                        CloseConnection();
                     }
                     // Decode the packet if one was found in time.
                     else if (result.IsCompleted)
@@ -557,6 +551,41 @@ namespace Network
                     }
                 }
             }
+        }
+
+        private static void CloseConnection()
+        {
+            try
+            {
+                server.Stop();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
+#endif
+            }
+            try
+            {
+                client.Dispose();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when disposing client: {e.Message}");
+#endif
+            }
+            try
+            {
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when closing stream: {e.Message}");
+#endif
+            }
+            CurrentState = state.disconnected;
         }
 
         public static void TEMPsendpacket()
@@ -572,5 +601,3 @@ namespace Network
 * TODO: Fix the 2 separate readasync bug.
 * client needs 2 writeasyncs to see the packet when it sends a keepalive packet.
 */
-
-// testing branches
