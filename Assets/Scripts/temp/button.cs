@@ -21,6 +21,11 @@ public class button : MonoBehaviour
     {
         
     }
+    private void OnDestroy()
+    {
+        Debug.Log("destroy");
+        Networking.CloseConnection();
+    }
     public void switchScene()
     {
         Networking.Details();

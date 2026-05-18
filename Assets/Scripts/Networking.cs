@@ -66,9 +66,8 @@ namespace Network
         private static IPAddress otherIPv4Address = IPAddress.Parse("0.0.0.0");
         private static TcpListener server;
         private static TcpClient client;
-        // private static IPEndPoint endpoint;
         private static NetworkStream stream;
-        private static CancellationTokenSource lostConnection = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        // private static CancellationTokenSource lostConnection = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
 
         public static state CurrentState { 
@@ -278,9 +277,8 @@ namespace Network
 #if DEBUG_MODE
                 Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif  
-                // proper code for terminating a connection here
-                server.Stop();
-                stream.Close();
+                // terminate the connection
+                CloseConnection();
             }
         }
         /*
@@ -337,8 +335,8 @@ namespace Network
 #if DEBUG_MODE
                 Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif               
-                // proper code for terminating a connection here
-                stream.Close();
+                // terminate connection
+                CloseConnection();
             }
         }
 
@@ -468,7 +466,7 @@ namespace Network
                         // this is a really ugly workaround.
                         // currently the client can't seem to make use of the first packet sent if it sent a keepalive packet.
                         // this is 100% going to cause issues later on, so the sooner a fix can be found the better.
-                        await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
+                        // await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                         await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                     }
                     break;
@@ -486,7 +484,6 @@ namespace Network
             Debug.Log($"entering Connection()");
 #endif
             byte[] packet = new byte[1024];
-            bool potentialTimeout = false;
 
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
@@ -497,18 +494,22 @@ namespace Network
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
                     // wait for either the task to finish or for timeout.
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+                    // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 1 minute.
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
 
                     // close the connection on timeout.
                     if (!result.IsCompleted)
                     {
-                        server.Stop();
-                        stream.Close();
-                        client.Close();
-                        CurrentState = state.disconnected;
+                        CloseConnection();
 #if DEBUG_MODE
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
+                    }
+                    // close the connection if 0 was received.
+                    // 0 means the connection was closed cleanly on the other side. (I think?)
+                    else if (result.Result == 0)
+                    {
+                        CloseConnection();
                     }
                     // decode the packet if one was received in time.
                     else
@@ -525,38 +526,113 @@ namespace Network
             {
                 while (currentState == state.connected)
                 {
-                    // waits for a response
-                    Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(5)));
+                    // setup
+                    CancellationTokenSource receivedPacket = new CancellationTokenSource();
+                    // Ok so... what this basically does is run 2 separate thread-like tasks.
+                    // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
+                    List<Task> connectionTasks = new List<Task>();
 
-                    // sends a keepalive packet after 5 seconds
-                    if (!result.IsCompleted && !potentialTimeout)
-                    {
-                        byte[] keepalive = EncodePacket(packetType.keepAlive);
-                        await stream.WriteAsync(keepalive, 0, keepalive.Length);
-                        potentialTimeout = true;
-#if DEBUG_MODE
-                        Debug.Log($"Post send keepalive");
-#endif
-                    }
-                    // closes the connection after another 5 seconds.
-                    else if (!result.IsCompleted)
+                    // read task.
+                    connectionTasks.Add(Task.Run(async () =>
                     {
 #if DEBUG_MODE
-                        Debug.LogWarning($"timeout on client, closing connection.");
+                        Debug.Log($"read task");
 #endif
-                        client.Close();
-                        stream.Close();
-                        CurrentState = state.disconnected;
-                    }
-                    // Decode the packet if one was found in time.
-                    else if (result.IsCompleted)
+                        // wait 10 seconds or until read
+                        Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+
+                        // close if nothing was received.
+                        if (!result.IsCompleted)
+                        {
+#if DEBUG_MODE
+                            Debug.LogWarning($"timeout on client, closing connection.");
+#endif
+                            CloseConnection();
+                        }
+                        // Also close if connection was cleanly closed.
+                        else if (result.Result == 0)
+                        {
+                            CloseConnection();
+                        }
+                        // Decode the packet if one was found in time.
+                        // also stop the keepalive packet from being sent if it's been less than 5 seconds.
+                        else if (result.IsCompleted)
+                        {
+                            receivedPacket.Cancel();
+                            DecodePacket(packet);
+                        }
+                    }));
+
+                    // keepalive task.
+                    connectionTasks.Add(Task.Run(async () =>
                     {
-                        DecodePacket(packet);
-                        potentialTimeout = false;
-                    }
+#if DEBUG_MODE
+                        Debug.Log($"keeepalive task");
+#endif
+                        try
+                        {
+                            // wait 5 seconds or until task was cancelled.
+                            await Task.Delay(TimeSpan.FromSeconds(5), receivedPacket.Token);
+
+                            // if it wasn't cancelled, send the keepalive packet.
+                            if (!receivedPacket.IsCancellationRequested)
+                            {
+                                byte[] keepalive = EncodePacket(packetType.keepAlive);
+                                await stream.WriteAsync(keepalive, 0, keepalive.Length);
+                            }
+                        }
+                        catch
+                        {
+#if DEBUG_MODE
+                            Debug.LogWarning($"keeepalive task was cancelled.");
+#endif
+                        }
+                    }));
+
+                    // wait for both tasks to finish before doing it again, if there's still a connection.
+                    await Task.WhenAll(connectionTasks);
                 }
             }
+        }
+
+        /// <summary>
+        /// Closes the connection by stopping, closing and flushing everything networking related.
+        /// </summary>
+        public static void CloseConnection()
+        {
+            try
+            {
+                server.Stop();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
+#endif
+            }
+            try
+            {
+                client.Dispose();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when disposing client: {e.Message}");
+#endif
+            }
+            try
+            {
+                stream.Flush();
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when closing stream: {e.Message}");
+#endif
+            }
+            CurrentState = state.disconnected;
         }
 
         public static void TEMPsendpacket()
@@ -567,10 +643,3 @@ namespace Network
         }
     }
 }
-/* TODO: Dispose of connections properly when closing them.
-* It looks like the code's reentering connection() when it disconnects somehow.
-* TODO: Fix the 2 separate readasync bug.
-* client needs 2 writeasyncs to see the packet when it sends a keepalive packet.
-*/
-
-// testing branches
