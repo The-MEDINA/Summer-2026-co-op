@@ -11,7 +11,7 @@ public class CardParent
     public enum effect
     {
         none,
-        overkill,
+        deathtouch, //just works off base damage for right now, probably want to change this
         explode
     }
 
@@ -52,6 +52,7 @@ public class CardParent
         this.cardLocation = cardLocation;
     }
 
+<<<<<<< HEAD
     public void Attack(CardParent target)
     {
         if (target == null || isDead)
@@ -60,16 +61,46 @@ public class CardParent
         }
 
         target.TakeDamage(Damage);
+=======
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
+    public void OnPlay()
+    {
+        Debug.Log("a");
     }
 
-    public void TakeDamage(int damage)
+    // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
+
+    //OnPlay is for when cards are moved from hand to battleground. I'm not sure what you mean with the state changes - Jake
+
+    //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
+    public void Attack(CardParent target)
+    {
+        if(cardEffect == effect.deathtouch)
+        {
+            target.TakeDamage(this, 99999999);
+        }
+        else
+        {
+            target.TakeDamage(this, Damage);
+        }
+>>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
+    }
+
+    public void TakeDamage(CardParent attacker, int damage)
     {
         Health -= damage;
+<<<<<<< HEAD
 
         if (Health <= 0)
         {
             Health = 0;
             Death();
+=======
+        if (Health <= 0) 
+        { 
+            if(cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            Death(); 
+>>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
         }
     }
 
@@ -78,4 +109,12 @@ public class CardParent
         isDead = true;
         cardLocation = location.discard;
     }
+<<<<<<< HEAD
 }
+=======
+
+    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
+    //if its handled there it might not need to be there
+    //OnDisplay()
+}
+>>>>>>> 9806337432f3eb16424a97058ccf1df5f8ec6629
