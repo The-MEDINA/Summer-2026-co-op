@@ -11,14 +11,29 @@ public class HandUIManager : MonoBehaviour
 
     public void AddCardToHand(GameObject cardObject)
     {
+        if (cardObject == null)
+        {
+            return;
+        }
+
         cardObjects.Add(cardObject);
         UpdateHandPositions();
     }
 
     public void RemoveCardFromHand(GameObject cardObject)
     {
+        if (cardObject == null)
+        {
+            return;
+        }
+
         cardObjects.Remove(cardObject);
         UpdateHandPositions();
+    }
+
+    public bool ContainsCard(GameObject cardObject)
+    {
+        return cardObjects.Contains(cardObject);
     }
 
     public void UpdateHandPositions()
@@ -26,7 +41,7 @@ public class HandUIManager : MonoBehaviour
         for (int i = 0; i < cardObjects.Count; i++)
         {
             float xPos = startXPosition + (i * cardSpacing);
-            cardObjects[i].transform.position = new Vector3(xPos, handYPosition, 0);
+            cardObjects[i].transform.position = new Vector3(xPos, handYPosition, -0.1f);
         }
     }
 }
