@@ -15,7 +15,7 @@ public class CardParent
     public enum effect
     {
         none,
-        overkill,
+        deathtouch, //just works off base damage for right now, probably want to change this
         explode
     }
 
@@ -57,7 +57,10 @@ public class CardParent
     }
 
     //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
-    //OnPlay()
+    public void OnPlay()
+    {
+        Debug.Log("a");
+    }
 
     // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
 
@@ -66,13 +69,24 @@ public class CardParent
     //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
     public void Attack(CardParent target)
     {
-        target.TakeDamage(Damage);
+        if(cardEffect == effect.deathtouch)
+        {
+            target.TakeDamage(this, 99999999);
+        }
+        else
+        {
+            target.TakeDamage(this, Damage);
+        }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(CardParent attacker, int damage)
     {
         Health -= damage;
-        if (Health <= 0) { Death(); }
+        if (Health <= 0) 
+        { 
+            if(cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            Death(); 
+        }
     }
 
     public void Death()
@@ -81,5 +95,6 @@ public class CardParent
     }
 
     //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
+    //if its handled there it might not need to be there
     //OnDisplay()
 }

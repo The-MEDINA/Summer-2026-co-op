@@ -62,6 +62,8 @@ public class CardSelectionManager : MonoBehaviour
             cardObject.transform.position = new Vector3(-9 + (2 * position), activeCardsRectangle.transform.position.y, -0.1f);
             cardObject.CardData.CardLocation = CardParent.location.inPlay;
             position++;
+
+            cardObject.CardData.OnPlay();
         }
 
         cardObject.SetSelectedVisual(false);
