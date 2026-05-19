@@ -65,6 +65,11 @@ public class CardParent
         this.cardEffect = cardEffect;
         this.cardLocation = cardLocation;
     }
+    /// <summary>
+    /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
+    /// </summary>
+    /// <param name="name">Name of the card.</param>
+    /// <param name="cardLocation">location of the card.</param>
     public CardParent(string name, location cardLocation)
     {
         Details cardDetails = Index.GetDetails(name);

@@ -40,7 +40,7 @@ namespace cardIndex
     public static class Index
     {
         // index of all cards.
-        public static Dictionary<string, Details> index = new Dictionary<string, Details>();
+        private static Dictionary<string, Details> index = new Dictionary<string, Details>();
         /// <summary>
         /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
         /// </summary>
@@ -73,6 +73,7 @@ namespace cardIndex
                 int _cost = -1;
                 int _health = -1;
                 int _damage = -1;
+                
                 CardParent.type _type = CardParent.type.minion;
                 CardParent.effect _ability = CardParent.effect.none;
                 int.TryParse(rawDetails[1], out _cost);
