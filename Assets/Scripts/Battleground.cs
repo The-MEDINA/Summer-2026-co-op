@@ -6,50 +6,57 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
-    private List<GameObject> cardList = new List<GameObject>();
-    private CardClickHandler currentCard;
     [SerializeField] private HandUIManager handUIManager;
 
-    void Start()
+    private List<GameObject> cardList = new List<GameObject>();
+    private CardClickHandler currentCard;
+
+    private void Update()
     {
-        //this will probably get deleted soon it just matters based on when I get around to something vaguely related - Jake
-
-        /*p = gameObject.AddComponent<Player>();
-        for(int i = 0; i < 10; i++)
+        if (p != null && p.canDraw == true && p.Deck.Count > 0)
         {
-            p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        }*/
-    }
-
-    void Update()
-    {
-        if (p.canDraw == true && p.Deck.Count > 0)
-        {
-            p.Hand.Add(p.Deck[0]);
-            p.Deck.RemoveAt(0);
-
-            GameObject newCard = Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity);
-            cardList.Add(newCard);
-            currentCard = cardList[cardList.Count - 1].GetComponent<CardClickHandler>();
-            currentCard.CardData = p.Hand[p.Hand.Count - 1];
-
-            //error due to no instance of handUIManager in scene
-            //handUIManager.AddCardToHand(newCard);
-    
+            DrawCardToHand();
             p.canDraw = false;
         }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (p.Deck.Count > 0)
+        if (p != null && p.Deck.Count > 0)
         {
-            //should be refactored to same as update if this is going to continue to be used for testing purposes
-            p.Hand.Add(p.Deck[0]);
-            p.Deck.RemoveAt(0);
-            cardList.Add(Instantiate(cardProto, new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f), Quaternion.identity));
-            currentCard = cardList[cardList.Count - 1].GetComponent<CardClickHandler>();
-            currentCard.CardData = p.Hand[p.Hand.Count - 1];
+            DrawCardToHand();
         }
+    }
+
+    private void DrawCardToHand()
+    {
+        CardParent drawnCard = p.Deck[0];
+
+        p.Hand.Add(drawnCard);
+        p.Deck.RemoveAt(0);
+
+        drawnCard.CardLocation = CardParent.location.hand;
+
+        GameObject newCard = Instantiate(cardProto);
+        cardList.Add(newCard);
+
+        currentCard = newCard.GetComponent<CardClickHandler>();
+
+        if (currentCard != null)
+        {
+            currentCard.CardData = drawnCard;
+        }
+
+        if (handUIManager != null)
+        {
+            handUIManager.AddCardToHand(newCard);
+        }
+        else
+        {
+            newCard.transform.position = new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f);
+            Debug.LogWarning("No HandUIManager assigned. Using fallback position.");
+        }
+
+        Debug.Log("Drew card. Cards in hand: " + p.Hand.Count);
     }
 }
