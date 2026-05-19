@@ -52,6 +52,17 @@ public class CardParent
         this.cardLocation = cardLocation;
     }
 
+        public CardParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation)
+    {
+        this.cost = cost;
+        this.health = health;
+        this.damage = damage;
+        this.cardName = name;
+        this.cardType = cardType;
+        this.cardEffect = cardEffect;
+        this.cardLocation = cardLocation;
+    }
+
     //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
     public void OnPlay()
     {

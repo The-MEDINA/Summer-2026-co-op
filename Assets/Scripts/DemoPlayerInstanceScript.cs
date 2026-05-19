@@ -9,11 +9,11 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     void Start()
     {
         p = GetComponent<Player>();
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.deathtouch, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(5, 7, 7, "Tank Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(3, 4, 3, "Macho Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(1, 1, 2, "Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(1, 2, 1, "Cool Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(2, 3, 2, "Western Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
     }
 
 }
