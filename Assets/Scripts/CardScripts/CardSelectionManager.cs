@@ -5,9 +5,9 @@ public class CardSelectionManager : MonoBehaviour
     public static CardSelectionManager Instance;
 
     [SerializeField] private GameObject activeCardsRectangle;
-    private CardClickHandler selectedCardObject;
+    [SerializeField] private HandUIManager handUIManager;
 
-    //test variable will be changed to index of array later
+    private CardClickHandler selectedCardObject;
     private int position = 0;
 
     public CardClickHandler SelectedCardObject
@@ -22,18 +22,15 @@ public class CardSelectionManager : MonoBehaviour
 
     public void SelectCard(CardClickHandler clickedCard)
     {
-        if (clickedCard == null)
+        if (clickedCard == null || clickedCard.CardData == null)
         {
             return;
         }
 
-        if (selectedCardObject != null && selectedCardObject.IsEnemyCard == false)
+        if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
-            if (clickedCard.IsEnemyCard == true)
-            {
-                selectedCardObject.CardData.Attack(clickedCard.CardData);
-                Debug.Log(clickedCard.CardData.Health);
-            }
+            TryAttackTarget(clickedCard);
+            return;
         }
 
         if (selectedCardObject == clickedCard)
@@ -42,32 +39,69 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject != null)
-        {
-            selectedCardObject.SetSelectedVisual(false);
-        }
         selectedCardObject = clickedCard;
         selectedCardObject.SetSelectedVisual(true);
 
         Debug.Log("Selected card object: " + clickedCard.gameObject.name);
     }
 
+    private void TryAttackTarget(CardClickHandler targetCard)
+    {
+        if (selectedCardObject == null || targetCard == null)
+        {
+            return;
+        }
+
+        if (selectedCardObject.IsEnemyCard == false && targetCard.IsEnemyCard == true)
+        {
+            if (selectedCardObject.CardData.CardLocation == CardParent.location.inPlay)
+            {
+                selectedCardObject.CardData.Attack(targetCard.CardData);
+
+                Debug.Log("Attacked enemy card. Enemy health: " + targetCard.CardData.Health);
+
+                ClearSelection();
+            }
+        }
+    }
+
     private void ActivateCard(CardClickHandler cardObject)
     {
         Debug.Log("Activated card object: " + cardObject.gameObject.name);
 
-        if (cardObject.CardData != null && cardObject.IsEnemyCard == false && cardObject.CardData.CardLocation != CardParent.location.inPlay)
+        if (cardObject.CardData != null &&
+            cardObject.IsEnemyCard == false &&
+            cardObject.CardData.CardLocation != CardParent.location.inPlay)
         {
-            Debug.Log("Card data activated");
-            cardObject.transform.position = new Vector3(-9 + (2 * position), activeCardsRectangle.transform.position.y, -0.1f);
-            cardObject.CardData.CardLocation = CardParent.location.inPlay;
-            position++;
-
-            cardObject.CardData.OnPlay();
+            PlayCardToBattleground(cardObject);
         }
 
-        cardObject.SetSelectedVisual(false);
-        selectedCardObject = null;
+        ClearSelection();
+    }
+
+    private void PlayCardToBattleground(CardClickHandler cardObject)
+    {
+        if (activeCardsRectangle == null)
+        {
+            Debug.LogWarning("No activeCardsRectangle assigned.");
+            return;
+        }
+
+        if (handUIManager != null)
+        {
+            handUIManager.RemoveCardFromHand(cardObject.gameObject);
+        }
+
+        cardObject.transform.position = new Vector3(
+            -9 + (2 * position),
+            activeCardsRectangle.transform.position.y,
+            -0.1f
+        );
+
+        cardObject.CardData.CardLocation = CardParent.location.inPlay;
+        position++;
+
+        Debug.Log("Card moved to battleground.");
     }
 
     public void ClearSelection()
@@ -76,6 +110,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             selectedCardObject.SetSelectedVisual(false);
         }
+
         selectedCardObject = null;
     }
 }
