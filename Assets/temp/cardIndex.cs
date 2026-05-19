@@ -54,20 +54,20 @@ namespace cardIndex
             return returnDetails;
         }
         /// <summary>
-        /// Creates the index of cards from the provided allCards.csv file.
+        /// Creates the index of cards from the provided allCards.tsv file.
         /// This function should ONLY be called in the worst case scenario that the index is not ready by the time a card gets instantiated.
         /// Ideally, an async version of this function should get called when the game starts.
         /// </summary>
         private static void GenerateDictionaryIndex()
         {
             // setup
-            StreamReader reader = new StreamReader("Assets/temp/allCards.csv");
+            StreamReader reader = new StreamReader("Assets/temp/allCards.tsv");
             string raw;
 
-            // while allCards.csv has data.
+            // while allCards.tsv has data.
             while ((raw = reader.ReadLine()) != null)
             {
-                string[] rawDetails = raw.Split(',');
+                string[] rawDetails = raw.Split('\t');
 
                 // parse the stuff that's not a string.
                 int _cost = -1;

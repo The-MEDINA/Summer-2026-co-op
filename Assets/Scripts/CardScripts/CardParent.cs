@@ -32,6 +32,7 @@ public class CardParent
     private location cardLocation;
 
     [SerializeField] private string cardName;
+    private string flavorText;
     private bool isDead = false;
 
     public int Cost { get { return cost; } }
@@ -39,6 +40,7 @@ public class CardParent
     public int Damage { get { return damage; } set { damage = value; } }
     public bool IsDead { get { return isDead; } }
     public string CardName { get { return cardName; } }
+    public string FlavorText { get { return flavorText; } }
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public effect CardEffect { get { return cardEffect; } }
@@ -72,6 +74,7 @@ public class CardParent
         cardName = cardDetails.name;
         cardType = cardDetails.type;
         cardEffect = cardDetails.ability;
+        flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
     }
 
