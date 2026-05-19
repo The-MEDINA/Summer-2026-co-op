@@ -1,0 +1,32 @@
+Cat,1,Cat,Minion,NA,1,2,NA,"""The classic, the original."""
+Cat,1,Cool Cat,Minion,NA,2,1,NA,"""Has really sensitive eyes, supposedly."""
+Cat,1,Exploding Cat,Minion,Explode 1,1,1,Explode,"""Cool cats get caught in their own explosions."""
+Cat,1,Scaredy Cat,Minion,Haste,1,1,Haste,"""Seasonaly appropriate for approximatly one month."""
+Cat,1,Comically Large Spoon Cat,Minion,Sloth,1,3,Sloth,"""No idea where he got that."""
+Cat,1,Night Vision Cat,Minion,Coordinate 1/1 - EDIT LATER top two card total 3,1,1,Coordinate,"""I thought night vision goggles were usually green, but whatever it's a video game."""
+Cat,2,Cave Cat,Minion,Sloth,3,4,Sloth,"""Ooga booga fish treat smooga."""
+Cat,2,Cat?,Minion,NA,2,3,NA,"""Best disguise since I robbed that bank."""
+Cat,2,Western Cat,Minion,NA,3,2,NA,"""Straight outta Texas. Texas Roadhouse."""
+Cat,2,Gold Miner Cat,Minion,Haste,2,2,Haste,"""Has found absolutely nothing so far."""
+Cat,2,Ninja Cat,Minion,Coordinate 2/2 - EDIT LATER TERMS,2,2,Coordinate,
+Cat,3,Ratta-tat-Cat,Minion,Overkill,2,5,Overkill,
+Cat,3,Mad Scientist Cat,Minion,Explode 3,3,4,Explode,
+Cat,3,Macho Cat,Minion,NA,4,3,NA,
+Cat,3,Beeg Cat,Minion,Coordinate 0/3 - total 5,7,0,Coordinate,
+Cat,4,Magic Cat / Septimus Mrreep,Minion,Fireball - 3 damage to target / Thunderwave - 1 damage to all opposing minions,4,3/1,Two Attacks,
+Cat,4,Cat Man,Minion,Overkill,3,6,Overkill,
+Cat,4,Single-Celled Cat,Minion,ON PLAY: Mitosis - splits into 2 identical cards,3,3,ON PLAY,
+Cat,5,Tank Cat,Minion,NA,7,7,NA,
+Cat,5,Cat Demolition Crew,Minion,Coordinate - haste on (ADD TERMS),5,5,Coordinate,
+Cat,1,M16,Spell,Adds 0/2 to a minion,NA,NA,Equipment,
+Cat,1,Spontaneous Combustion,Spell,Instant damage,NA,2,ON PLAY,
+Cat,1,Patch Up,Spell,Heal creature for 2 health,NA,NA,ON PLAY,
+Cat,2,I Hungy!!!,Spell,Adds one point to minion coordinate,NA,NA,Equipment,
+Cat,2,Terrorize,Spell,Lower an enemy minion -1/-1,NA,NA,Equipment,
+Cat,3,Heal Bot,Spell,Heals player for 10 health,NA,NA,ON PLAY,
+Cat,3,Fish Treat,Spell,Adds 2/2 to a minion,NA,NA,Equipment,"""FISH TREAT FISH TREAT FISH TREAT!!!"""
+Cat,4,Conscript,Spell,Spawns 3 token creatures (1H 1D),NA,NA,ON PLAY,"""AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"""
+Cat,5,Blizzard,Spell,Freeze all minions for 10 seconds,NA,NA,ON PLAY,"""Chance of snow 100%."""
+Cat,6,Smite,Spell,Smite - Deathtouch,NA,NA,Deathtouch,"""Begone with ye!"""
+Cat,NA,Major Munchkin,Commander,Spawns 2 token creatures (1H 1D) every 20 seconds,NA,NA,NA,"""Figurehead of the Feline Firearms Force."""
+Cat,NA,Kitten,Token,NA,1,1,NA,"""The weakest cat we could find."""

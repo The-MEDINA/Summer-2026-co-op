@@ -1,5 +1,6 @@
+using System.IO;
 using UnityEngine;
-
+using cardIndex;
 public class CardParent
 {
     public enum type
@@ -60,6 +61,17 @@ public class CardParent
         this.cardName = name;
         this.cardType = cardType;
         this.cardEffect = cardEffect;
+        this.cardLocation = cardLocation;
+    }
+    public CardParent(string name, location cardLocation)
+    {
+        Details cardDetails = Index.GetDetails(name);
+        cost = cardDetails.cost;
+        health = cardDetails.health;
+        damage = cardDetails.damage;
+        cardName = cardDetails.name;
+        cardType = cardDetails.type;
+        cardEffect = cardDetails.ability;
         this.cardLocation = cardLocation;
     }
 
