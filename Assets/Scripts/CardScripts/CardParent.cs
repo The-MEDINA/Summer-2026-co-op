@@ -1,5 +1,6 @@
+using System.IO;
 using UnityEngine;
-
+using cardIndex;
 public class CardParent
 {
     public enum type
@@ -31,6 +32,7 @@ public class CardParent
     private location cardLocation;
 
     [SerializeField] private string cardName;
+    private string flavorText;
     private bool isDead = false;
 
     public int Cost { get { return cost; } }
@@ -38,6 +40,7 @@ public class CardParent
     public int Damage { get { return damage; } set { damage = value; } }
     public bool IsDead { get { return isDead; } }
     public string CardName { get { return cardName; } }
+    public string FlavorText { get { return flavorText; } }
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public effect CardEffect { get { return cardEffect; } }
@@ -49,6 +52,34 @@ public class CardParent
         this.damage = damage;
         this.cardType = cardType;
         this.cardEffect = cardEffect;
+        this.cardLocation = cardLocation;
+    }
+
+        public CardParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation)
+    {
+        this.cost = cost;
+        this.health = health;
+        this.damage = damage;
+        this.cardName = name;
+        this.cardType = cardType;
+        this.cardEffect = cardEffect;
+        this.cardLocation = cardLocation;
+    }
+    /// <summary>
+    /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
+    /// </summary>
+    /// <param name="name">Name of the card.</param>
+    /// <param name="cardLocation">location of the card.</param>
+    public CardParent(string name, location cardLocation)
+    {
+        Details cardDetails = Index.GetDetails(name);
+        cost = cardDetails.cost;
+        health = cardDetails.health;
+        damage = cardDetails.damage;
+        cardName = cardDetails.name;
+        cardType = cardDetails.type;
+        cardEffect = cardDetails.ability;
+        flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
     }
 
