@@ -5,29 +5,34 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private int health = 50;
     [SerializeField] private int maxEnergy = 10;
-    [SerializeField] private int timeForEnergy = 5;
+    [SerializeField] private int startingEnergy = 0;
+    [SerializeField] private float timeForEnergy = 5f;
+    [SerializeField] private float timeToDraw = 2f;
 
     private int energy;
+    private float energyTimer = 0f;
+    private float drawTimer = 0f;
+
     private List<CardParent> deck = new List<CardParent>();
     private List<CardParent> hand = new List<CardParent>();
     private List<CardParent> inPlay = new List<CardParent>();
     private List<CardParent> discard = new List<CardParent>();
 
-    private CardParent commander;
-    private float timer = 0f;
-
-    private float drawTimer = 0f;
-    private float timeToDraw = 2f;
-
     public bool canDraw = false;
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
+    public int MaxEnergy { get { return maxEnergy; } }
 
     public List<CardParent> Deck { get { return deck; } set { deck = value; } }
     public List<CardParent> Hand { get { return hand; } set { hand = value; } }
     public List<CardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
     public List<CardParent> Discard { get { return discard; } set { discard = value; } }
+
+    private void Start()
+    {
+        energy = startingEnergy;
+    }
 
     private void Update()
     {
@@ -37,28 +42,29 @@ public class Player : MonoBehaviour
 
     private void GainEnergyOverTime()
     {
-        if (timer >= timeForEnergy)
+        energyTimer += Time.deltaTime;
+
+        if (energyTimer >= timeForEnergy)
         {
             GainEnergy(1);
-            timer -= timeForEnergy;
-        }
-        else
-        {
-            timer += Time.deltaTime;
+            energyTimer = 0f;
         }
     }
 
     private void DrawTimer()
     {
+        drawTimer += Time.deltaTime;
+
         if (drawTimer >= timeToDraw)
         {
             canDraw = true;
             drawTimer = 0f;
         }
-        else
-        {
-            drawTimer += Time.deltaTime;
-        }
+    }
+
+    public void RegisterAction()
+    {
+        energyTimer = 0f;
     }
 
     public bool CanAfford(CardParent card)
@@ -68,12 +74,19 @@ public class Player : MonoBehaviour
 
     public bool SpendEnergy(int amount)
     {
-        if (Energy < amount)
+        if (amount < 0)
         {
             return false;
         }
 
+        if (Energy < amount)
+        {
+            Debug.Log("Not enough energy.");
+            return false;
+        }
+
         Energy -= amount;
+        RegisterAction();
         return true;
     }
 
@@ -102,6 +115,7 @@ public class Player : MonoBehaviour
         }
 
         card.CardLocation = CardParent.location.inPlay;
+        RegisterAction();
     }
 
     public void MoveCardToDiscard(CardParent card)
