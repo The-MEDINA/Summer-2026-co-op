@@ -529,7 +529,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 502840341}
-  - component: {fileID: 502840340}
   m_Layer: 0
   m_Name: HandUIManagerInstance
   m_TagString: Untagged
@@ -537,21 +536,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &502840340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502840339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9203d4747bd61415db64bd3e23e478ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HandUIManager
-  cardSpacing: 2
-  handYPosition: -3.75
-  startXPosition: -5.75
 --- !u!4 &502840341
 Transform:
   m_ObjectHideFlags: 0
@@ -1413,7 +1397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSelectionManager
   activeCardsRectangle: {fileID: 426793723}
-  handUIManager: {fileID: 502840340}
+  handUIManager: {fileID: 0}
   player: {fileID: 427913135}
   battlegroundStartX: -9
   battlegroundSpacing: 2
