@@ -23,9 +23,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private void Start()
     {
-        Debug.Log(CardData.Cost);
-        if (CardData.CardEffect == CardParent.effect.haste) { timeToAttack /= 2; }
-        else if (CardData.CardEffect == CardParent.effect.sloth) { timeToAttack *= 2; }
+        if (IsEnemyCard == false)
+        {
+            if (CardData.CardEffect == CardParent.effect.haste) { timeToAttack /= 2; }
+            else if (CardData.CardEffect == CardParent.effect.sloth) { timeToAttack *= 2; }
+        }
     }
 
     private void Update()
