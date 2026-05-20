@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CardParent
@@ -12,7 +13,9 @@ public class CardParent
     {
         none,
         deathtouch, //just works off base damage for right now, probably want to change this
-        explode
+        explode,
+        haste,
+        sloth
     }
 
     public enum location
@@ -33,6 +36,8 @@ public class CardParent
     [SerializeField] private string cardName;
     private bool isDead = false;
 
+    [SerializeField] private bool canAttack = false;
+
     public int Cost { get { return cost; } }
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -41,6 +46,7 @@ public class CardParent
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public effect CardEffect { get { return cardEffect; } }
+    public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
 
     public CardParent(int cost, int health, int damage, type cardType, effect cardEffect, location cardLocation)
     {
@@ -65,17 +71,21 @@ public class CardParent
     //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
     public void Attack(CardParent target)
     {
-        if (target == null || isDead)
+        if (canAttack)
         {
-            return;
-        }
-        if(cardEffect == effect.deathtouch)
-        {
-            target.TakeDamage(this, 99999999);
-        }
-        else
-        {
-            target.TakeDamage(this, Damage);
+            if (target == null || isDead)
+            {
+                return;
+            }
+            if (cardEffect == effect.deathtouch)
+            {
+                target.TakeDamage(this, 99999999);
+            }
+            else
+            {
+                target.TakeDamage(this, Damage);
+            }
+            canAttack = false;
         }
     }
 

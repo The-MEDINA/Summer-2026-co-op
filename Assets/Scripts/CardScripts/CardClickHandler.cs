@@ -10,6 +10,9 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private Vector3 originalScale;
     private CardParent cardData;
 
+    [SerializeField] private float timeToAttack = 3f;
+    private float attackTimer = 0f;
+
     public bool IsEnemyCard { get { return isEnemyCard; } }
     public CardParent CardData { get { return cardData; } set { cardData = value; } }
 
@@ -18,11 +21,25 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         originalScale = transform.localScale;
     }
 
+    private void Start()
+    {
+        Debug.Log(CardData.Cost);
+        if (CardData.CardEffect == CardParent.effect.haste) { timeToAttack /= 2; }
+        else if (CardData.CardEffect == CardParent.effect.sloth) { timeToAttack *= 2; }
+    }
+
     private void Update()
     {
         if (CardData != null && CardData.IsDead)
         {
             gameObject.SetActive(false);
+        }
+
+        attackTimer += Time.deltaTime;
+        if (attackTimer >= timeToAttack)
+        {
+            attackTimer = 0f;
+            CardData.CanAttack = true;
         }
     }
 

@@ -10,9 +10,9 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     {
         p = GetComponent<Player>();
         p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.haste, CardParent.location.deck));
         p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.deathtouch, CardParent.location.deck));
-        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
+        p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.sloth, CardParent.location.deck));
         p.Deck.Add(new CardParent(1, 8, 5, CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
     }
 
