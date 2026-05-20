@@ -61,7 +61,7 @@ namespace cardIndex
         private static void GenerateDictionaryIndex()
         {
             // setup
-            StreamReader reader = new StreamReader("Assets/temp/allCards.tsv");
+            StreamReader reader = new StreamReader("Assets/Database/allCards.tsv");
             string raw;
 
             // while allCards.tsv has data.
