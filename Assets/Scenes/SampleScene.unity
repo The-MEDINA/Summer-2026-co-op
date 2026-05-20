@@ -529,6 +529,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 502840341}
+  - component: {fileID: 502840342}
   m_Layer: 0
   m_Name: HandUIManagerInstance
   m_TagString: Untagged
@@ -551,6 +552,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &502840342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502840339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9203d4747bd61415db64bd3e23e478ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandUIManager
+  cardSpacing: 2
+  handYPosition: -3.75
+  startXPosition: -5.75
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,7 +828,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
   p: {fileID: 427913135}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
-  handUIManager: {fileID: 0}
+  handUIManager: {fileID: 502840342}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1397,7 +1413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSelectionManager
   activeCardsRectangle: {fileID: 426793723}
-  handUIManager: {fileID: 0}
+  handUIManager: {fileID: 502840342}
   player: {fileID: 427913135}
   battlegroundStartX: -9
   battlegroundSpacing: 2
