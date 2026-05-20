@@ -488,7 +488,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   health: 50
-  timeForEnergy: 5
+  maxEnergy: 10
+  startingEnergy: 0
+  timeForEnergy: 1
+  timeToDraw: 2
   canDraw: 0
 --- !u!4 &427913136
 Transform:
@@ -517,6 +520,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
+--- !u!1 &502840339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 502840341}
+  - component: {fileID: 502840340}
+  m_Layer: 0
+  m_Name: HandUIManagerInstance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &502840340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502840339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9203d4747bd61415db64bd3e23e478ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandUIManager
+  cardSpacing: 2
+  handYPosition: -3.75
+  startXPosition: -5.75
+--- !u!4 &502840341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502840339}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.38974, y: -0.18604, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,6 +828,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
   p: {fileID: 427913135}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
+  handUIManager: {fileID: 0}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1362,6 +1413,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSelectionManager
   activeCardsRectangle: {fileID: 426793723}
+  handUIManager: {fileID: 502840340}
+  player: {fileID: 427913135}
+  battlegroundStartX: -9
+  battlegroundSpacing: 2
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
@@ -2096,3 +2151,4 @@ SceneRoots:
   - {fileID: 2043636977}
   - {fileID: 1074528468}
   - {fileID: 427913136}
+  - {fileID: 502840341}
