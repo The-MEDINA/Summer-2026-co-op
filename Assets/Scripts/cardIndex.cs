@@ -8,7 +8,7 @@
  * Then to access something from it, you'll need to use the keyword 'cardIndex.Index'.
  * cardIndex.Index.something <--- Methods, properties, etc
  * 
- * Index on its own theoretically works, but it causes issues. Avoidthat if possible.
+ * Index on its own theoretically works, but it causes issues. Avoid that if possible.
  * 
  *  - Dave :>
  */
@@ -36,7 +36,6 @@ namespace cardIndex
             ability = _ability;
             flavorText = _flavorText;
             nameIndexPosition = _nameIndexPosition;
-            
         }
 
         public string faction;

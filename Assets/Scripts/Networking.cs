@@ -29,6 +29,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using cardIndex;
 
 namespace Network
 {
@@ -36,7 +37,8 @@ namespace Network
     enum packetType
     {
         handshake,
-        keepAlive
+        keepAlive,
+        cardArray
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -198,6 +200,7 @@ namespace Network
 
             // IPv4 Addresses.
             IPHostEntry host = Dns.GetHostEntry(localHostName);
+
             // filter out IPv4 and IPv6 addresses.
             foreach (IPAddress ip in host.AddressList)
             {
@@ -346,10 +349,47 @@ namespace Network
          * currently bytes 3 - 39 store the handshakeContent variable.
          * bytes 40 - 43 hold the host system's IP Address.
          * bytes 44 - 1023 are empty so we can use it later to send more info.
+         * 
          * --- KEEPALIVE: ---
          * bytes 1 - 1023 are empty so we can use it later to send more info.
+         * 
+         * --- CARDARRAY: ---
+         * byte 1 holds the location of the cards.
+         * byte 2 holds the length of the array of cards.
+         * bytes 3 - 513 holds the cards. It's currently limited to 255 because the length is a byte.
+         * bytes 514 - 1023 are empty so we can use it later to send more info.
          */
 
+        private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
+        {
+            byte[] packet = new byte[1024];
+
+            // type and extra info about the array
+            packet[0] = (byte) packetType.cardArray;
+            packet[1] = (byte) location;
+            packet[2] = (byte) cards.Count;
+
+            // the array itself.
+            for (int i = 0; i < cards.Count; i++)
+            {
+                // prepare the char to encode into two bytes.
+                cardIndex.Details cardDetails = cardIndex.Index.GetDetails(cards[i].CardName);
+                short cardToEncode = (short) cardDetails.nameIndexPosition;
+                byte highByte = 0;
+                byte lowByte = 0;
+
+                // mask out the top 8 bits.
+                lowByte = (byte)(cardToEncode & 255);
+
+                // shift right 8 bits and then mask.
+                highByte = (byte)((cardToEncode >> 8) & 255);
+
+                // High bytes are in odd indexes, low bytes are in even indexes.
+                packet[3 + (2 * i)] = highByte;
+                packet[4 + (2 * i)] = lowByte;
+            }
+            return packet;
+        }
         /// <summary>
         /// Encode a packet to send to someone else.
         /// </summary>
@@ -428,10 +468,10 @@ namespace Network
             return packet;
         }
 
-/// <summary>
-/// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
-/// </summary>
-/// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
+        /// <summary>
+        /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
+        /// </summary>
+        /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
         private static async void DecodePacket(byte[] packet)
         {
             bool brokenPacket = false;
@@ -472,14 +512,54 @@ namespace Network
                     if (currentMode == mode.host)
                     {
                         byte[] responsePacket = EncodePacket(packetType.keepAlive);
-
-                        // this is a really ugly workaround.
-                        // currently the client can't seem to make use of the first packet sent if it sent a keepalive packet.
-                        // this is 100% going to cause issues later on, so the sooner a fix can be found the better.
-                        // await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                         await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                     }
                     break;
+                }
+                case ((byte) packetType.cardArray):
+                {
+                        // New array to replace the old one.
+                        List<NewVirtualCardParent> cards = new List<NewVirtualCardParent>();
+
+                        // For every card in the array.
+                        for (int i = 0; i < packet[2]; i++)
+                        {
+                            NewVirtualCardParent card;
+
+                            // rebuild the card from the info.
+                            short indexOfCard = packet[3 + (2 * i)];
+                            indexOfCard <<= 8;
+                            indexOfCard += packet[4 + (2 * i)];
+
+                            // grab its details, check its type, and construct it accordingly.
+                            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
+                            switch (cardDetails.type)
+                            {
+                                case (NewVirtualCardParent.type.minion):
+                                {
+                                    card = new MinionParent(cardDetails.cost, cardDetails.health, cardDetails.damage, cardDetails.name, cardDetails.type, cardDetails.ability, (NewVirtualCardParent.location) packet[1]);
+                                    cards.Add(card);
+                                    break;
+                                }
+                                // Don't make this card if its type is not implemented here.
+#if DEBUG_MODE
+                                default:
+                                {
+                                    Debug.LogWarning($"Found unknown card type {cardDetails.type}. Omitting card from array.");
+                                    break;
+                                }
+#endif
+                            }
+                            // place the array in the correct spot.
+                            switch ((NewVirtualCardParent.location) packet[1])
+                            {
+                                case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
+                                case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
+                                case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
+                                case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay = cards; break; }
+                            }
+                        }
+                        break;
                 }
                 default:
                 {
@@ -643,6 +723,26 @@ namespace Network
 #endif
             }
             CurrentState = state.disconnected;
+        }
+
+        /// <summary>
+        /// Send an array of cards to a connected peer.
+        /// </summary>
+        /// <param name="cards">List of cards to send.</param>
+        /// <param name="location"></param>
+        public static void SendCards(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
+        {
+            byte[] packet = EncodePacket(cards, location);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send a deck of cards while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
         }
 
         public static void TEMPsendpacket()
