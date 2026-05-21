@@ -30,15 +30,41 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using cardIndex;
+using static UnityEngine.Rendering.GPUSort;
 
 namespace Network
 {
-    // type of packet in the header.
+    /*
+     * Packets are 1024 byte long arrays that are split differently depending on their type.
+     * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
+     * 
+     * --- HANDSHAKE: ---
+     * the second byte determines if it's a request or response.
+     * currently bytes 3 - 39 store the handshakeContent variable.
+     * bytes 40 - 43 hold the host system's IP Address.
+     * bytes 44 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- KEEPALIVE: ---
+     * bytes 1 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- CARDARRAY: ---
+     * byte 1 holds the location of the cards.
+     * byte 2 holds the length of the array of cards.
+     * bytes 3 - 513 holds the cards. It's currently limited to 255 because the length is 1 byte.
+     * bytes 514 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- CARDMOVE: ---
+     * byte 1 holds the old location of the card.
+     * byte 2 holds the new location of the card.
+     * bytes 3 and 4 hold the card index.
+     * bytes 5 - 1024 are empty so we can use it later to send more info.
+     */
     enum packetType
     {
         handshake,
         keepAlive,
-        cardArray
+        cardArray,
+        cardMove
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -341,24 +367,33 @@ namespace Network
             }
         }
 
-        /*
-         * Packets are 1024 byte long arrays that are split differently depending on their type.
-         * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
-         * --- HANDSHAKE: ---
-         * the second byte determines if it's a request or response.
-         * currently bytes 3 - 39 store the handshakeContent variable.
-         * bytes 40 - 43 hold the host system's IP Address.
-         * bytes 44 - 1023 are empty so we can use it later to send more info.
-         * 
-         * --- KEEPALIVE: ---
-         * bytes 1 - 1023 are empty so we can use it later to send more info.
-         * 
-         * --- CARDARRAY: ---
-         * byte 1 holds the location of the cards.
-         * byte 2 holds the length of the array of cards.
-         * bytes 3 - 513 holds the cards. It's currently limited to 255 because the length is a byte.
-         * bytes 514 - 1023 are empty so we can use it later to send more info.
-         */
+        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, NewVirtualCardParent.location newLocation)
+        {
+            byte[] packet = new byte[1024];
+
+            // type and location info.
+            packet[0] = (byte) packetType.cardMove;
+            packet[1] = (byte) oldLocation;
+            packet[2] = (byte) newLocation;
+
+            // prepare the card's index to encode into two bytes.
+            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(card.CardName);
+            short cardToEncode = (short)cardDetails.nameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(cardToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((cardToEncode >> 8) & 255);
+
+            // High bytes are in odd indexes, low bytes are in even indexes.
+            packet[3] = highByte;
+            packet[4] = lowByte;
+
+            return packet;
+        }
 
         private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
@@ -372,7 +407,7 @@ namespace Network
             // the array itself.
             for (int i = 0; i < cards.Count; i++)
             {
-                // prepare the char to encode into two bytes.
+                // prepare the card's index to encode into two bytes.
                 cardIndex.Details cardDetails = cardIndex.Index.GetDetails(cards[i].CardName);
                 short cardToEncode = (short) cardDetails.nameIndexPosition;
                 byte highByte = 0;
@@ -533,33 +568,67 @@ namespace Network
 
                             // grab its details, check its type, and construct it accordingly.
                             cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
-                            switch (cardDetails.type)
-                            {
-                                case (NewVirtualCardParent.type.minion):
-                                {
-                                    card = new MinionParent(cardDetails.cost, cardDetails.health, cardDetails.damage, cardDetails.name, cardDetails.type, cardDetails.ability, (NewVirtualCardParent.location) packet[1]);
-                                    cards.Add(card);
-                                    break;
-                                }
-                                // Don't make this card if its type is not implemented here.
-#if DEBUG_MODE
-                                default:
-                                {
-                                    Debug.LogWarning($"Found unknown card type {cardDetails.type}. Omitting card from array.");
-                                    break;
-                                }
-#endif
-                            }
-                            // place the array in the correct spot.
-                            switch ((NewVirtualCardParent.location) packet[1])
-                            {
-                                case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
-                                case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
-                                case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
-                                case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay = cards; break; }
-                            }
+                            card = ReconstructCard(cardDetails, (NewVirtualCardParent.location)packet[1]);
+                            cards.Add(card);
+                        }
+
+                        // place the array in the correct spot.
+                        switch ((NewVirtualCardParent.location)packet[1])
+                        {
+                            case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
+                            case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
+                            case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
+                            case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay = cards; break; }
                         }
                         break;
+                }
+                case ((byte) packetType.cardMove):
+                {
+                    // set up these to make code nicer
+                    NewVirtualCardParent.location oldLocation = (NewVirtualCardParent.location)packet[1];
+                    NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[1];
+
+                    // get the card's name from the info.
+                    short indexOfCard = packet[3];
+                    indexOfCard <<= 8;
+                    indexOfCard += packet[4];
+                    string cardName = cardIndex.Index.GetName(indexOfCard);
+
+                    // Get a copy of the card array to check.
+                    // doing this in theory eliminates a LOT of duplicated code.
+                    List<NewVirtualCardParent> cardArray = null; 
+                    switch ((NewVirtualCardParent.location) packet[1])
+                    {
+                        case (NewVirtualCardParent.location.deck): { cardArray = playerTwo.Deck; break; }
+                        case (NewVirtualCardParent.location.discard): { cardArray = playerTwo.Discard; break; }
+                        case (NewVirtualCardParent.location.hand): { cardArray = playerTwo.Hand; break; }
+                        case (NewVirtualCardParent.location.inPlay): { cardArray = playerTwo.InPlay; break; }
+                    }
+
+                    // Search for the card.
+                    for (int i = 0; i < cardArray.Count; i++)
+                    {
+                        if (cardArray[i].CardName == cardName)
+                        {
+                            NewVirtualCardParent cardToMove = cardArray[i];
+                            // FINALLY figure out where to move the card.
+                            if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
+                            {
+                                // uhhh I don't think I should have to cast here.
+                                // Seems like an error.
+                                playerTwo.MoveCardToInPlay((MinionParent) cardToMove);
+                            }
+                            if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard) playerTwo.MoveCardToDiscard(cardToMove);
+#if DEBUG_MODE
+                            else
+                            {
+                                Debug.LogWarning($"Illegal move from old location {oldLocation} to new location {newLocation}! Double check if a method to move it exists?");
+                            }
+#endif
+                            break;
+                        }
+                    }
+                    break;
                 }
                 default:
                 {
@@ -723,6 +792,34 @@ namespace Network
 #endif
             }
             CurrentState = state.disconnected;
+        }
+
+        /// <summary>
+        /// Reconstruct a card based on its details and location.
+        /// </summary>
+        /// <param name="cardDetails">Details struct of the card.</param>
+        /// <param name="location">Location of the card.</param>
+        /// <returns>The card requested from its details.</returns>
+        private static NewVirtualCardParent ReconstructCard(cardIndex.Details cardDetails, NewVirtualCardParent.location location)
+        {
+            NewVirtualCardParent card = null;
+            switch (cardDetails.type)
+            {
+                case (NewVirtualCardParent.type.minion):
+                {
+                    card = new MinionParent(cardDetails.cost, cardDetails.health, cardDetails.damage, cardDetails.name, cardDetails.type, cardDetails.ability, location);
+                    break;
+                }
+                // Don't make this card if its type is not implemented here.
+#if DEBUG_MODE
+                default:
+                {
+                    Debug.LogWarning($"Found unknown card type {cardDetails.type}. Returning null.");
+                    break;
+                }
+#endif
+            }
+            return card;
         }
 
         /// <summary>

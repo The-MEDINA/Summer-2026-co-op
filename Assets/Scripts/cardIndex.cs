@@ -84,6 +84,17 @@ namespace cardIndex
             index.TryGetValue(name, out returnDetails);
             return returnDetails;
         }
+
+        /// <summary>
+        /// Returns ONLY the name of the card given by index. Use this if you only need the name.
+        /// </summary>
+        /// <param name="i">index of the card.</param>
+        /// <returns>name of the card at that index.</returns>
+        public static string GetName(int i)
+        {
+            return nameIndex[i];
+        }
+
         /// <summary>
         /// Creates the index of cards from the provided allCards.tsv file.
         /// This function should ONLY be called in the worst case scenario that the index is not ready by the time a card gets instantiated.
