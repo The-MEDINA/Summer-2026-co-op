@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Network;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -33,7 +32,6 @@ public class Player : MonoBehaviour
     private void Start()
     {
         energy = startingEnergy;
-        Networking.PlayerOne = this;
     }
 
     private void Update()

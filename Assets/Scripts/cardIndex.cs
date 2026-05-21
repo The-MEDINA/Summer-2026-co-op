@@ -1,3 +1,17 @@
+/*
+ * cardIndex.cs allows you to pull out details of cards.
+ * It's a static class, so it's not tied to any object. It's essentially a singleton.
+ *
+ * In order to access it from other scripts, you'll need to include the namespace.
+ * using cardIndex; <--- Like this
+ *
+ * Then to access something from it, you'll need to use the keyword 'cardIndex.Index'.
+ * cardIndex.Index.something <--- Methods, properties, etc
+ * 
+ * Index on its own theoretically works, but it causes issues. Avoidthat if possible.
+ * 
+ *  - Dave :>
+ */
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -5,10 +19,8 @@ using System.IO;
 
 namespace cardIndex
 {
-    // I hate C# structs.
-    // I *really* hope that this is actually a good way of doing this.
     // The reason why this is a struct and not a class is because all this needs to contain is the details for card parent.
-    // it's up to card parent itself to use the data in here.
+    // it's up to card constructors themselves to use the data in here.
     // the struct also shouldn't do anything.
     public struct Details
     {
@@ -26,6 +38,7 @@ namespace cardIndex
             nameIndexPosition = _nameIndexPosition;
             
         }
+
         public string faction;
         public int cost;
         public string name;
@@ -45,6 +58,7 @@ namespace cardIndex
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
         private static List<string> nameIndex = new List<string>();
+
         /// <summary>
         /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
         /// </summary>
@@ -54,6 +68,20 @@ namespace cardIndex
         {
             if (index.Count == 0) GenerateDictionaryIndex();
             Details returnDetails;
+            index.TryGetValue(name, out returnDetails);
+            return returnDetails;
+        }
+
+        /// <summary>
+        /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
+        /// </summary>
+        /// <param name="name">name of card to return</param>
+        /// <returns>a details struct containing all the information about the card.</returns>
+        public static Details GetDetails(int i)
+        {
+            if (index.Count == 0) GenerateDictionaryIndex();
+            Details returnDetails;
+            string name = nameIndex[i];
             index.TryGetValue(name, out returnDetails);
             return returnDetails;
         }
@@ -110,7 +138,12 @@ namespace cardIndex
                         _ability = CardParent.effect.none;
                         break;
                     }
-                    case("explode"):
+                    case ("na"):
+                    {
+                        _ability = CardParent.effect.none;
+                        break;
+                    }
+                    case ("explode"):
                     {
                         _ability = CardParent.effect.explode;
                         break;
