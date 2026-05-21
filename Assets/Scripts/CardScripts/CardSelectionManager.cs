@@ -10,7 +10,6 @@ public class CardSelectionManager : MonoBehaviour
 
     [SerializeField] private float battlegroundStartX = -9f;
     [SerializeField] private float battlegroundSpacing = 2f;
-
     private CardClickHandler selectedCardObject;
     private int position = 0;
 
