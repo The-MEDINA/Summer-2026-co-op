@@ -62,7 +62,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (cardObject.CardData.CardLocation == CardParent.location.hand)
+        if (cardObject.CardData is MinionParent && cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
         }
@@ -97,7 +97,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        player.MoveCardToInPlay(cardObject.CardData);
+        player.MoveCardToInPlay((MinionParent)cardObject.CardData);
 
         if (handUIManager != null)
         {
@@ -134,21 +134,26 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.CardData.CardLocation != CardParent.location.inPlay)
+        if (selectedCardObject.CardData is MinionParent && targetCard.CardData is MinionParent)
         {
-            Debug.Log("Card must be in play before it can attack.");
-            ClearSelection();
-            return;
+            if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+            {
+                Debug.Log("Card must be in play before it can attack.");
+                ClearSelection();
+                return;
+            }
+
+            MinionParent MinionData = (MinionParent)selectedCardObject.CardData;
+            MinionData.Attack((MinionParent)targetCard.CardData);
+
+            if (player != null)
+            {
+                player.RegisterAction();
+            }
+
+            MinionParent attackedData = (MinionParent)targetCard.CardData;
+            Debug.Log("Attacked enemy card. Enemy health: " + attackedData.Health);
         }
-
-        selectedCardObject.CardData.Attack(targetCard.CardData);
-
-        if (player != null)
-        {
-            player.RegisterAction();
-        }
-
-        Debug.Log("Attacked enemy card. Enemy health: " + targetCard.CardData.Health);
 
         ClearSelection();
     }

@@ -14,8 +14,13 @@ public class CardUIManager : MonoBehaviour
         // set the text on the card through the click handler's reference to the card. 
         cardName.text = clickHandler.CardData.CardName;
         cardFlavortext.text = clickHandler.CardData.FlavorText;
-        cardHealth.text = $"Health: {clickHandler.CardData.Health}";
-        cardDamage.text = $"Damage: {clickHandler.CardData.Damage}";
+
+        if(clickHandler.CardData is MinionParent)
+        {
+            MinionParent MinionData = (MinionParent)clickHandler.CardData;
+            cardHealth.text = $"Health: {MinionData.Health}";
+            cardDamage.text = $"Damage: {MinionData.Damage}";
+        }
     }
 
     // Update is called once per frame

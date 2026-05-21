@@ -24,7 +24,7 @@ namespace cardIndex
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, CardParent.type _type, string _text, int _health, int _damage, CardParent.effect _ability, string _flavorText, int _nameIndexPosition)
+        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition)
         {
             faction = _faction;
             cost = _cost;
@@ -42,11 +42,11 @@ namespace cardIndex
         public string faction;
         public int cost;
         public string name;
-        public CardParent.type type;
+        public NewVirtualCardParent.type type;
         public string text;
         public int health;
         public int damage;
-        public CardParent.effect ability;
+        public MinionParent.effect ability;
         public string flavorText;
         public int nameIndexPosition;
     }
@@ -106,9 +106,9 @@ namespace cardIndex
                 int _cost = -1;
                 int _health = -1;
                 int _damage = -1;
-                
-                CardParent.type _type = CardParent.type.minion;
-                CardParent.effect _ability = CardParent.effect.none;
+
+                NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
+                MinionParent.effect _ability = MinionParent.effect.none;
                 int.TryParse(rawDetails[1], out _cost);
                 int.TryParse(rawDetails[5], out _health);
                 int.TryParse(rawDetails[6], out _damage);
@@ -116,12 +116,12 @@ namespace cardIndex
                 {
                     case("minion"):
                     {
-                        _type = CardParent.type.minion;
+                        _type = NewVirtualCardParent.type.minion;
                         break;
                     }
                     case("spell"):
                     {
-                        _type = CardParent.type.spell;
+                        _type = NewVirtualCardParent.type.spell;
                         break;
                     }
                     default:
@@ -135,22 +135,22 @@ namespace cardIndex
                 {
                     case("none"):
                     {
-                        _ability = CardParent.effect.none;
+                        _ability = MinionParent.effect.none;
                         break;
                     }
                     case ("na"):
                     {
-                        _ability = CardParent.effect.none;
+                        _ability = MinionParent.effect.none;
                         break;
                     }
                     case ("explode"):
                     {
-                        _ability = CardParent.effect.explode;
+                        _ability = MinionParent.effect.explode;
                         break;
                     }
                     case("deathtouch"):
                     {
-                        _ability = CardParent.effect.deathtouch;
+                        _ability = MinionParent.effect.deathtouch;
                         break;
                     }
                     default:

@@ -1,4 +1,4 @@
-using System.IO;
+using System;
 using UnityEngine;
 using cardIndex;
 public class CardParent
@@ -13,7 +13,9 @@ public class CardParent
     {
         none,
         deathtouch, //just works off base damage for right now, probably want to change this
-        explode
+        explode,
+        haste,
+        sloth
     }
 
     public enum location
@@ -35,6 +37,8 @@ public class CardParent
     private string flavorText;
     private bool isDead = false;
 
+    [SerializeField] private bool canAttack = false;
+
     public int Cost { get { return cost; } }
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -44,6 +48,7 @@ public class CardParent
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public effect CardEffect { get { return cardEffect; } }
+    public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
 
     public CardParent(int cost, int health, int damage, type cardType, effect cardEffect, location cardLocation)
     {
@@ -77,16 +82,10 @@ public class CardParent
         health = cardDetails.health;
         damage = cardDetails.damage;
         cardName = cardDetails.name;
-        cardType = cardDetails.type;
-        cardEffect = cardDetails.ability;
+        // cardType = cardDetails.type;
+        //cardEffect = cardDetails.ability;
         flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
-    }
-
-    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
-    public void OnPlay()
-    {
-        Debug.Log("a");
     }
 
     // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
@@ -96,17 +95,21 @@ public class CardParent
     //triggered by event BUT HANDLED IN CARD CLICK CALLED IN MANAGER
     public void Attack(CardParent target)
     {
-        if (target == null || isDead)
+        if (canAttack)
         {
-            return;
-        }
-        if(cardEffect == effect.deathtouch)
-        {
-            target.TakeDamage(this, 99999999);
-        }
-        else
-        {
-            target.TakeDamage(this, Damage);
+            if (target == null || isDead)
+            {
+                return;
+            }
+            if (cardEffect == effect.deathtouch)
+            {
+                target.TakeDamage(this, 99999999);
+            }
+            else
+            {
+                target.TakeDamage(this, Damage);
+            }
+            canAttack = false;
         }
     }
 
