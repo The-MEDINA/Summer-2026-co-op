@@ -1,3 +1,17 @@
+/*
+ * cardIndex.cs allows you to pull out details of cards.
+ * It's a static class, so it's not tied to any object. It's essentially a singleton.
+ *
+ * In order to access it from other scripts, you'll need to include the namespace.
+ * using cardIndex; <--- Like this
+ *
+ * Then to access something from it, you'll need to use the keyword 'cardIndex.Index'.
+ * cardIndex.Index.something <--- Methods, properties, etc
+ * 
+ * Index on its own theoretically works, but it causes issues. Avoidthat if possible.
+ * 
+ *  - Dave :>
+ */
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -5,14 +19,12 @@ using System.IO;
 
 namespace cardIndex
 {
-    // I hate C# structs.
-    // I *really* hope that this is actually a good way of doing this.
     // The reason why this is a struct and not a class is because all this needs to contain is the details for card parent.
-    // it's up to card parent itself to use the data in here.
+    // it's up to card constructors themselves to use the data in here.
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, CardParent.type _type, string _text, int _health, int _damage, CardParent.effect _ability, string _flavorText)
+        public Details(string _faction, int _cost, string _name, CardParent.type _type, string _text, int _health, int _damage, CardParent.effect _ability, string _flavorText, int _nameIndexPosition)
         {
             faction = _faction;
             cost = _cost;
@@ -23,7 +35,10 @@ namespace cardIndex
             damage = _damage;
             ability = _ability;
             flavorText = _flavorText;
+            nameIndexPosition = _nameIndexPosition;
+            
         }
+
         public string faction;
         public int cost;
         public string name;
@@ -33,6 +48,7 @@ namespace cardIndex
         public int damage;
         public CardParent.effect ability;
         public string flavorText;
+        public int nameIndexPosition;
     }
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
@@ -41,6 +57,8 @@ namespace cardIndex
     {
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
+        private static List<string> nameIndex = new List<string>();
+
         /// <summary>
         /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
         /// </summary>
@@ -50,6 +68,20 @@ namespace cardIndex
         {
             if (index.Count == 0) GenerateDictionaryIndex();
             Details returnDetails;
+            index.TryGetValue(name, out returnDetails);
+            return returnDetails;
+        }
+
+        /// <summary>
+        /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
+        /// </summary>
+        /// <param name="name">name of card to return</param>
+        /// <returns>a details struct containing all the information about the card.</returns>
+        public static Details GetDetails(int i)
+        {
+            if (index.Count == 0) GenerateDictionaryIndex();
+            Details returnDetails;
+            string name = nameIndex[i];
             index.TryGetValue(name, out returnDetails);
             return returnDetails;
         }
@@ -65,7 +97,8 @@ namespace cardIndex
             string raw;
 
             // while allCards.tsv has data.
-            while ((raw = reader.ReadLine()) != null)
+            // for loop is only here because I need an int for the nameIndex.
+            for (int i = 0; (raw = reader.ReadLine()) != null; i++)
             {
                 string[] rawDetails = raw.Split('\t');
 
@@ -105,7 +138,12 @@ namespace cardIndex
                         _ability = CardParent.effect.none;
                         break;
                     }
-                    case("explode"):
+                    case ("na"):
+                    {
+                        _ability = CardParent.effect.none;
+                        break;
+                    }
+                    case ("explode"):
                     {
                         _ability = CardParent.effect.explode;
                         break;
@@ -122,8 +160,9 @@ namespace cardIndex
                     }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8]);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i);
                 index.Add(rawDetails[2], cardToAdd);
+                nameIndex.Add(rawDetails[2]);
             }
             reader.Close();
         }
