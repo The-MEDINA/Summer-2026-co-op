@@ -82,7 +82,7 @@ public class CardParent
         health = cardDetails.health;
         damage = cardDetails.damage;
         cardName = cardDetails.name;
-        cardType = cardDetails.type;
+        // cardType = cardDetails.type;
         //cardEffect = cardDetails.ability;
         flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
