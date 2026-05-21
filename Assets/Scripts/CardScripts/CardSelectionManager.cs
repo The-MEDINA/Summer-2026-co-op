@@ -62,7 +62,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (cardObject.CardData.CardLocation == CardParent.location.hand)
+        if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
         }
@@ -134,7 +134,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.CardData.CardLocation != CardParent.location.inPlay)
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
             ClearSelection();

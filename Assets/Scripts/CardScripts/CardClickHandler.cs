@@ -8,13 +8,13 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     [SerializeField] private bool isEnemyCard = false;
 
     private Vector3 originalScale;
-    private CardParent cardData;
+    private NewVirtualCardParent cardData;
 
     [SerializeField] private float timeToAttack = 3f;
     private float attackTimer = 0f;
 
     public bool IsEnemyCard { get { return isEnemyCard; } }
-    public CardParent CardData { get { return cardData; } set { cardData = value; } }
+    public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
 
     private void Awake()
     {
@@ -23,25 +23,31 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private void Start()
     {
-        if (IsEnemyCard == false)
+        if (CardData is MinionParent && IsEnemyCard == false)
         {
-            if (CardData.CardEffect == CardParent.effect.haste) { timeToAttack /= 2; }
-            else if (CardData.CardEffect == CardParent.effect.sloth) { timeToAttack *= 2; }
+            MinionParent MinionData = (MinionParent)CardData;
+            if (MinionData.CardEffect == MinionParent.effect.haste) { timeToAttack /= 2; }
+            else if (MinionData.CardEffect == MinionParent.effect.sloth) { timeToAttack *= 2; }
         }
     }
 
     private void Update()
     {
-        if (CardData != null && CardData.IsDead)
+        if (CardData != null && CardData is MinionParent)
         {
-            gameObject.SetActive(false);
-        }
+            MinionParent MinionData = (MinionParent)CardData;
 
-        attackTimer += Time.deltaTime;
-        if (attackTimer >= timeToAttack)
-        {
-            attackTimer = 0f;
-            CardData.CanAttack = true;
+            if (MinionData.IsDead)
+            {
+                gameObject.SetActive(false);
+            }
+
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= timeToAttack)
+            {
+                attackTimer = 0f;
+                MinionData.CanAttack = true;
+            }
         }
     }
 

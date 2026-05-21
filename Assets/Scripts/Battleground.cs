@@ -30,12 +30,12 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     private void DrawCardToHand()
     {
-        CardParent drawnCard = p.Deck[0];
+        NewVirtualCardParent drawnCard = p.Deck[0];
 
         p.Hand.Add(drawnCard);
         p.Deck.RemoveAt(0);
 
-        drawnCard.CardLocation = CardParent.location.hand;
+        drawnCard.CardLocation = NewVirtualCardParent.location.hand;
 
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
