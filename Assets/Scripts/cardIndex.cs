@@ -12,7 +12,7 @@ namespace cardIndex
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, CardParent.type _type, string _text, int _health, int _damage, CardParent.effect _ability, string _flavorText)
+        public Details(string _faction, int _cost, string _name, CardParent.type _type, string _text, int _health, int _damage, CardParent.effect _ability, string _flavorText, int _nameIndexPosition)
         {
             faction = _faction;
             cost = _cost;
@@ -23,6 +23,8 @@ namespace cardIndex
             damage = _damage;
             ability = _ability;
             flavorText = _flavorText;
+            nameIndexPosition = _nameIndexPosition;
+            
         }
         public string faction;
         public int cost;
@@ -33,6 +35,7 @@ namespace cardIndex
         public int damage;
         public CardParent.effect ability;
         public string flavorText;
+        public int nameIndexPosition;
     }
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
@@ -41,6 +44,7 @@ namespace cardIndex
     {
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
+        private static List<string> nameIndex = new List<string>();
         /// <summary>
         /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
         /// </summary>
@@ -65,7 +69,8 @@ namespace cardIndex
             string raw;
 
             // while allCards.tsv has data.
-            while ((raw = reader.ReadLine()) != null)
+            // for loop is only here because I need an int for the nameIndex.
+            for (int i = 0; (raw = reader.ReadLine()) != null; i++)
             {
                 string[] rawDetails = raw.Split('\t');
 
@@ -122,8 +127,9 @@ namespace cardIndex
                     }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8]);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i);
                 index.Add(rawDetails[2], cardToAdd);
+                nameIndex.Add(rawDetails[2]);
             }
             reader.Close();
         }
