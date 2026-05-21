@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using UnityEngine;
 using cardIndex;
 public class CardParent
@@ -78,7 +77,7 @@ public class CardParent
     /// <param name="cardLocation">location of the card.</param>
     public CardParent(string name, location cardLocation)
     {
-        Details cardDetails = Index.GetDetails(name);
+        Details cardDetails = cardIndex.Index.GetDetails(name);
         cost = cardDetails.cost;
         health = cardDetails.health;
         damage = cardDetails.damage;
