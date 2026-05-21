@@ -54,6 +54,12 @@ namespace Network
     public static class Networking
     {
         /// <summary>
+        /// These variables are for the network manager to manipulate the game.
+        /// </summary>
+        private static Player playerOne;
+        private static Player playerTwo;
+
+        /// <summary>
         /// All these variables are for the network manager to actually do the networking.
         /// </summary>
         private static int port = 6767;
@@ -67,9 +73,12 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
-        // private static CancellationTokenSource lostConnection = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
+        public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
 
+        /// <summary>
+        /// get/set the current state of the network manager.
+        /// </summary>
         public static state CurrentState { 
             get
             {
@@ -152,8 +161,8 @@ namespace Network
             } 
         }
 
-        public static IPAddress OtherIPv4Address { get { return otherIPv4Address; } set { otherIPv4Address = value; }
-        }
+        public static IPAddress OtherIPv4Address { get { return otherIPv4Address; } set { otherIPv4Address = value; } }
+
         /// <summary>
         /// Take a string containing EITHER an ip address or hostname and convert it to an IPAddress object.
         /// </summary>
@@ -281,17 +290,6 @@ namespace Network
                 CloseConnection();
             }
         }
-        /*
-         * Packets are 1024 byte long arrays that are split differently depending on their type.
-         * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
-         * --- HANDSHAKE: ---
-         * the second byte determines if it's a request or response.
-         * currently bytes 3 - 39 store the handshakeContent variable.
-         * bytes 40 - 43 hold the host system's IP Address.
-         * bytes 44 - 1023 are empty so we can use it later to send more info.
-         * --- KEEPALIVE: ---
-         * bytes 1 - 1023 are empty so we can use it later to send more info.
-         */
 
         /// <summary>
         /// Start a connection as client, and verify the connection.
@@ -339,6 +337,18 @@ namespace Network
                 CloseConnection();
             }
         }
+
+        /*
+         * Packets are 1024 byte long arrays that are split differently depending on their type.
+         * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
+         * --- HANDSHAKE: ---
+         * the second byte determines if it's a request or response.
+         * currently bytes 3 - 39 store the handshakeContent variable.
+         * bytes 40 - 43 hold the host system's IP Address.
+         * bytes 44 - 1023 are empty so we can use it later to send more info.
+         * --- KEEPALIVE: ---
+         * bytes 1 - 1023 are empty so we can use it later to send more info.
+         */
 
         /// <summary>
         /// Encode a packet to send to someone else.
