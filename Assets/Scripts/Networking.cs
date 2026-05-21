@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using cardIndex;
-using static UnityEngine.Rendering.GPUSort;
 
 namespace Network
 {
@@ -58,13 +57,19 @@ namespace Network
      * byte 2 holds the new location of the card.
      * bytes 3 and 4 hold the card index.
      * bytes 5 - 1024 are empty so we can use it later to send more info.
+     * 
+     * --- CARDATTACK: ---
+     * byte 1 holds the position of the card in the attacker's inplay array.
+     * byte 2 holds the position of the card in the target's inplay array.
+     * bytes 3 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
     {
         handshake,
         keepAlive,
         cardArray,
-        cardMove
+        cardMove,
+        cardAttack
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -395,6 +400,15 @@ namespace Network
             return packet;
         }
 
+        private static byte[] EncodePacket(NewVirtualCardParent attacker, NewVirtualCardParent target)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte) packetType.cardAttack;
+            packet[1] = (byte) playerOne.InPlay.IndexOf(attacker);
+            packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
+            return packet;
+        }
+
         private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
             byte[] packet = new byte[1024];
@@ -630,6 +644,13 @@ namespace Network
                     }
                     break;
                 }
+                case ((byte)packetType.cardAttack):
+                {
+                    MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
+                    MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
+                    attacker.Attack(target);
+                    break;
+                }
                 default:
                 {
                     throw e;
@@ -827,7 +848,7 @@ namespace Network
         /// </summary>
         /// <param name="cards">List of cards to send.</param>
         /// <param name="location"></param>
-        public static void SendCards(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
+        public static void SendCardArray(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
             byte[] packet = EncodePacket(cards, location);
             if (currentState == state.connected)
@@ -842,6 +863,47 @@ namespace Network
 #endif
         }
 
+        /// <summary>
+        /// Tell the peer what card you're moving and where it moved to.
+        /// </summary>
+        /// <param name="card">The card you're moving.</param>
+        /// <param name="Oldlocation">The old location of this card.</param>
+        /// <param name="newLocation">The new location of this card.</param>
+        public static void SendMoveCard(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, NewVirtualCardParent.location newLocation)
+        {
+            byte[] packet = EncodePacket(card, Oldlocation, newLocation);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send a card while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer you attacked a card.
+        /// </summary>
+        /// <param name="attacker">The card attacking.</param>
+        /// <param name="target">The target of the attack.</param>
+        public static void SendAttack(MinionParent attacker, MinionParent target)
+        {
+            byte[] packet = EncodePacket(attacker, target);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send an attack while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
         public static void TEMPsendpacket()
         {
             byte[] packet = new byte[1024];
@@ -850,3 +912,7 @@ namespace Network
         }
     }
 }
+/*
+ * TODO: ADD A CARD'S INDEX IN ITS ARRAY TO THE PACKET
+ * This should add support for duplicate cards.
+ */
