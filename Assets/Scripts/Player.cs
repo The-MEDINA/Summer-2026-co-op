@@ -13,10 +13,10 @@ public class Player : MonoBehaviour
     private float energyTimer = 0f;
     private float drawTimer = 0f;
 
-    private List<CardParent> deck = new List<CardParent>();
-    private List<CardParent> hand = new List<CardParent>();
-    private List<CardParent> inPlay = new List<CardParent>();
-    private List<CardParent> discard = new List<CardParent>();
+    private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
+    private List<NewVirtualCardParent> hand = new List<NewVirtualCardParent>();
+    private List<NewVirtualCardParent> inPlay = new List<NewVirtualCardParent>();
+    private List<NewVirtualCardParent> discard = new List<NewVirtualCardParent>();
 
     public bool canDraw = false;
 
@@ -24,10 +24,10 @@ public class Player : MonoBehaviour
     public int Energy { get { return energy; } set { energy = value; } }
     public int MaxEnergy { get { return maxEnergy; } }
 
-    public List<CardParent> Deck { get { return deck; } set { deck = value; } }
-    public List<CardParent> Hand { get { return hand; } set { hand = value; } }
-    public List<CardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
-    public List<CardParent> Discard { get { return discard; } set { discard = value; } }
+    public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
+    public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
+    public List<NewVirtualCardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
+    public List<NewVirtualCardParent> Discard { get { return discard; } set { discard = value; } }
 
     private void Start()
     {
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
         energyTimer = 0f;
     }
 
-    public bool CanAfford(CardParent card)
+    public bool CanAfford(NewVirtualCardParent card)
     {
         return card != null && Energy >= card.Cost;
     }
@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveCardToInPlay(CardParent card)
+    public void MoveCardToInPlay(MinionParent card)
     {
         if (card == null)
         {
@@ -114,11 +114,11 @@ public class Player : MonoBehaviour
             InPlay.Add(card);
         }
 
-        card.CardLocation = CardParent.location.inPlay;
+        card.CardLocation = NewVirtualCardParent.location.inPlay;
         RegisterAction();
     }
 
-    public void MoveCardToDiscard(CardParent card)
+    public void MoveCardToDiscard(NewVirtualCardParent card)
     {
         if (card == null)
         {
@@ -133,7 +133,7 @@ public class Player : MonoBehaviour
             Discard.Add(card);
         }
 
-        card.CardLocation = CardParent.location.discard;
+        card.CardLocation = NewVirtualCardParent.location.discard;
     }
 
     public void TakeDamage(int damage)
