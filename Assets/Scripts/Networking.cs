@@ -618,7 +618,7 @@ namespace Network
                                 // Seems like an error.
                                 playerTwo.MoveCardToInPlay((MinionParent) cardToMove);
                             }
-                            if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard) playerTwo.MoveCardToDiscard(cardToMove);
+                            else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard) playerTwo.MoveCardToDiscard(cardToMove);
 #if DEBUG_MODE
                             else
                             {
