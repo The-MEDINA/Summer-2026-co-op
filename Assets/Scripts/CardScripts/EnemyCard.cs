@@ -13,6 +13,6 @@ public class EnemyCard : MonoBehaviour
     void Start()
     {
         thisClickHandler = GetComponent<CardClickHandler>();
-        thisClickHandler.CardData = new MinionParent(1, health, 20, NewVirtualCardParent.type.minion, MinionParent.effect.none, NewVirtualCardParent.location.deck);
+        thisClickHandler.CardData = new MinionParent(1, health, 20, "Cat", NewVirtualCardParent.type.minion, MinionParent.effect.none, NewVirtualCardParent.location.deck);
     }
 }
