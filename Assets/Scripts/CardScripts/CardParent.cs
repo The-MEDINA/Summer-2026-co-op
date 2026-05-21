@@ -83,15 +83,9 @@ public class CardParent
         damage = cardDetails.damage;
         cardName = cardDetails.name;
         cardType = cardDetails.type;
-        cardEffect = cardDetails.ability;
+        //cardEffect = cardDetails.ability;
         flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
-    }
-
-    //triggered by event COULD ALSO BE HANDLED IN CARD CLICK/MANAGER
-    public void OnPlay()
-    {
-        Debug.Log("a");
     }
 
     // OnPlay should change a state in the player to a state where if they click on an opponent's card, *then* it calls attack and resets player state imo - Dave
