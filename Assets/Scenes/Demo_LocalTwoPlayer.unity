@@ -153,6 +153,7 @@ MonoBehaviour:
   startingEnergy: 0
   timeForEnergy: 5
   timeToDraw: 2
+  isPlayerTwo: 1
   canDraw: 0
 --- !u!4 &143358788
 Transform:
@@ -543,6 +544,7 @@ MonoBehaviour:
   startingEnergy: 0
   timeForEnergy: 1
   timeToDraw: 2
+  isPlayerTwo: 0
   canDraw: 0
 --- !u!4 &427913136
 Transform:

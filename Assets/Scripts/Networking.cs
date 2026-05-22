@@ -46,6 +46,10 @@ namespace Network
      * --- KEEPALIVE: ---
      * bytes 1 - 1023 are empty so we can use it later to send more info.
      * 
+     * --- SCENESWITCH: ---
+     * bytes 1 - 2 hold the length of the name of the scene to swap to.
+     * The rest of the bytes hold the scene name.
+     * 
      * --- CARDARRAY: ---
      * byte 1 holds the location of the cards.
      * byte 2 holds the length of the array of cards.
@@ -67,6 +71,7 @@ namespace Network
     {
         handshake,
         keepAlive,
+        sceneSwitch,
         cardArray,
         cardMove,
         cardAttack

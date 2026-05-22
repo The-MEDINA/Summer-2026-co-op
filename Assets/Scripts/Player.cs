@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int startingEnergy = 0;
     [SerializeField] private float timeForEnergy = 5f;
     [SerializeField] private float timeToDraw = 2f;
+    [SerializeField] private bool isPlayerTwo = false;
 
     private int energy;
     private float energyTimer = 0f;
