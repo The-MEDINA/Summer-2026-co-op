@@ -734,6 +734,9 @@ namespace Network
             {
                 while (currentState == state.connected)
                 {
+#if DEBUG_MODE
+                    Debug.Log("Host connection while loop");
+#endif
                     byte[] packet = new byte[1024];
 
                     // (As far as I know) Make a task to check if this ever finishes on time.
@@ -821,7 +824,7 @@ namespace Network
                     connectionTasks.Add(Task.Run(async () =>
                     {
 #if DEBUG_MODE
-                        Debug.Log($"keeepalive task");
+                        Debug.Log($"keepalive task");
 #endif
                         try
                         {
@@ -838,7 +841,7 @@ namespace Network
                         catch
                         {
 #if DEBUG_MODE
-                            Debug.LogWarning($"keeepalive task was cancelled.");
+                            Debug.LogWarning($"keepalive task was cancelled.");
 #endif
                         }
                     }));

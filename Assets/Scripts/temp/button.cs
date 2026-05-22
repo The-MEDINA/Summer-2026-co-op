@@ -23,12 +23,12 @@ public class button : MonoBehaviour
     }
     private void OnDestroy()
     {
-        Networking.CloseConnection();
+        // Networking.CloseConnection();
     }
     public void switchScene()
     {
         Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
-        // SceneManager.LoadScene("Demo_LocalTwoPlayer");
+        SceneManager.LoadScene("Demo_LocalTwoPlayer");
     }
 
     public void changeMode()
