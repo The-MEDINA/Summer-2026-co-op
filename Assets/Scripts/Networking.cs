@@ -66,6 +66,11 @@ namespace Network
      * bytes 3 and 4 hold the card index.
      * bytes 5 - 1024 are empty so we can use it later to send more info.
      * 
+     * --- CARDADD: ---
+     * Byte 1 holds the location of the card to be made.
+     * bytes 2 - 3 hold the card index.
+     * bytes 4 - 1023 are empty so we can use it later to send more info.
+     * 
      * --- CARDATTACK: ---
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
@@ -78,6 +83,7 @@ namespace Network
         sceneSwitch,
         cardArray,
         cardMove,
+        cardAdd,
         cardAttack
     }
     // the mode the machine's set to for networking.
@@ -115,6 +121,19 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
+
+        /*
+         * Anything that's prefixed with "request" needs a unity game object to read it and do something manually.
+         * 
+         * Unfortunately, it seems that some stuff, like changing scenes, needs to be done in a "Unity thread" (Whatever that is)
+         * Well, because network runs tasks (which I think are based on threads?) it seems I can't call certain methods like ones to change scene.
+         * 
+         * So basically, these need to be checked by a gameObject and that gameObject needs to do what it's asking.
+         */
+
+        /// <summary>
+        /// if this variable is not an empty string, please change the scene using the variable.
+        /// </summary>
         private static string requestSceneChange = "";
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
@@ -384,6 +403,13 @@ namespace Network
             }
         }
 
+        /// <summary>
+        /// encode a cardMove packet to send to a peer.
+        /// </summary>
+        /// <param name="card">card to move</param>
+        /// <param name="oldLocation">the card's old location.</param>
+        /// <param name="newLocation">the card's new location.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, NewVirtualCardParent.location newLocation)
         {
             byte[] packet = new byte[1024];
@@ -412,6 +438,12 @@ namespace Network
             return packet;
         }
 
+        /// <summary>
+        /// Encode a cardAttack packet to send to a peer.
+        /// </summary>
+        /// <param name="attacker">card that's attacking.</param>
+        /// <param name="target">card that's being targetted.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(NewVirtualCardParent attacker, NewVirtualCardParent target)
         {
             byte[] packet = new byte[1024];
@@ -420,6 +452,12 @@ namespace Network
             packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
             return packet;
         }
+
+        /// <summary>
+        /// encode a sceneSwitch packet to send to a peer.
+        /// </summary>
+        /// <param name="sceneName">name of the scene to encode.</param>
+        /// <returns>a byte[1024] packet.</returns>
 
         private static byte[] EncodePacket(string sceneName)
         {
@@ -453,6 +491,12 @@ namespace Network
             return packet;
         }
 
+        /// <summary>
+        /// encode a cardArray packet to send to a peer.
+        /// </summary>
+        /// <param name="cards">list of cards.</param>
+        /// <param name="location">location of the list.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
             byte[] packet = new byte[1024];
@@ -483,6 +527,7 @@ namespace Network
             }
             return packet;
         }
+
         /// <summary>
         /// Encode a packet to send to someone else.
         /// </summary>
@@ -537,7 +582,40 @@ namespace Network
             }
             return packet;
         }
-        
+
+        /// <summary>
+        /// Encodes a cardAdd packet to send to a peer.
+        /// </summary>
+        /// <param name="card">card to add.</param>
+        /// <param name="location">location to add it to.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location location)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte) packetType.cardAdd;
+            packet[1] = (byte) location;
+
+            // prepare the card's index to encode into two bytes.
+            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(card.CardName);
+            short cardToEncode = (short) cardDetails.nameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(cardToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((cardToEncode >> 8) & 255);
+
+            packet[2] = highByte;
+            packet[3] = lowByte;
+            return packet;
+        }
+        /// <summary>
+        /// Encode a keepAlive packet to send to a peer.
+        /// </summary>
+        /// <param name="type">ALWAYS PASS keepAlive here. (I'll fix this at.. some point.)</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(packetType type)
         {
             byte[] packet = new byte[1024];
@@ -709,6 +787,29 @@ namespace Network
                         }
                     }
                     break;
+                }
+                case ((byte)packetType.cardAdd):
+                {
+                    NewVirtualCardParent card;
+
+                    // rebuild the card from the info.
+                    short indexOfCard = packet[2];
+                    indexOfCard <<= 8;
+                    indexOfCard += packet[3];
+
+                    // grab its details, check its type, and construct it accordingly.
+                    cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
+                    card = ReconstructCard(cardDetails, (NewVirtualCardParent.location)packet[1]);
+
+                    // place the card in the correct spot.
+                    switch ((NewVirtualCardParent.location)packet[1])
+                    {
+                        case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
+                        case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
+                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); break; }
+                        case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
+                    }
+                        break;
                 }
                 case ((byte)packetType.cardAttack):
                 {
