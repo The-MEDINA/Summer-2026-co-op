@@ -29,6 +29,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Text;
 using cardIndex;
 
 namespace Network
@@ -47,8 +49,10 @@ namespace Network
      * bytes 1 - 1023 are empty so we can use it later to send more info.
      * 
      * --- SCENESWITCH: ---
-     * bytes 1 - 2 hold the length of the name of the scene to swap to.
+     * bytes 1-2 hold the length of the scene name.
      * The rest of the bytes hold the scene name.
+     * (I'm encoding this in UTF-8 and I don't know how long that is.)
+     * (This packet should be more than big enough anyways.)
      * 
      * --- CARDARRAY: ---
      * byte 1 holds the location of the cards.
@@ -113,6 +117,7 @@ namespace Network
         private static NetworkStream stream;
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
+        public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -414,6 +419,38 @@ namespace Network
             return packet;
         }
 
+        private static byte[] EncodePacket(string sceneName)
+        {
+            byte[] packet = new byte[1024];
+            // I forget sometimes I'm using C# that has these helper functions built in.
+            // Spending so much time in C for my MOPS class really made me build every little thing myself.
+            byte[] nameAsBytes = Encoding.UTF8.GetBytes(sceneName);
+            short length = (short) nameAsBytes.Length;
+
+            packet[0] = (byte) packetType.sceneSwitch;
+
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(length & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((length >> 8) & 255);
+
+            // High byte in index 1, low byte in index 2.
+            packet[1] = highByte;
+            packet[2] = lowByte;
+
+            // encode the scene name.
+            for (int i = 0; i < length; i++)
+            {
+                packet[3 + i] = nameAsBytes[i];
+            }
+
+            return packet;
+        }
+
         private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
             byte[] packet = new byte[1024];
@@ -568,6 +605,25 @@ namespace Network
                         byte[] responsePacket = EncodePacket(packetType.keepAlive);
                         await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                     }
+                    break;
+                }
+                case ((byte) packetType.sceneSwitch):
+                {
+                    // figure out the length.
+                    short length = packet[1];
+                    length <<= 8;
+                    length += packet[2];
+
+                    // get the bytes and convert them to string.
+                    byte[] stringAsBytes = new byte[length];
+                    for (int i = 0; i < length; i++)
+                    {
+                        stringAsBytes[i] = packet[3 + i];
+                    }
+                    string sceneName = Encoding.UTF8.GetString(stringAsBytes);
+
+                    // switch scene.
+                    SceneManager.LoadScene(sceneName);
                     break;
                 }
                 case ((byte) packetType.cardArray):
@@ -848,6 +904,24 @@ namespace Network
             return card;
         }
 
+        /// <summary>
+        /// Send a scene switch to a peer.
+        /// </summary>
+        /// <param name="sceneName">name of the scene to switch to.</param>
+        public static void SendSceneSwitch(string sceneName)
+        {
+            byte[] packet = EncodePacket(sceneName);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send a scene switch while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
         /// <summary>
         /// Send an array of cards to a connected peer.
         /// </summary>

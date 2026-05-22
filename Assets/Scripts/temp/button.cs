@@ -28,9 +28,8 @@ public class button : MonoBehaviour
     }
     public void switchScene()
     {
-        Networking.Details();
-        Networking.Port = 6767;
-        SceneManager.LoadScene("SampleScene");
+        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
+        SceneManager.LoadScene("Demo_LocalTwoPlayer");
     }
 
     public void changeMode()
