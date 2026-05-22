@@ -772,6 +772,9 @@ namespace Network
             {
                 while (currentState == state.connected)
                 {
+#if DEBUG_MODE
+                    Debug.Log("Client connection while loop");
+#endif
                     // setup
                     byte[] packet = new byte[1024];
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
