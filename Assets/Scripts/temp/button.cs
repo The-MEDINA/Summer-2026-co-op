@@ -23,13 +23,12 @@ public class button : MonoBehaviour
     }
     private void OnDestroy()
     {
-        Debug.Log("destroy");
         Networking.CloseConnection();
     }
     public void switchScene()
     {
         Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
-        SceneManager.LoadScene("Demo_LocalTwoPlayer");
+        // SceneManager.LoadScene("Demo_LocalTwoPlayer");
     }
 
     public void changeMode()
@@ -65,6 +64,7 @@ public class button : MonoBehaviour
 
     public void TEMPSendaPacket()
     {
-        Networking.TEMPsendpacket();
+        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
+        // Networking.TEMPsendpacket();
     }
 }

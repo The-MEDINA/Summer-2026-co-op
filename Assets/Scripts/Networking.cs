@@ -115,9 +115,11 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
+        private static string requestSceneChange = "";
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
+        public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -609,6 +611,9 @@ namespace Network
                 }
                 case ((byte) packetType.sceneSwitch):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found sceneSwitch packet");
+#endif
                     // figure out the length.
                     short length = packet[1];
                     length <<= 8;
@@ -622,8 +627,8 @@ namespace Network
                     }
                     string sceneName = Encoding.UTF8.GetString(stringAsBytes);
 
-                    // switch scene.
-                    SceneManager.LoadScene(sceneName);
+                    // request a scene change.
+                    requestSceneChange = sceneName;
                     break;
                 }
                 case ((byte) packetType.cardArray):
@@ -724,13 +729,13 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log($"entering Connection()");
 #endif
-            byte[] packet = new byte[1024];
-
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
             {
                 while (currentState == state.connected)
                 {
+                    byte[] packet = new byte[1024];
+
                     // (As far as I know) Make a task to check if this ever finishes on time.
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
@@ -768,6 +773,7 @@ namespace Network
                 while (currentState == state.connected)
                 {
                     // setup
+                    byte[] packet = new byte[1024];
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
                     // Ok so... what this basically does is run 2 separate thread-like tasks.
                     // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
@@ -781,7 +787,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -800,6 +806,9 @@ namespace Network
                         // also stop the keepalive packet from being sent if it's been less than 5 seconds.
                         else if (result.IsCompleted)
                         {
+#if DEBUG_MODE
+                            Debug.Log($"found {result.Result} bytes.");
+#endif
                             receivedPacket.Cancel();
                             DecodePacket(packet);
                         }
@@ -913,7 +922,7 @@ namespace Network
             byte[] packet = EncodePacket(sceneName);
             if (currentState == state.connected)
             {
-                stream.WriteAsync(packet);
+                stream.Write(packet);
             }
 #if DEBUG_MODE
             else
