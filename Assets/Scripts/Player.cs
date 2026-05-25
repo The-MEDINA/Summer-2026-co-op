@@ -155,12 +155,12 @@ public class Player : MonoBehaviour
 
     private void CheckCoordinate()
     {
-        for(int i = 0; i < InPlay.Count; i++)
+        for (int i = 0; i < InPlay.Count; i++)
         {
             MinionParent minion = (MinionParent)InPlay[i];
             if(minion.CardEffect == MinionParent.effect.coordinate && minion.CoordinateAbility.Awarded == false)
             {
-                int coordNum = -1;
+                int coordNum = 0;
                 for (int j = 0; j < InPlay.Count; j++)
                 {
                     MinionParent newMinion = (MinionParent)InPlay[j];

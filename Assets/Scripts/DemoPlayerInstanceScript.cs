@@ -9,9 +9,9 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     void Start()
     {
         p = GetComponent<Player>();
-        p.Deck.Add(new MinionParent("Tank Cat", MinionParent.location.deck));
-        p.Deck.Add(new MinionParent("Macho Cat", MinionParent.location.deck));
-        p.Deck.Add(new MinionParent("Cat", MinionParent.location.deck));
+        p.Deck.Add(new MinionParent("Ninja Cat", MinionParent.location.deck));
+        p.Deck.Add(new MinionParent("Night Vision Cat", MinionParent.location.deck));
+        p.Deck.Add(new MinionParent("Night Vision Cat", MinionParent.location.deck));
         p.Deck.Add(new MinionParent("Cool Cat", MinionParent.location.deck));
         p.Deck.Add(new MinionParent("Western Cat", MinionParent.location.deck));
         //p.Deck.Add(new CardParent(5, 7, 7, "Tank Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));

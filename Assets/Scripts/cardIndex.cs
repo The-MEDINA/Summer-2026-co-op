@@ -163,6 +163,11 @@ namespace cardIndex
                         _ability = MinionParent.effect.deathtouch;
                         break;
                     }
+                    case ("coordinate"):
+                    {
+                        _ability = MinionParent.effect.coordinate;
+                        break;
+                    }
                     default:
                     {
                         Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
