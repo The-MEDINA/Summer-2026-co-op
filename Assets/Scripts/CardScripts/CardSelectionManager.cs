@@ -152,10 +152,23 @@ public class CardSelectionManager : MonoBehaviour
                 return;
             }
 
-            if(wasSecondAttack)
+            if (selectedCardObject.CardData is TwoAttackParent)
             {
-                //secondattack right here
-                return;
+                TwoAttackParent twoAttackMinion = (TwoAttackParent)selectedCardObject.CardData;
+                MinionParent targetData = (MinionParent)targetCard.CardData;
+
+                if (wasSecondAttack)
+                {
+                    twoAttackMinion.CheckAttack(2, targetData);
+                    Debug.Log("Attacked enemy card. Enemy health: " + targetData.Health);
+                    return;
+                }
+                else
+                {
+                    twoAttackMinion.CheckAttack(1, (MinionParent)targetCard.CardData);
+                    Debug.Log("Attacked enemy card. Enemy health: " + targetData.Health);
+                    return;
+                }
             }
 
             MinionParent MinionData = (MinionParent)selectedCardObject.CardData;
