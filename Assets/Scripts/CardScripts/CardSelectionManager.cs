@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class CardSelectionManager : MonoBehaviour
         Instance = this;
     }
 
-    public void SelectCard(CardClickHandler clickedCard)
+    public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)
     {
         if (clickedCard == null || clickedCard.CardData == null)
         {
@@ -32,7 +33,15 @@ public class CardSelectionManager : MonoBehaviour
 
         if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
-            TryAttackTarget(clickedCard);
+            MinionParent minion = (MinionParent)selectedCardObject.CardData;
+            if(minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Left)
+            {
+                TryAttackTarget(clickedCard, true);
+            }
+            else
+            {
+                TryAttackTarget(clickedCard, false);
+            }
             return;
         }
 
@@ -115,7 +124,7 @@ public class CardSelectionManager : MonoBehaviour
         Debug.Log("Card moved to battleground. Energy left: " + player.Energy);
     }
 
-    private void TryAttackTarget(CardClickHandler targetCard)
+    private void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
     {
         if (selectedCardObject == null || targetCard == null)
         {
@@ -140,6 +149,12 @@ public class CardSelectionManager : MonoBehaviour
             {
                 Debug.Log("Card must be in play before it can attack.");
                 ClearSelection();
+                return;
+            }
+
+            if(wasSecondAttack)
+            {
+                //secondattack right here
                 return;
             }
 

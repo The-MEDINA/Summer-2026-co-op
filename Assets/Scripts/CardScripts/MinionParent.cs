@@ -10,7 +10,8 @@ public class MinionParent : NewVirtualCardParent
         explode,
         haste,
         sloth,
-        coordinate
+        coordinate,
+        twoAttacks
     }
 
     private int health;

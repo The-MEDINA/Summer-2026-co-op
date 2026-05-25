@@ -72,7 +72,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         if (CardSelectionManager.Instance != null)
         {
-            CardSelectionManager.Instance.SelectCard(this);
+            CardSelectionManager.Instance.SelectCard(this, eventData);
         }
     }
 
