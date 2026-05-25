@@ -12,7 +12,8 @@ public class MinionParent : NewVirtualCardParent
         sloth,
         coordinate,
         twoAttacks,
-        aoe
+        aoe,
+        overkill
     }
 
     private int health;
@@ -77,6 +78,12 @@ public class MinionParent : NewVirtualCardParent
             {
                 target.TakeDamage(this, Damage);
             }
+
+            if(cardEffect == effect.overkill && target.IsDead)
+            {
+                //player takes damage based on negative health of dead enemy
+                Debug.Log("OVERKILL");
+            }
             canAttack = false;
         }
     }
@@ -88,7 +95,26 @@ public class MinionParent : NewVirtualCardParent
         if (Health <= 0)
         {
             Health = 0;
-            if (cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            if (cardEffect == effect.explode) 
+            {
+                int explodeDamage = 0;
+                switch(CardName)
+                {
+                    case "Mad Scientist Cat":
+                        {
+                            explodeDamage = 3;
+                            break;
+                        }
+
+                    case "Exploding Cat":
+                    default:
+                        {
+                            explodeDamage = 1;
+                            break;
+                        }
+                }
+                attacker.TakeDamage(this, explodeDamage); 
+            }
             Death();
         }
     }

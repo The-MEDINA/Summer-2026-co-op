@@ -168,6 +168,11 @@ namespace cardIndex
                         _ability = MinionParent.effect.coordinate;
                         break;
                     }
+                    case ("overkill"):
+                        {
+                            _ability = MinionParent.effect.overkill;
+                            break;
+                        }
                     default:
                     {
                         Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");

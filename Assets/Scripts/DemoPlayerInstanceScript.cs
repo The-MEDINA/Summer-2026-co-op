@@ -15,7 +15,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         p.Deck.Add(new MinionParent("Night Vision Cat", MinionParent.location.deck));
         p.Deck.Add(new MinionParent("Night Vision Cat", MinionParent.location.deck));
         p.Deck.Add(new MinionParent("Magic Cat / Septimus Mrreep", MinionParent.location.deck));
-        p.Deck.Add(new MinionParent("Western Cat", MinionParent.location.deck));
+        p.Deck.Add(new MinionParent("Ratta-tat-Cat", MinionParent.location.deck));
         //p.Deck.Add(new CardParent(5, 7, 7, "Tank Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
         //p.Deck.Add(new CardParent(3, 4, 3, "Macho Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
         //p.Deck.Add(new CardParent(1, 1, 2, "Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
