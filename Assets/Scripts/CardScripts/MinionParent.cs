@@ -9,7 +9,8 @@ public class MinionParent : NewVirtualCardParent
         deathtouch, //just works off base damage for right now, probably want to change this
         explode,
         haste,
-        sloth
+        sloth,
+        coordinate
     }
 
     private int health;
@@ -17,12 +18,14 @@ public class MinionParent : NewVirtualCardParent
     private effect cardEffect;
     private bool isDead = false;
     [SerializeField] private bool canAttack = false;
+    private CoordinateAbilityScript coordinateAbility;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
     public bool IsDead { get { return isDead; } }
     public effect CardEffect { get { return cardEffect; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
+    public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
 
     public MinionParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation) 
         : base(cost, name, cardType, cardLocation)
@@ -30,6 +33,7 @@ public class MinionParent : NewVirtualCardParent
         this.health = health;
         this.damage = damage;
         this.cardEffect = cardEffect;
+        if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
     }
 
     /// <summary>
@@ -43,6 +47,7 @@ public class MinionParent : NewVirtualCardParent
         health = cardDetails.health;
         damage = cardDetails.damage;
         cardEffect = cardDetails.ability;
+        if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
     }
 
     public override void OnPlay()
