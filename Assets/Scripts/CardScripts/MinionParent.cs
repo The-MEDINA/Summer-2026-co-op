@@ -11,7 +11,8 @@ public class MinionParent : NewVirtualCardParent
         haste,
         sloth,
         coordinate,
-        twoAttacks
+        twoAttacks,
+        aoe
     }
 
     private int health;
@@ -55,6 +56,7 @@ public class MinionParent : NewVirtualCardParent
     {
         Debug.Log("a");
     }
+
     public void Attack(MinionParent target)
     {
         if (canAttack)
@@ -63,7 +65,11 @@ public class MinionParent : NewVirtualCardParent
             {
                 return;
             }
-            if (cardEffect == effect.deathtouch)
+            if (cardEffect == effect.aoe)
+            {
+                AOEAttack();
+            }
+            else if (cardEffect == effect.deathtouch)
             {
                 target.TakeDamage(this, 99999999);
             }
@@ -91,5 +97,11 @@ public class MinionParent : NewVirtualCardParent
     {
         isDead = true;
         CardLocation = location.discard;
+    }
+
+    //this needs to hit all enemy minions - implementing later
+    public void AOEAttack()
+    {
+
     }
 }

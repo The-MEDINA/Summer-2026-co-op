@@ -34,7 +34,7 @@ public class CardSelectionManager : MonoBehaviour
         if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
             MinionParent minion = (MinionParent)selectedCardObject.CardData;
-            if(minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Left)
+            if(minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
             {
                 TryAttackTarget(clickedCard, true);
             }
