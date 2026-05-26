@@ -29,6 +29,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Text;
 using cardIndex;
 
 namespace Network
@@ -46,6 +48,12 @@ namespace Network
      * --- KEEPALIVE: ---
      * bytes 1 - 1023 are empty so we can use it later to send more info.
      * 
+     * --- SCENESWITCH: ---
+     * bytes 1-2 hold the length of the scene name.
+     * The rest of the bytes hold the scene name.
+     * (I'm encoding this in UTF-8 and I don't know how long that is.)
+     * (This packet should be more than big enough anyways.)
+     * 
      * --- CARDARRAY: ---
      * byte 1 holds the location of the cards.
      * byte 2 holds the length of the array of cards.
@@ -58,6 +66,11 @@ namespace Network
      * bytes 3 and 4 hold the card index.
      * bytes 5 - 1024 are empty so we can use it later to send more info.
      * 
+     * --- CARDADD: ---
+     * Byte 1 holds the location of the card to be made.
+     * bytes 2 - 3 hold the card index.
+     * bytes 4 - 1023 are empty so we can use it later to send more info.
+     * 
      * --- CARDATTACK: ---
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
@@ -67,8 +80,10 @@ namespace Network
     {
         handshake,
         keepAlive,
+        sceneSwitch,
         cardArray,
         cardMove,
+        cardAdd,
         cardAttack
     }
     // the mode the machine's set to for networking.
@@ -107,7 +122,23 @@ namespace Network
         private static TcpClient client;
         private static NetworkStream stream;
 
+        /*
+         * Anything that's prefixed with "request" needs a unity game object to read it and do something manually.
+         * 
+         * Unfortunately, it seems that some stuff, like changing scenes, needs to be done in a "Unity thread" (Whatever that is)
+         * Well, because network runs tasks (which I think are based on threads?) it seems I can't call certain methods like ones to change scene.
+         * 
+         * So basically, these need to be checked by a gameObject and that gameObject needs to do what it's asking.
+         */
+
+        /// <summary>
+        /// if this variable is not an empty string, please change the scene using the variable.
+        /// </summary>
+        private static string requestSceneChange = "";
+
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
+        public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
+        public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -372,6 +403,13 @@ namespace Network
             }
         }
 
+        /// <summary>
+        /// encode a cardMove packet to send to a peer.
+        /// </summary>
+        /// <param name="card">card to move</param>
+        /// <param name="oldLocation">the card's old location.</param>
+        /// <param name="newLocation">the card's new location.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, NewVirtualCardParent.location newLocation)
         {
             byte[] packet = new byte[1024];
@@ -400,6 +438,12 @@ namespace Network
             return packet;
         }
 
+        /// <summary>
+        /// Encode a cardAttack packet to send to a peer.
+        /// </summary>
+        /// <param name="attacker">card that's attacking.</param>
+        /// <param name="target">card that's being targetted.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(NewVirtualCardParent attacker, NewVirtualCardParent target)
         {
             byte[] packet = new byte[1024];
@@ -409,6 +453,50 @@ namespace Network
             return packet;
         }
 
+        /// <summary>
+        /// encode a sceneSwitch packet to send to a peer.
+        /// </summary>
+        /// <param name="sceneName">name of the scene to encode.</param>
+        /// <returns>a byte[1024] packet.</returns>
+
+        private static byte[] EncodePacket(string sceneName)
+        {
+            byte[] packet = new byte[1024];
+            // I forget sometimes I'm using C# that has these helper functions built in.
+            // Spending so much time in C for my MOPS class really made me build every little thing myself.
+            byte[] nameAsBytes = Encoding.UTF8.GetBytes(sceneName);
+            short length = (short) nameAsBytes.Length;
+
+            packet[0] = (byte) packetType.sceneSwitch;
+
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(length & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((length >> 8) & 255);
+
+            // High byte in index 1, low byte in index 2.
+            packet[1] = highByte;
+            packet[2] = lowByte;
+
+            // encode the scene name.
+            for (int i = 0; i < length; i++)
+            {
+                packet[3 + i] = nameAsBytes[i];
+            }
+
+            return packet;
+        }
+
+        /// <summary>
+        /// encode a cardArray packet to send to a peer.
+        /// </summary>
+        /// <param name="cards">list of cards.</param>
+        /// <param name="location">location of the list.</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
             byte[] packet = new byte[1024];
@@ -439,6 +527,7 @@ namespace Network
             }
             return packet;
         }
+
         /// <summary>
         /// Encode a packet to send to someone else.
         /// </summary>
@@ -493,7 +582,40 @@ namespace Network
             }
             return packet;
         }
-        
+
+        /// <summary>
+        /// Encodes a cardAdd packet to send to a peer.
+        /// </summary>
+        /// <param name="card">card to add.</param>
+        /// <param name="location">location to add it to.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location location)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte) packetType.cardAdd;
+            packet[1] = (byte) location;
+
+            // prepare the card's index to encode into two bytes.
+            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(card.CardName);
+            short cardToEncode = (short) cardDetails.nameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(cardToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((cardToEncode >> 8) & 255);
+
+            packet[2] = highByte;
+            packet[3] = lowByte;
+            return packet;
+        }
+        /// <summary>
+        /// Encode a keepAlive packet to send to a peer.
+        /// </summary>
+        /// <param name="type">ALWAYS PASS keepAlive here. (I'll fix this at.. some point.)</param>
+        /// <returns>a byte[1024] packet.</returns>
         private static byte[] EncodePacket(packetType type)
         {
             byte[] packet = new byte[1024];
@@ -563,6 +685,28 @@ namespace Network
                         byte[] responsePacket = EncodePacket(packetType.keepAlive);
                         await stream.WriteAsync(responsePacket, 0, responsePacket.Length);
                     }
+                    break;
+                }
+                case ((byte) packetType.sceneSwitch):
+                {
+#if DEBUG_MODE
+                    Debug.Log("found sceneSwitch packet");
+#endif
+                    // figure out the length.
+                    short length = packet[1];
+                    length <<= 8;
+                    length += packet[2];
+
+                    // get the bytes and convert them to string.
+                    byte[] stringAsBytes = new byte[length];
+                    for (int i = 0; i < length; i++)
+                    {
+                        stringAsBytes[i] = packet[3 + i];
+                    }
+                    string sceneName = Encoding.UTF8.GetString(stringAsBytes);
+
+                    // request a scene change.
+                    requestSceneChange = sceneName;
                     break;
                 }
                 case ((byte) packetType.cardArray):
@@ -644,6 +788,29 @@ namespace Network
                     }
                     break;
                 }
+                case ((byte)packetType.cardAdd):
+                {
+                    NewVirtualCardParent card;
+
+                    // rebuild the card from the info.
+                    short indexOfCard = packet[2];
+                    indexOfCard <<= 8;
+                    indexOfCard += packet[3];
+
+                    // grab its details, check its type, and construct it accordingly.
+                    cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
+                    card = ReconstructCard(cardDetails, (NewVirtualCardParent.location)packet[1]);
+
+                    // place the card in the correct spot.
+                    switch ((NewVirtualCardParent.location)packet[1])
+                    {
+                        case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
+                        case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
+                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); break; }
+                        case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
+                    }
+                        break;
+                }
                 case ((byte)packetType.cardAttack):
                 {
                     MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
@@ -663,13 +830,16 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log($"entering Connection()");
 #endif
-            byte[] packet = new byte[1024];
-
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
             {
                 while (currentState == state.connected)
                 {
+#if DEBUG_MODE
+                    Debug.Log("Host connection while loop");
+#endif
+                    byte[] packet = new byte[1024];
+
                     // (As far as I know) Make a task to check if this ever finishes on time.
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
@@ -706,7 +876,11 @@ namespace Network
             {
                 while (currentState == state.connected)
                 {
+#if DEBUG_MODE
+                    Debug.Log("Client connection while loop");
+#endif
                     // setup
+                    byte[] packet = new byte[1024];
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
                     // Ok so... what this basically does is run 2 separate thread-like tasks.
                     // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
@@ -720,7 +894,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -739,6 +913,9 @@ namespace Network
                         // also stop the keepalive packet from being sent if it's been less than 5 seconds.
                         else if (result.IsCompleted)
                         {
+#if DEBUG_MODE
+                            Debug.Log($"found {result.Result} bytes.");
+#endif
                             receivedPacket.Cancel();
                             DecodePacket(packet);
                         }
@@ -748,7 +925,7 @@ namespace Network
                     connectionTasks.Add(Task.Run(async () =>
                     {
 #if DEBUG_MODE
-                        Debug.Log($"keeepalive task");
+                        Debug.Log($"keepalive task");
 #endif
                         try
                         {
@@ -765,7 +942,7 @@ namespace Network
                         catch
                         {
 #if DEBUG_MODE
-                            Debug.LogWarning($"keeepalive task was cancelled.");
+                            Debug.LogWarning($"keepalive task was cancelled.");
 #endif
                         }
                     }));
@@ -843,6 +1020,24 @@ namespace Network
             return card;
         }
 
+        /// <summary>
+        /// Send a scene switch to a peer.
+        /// </summary>
+        /// <param name="sceneName">name of the scene to switch to.</param>
+        public static void SendSceneSwitch(string sceneName)
+        {
+            byte[] packet = EncodePacket(sceneName);
+            if (currentState == state.connected)
+            {
+                stream.Write(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send a scene switch while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
         /// <summary>
         /// Send an array of cards to a connected peer.
         /// </summary>
