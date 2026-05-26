@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Network;
 
 public class Battleground : MonoBehaviour, IPointerClickHandler
 {
@@ -63,5 +64,6 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         handUIManager.AddCardToHand(newCard);
 
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
+        Networking.SendCardAdd(drawnCard, NewVirtualCardParent.location.hand);
     }
 }

@@ -1045,7 +1045,7 @@ namespace Network
         /// <param name="card">The card you're moving.</param>
         /// <param name="Oldlocation">The old location of this card.</param>
         /// <param name="newLocation">The new location of this card.</param>
-        public static void SendMoveCard(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
+        public static void SendCardMove(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
             if (currentState == state.connected)
@@ -1060,12 +1060,27 @@ namespace Network
 #endif
         }
 
+        public static void SendCardAdd(NewVirtualCardParent card, NewVirtualCardParent.location location)
+        {
+            byte[] packet = EncodePacket(card, location);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send an add card while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
         /// <summary>
         /// Tell the peer you attacked a card.
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
-        public static void SendAttack(MinionParent attacker, MinionParent target)
+        public static void SendCardAttack(MinionParent attacker, MinionParent target)
         {
             byte[] packet = EncodePacket(attacker, target);
             if (currentState == state.connected)
