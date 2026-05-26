@@ -8,7 +8,7 @@
  * Then to access something from it, you'll need to use the keyword 'cardIndex.Index'.
  * cardIndex.Index.something <--- Methods, properties, etc
  * 
- * Index on its own theoretically works, but it causes issues. Avoidthat if possible.
+ * Index on its own theoretically works, but it causes issues. Avoid that if possible.
  * 
  *  - Dave :>
  */
@@ -36,7 +36,6 @@ namespace cardIndex
             ability = _ability;
             flavorText = _flavorText;
             nameIndexPosition = _nameIndexPosition;
-            
         }
 
         public string faction;
@@ -85,6 +84,17 @@ namespace cardIndex
             index.TryGetValue(name, out returnDetails);
             return returnDetails;
         }
+
+        /// <summary>
+        /// Returns ONLY the name of the card given by index. Use this if you only need the name.
+        /// </summary>
+        /// <param name="i">index of the card.</param>
+        /// <returns>name of the card at that index.</returns>
+        public static string GetName(int i)
+        {
+            return nameIndex[i];
+        }
+
         /// <summary>
         /// Creates the index of cards from the provided allCards.tsv file.
         /// This function should ONLY be called in the worst case scenario that the index is not ready by the time a card gets instantiated.
@@ -151,6 +161,11 @@ namespace cardIndex
                     case("deathtouch"):
                     {
                         _ability = MinionParent.effect.deathtouch;
+                        break;
+                    }
+                    case ("coordinate"):
+                    {
+                        _ability = MinionParent.effect.coordinate;
                         break;
                     }
                     default:

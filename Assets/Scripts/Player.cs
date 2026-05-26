@@ -95,6 +95,7 @@ public class Player : MonoBehaviour
 
         card.CardLocation = NewVirtualCardParent.location.inPlay;
         RegisterAction();
+        CheckCoordinate();
     }
 
     public void MoveCardToDiscard(NewVirtualCardParent card)
@@ -129,5 +130,26 @@ public class Player : MonoBehaviour
     public void Death()
     {
         Debug.Log(gameObject.name + " has lost.");
+    }
+
+    private void CheckCoordinate()
+    {
+        for (int i = 0; i < InPlay.Count; i++)
+        {
+            MinionParent minion = (MinionParent)InPlay[i];
+            if(minion.CardEffect == MinionParent.effect.coordinate && minion.CoordinateAbility.Awarded == false)
+            {
+                int coordNum = 0;
+                for (int j = 0; j < InPlay.Count; j++)
+                {
+                    MinionParent newMinion = (MinionParent)InPlay[j];
+                    if (newMinion.CardEffect == MinionParent.effect.coordinate)
+                    {
+                        coordNum++;
+                    }
+                }
+                if(coordNum >= minion.CoordinateAbility.NumToHit) { minion.CoordinateAbility.RewardAbility(minion); }
+            }
+        }
     }
 }
