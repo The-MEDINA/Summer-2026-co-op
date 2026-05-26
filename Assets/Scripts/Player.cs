@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
+    public bool IsPlayerTwo { get { return isPlayerTwo; } }
 
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }

@@ -134,10 +134,17 @@ namespace Network
         /// if this variable is not an empty string, please change the scene using the variable.
         /// </summary>
         private static string requestSceneChange = "";
+        /// <summary>
+        /// If this variable is not -1, please instantiate a card.
+        /// If it's just wanting to make a card from the deck, the value will usually be -2.
+        /// If it wants to instantiate a specific card, the value will be the specific card's index.
+        /// </summary>
+        private static int requestCardInstantiation = -1;
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
+        public static int RequestCardInstantiation { get { return requestCardInstantiation; } set { requestCardInstantiation = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -771,6 +778,9 @@ namespace Network
                 }
                 case ((byte)packetType.cardAdd):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found cardAdd packet");
+#endif
                     NewVirtualCardParent card;
 
                     // rebuild the card from the info.
@@ -787,10 +797,10 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); break; }
+                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); requestCardInstantiation = -2; break; }
                         case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
                     }
-                        break;
+                    break;
                 }
                 case ((byte)packetType.cardAttack):
                 {
