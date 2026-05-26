@@ -153,6 +153,7 @@ MonoBehaviour:
   maxEnergy: 10
   startingEnergy: 0
   timeForEnergy: 5
+  isPlayerTwo: 1
 --- !u!4 &143358788
 Transform:
   m_ObjectHideFlags: 0
@@ -390,6 +391,7 @@ MonoBehaviour:
   maxEnergy: 10
   startingEnergy: 0
   timeForEnergy: 5
+  isPlayerTwo: 0
 --- !u!4 &427913136
 Transform:
   m_ObjectHideFlags: 0
@@ -926,7 +928,7 @@ Transform:
   m_GameObject: {fileID: 564985592}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.57, y: 3.75, z: 0}
+  m_LocalPosition: {x: 8.57, y: 7.62, z: 0}
   m_LocalScale: {x: 2.5, y: 2.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

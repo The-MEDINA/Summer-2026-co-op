@@ -32,6 +32,12 @@ public class Player : MonoBehaviour
         energy = startingEnergy;
         if (isPlayerTwo) Networking.PlayerTwo = this;
         else Networking.PlayerOne = this;
+
+        // need player two to be able to act whenever on player 1's side.
+        // Easiest way to do this right now is to just make them never run out of energy or have to wait on the timer.
+        // doing this should prevent any situations where player 2 does something on their screen, but it doesn't happen on player 1's screen because they didn't have enough energy.
+        // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
+        if (isPlayerTwo) energy = 999; 
     }
 
     private void Update()
@@ -44,7 +50,7 @@ public class Player : MonoBehaviour
         if (timer >= timeForEnergy)
         {
             GainEnergy(1);
-            timer = 0f;
+            if (!isPlayerTwo) timer = 0f;
         }
         else
         {
@@ -54,7 +60,7 @@ public class Player : MonoBehaviour
 
     public void RegisterAction()
     {
-        timer = 0f;
+        if (!isPlayerTwo) timer = 0f;
     }
 
     public bool CanAfford(NewVirtualCardParent card)
@@ -69,7 +75,7 @@ public class Player : MonoBehaviour
             return false;
         }
 
-        Energy -= amount;
+        if (!isPlayerTwo) Energy -= amount;
         RegisterAction();
         return true;
     }
