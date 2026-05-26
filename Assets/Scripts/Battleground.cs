@@ -9,27 +9,39 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private HandUIManager handUIManager;
 
     private List<GameObject> cardList = new List<GameObject>();
-    private CardClickHandler currentCard;
-
-    private void Update()
-    {
-        if (p != null && p.canDraw == true && p.Deck.Count > 0)
-        {
-            DrawCardToHand();
-            p.canDraw = false;
-        }
-    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (p != null && p.Deck.Count > 0)
-        {
-            DrawCardToHand();
-        }
+        Debug.Log("Clicked deck: " + gameObject.name);
+        DrawCardToHand();
     }
 
     private void DrawCardToHand()
     {
+        if (p == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Player assigned.");
+            return;
+        }
+
+        if (cardProto == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Card Proto assigned.");
+            return;
+        }
+
+        if (handUIManager == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Hand UI Manager assigned.");
+            return;
+        }
+
+        if (p.Deck.Count <= 0)
+        {
+            Debug.LogWarning(p.gameObject.name + " deck is empty.");
+            return;
+        }
+
         NewVirtualCardParent drawnCard = p.Deck[0];
 
         p.Hand.Add(drawnCard);
@@ -40,23 +52,16 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
 
-        currentCard = newCard.GetComponent<CardClickHandler>();
+        CardClickHandler clickHandler = newCard.GetComponent<CardClickHandler>();
 
-        if (currentCard != null)
+        if (clickHandler != null)
         {
-            currentCard.CardData = drawnCard;
+            clickHandler.CardData = drawnCard;
+            clickHandler.OwnerPlayer = p;
         }
 
-        if (handUIManager != null)
-        {
-            handUIManager.AddCardToHand(newCard);
-        }
-        else
-        {
-            newCard.transform.position = new Vector3(-5.75f + ((p.Hand.Count - 1) * 2f), -3.75f, -0.1f);
-            Debug.LogWarning("No HandUIManager assigned. Using fallback position.");
-        }
+        handUIManager.AddCardToHand(newCard);
 
-        Debug.Log("Drew card. Cards in hand: " + p.Hand.Count);
+        Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
 }

@@ -8,24 +8,33 @@ public class CardUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cardDamage;
     [SerializeField] private TextMeshProUGUI cardFlavortext;
     [SerializeField] private CardClickHandler clickHandler;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Start()
     {
-        // set the text on the card through the click handler's reference to the card. 
+        if (clickHandler == null)
+        {
+            clickHandler = GetComponent<CardClickHandler>();
+        }
+
+        RefreshCardUI();
+    }
+
+    public void RefreshCardUI()
+    {
+        if (clickHandler == null || clickHandler.CardData == null)
+        {
+            return;
+        }
+
         cardName.text = clickHandler.CardData.CardName;
         cardFlavortext.text = clickHandler.CardData.FlavorText;
 
-        if(clickHandler.CardData is MinionParent)
+        if (clickHandler.CardData is MinionParent)
         {
-            MinionParent MinionData = (MinionParent)clickHandler.CardData;
-            cardHealth.text = $"Health: {MinionData.Health}";
-            cardDamage.text = $"Damage: {MinionData.Damage}";
-        }
-    }
+            MinionParent minionData = (MinionParent)clickHandler.CardData;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            cardHealth.text = "Health: " + minionData.Health;
+            cardDamage.text = "Damage: " + minionData.Damage;
+        }
     }
 }
