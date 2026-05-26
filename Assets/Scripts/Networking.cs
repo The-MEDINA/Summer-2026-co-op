@@ -29,7 +29,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Text;
 using cardIndex;
 
@@ -63,8 +62,8 @@ namespace Network
      * --- CARDMOVE: ---
      * byte 1 holds the old location of the card.
      * byte 2 holds the new location of the card.
-     * bytes 3 and 4 hold the card index.
-     * bytes 5 - 1024 are empty so we can use it later to send more info.
+     * byte 3 holds the position of the card in the old location.
+     * bytes 4 - 1024 are empty so we can use it later to send more info.
      * 
      * --- CARDADD: ---
      * Byte 1 holds the location of the card to be made.
@@ -410,7 +409,7 @@ namespace Network
         /// <param name="oldLocation">the card's old location.</param>
         /// <param name="newLocation">the card's new location.</param>
         /// <returns>a byte[1024] packet.</returns>
-        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, NewVirtualCardParent.location newLocation)
+        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
             byte[] packet = new byte[1024];
 
@@ -418,22 +417,7 @@ namespace Network
             packet[0] = (byte) packetType.cardMove;
             packet[1] = (byte) oldLocation;
             packet[2] = (byte) newLocation;
-
-            // prepare the card's index to encode into two bytes.
-            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(card.CardName);
-            short cardToEncode = (short)cardDetails.nameIndexPosition;
-            byte highByte = 0;
-            byte lowByte = 0;
-
-            // mask out the top 8 bits.
-            lowByte = (byte)(cardToEncode & 255);
-
-            // shift right 8 bits and then mask.
-            highByte = (byte)((cardToEncode >> 8) & 255);
-
-            // High bytes are in odd indexes, low bytes are in even indexes.
-            packet[3] = highByte;
-            packet[4] = lowByte;
+            packet[3] = (byte) oldLocationPosition;
 
             return packet;
         }
@@ -742,50 +726,47 @@ namespace Network
                 }
                 case ((byte) packetType.cardMove):
                 {
-                    // set up these to make code nicer
+                    // setup to make code nicer
+                    List<NewVirtualCardParent> oldList = null;
+                    // List<NewVirtualCardParent> newList = null;
                     NewVirtualCardParent.location oldLocation = (NewVirtualCardParent.location)packet[1];
-                    NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[1];
+                    NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[2];
+                    NewVirtualCardParent cardToMove = null;
 
-                    // get the card's name from the info.
-                    short indexOfCard = packet[3];
-                    indexOfCard <<= 8;
-                    indexOfCard += packet[4];
-                    string cardName = cardIndex.Index.GetName(indexOfCard);
-
-                    // Get a copy of the card array to check.
-                    // doing this in theory eliminates a LOT of duplicated code.
-                    List<NewVirtualCardParent> cardArray = null; 
-                    switch ((NewVirtualCardParent.location) packet[1])
+                    // setup old location
+                    switch ((NewVirtualCardParent.location)packet[1])
                     {
-                        case (NewVirtualCardParent.location.deck): { cardArray = playerTwo.Deck; break; }
-                        case (NewVirtualCardParent.location.discard): { cardArray = playerTwo.Discard; break; }
-                        case (NewVirtualCardParent.location.hand): { cardArray = playerTwo.Hand; break; }
-                        case (NewVirtualCardParent.location.inPlay): { cardArray = playerTwo.InPlay; break; }
+                        case (NewVirtualCardParent.location.deck): { oldList = playerTwo.Deck; break; }
+                        case (NewVirtualCardParent.location.discard): { oldList = playerTwo.Discard; break; }
+                        case (NewVirtualCardParent.location.hand): { oldList = playerTwo.Hand; break; }
+                        case (NewVirtualCardParent.location.inPlay): { oldList = playerTwo.InPlay; break; }
                     }
 
-                    // Search for the card.
-                    for (int i = 0; i < cardArray.Count; i++)
+                    // setup new location
+                   /* switch ((NewVirtualCardParent.location)packet[2])
                     {
-                        if (cardArray[i].CardName == cardName)
-                        {
-                            NewVirtualCardParent cardToMove = cardArray[i];
-                            // FINALLY figure out where to move the card.
-                            if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
-                            {
-                                // uhhh I don't think I should have to cast here.
-                                // Seems like an error.
-                                playerTwo.MoveCardToInPlay((MinionParent) cardToMove);
-                            }
-                            else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard) playerTwo.MoveCardToDiscard(cardToMove);
+                        case (NewVirtualCardParent.location.deck): { newList = playerTwo.Deck; break; }
+                        case (NewVirtualCardParent.location.discard): { newList = playerTwo.Discard; break; }
+                        case (NewVirtualCardParent.location.hand): { newList = playerTwo.Hand; break; }
+                        case (NewVirtualCardParent.location.inPlay): { newList = playerTwo.InPlay; break; }
+                    }*/
+
+                    // grab card and attempt to move
+                    cardToMove = oldList[packet[3]];
+                    if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
+                    {
+                        playerTwo.MoveCardToInPlay(cardToMove);
+                    }
+                    else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
+                    {
+                        playerTwo.MoveCardToDiscard(cardToMove);
+                    }
 #if DEBUG_MODE
-                            else
-                            {
-                                Debug.LogWarning($"Illegal move from old location {oldLocation} to new location {newLocation}! Double check if a method to move it exists?");
-                            }
-#endif
-                            break;
-                        }
+                    else
+                    {
+                        Debug.LogWarning($"Illegal move from old location {oldLocation} to new location {newLocation}! Double check if a method to move it exists?");
                     }
+#endif
                     break;
                 }
                 case ((byte)packetType.cardAdd):
@@ -1064,9 +1045,9 @@ namespace Network
         /// <param name="card">The card you're moving.</param>
         /// <param name="Oldlocation">The old location of this card.</param>
         /// <param name="newLocation">The new location of this card.</param>
-        public static void SendMoveCard(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, NewVirtualCardParent.location newLocation)
+        public static void SendMoveCard(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
-            byte[] packet = EncodePacket(card, Oldlocation, newLocation);
+            byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
             if (currentState == state.connected)
             {
                 stream.WriteAsync(packet);
@@ -1107,7 +1088,3 @@ namespace Network
         }
     }
 }
-/*
- * TODO: ADD A CARD'S INDEX IN ITS ARRAY TO THE PACKET
- * This should add support for duplicate cards.
- */
