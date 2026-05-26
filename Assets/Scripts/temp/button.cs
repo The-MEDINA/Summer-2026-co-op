@@ -23,14 +23,12 @@ public class button : MonoBehaviour
     }
     private void OnDestroy()
     {
-        Debug.Log("destroy");
-        Networking.CloseConnection();
+        // Networking.CloseConnection();
     }
     public void switchScene()
     {
-        Networking.Details();
-        Networking.Port = 6767;
-        SceneManager.LoadScene("SampleScene");
+        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
+        SceneManager.LoadScene("Demo_LocalTwoPlayer");
     }
 
     public void changeMode()
@@ -66,6 +64,7 @@ public class button : MonoBehaviour
 
     public void TEMPSendaPacket()
     {
-        Networking.TEMPsendpacket();
+        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
+        // Networking.TEMPsendpacket();
     }
 }
