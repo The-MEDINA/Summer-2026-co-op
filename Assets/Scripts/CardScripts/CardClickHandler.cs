@@ -5,48 +5,28 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 {
     [SerializeField] private float magnifiedScale = 1.3f;
     [SerializeField] private float selectedScale = 1.15f;
-    [SerializeField] private bool isEnemyCard = false;
 
     private Vector3 originalScale;
     private NewVirtualCardParent cardData;
+    private Player ownerPlayer;
 
-    [SerializeField] private float timeToAttack = 3f;
-    private float attackTimer = 0f;
-
-    public bool IsEnemyCard { get { return isEnemyCard; } }
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
+    public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
 
     private void Awake()
     {
         originalScale = transform.localScale;
     }
 
-    private void Start()
-    {
-        if (CardData is MinionParent && IsEnemyCard == false)
-        {
-            MinionParent MinionData = (MinionParent)CardData;
-            if (MinionData.CardEffect == MinionParent.effect.haste) { timeToAttack /= 2; }
-            else if (MinionData.CardEffect == MinionParent.effect.sloth) { timeToAttack *= 2; }
-        }
-    }
-
     private void Update()
     {
         if (CardData is MinionParent)
         {
-            MinionParent MinionData = (MinionParent)CardData;
+            MinionParent minion = (MinionParent)CardData;
 
-            if (MinionData != null && MinionData.IsDead)
+            if (minion.IsDead)
             {
                 gameObject.SetActive(false);
-            }
-
-            attackTimer += Time.deltaTime;
-            if (attackTimer >= timeToAttack)
-            {
-                attackTimer = 0f;
-                MinionData.CanAttack = true;
             }
         }
     }
@@ -78,13 +58,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     public void SetSelectedVisual(bool selected)
     {
-        if (selected)
-        {
-            transform.localScale = originalScale * selectedScale;
-        }
-        else
-        {
-            transform.localScale = originalScale;
-        }
+        transform.localScale = selected ? originalScale * selectedScale : originalScale;
     }
 }
