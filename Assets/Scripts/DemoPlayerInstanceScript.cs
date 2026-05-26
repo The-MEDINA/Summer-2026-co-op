@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class DemoPlayerInstanceScript : MonoBehaviour
 {
-    // this script exists as a replacement for what will eventually be stored decks of cards from the deckbuilder - Jake
-    //(which may be iostream/text files{?})
+    [SerializeField] private string[] startingDeck =
+    {
+        "Cat",
+        "Macho Cat",
+        "Cool Cat",
+        "Western Cat",
+        "Tank Cat"
+    };
 
     private Player p;
-    void Start()
+
+    private void Start()
     {
         p = GetComponent<Player>();
         p.Deck.Add(new MinionParent("Ninja Cat", MinionParent.location.deck));
@@ -21,4 +28,15 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         //p.Deck.Add(new CardParent(2, 3, 2, "Western Cat", CardParent.type.minion, CardParent.effect.none, CardParent.location.deck));
     }
 
+        if (p == null)
+        {
+            Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
+            return;
+        }
+
+        for (int i = 0; i < startingDeck.Length; i++)
+        {
+            p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
+        }
+    }
 }

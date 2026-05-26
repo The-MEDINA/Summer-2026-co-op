@@ -5,24 +5,19 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private int health = 50;
     [SerializeField] private int maxEnergy = 10;
-    [SerializeField] private int startingEnergy = 0;
-    [SerializeField] private float timeForEnergy = 5f;
-    [SerializeField] private float timeToDraw = 2f;
+    [SerializeField] private int startingEnergy = 10;
+    [SerializeField] private int timeForEnergy = 5;
 
     private int energy;
-    private float energyTimer = 0f;
-    private float drawTimer = 0f;
-
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
     private List<NewVirtualCardParent> hand = new List<NewVirtualCardParent>();
     private List<NewVirtualCardParent> inPlay = new List<NewVirtualCardParent>();
     private List<NewVirtualCardParent> discard = new List<NewVirtualCardParent>();
 
-    public bool canDraw = false;
+    private float timer = 0f;
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
-    public int MaxEnergy { get { return maxEnergy; } }
 
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
@@ -37,34 +32,24 @@ public class Player : MonoBehaviour
     private void Update()
     {
         GainEnergyOverTime();
-        DrawTimer();
     }
 
     private void GainEnergyOverTime()
     {
-        energyTimer += Time.deltaTime;
-
-        if (energyTimer >= timeForEnergy)
+        if (timer >= timeForEnergy)
         {
             GainEnergy(1);
-            energyTimer = 0f;
+            timer = 0f;
         }
-    }
-
-    private void DrawTimer()
-    {
-        drawTimer += Time.deltaTime;
-
-        if (drawTimer >= timeToDraw)
+        else
         {
-            canDraw = true;
-            drawTimer = 0f;
+            timer += Time.deltaTime;
         }
     }
 
     public void RegisterAction()
     {
-        energyTimer = 0f;
+        timer = 0f;
     }
 
     public bool CanAfford(NewVirtualCardParent card)
@@ -74,14 +59,8 @@ public class Player : MonoBehaviour
 
     public bool SpendEnergy(int amount)
     {
-        if (amount < 0)
-        {
-            return false;
-        }
-
         if (Energy < amount)
         {
-            Debug.Log("Not enough energy.");
             return false;
         }
 
@@ -100,7 +79,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveCardToInPlay(MinionParent card)
+    public void MoveCardToInPlay(NewVirtualCardParent card)
     {
         if (card == null)
         {

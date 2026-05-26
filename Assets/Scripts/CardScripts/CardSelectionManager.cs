@@ -4,14 +4,25 @@ public class CardSelectionManager : MonoBehaviour
 {
     public static CardSelectionManager Instance;
 
-    [SerializeField] private GameObject activeCardsRectangle;
-    [SerializeField] private HandUIManager handUIManager;
-    [SerializeField] private Player player;
+    [Header("Player 1")]
+    [SerializeField] private Player player1;
+    [SerializeField] private GameObject player1CardField;
+    [SerializeField] private HandUIManager player1HandUI;
 
-    [SerializeField] private float battlegroundStartX = -9f;
-    [SerializeField] private float battlegroundSpacing = 2f;
+    [Header("Player 2")]
+    [SerializeField] private Player player2;
+    [SerializeField] private GameObject player2CardField;
+    [SerializeField] private HandUIManager player2HandUI;
+
+    [Header("Field Layout")]
+    [SerializeField] private float player1StartX = -5f;
+    [SerializeField] private float player2StartX = -5f;
+    [SerializeField] private float cardSpacing = 2f;
+
     private CardClickHandler selectedCardObject;
-    private int position = 0;
+
+    private int player1FieldPosition = 0;
+    private int player2FieldPosition = 0;
 
     public CardClickHandler SelectedCardObject
     {
@@ -27,6 +38,7 @@ public class CardSelectionManager : MonoBehaviour
     {
         if (clickedCard == null || clickedCard.CardData == null)
         {
+            Debug.LogWarning("Clicked card has no card data.");
             return;
         }
 
@@ -45,7 +57,7 @@ public class CardSelectionManager : MonoBehaviour
         selectedCardObject = clickedCard;
         selectedCardObject.SetSelectedVisual(true);
 
-        Debug.Log("Selected card: " + clickedCard.gameObject.name);
+        Debug.Log("Selected card: " + clickedCard.CardData.CardName);
     }
 
     private void ActivateCard(CardClickHandler cardObject)
@@ -56,13 +68,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (cardObject.IsEnemyCard)
-        {
-            ClearSelection();
-            return;
-        }
-
-        if (cardObject.CardData is MinionParent && cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
+        if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
         }
@@ -72,90 +78,134 @@ public class CardSelectionManager : MonoBehaviour
 
     private void PlayCardToBattleground(CardClickHandler cardObject)
     {
-        if (player == null)
+        Player owner = cardObject.OwnerPlayer;
+
+        if (owner == null)
         {
-            Debug.LogWarning("No Player assigned on CardSelectionManager.");
+            Debug.LogWarning("This card has no owner player.");
             return;
         }
 
-        if (activeCardsRectangle == null)
-        {
-            Debug.LogWarning("No activeCardsRectangle assigned.");
-            return;
-        }
-
-        if (!player.CanAfford(cardObject.CardData))
+        if (!owner.CanAfford(cardObject.CardData))
         {
             Debug.Log("Cannot play card. Not enough energy.");
             return;
         }
 
-        bool paid = player.SpendEnergy(cardObject.CardData.Cost);
-
-        if (!paid)
+        if (!owner.SpendEnergy(cardObject.CardData.Cost))
         {
             return;
         }
 
-        player.MoveCardToInPlay((MinionParent)cardObject.CardData);
+        owner.MoveCardToInPlay(cardObject.CardData);
 
-        if (handUIManager != null)
+        if (owner == player1)
         {
-            handUIManager.RemoveCardFromHand(cardObject.gameObject);
+            if (player1HandUI != null)
+            {
+                player1HandUI.RemoveCardFromHand(cardObject.gameObject);
+            }
+
+            MoveCardToField(cardObject, player1CardField, player1StartX, player1FieldPosition);
+            player1FieldPosition++;
+        }
+        else if (owner == player2)
+        {
+            if (player2HandUI != null)
+            {
+                player2HandUI.RemoveCardFromHand(cardObject.gameObject);
+            }
+
+            MoveCardToField(cardObject, player2CardField, player2StartX, player2FieldPosition);
+            player2FieldPosition++;
+        }
+        else
+        {
+            Debug.LogWarning("Card owner does not match Player 1 or Player 2.");
+        }
+
+        RefreshCardVisual(cardObject);
+
+        Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
+    }
+
+    private void MoveCardToField(CardClickHandler cardObject, GameObject field, float startX, int position)
+    {
+        if (field == null)
+        {
+            Debug.LogWarning("Missing card field reference.");
+            return;
         }
 
         cardObject.transform.position = new Vector3(
-            battlegroundStartX + (battlegroundSpacing * position),
-            activeCardsRectangle.transform.position.y,
+            startX + (cardSpacing * position),
+            field.transform.position.y,
             -0.1f
         );
-
-        position++;
-
-        Debug.Log("Card moved to battleground. Energy left: " + player.Energy);
     }
 
     private void TryAttackTarget(CardClickHandler targetCard)
     {
         if (selectedCardObject == null || targetCard == null)
         {
-            return;
-        }
-
-        if (selectedCardObject.IsEnemyCard)
-        {
             ClearSelection();
             return;
         }
 
-        if (!targetCard.IsEnemyCard)
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
+            Debug.Log("Card must be in play before it can attack.");
             ClearSelection();
             return;
         }
 
-        if (selectedCardObject.CardData is MinionParent && targetCard.CardData is MinionParent)
+        if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
-            if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
-            {
-                Debug.Log("Card must be in play before it can attack.");
-                ClearSelection();
-                return;
-            }
-
-            MinionParent MinionData = (MinionParent)selectedCardObject.CardData;
-            MinionData.Attack((MinionParent)targetCard.CardData);
-
-            if (player != null)
-            {
-                player.RegisterAction();
-            }
-
-            MinionParent attackedData = (MinionParent)targetCard.CardData;
-            Debug.Log("Attacked enemy card. Enemy health: " + attackedData.Health);
+            Debug.Log("Target card must be in play.");
+            ClearSelection();
+            return;
         }
+
+        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer)
+        {
+            Debug.Log("You cannot attack your own card.");
+            ClearSelection();
+            return;
+        }
+
+        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        if (attacker == null || target == null)
+        {
+            Debug.Log("Only minion cards can attack right now.");
+            ClearSelection();
+            return;
+        }
+
+        target.TakeDamage(attacker, attacker.Damage);
+
+        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(targetCard);
+
+        Debug.Log(attacker.CardName + " attacked " + target.CardName + ". Target health: " + target.Health);
 
         ClearSelection();
+    }
+
+    private void RefreshCardVisual(CardClickHandler card)
+    {
+        if (card == null)
+        {
+            return;
+        }
+
+        CardUIManager uiManager = card.GetComponent<CardUIManager>();
+
+        if (uiManager != null)
+        {
+            uiManager.RefreshCardUI();
+        }
     }
 
     public void ClearSelection()
