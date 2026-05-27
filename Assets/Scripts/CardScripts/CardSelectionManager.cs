@@ -100,15 +100,19 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        owner.MoveCardToInPlay(cardObject.CardData);
-
+        // check to see if this move should be sent to peer.
         if (owner == player1)
         {
             Networking.SendCardMove(cardObject.CardData, // card to move 
                 NewVirtualCardParent.location.hand, // in the player's hand
                 cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
                 NewVirtualCardParent.location.inPlay); // moved to inPlay
+        }
 
+        owner.MoveCardToInPlay(cardObject.CardData);
+
+        if (owner == player1)
+        {
             if (player1HandUI != null)
             {
                 player1HandUI.RemoveCardFromHand(cardObject.gameObject);
