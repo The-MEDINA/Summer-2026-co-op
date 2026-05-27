@@ -152,7 +152,7 @@ MonoBehaviour:
   health: 50
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 1
+  timeForEnergy: 0.5
   isPlayerTwo: 1
 --- !u!4 &143358788
 Transform:
@@ -384,7 +384,7 @@ MonoBehaviour:
   health: 50
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 1
+  timeForEnergy: 0.5
   isPlayerTwo: 0
 --- !u!4 &427913136
 Transform:
