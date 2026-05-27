@@ -71,10 +71,6 @@ public class CardSelectionManager : MonoBehaviour
 
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
-            Networking.SendCardMove(cardObject.CardData, // card to move 
-                NewVirtualCardParent.location.hand, // in the player's hand
-                cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
-                NewVirtualCardParent.location.inPlay); // moved to inPlay
             PlayCardToBattleground(cardObject);
         }
 
@@ -108,6 +104,11 @@ public class CardSelectionManager : MonoBehaviour
 
         if (owner == player1)
         {
+            Networking.SendCardMove(cardObject.CardData, // card to move 
+                NewVirtualCardParent.location.hand, // in the player's hand
+                cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
+                NewVirtualCardParent.location.inPlay); // moved to inPlay
+
             if (player1HandUI != null)
             {
                 player1HandUI.RemoveCardFromHand(cardObject.gameObject);
