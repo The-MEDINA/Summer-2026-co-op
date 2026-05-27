@@ -299,8 +299,7 @@ public class CardSelectionManager : MonoBehaviour
 
         attacker.OnPlay(target);
 
-        //move spell
-        //destroy spell
+        selectedCardObject.gameObject.SetActive(false);
 
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);

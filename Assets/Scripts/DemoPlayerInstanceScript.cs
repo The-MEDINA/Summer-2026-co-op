@@ -8,7 +8,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Ninja Cat",
         "Night Vision Cat",
         "Night Vision Cat",
-        "Magic Cat / Septimus Mrreep",
         "Ratta-tat-Cat",
     };
 
@@ -24,7 +23,10 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        p.Deck.Add(new MinionParent(1, 2, 5, "aoeCat", NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.enemyCards, 5, 1, "spellDamageTest", 
+            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.heal, SpellParent.spellTarget.allyCards, 5, 1, "spellHealTest",
+    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
             NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)
