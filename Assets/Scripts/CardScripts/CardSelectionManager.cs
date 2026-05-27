@@ -1,4 +1,5 @@
 using UnityEngine;
+using Network;
 
 public class CardSelectionManager : MonoBehaviour
 {
@@ -70,6 +71,10 @@ public class CardSelectionManager : MonoBehaviour
 
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
+            Networking.SendCardMove(cardObject.CardData, // card to move 
+                NewVirtualCardParent.location.hand, // in the player's hand
+                cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
+                NewVirtualCardParent.location.inPlay); // moved to inPlay
             PlayCardToBattleground(cardObject);
         }
 
