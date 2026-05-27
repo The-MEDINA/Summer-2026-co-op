@@ -73,8 +73,10 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             clickHandler.CardData = drawnCard;
             clickHandler.OwnerPlayer = p;
         }
-
         handUIManager.AddCardToHand(newCard);
+
+        // every card instantiated needs a reference to its gameobject from now on.
+        drawnCard.UnityObject = newCard;
 
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }

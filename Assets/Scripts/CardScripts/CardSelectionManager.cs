@@ -76,7 +76,9 @@ public class CardSelectionManager : MonoBehaviour
         ClearSelection();
     }
 
-    private void PlayCardToBattleground(CardClickHandler cardObject)
+    // Network manager needs to be able to access this method, so I'm making it public.
+    // if we *really* don't want that, let me know and i'll find some alternate way to do this. - Dave
+    public void PlayCardToBattleground(CardClickHandler cardObject)
     {
         Player owner = cardObject.OwnerPlayer;
 

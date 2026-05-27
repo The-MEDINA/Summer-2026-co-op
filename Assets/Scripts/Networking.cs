@@ -733,13 +733,15 @@ namespace Network
                 }
                 case ((byte) packetType.cardMove):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found cardMove packet");
+#endif
                     // setup to make code nicer
                     List<NewVirtualCardParent> oldList = null;
-                    // List<NewVirtualCardParent> newList = null;
                     NewVirtualCardParent.location oldLocation = (NewVirtualCardParent.location)packet[1];
                     NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[2];
                     NewVirtualCardParent cardToMove = null;
-
+                    
                     // setup old location
                     switch ((NewVirtualCardParent.location)packet[1])
                     {
@@ -749,20 +751,11 @@ namespace Network
                         case (NewVirtualCardParent.location.inPlay): { oldList = playerTwo.InPlay; break; }
                     }
 
-                    // setup new location
-                   /* switch ((NewVirtualCardParent.location)packet[2])
-                    {
-                        case (NewVirtualCardParent.location.deck): { newList = playerTwo.Deck; break; }
-                        case (NewVirtualCardParent.location.discard): { newList = playerTwo.Discard; break; }
-                        case (NewVirtualCardParent.location.hand): { newList = playerTwo.Hand; break; }
-                        case (NewVirtualCardParent.location.inPlay): { newList = playerTwo.InPlay; break; }
-                    }*/
-
                     // grab card and attempt to move
                     cardToMove = oldList[packet[3]];
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
-                        playerTwo.MoveCardToInPlay(cardToMove);
+                        CardSelectionManager.Instance.PlayCardToBattleground(cardToMove.UnityObject.GetComponent<CardClickHandler>());
                     }
                     else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
                     {
