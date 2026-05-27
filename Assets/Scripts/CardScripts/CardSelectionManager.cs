@@ -59,8 +59,11 @@ public class CardSelectionManager : MonoBehaviour
 
         if (selectedCardObject == clickedCard)
         {
-            ActivateCard(clickedCard);
-            return;
+            if(clickedCard.CardData is MinionParent)
+            {
+                ActivateCard(clickedCard);
+                return;
+            }
         }
 
         selectedCardObject = clickedCard;
