@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int health = 50;
     [SerializeField] private int maxEnergy = 10;
     [SerializeField] private int startingEnergy = 10;
-    [SerializeField] private int timeForEnergy = 5;
+    [SerializeField] private float timeForEnergy = 5f;
     [SerializeField] private bool isPlayerTwo = false;
 
 

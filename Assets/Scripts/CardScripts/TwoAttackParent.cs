@@ -28,26 +28,25 @@ public class TwoAttackParent : MinionParent
         }
         else
         {
-                Damage = secondDamage;
+            Damage = secondDamage;
                 Attack(target);
         }
     }
 
     public void CheckAOEAttack(int numAttack, MinionParent target, List<NewVirtualCardParent> targetList)
     {
+        if (secondAttackEffect == effect.aoe)
         {
-            if(secondAttackEffect == effect.aoe)
+            if (numAttack == 1)
             {
-                if (numAttack == 1)
-                {
-                    Damage = firstDamage;
-                    Attack(target);
-                }
-                else
-                {
-                    Damage = secondDamage;
-                    AOEAttack(targetList);
-                }
+                Damage = firstDamage;
+                Attack(target);
+            }
+            else
+            {
+                Damage = secondDamage;
+                Debug.Log(Damage);
+                AOEAttack(targetList, true);
             }
         }
     }

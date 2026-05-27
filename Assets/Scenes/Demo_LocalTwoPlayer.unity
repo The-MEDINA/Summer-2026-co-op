@@ -152,7 +152,7 @@ MonoBehaviour:
   health: 50
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 2
+  timeForEnergy: 1
   isPlayerTwo: 1
 --- !u!4 &143358788
 Transform:
@@ -181,12 +181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
-  startingDeck:
-  - Cat
-  - Macho Cat
-  - Cool Cat
-  - Western Cat
-  - Tank Cat
 --- !u!1 &412324660
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +384,7 @@ MonoBehaviour:
   health: 50
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 2
+  timeForEnergy: 1
   isPlayerTwo: 0
 --- !u!4 &427913136
 Transform:
@@ -419,12 +413,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
-  startingDeck:
-  - Cat
-  - Macho Cat
-  - Cool Cat
-  - Western Cat
-  - Tank Cat
 --- !u!1 &502840339
 GameObject:
   m_ObjectHideFlags: 0

@@ -210,7 +210,7 @@ public class CardSelectionManager : MonoBehaviour
             {
                 if (wasSecondAttack)
                 {
-                    twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.Hand);
+                    twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
                     Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
                     selectedCardObject.OwnerPlayer.RegisterAction();
                     ClearSelection();
@@ -248,7 +248,7 @@ public class CardSelectionManager : MonoBehaviour
 
         if(attacker.CardEffect == MinionParent.effect.aoe)
         {
-            attacker.AOEAttack(targetCard.OwnerPlayer.InPlay);
+            attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
             selectedCardObject.OwnerPlayer.RegisterAction();
             ClearSelection();
             return;

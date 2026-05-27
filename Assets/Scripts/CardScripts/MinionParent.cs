@@ -1,7 +1,6 @@
 using cardIndex;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -134,14 +133,14 @@ public class MinionParent : NewVirtualCardParent
         CardLocation = location.discard;
     }
 
-    public void AOEAttack(List<NewVirtualCardParent> targetList)
+    public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)
     {
         Debug.Log(canAttack);
-        if(canAttack && cardEffect == effect.aoe)
+
+        if(canAttack && (cardEffect == effect.aoe || isSecond))
         {
             if (targetList == null)
             {
-                Debug.Log("y");
                 return;
             }
 
