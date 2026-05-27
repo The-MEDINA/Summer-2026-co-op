@@ -855,7 +855,11 @@ namespace Network
                     Debug.Log($"post read");
 #endif
                     // complete any requests that came from other threads like DecodePacket.
-                    CompleteRequests();
+                    if (requestTest != null)
+                    {
+                        CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
+                        requestTest = null;
+                    }
                 }
             }
             // run in the background constantly listening as client.
