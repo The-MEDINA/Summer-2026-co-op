@@ -57,7 +57,7 @@ public class CardSelectionManager : MonoBehaviour
                     TryAttackTarget(clickedCard, false);
                 }
             }
-            else if(selectedCardObject.CardData is SpellParent)
+            else if(selectedCardObject.CardData is SpellParent) //still need to implement spelling and attacking players
             {
                 TrySpellTarget(clickedCard);
             }
