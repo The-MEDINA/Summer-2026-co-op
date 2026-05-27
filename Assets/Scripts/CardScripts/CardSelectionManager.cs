@@ -59,7 +59,7 @@ public class CardSelectionManager : MonoBehaviour
             }
             else if(selectedCardObject.CardData is SpellParent)
             {
-                //spells should be done in here
+                TrySpellTarget(clickedCard);
             }
             return;
         }
@@ -226,6 +226,52 @@ public class CardSelectionManager : MonoBehaviour
         RefreshCardVisual(targetCard);
 
         Debug.Log(attacker.CardName + " attacked " + target.CardName + ". Target health: " + target.Health);
+        selectedCardObject.OwnerPlayer.RegisterAction();
+
+        ClearSelection();
+    }
+
+    private void TrySpellTarget(CardClickHandler targetCard)
+    {
+        if (selectedCardObject == null || targetCard == null)
+        {
+            ClearSelection();
+            return;
+        }
+
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
+        {
+            Debug.Log("Card must be in your hand before it can be played.");
+            ClearSelection();
+            return;
+        }
+
+        if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        {
+            Debug.Log("Target card must be in play.");
+            ClearSelection();
+            return;
+        }
+
+        SpellParent attacker = selectedCardObject.CardData as SpellParent;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        if (attacker == null || target == null)
+        {
+            Debug.Log("Only minion cards can attack right now.");
+            ClearSelection();
+            return;
+        }
+
+        attacker.OnPlay(target);
+
+        //move spell
+        //destroy spell
+
+        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(targetCard);
+
+        Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
         selectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();

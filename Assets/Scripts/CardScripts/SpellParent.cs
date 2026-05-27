@@ -41,10 +41,9 @@ public class SpellParent : NewVirtualCardParent
         //currently unused, might take OnPlay out of NewVirtualCardParent
     }
 
-    //not sure the bools are needed
     //not sure an enemy check is needed at all
     //if it is it could be pulled out but that might not be neater id- Jake
-    public void OnPlay(MinionParent target, bool isEnemy)
+    public void OnPlay(MinionParent target)
     {
         switch (effect)
         {
@@ -68,7 +67,7 @@ public class SpellParent : NewVirtualCardParent
         }
     }
 
-    public void OnPlay(Player target, bool isEnemy)
+    public void OnPlay(Player target)
     {
         switch (effect)
         {
