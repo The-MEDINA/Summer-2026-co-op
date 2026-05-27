@@ -173,10 +173,20 @@ namespace cardIndex
                             _ability = MinionParent.effect.overkill;
                             break;
                         }
+                    case ("haste"):
+                        {
+                            _ability = MinionParent.effect.haste;
+                            break;
+                        }
+                    case ("sloth"):
+                        {
+                            _ability = MinionParent.effect.sloth;
+                            break;
+                        }
                     default:
                     {
                         Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
-                        break;
+                            break;
                     }
                 }
                 // create the struct and add.

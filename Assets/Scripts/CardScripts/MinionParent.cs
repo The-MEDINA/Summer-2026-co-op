@@ -1,5 +1,7 @@
 using cardIndex;
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -65,10 +67,6 @@ public class MinionParent : NewVirtualCardParent
             if (target == null || isDead)
             {
                 return;
-            }
-            if (cardEffect == effect.aoe)
-            {
-                AOEAttack();
             }
             else if (cardEffect == effect.deathtouch)
             {
@@ -136,9 +134,29 @@ public class MinionParent : NewVirtualCardParent
         CardLocation = location.discard;
     }
 
-    //this needs to hit all enemy minions - implementing later
-    public void AOEAttack()
+    public void AOEAttack(List<NewVirtualCardParent> targetList)
     {
+        Debug.Log(canAttack);
+        if(canAttack && cardEffect == effect.aoe)
+        {
+            if (targetList == null)
+            {
+                Debug.Log("y");
+                return;
+            }
 
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                Debug.Log(i);
+                if (targetList[i] is MinionParent)
+                {
+                    MinionParent enemyTarget = (MinionParent)targetList[i];
+                    enemyTarget.TakeDamage(Damage);
+                    Debug.Log("d");
+                }
+            }
+            Debug.Log("z");
+            canAttack = false;
+        }
     }
 }

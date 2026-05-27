@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class DemoPlayerInstanceScript : MonoBehaviour
 {
-    [SerializeField] private string[] startingDeck =
+    private string[] startingDeck =
     {
+        "Comically Large Spoon Cat",
         "Ninja Cat",
         "Night Vision Cat",
         "Night Vision Cat",
@@ -23,6 +24,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
+        p.Deck.Add(new MinionParent(1, 2, 5, "aoeCat", NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.none, 1, 1, 1, "TwoAttack Cat",
             NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)

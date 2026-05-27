@@ -210,17 +210,29 @@ public class CardSelectionManager : MonoBehaviour
             {
                 twoAttackMinion.CheckAttack(2, target);
                 Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                selectedCardObject.OwnerPlayer.RegisterAction();
+                ClearSelection();
                 return;
             }
             else
             {
                 twoAttackMinion.CheckAttack(1, target);
                 Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                selectedCardObject.OwnerPlayer.RegisterAction();
+                ClearSelection();
                 return;
             }
         }
 
-        target.TakeDamage(attacker, attacker.Damage);
+        if(attacker.CardEffect == MinionParent.effect.aoe)
+        {
+            attacker.AOEAttack(targetCard.OwnerPlayer.InPlay);
+            selectedCardObject.OwnerPlayer.RegisterAction();
+            ClearSelection();
+            return;
+        }
+
+        attacker.Attack(target);
 
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);
