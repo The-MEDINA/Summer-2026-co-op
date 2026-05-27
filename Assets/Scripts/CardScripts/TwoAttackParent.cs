@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TwoAttackParent : MinionParent
@@ -8,6 +9,7 @@ public class TwoAttackParent : MinionParent
 
     public int FirstDamage { get { return firstDamage; } set { firstDamage = value; } }
     public int SecondDamage { get { return secondDamage; } set { secondDamage = value; } }
+    public effect SecondaryCardEffect { get { return secondAttackEffect; } }
 
     public TwoAttackParent(int firstD, int secondD, effect secondAttackE, int cost, int health, int damage, string name, 
         type cardType, effect cardEffect, location cardLocation) : base(cost, health, damage, name, cardType, cardEffect, cardLocation)
@@ -21,17 +23,31 @@ public class TwoAttackParent : MinionParent
     {
         if(numAttack == 1)
         {
-            target.TakeDamage(this, FirstDamage);
+            Damage = firstDamage;
+            Attack(target);
         }
         else
         {
+                Damage = secondDamage;
+                Attack(target);
+        }
+    }
+
+    public void CheckAOEAttack(int numAttack, MinionParent target, List<NewVirtualCardParent> targetList)
+    {
+        {
             if(secondAttackEffect == effect.aoe)
             {
-                //implement aoe here
-            }
-            else
-            {
-                target.TakeDamage(this, SecondDamage);
+                if (numAttack == 1)
+                {
+                    Damage = firstDamage;
+                    Attack(target);
+                }
+                else
+                {
+                    Damage = secondDamage;
+                    AOEAttack(targetList);
+                }
             }
         }
     }

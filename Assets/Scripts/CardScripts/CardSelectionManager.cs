@@ -206,21 +206,43 @@ public class CardSelectionManager : MonoBehaviour
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
 
-            if (wasSecondAttack)
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.aoe)
             {
-                twoAttackMinion.CheckAttack(2, target);
-                Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
-                selectedCardObject.OwnerPlayer.RegisterAction();
-                ClearSelection();
-                return;
+                if (wasSecondAttack)
+                {
+                    twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.Hand);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    ClearSelection();
+                    return;
+                }
+                else
+                {
+                    twoAttackMinion.CheckAttack(1, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    ClearSelection();
+                    return;
+                }
             }
             else
             {
-                twoAttackMinion.CheckAttack(1, target);
-                Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
-                selectedCardObject.OwnerPlayer.RegisterAction();
-                ClearSelection();
-                return;
+                if (wasSecondAttack)
+                {
+                    twoAttackMinion.CheckAttack(2, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    ClearSelection();
+                    return;
+                }
+                else
+                {
+                    twoAttackMinion.CheckAttack(1, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    ClearSelection();
+                    return;
+                }
             }
         }
 
