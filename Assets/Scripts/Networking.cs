@@ -140,6 +140,7 @@ namespace Network
         /// If it wants to instantiate a specific card, the value will be the specific card's index.
         /// </summary>
         private static int requestCardInstantiation = -1;
+        private static NewVirtualCardParent requestTest = null;
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
@@ -755,7 +756,7 @@ namespace Network
                     cardToMove = oldList[packet[3]];
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
-                        CardSelectionManager.Instance.PlayCardToBattleground(cardToMove.UnityObject.GetComponent<CardClickHandler>());
+                        requestTest = cardToMove;
                     }
                     else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
                     {
@@ -790,7 +791,7 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); requestCardInstantiation = -2; break; }
+                        case (NewVirtualCardParent.location.hand): { /*playerTwo.Hand.Add(card);*/ requestCardInstantiation = -2; break; }
                         case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
                     }
                     break;
@@ -829,7 +830,7 @@ namespace Network
 
                     // wait for either the task to finish or for timeout.
                     // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 1 minute.
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
 
                     // close the connection on timeout.
                     if (!result.IsCompleted)
@@ -853,6 +854,8 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
+                    // complete any requests that came from other threads like DecodePacket.
+                    CompleteRequests();
                 }
             }
             // run in the background constantly listening as client.
@@ -878,7 +881,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -933,7 +936,19 @@ namespace Network
 
                     // wait for both tasks to finish before doing it again, if there's still a connection.
                     await Task.WhenAll(connectionTasks);
+
+                    // complete any requests that came from other threads like DecodePacket.
+                    CompleteRequests();
                 }
+            }
+        }
+
+        private static void CompleteRequests()
+        {
+            if (requestTest != null)
+            {
+                CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
+                requestTest = null;
             }
         }
 

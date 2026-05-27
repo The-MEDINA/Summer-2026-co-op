@@ -58,9 +58,6 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
         NewVirtualCardParent drawnCard = p.Deck[0];
 
-        p.Hand.Add(drawnCard);
-        p.Deck.RemoveAt(0);
-
         drawnCard.CardLocation = NewVirtualCardParent.location.hand;
 
         GameObject newCard = Instantiate(cardProto);
@@ -73,11 +70,13 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             clickHandler.CardData = drawnCard;
             clickHandler.OwnerPlayer = p;
         }
-        handUIManager.AddCardToHand(newCard);
-
         // every card instantiated needs a reference to its gameobject from now on.
         drawnCard.UnityObject = newCard;
 
+        p.Hand.Add(drawnCard);
+        p.Deck.RemoveAt(0);
+
+        handUIManager.AddCardToHand(newCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
 }
