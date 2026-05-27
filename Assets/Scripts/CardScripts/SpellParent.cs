@@ -38,6 +38,57 @@ public class SpellParent : NewVirtualCardParent
 
     public override void OnPlay()
     {
-        //switch between targets and abilities
+        //currently unused, might take OnPlay out of NewVirtualCardParent
+    }
+
+    //not sure the bools are needed
+    //not sure an enemy check is needed at all
+    //if it is it could be pulled out but that might not be neater id- Jake
+    public void OnPlay(MinionParent target, bool isEnemy)
+    {
+        switch (effect)
+        {
+            case spellEffect.damage:
+                {
+                    target.TakeDamage(amount);
+                    break;
+                }
+
+            case spellEffect.heal:
+                {
+                    target.Health += amount;
+                    break;
+                }
+
+            case spellEffect.unique:
+            default:
+                {
+                    break;
+                }
+        }
+    }
+
+    public void OnPlay(Player target, bool isEnemy)
+    {
+        switch (effect)
+        {
+            case spellEffect.damage:
+                {
+                    target.TakeDamage(amount);
+                    break;
+                }
+
+            case spellEffect.heal:
+                {
+                    target.Health += amount;
+                    break;
+                }
+
+            case spellEffect.unique:
+            default:
+                {
+                    break;
+                }
+        }
     }
 }

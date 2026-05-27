@@ -88,6 +88,17 @@ public class MinionParent : NewVirtualCardParent
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            Health = 0;
+            Death();
+        }
+    }
+
     public void TakeDamage(MinionParent attacker, int damage)
     {
         Health -= damage;

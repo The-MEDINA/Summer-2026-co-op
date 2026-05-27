@@ -45,14 +45,21 @@ public class CardSelectionManager : MonoBehaviour
 
         if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
-            MinionParent minion = (MinionParent)selectedCardObject.CardData;
-            if(minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
+            if (selectedCardObject.CardData is MinionParent)
             {
-                TryAttackTarget(clickedCard, true);
+                MinionParent minion = (MinionParent)selectedCardObject.CardData;
+                if (minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
+                {
+                    TryAttackTarget(clickedCard, true);
+                }
+                else
+                {
+                    TryAttackTarget(clickedCard, false);
+                }
             }
-            else
+            else if(selectedCardObject.CardData is SpellParent)
             {
-                TryAttackTarget(clickedCard, false);
+                //spells should be done in here
             }
             return;
         }
