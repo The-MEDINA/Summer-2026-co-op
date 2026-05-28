@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
                 {
                     MinionParent newMinion = (MinionParent)InPlay[j];
 
-                    if (newMinion.CardEffect == MinionParent.effect.coordinate)
+                    if (newMinion.CardEffect == MinionParent.effect.coordinate && newMinion.UnityObject.activeSelf)
                     {
                         coordNum++;
                     }

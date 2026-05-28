@@ -46,6 +46,7 @@ public class CoordinateAbilityScript
                 {
                     minion.Damage++;
                     minion.Health++;
+                    Debug.Log($"{minion.CardName}, {minion.Health}, {minion.Damage}");
                     break;
                 }
 
@@ -53,6 +54,7 @@ public class CoordinateAbilityScript
                 {
                     minion.Damage += 2;
                     minion.Health += 2;
+                    Debug.Log($"{minion.CardName}, {minion.Health}, {minion.Damage}");
                     break;
                 }
 

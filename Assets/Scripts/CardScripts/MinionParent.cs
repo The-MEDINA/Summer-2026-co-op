@@ -64,6 +64,8 @@ public class MinionParent : NewVirtualCardParent
     {
         if (canAttack)
         {
+            Debug.Log(Damage);
+            Debug.Log(target.Health);
             if (target == null || isDead)
             {
                 return;
@@ -89,7 +91,6 @@ public class MinionParent : NewVirtualCardParent
     public void TakeDamage(int damage)
     {
         Health -= damage;
-
         if (Health <= 0)
         {
             Health = 0;
@@ -136,8 +137,6 @@ public class MinionParent : NewVirtualCardParent
 
     public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)
     {
-        Debug.Log(canAttack);
-
         if(canAttack && (cardEffect == effect.aoe || isSecond))
         {
             if (targetList == null)
@@ -152,10 +151,8 @@ public class MinionParent : NewVirtualCardParent
                 {
                     MinionParent enemyTarget = (MinionParent)targetList[i];
                     enemyTarget.TakeDamage(Damage);
-                    Debug.Log("d");
                 }
             }
-            Debug.Log("z");
             canAttack = false;
         }
     }

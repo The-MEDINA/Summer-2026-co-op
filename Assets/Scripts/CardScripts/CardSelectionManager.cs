@@ -1,6 +1,7 @@
 using UnityEngine;
 using Network;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class CardSelectionManager : MonoBehaviour
 {
@@ -175,7 +176,10 @@ public class CardSelectionManager : MonoBehaviour
             Debug.LogWarning("Card owner does not match Player 1 or Player 2.");
         }
 
-        RefreshCardVisual(cardObject);
+        for (int i = 0; i < owner.InPlay.Count; i++)
+        {
+            RefreshCardVisual(owner.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+        }
 
         Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
     }
@@ -249,7 +253,6 @@ public class CardSelectionManager : MonoBehaviour
             Networking.SendCardAttack(attacker, target, wasSecondAttack);
         }
 
-        target.TakeDamage(attacker, attacker.Damage);
         if (attacker is TwoAttackParent)
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
@@ -261,6 +264,8 @@ public class CardSelectionManager : MonoBehaviour
                     twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
                     Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
                     selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
                     ClearSelection();
                     return;
                 }
@@ -269,6 +274,8 @@ public class CardSelectionManager : MonoBehaviour
                     twoAttackMinion.CheckAttack(1, target);
                     Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
                     selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
                     ClearSelection();
                     return;
                 }
@@ -280,6 +287,8 @@ public class CardSelectionManager : MonoBehaviour
                     twoAttackMinion.CheckAttack(2, target);
                     Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
                     selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
                     ClearSelection();
                     return;
                 }
@@ -288,6 +297,8 @@ public class CardSelectionManager : MonoBehaviour
                     twoAttackMinion.CheckAttack(1, target);
                     Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
                     selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
                     ClearSelection();
                     return;
                 }
@@ -298,6 +309,8 @@ public class CardSelectionManager : MonoBehaviour
         {
             attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
             selectedCardObject.OwnerPlayer.RegisterAction();
+            RefreshCardVisual(selectedCardObject);
+            RefreshCardVisual(targetCard);
             ClearSelection();
             return;
         }
