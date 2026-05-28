@@ -75,7 +75,8 @@ namespace Network
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
      * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
-     * bytes 4 - 1023 are empty so we can use it later to send more info.
+     * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the deck instead.
+     * bytes 5 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
     {
@@ -462,7 +463,17 @@ namespace Network
         {
             byte[] packet = new byte[1024];
             packet[0] = (byte) packetType.cardAttack;
-            packet[1] = (byte) playerOne.InPlay.IndexOf(attacker);
+            if (attacker as SpellParent != null)
+            {
+                packet[1] = (byte)playerOne.Deck.IndexOf(attacker);
+                // override to grab from deck.
+                packet[4] = 1;
+            }
+            else
+            {
+                packet[1] = (byte)playerOne.InPlay.IndexOf(attacker);
+                packet[4] = 0;
+            }
             packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
             if (isSecondAttack)
             {
@@ -831,8 +842,15 @@ namespace Network
 #if DEBUG_MODE
                         Debug.Log("found cardAttack packet");
 #endif
-                    MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
-                    MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
+                    NewVirtualCardParent attacker = playerTwo.InPlay[packet[1]];
+
+                    // check for any overrides.
+                    // deck override.
+                    if (packet[4] == 1)
+                    {
+                        attacker = playerTwo.Deck[packet[1]];
+                    }
+                    NewVirtualCardParent target = playerOne.InPlay[packet[2]];
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
                     if (packet[3] == 1) requestSecondAttack = true;
@@ -1015,7 +1033,7 @@ namespace Network
                 requestSecondAttack = false;
             }
             // spell action.
-            else if (requestAttack[0] as MinionParent != null)
+            else if (requestAttack[0] as SpellParent != null)
             {
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
