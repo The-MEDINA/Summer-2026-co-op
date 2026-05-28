@@ -828,11 +828,14 @@ namespace Network
                 }
                 case ((byte)packetType.cardAttack):
                 {
+#if DEBUG_MODE
+                        Debug.Log("found cardAttack packet");
+#endif
                     MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
                     MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
-                        break;
+                    break;
                 }
                 default:
                 {
@@ -986,7 +989,9 @@ namespace Network
             // attack.
             if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
             {
-                ((MinionParent)requestAttack[0]).Attack((MinionParent)requestAttack[1]);
+                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
+                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                // ((MinionParent)requestAttack[0]).Attack((MinionParent)requestAttack[1]);
                 requestAttack[0] = null;
                 requestAttack[1] = null;
             }

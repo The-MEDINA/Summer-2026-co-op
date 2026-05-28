@@ -28,6 +28,11 @@ public class CardSelectionManager : MonoBehaviour
     public CardClickHandler SelectedCardObject
     {
         get { return selectedCardObject; }
+        // network manager needs this.
+        // It should only be temporary since I think TryAttackTarget needs to be reworked.
+        // once we have attacking sorted, I should be able to get rid of this. - Dave
+        set { selectedCardObject = value; }
+        
     }
 
     private void Awake()
@@ -156,7 +161,9 @@ public class CardSelectionManager : MonoBehaviour
         );
     }
 
-    private void TryAttackTarget(CardClickHandler targetCard)
+    // network manager needs this, so.. making it public.
+    // this should be temporary, since I think this method needs to be reworked. - Dave
+    public void TryAttackTarget(CardClickHandler targetCard)
     {
         if (selectedCardObject == null || targetCard == null)
         {
