@@ -331,7 +331,8 @@ public class CardSelectionManager : MonoBehaviour
         ClearSelection();
     }
 
-    private void TrySpellTarget(CardClickHandler targetCard)
+    // network manager needs this, so I'm making it public. - Dave
+    public void TrySpellTarget(CardClickHandler targetCard)
     {
         if (selectedCardObject == null || targetCard == null)
         {
@@ -364,6 +365,12 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         attacker.OnPlay(target);
+
+        // send this action if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttack(attacker, target, false);
+        }
 
         selectedCardObject.gameObject.SetActive(false);
 

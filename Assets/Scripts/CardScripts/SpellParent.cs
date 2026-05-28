@@ -34,6 +34,17 @@ public class SpellParent : NewVirtualCardParent
         this.amount = amount;
     }
 
+    public SpellParent(string name, location cardLocation) : base(name, cardLocation)
+    {
+        Details spellDetails = cardIndex.Index.GetDetails(name);
+        effect = spellDetails.spellEffect;
+        target = spellDetails.spellTarget;
+        // so... I see this amount variable and I don't exactly know where it's being used right now.
+        // Since the only thing I see that has an amount in the spreadsheet has it in damage, I'm gonna pull it from there for now.
+        // Let me know if I should change this. - Dave
+        amount = spellDetails.damage;
+    }
+
     //index constructor
 
     public override void OnPlay()

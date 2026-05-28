@@ -75,7 +75,8 @@ namespace Network
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
      * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
-     * bytes 4 - 1023 are empty so we can use it later to send more info.
+     * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
+     * bytes 5 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
     {
@@ -462,8 +463,30 @@ namespace Network
         {
             byte[] packet = new byte[1024];
             packet[0] = (byte) packetType.cardAttack;
-            packet[1] = (byte) playerOne.InPlay.IndexOf(attacker);
-            packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
+
+            // encode for spells.
+            if (attacker as SpellParent != null)
+            {
+                packet[1] = (byte)playerOne.Hand.IndexOf(attacker);
+                // override to grab from hand.
+                packet[4] = 1;
+
+                SpellParent spell = (SpellParent)attacker;
+
+                // check if we're targetting ally cards.
+                if (spell.Target == SpellParent.spellTarget.allyCards)
+                {
+                    packet[2] = (byte)playerOne.InPlay.IndexOf(target);
+                }
+            }
+
+            // encode for minions.
+            else
+            {
+                packet[1] = (byte)playerOne.InPlay.IndexOf(attacker);
+                packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                packet[4] = 0;
+            }
             if (isSecondAttack)
             {
                 packet[3] = 1;
@@ -831,8 +854,38 @@ namespace Network
 #if DEBUG_MODE
                         Debug.Log("found cardAttack packet");
 #endif
-                    MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
-                    MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
+                    NewVirtualCardParent attacker = null;
+                    NewVirtualCardParent target = null;
+
+                    // check for any overrides.
+                    // hand override.
+                    if (packet[4] == 1)
+                    {
+                        attacker = playerTwo.Hand[packet[1]];
+                    }
+                    else
+                    {
+                        attacker = playerTwo.InPlay[packet[1]];
+                    }
+
+                    if (attacker as SpellParent != null)
+                    {
+                        SpellParent spell = (SpellParent)attacker;
+                        // overwrite the target if this card is a spell that targets allies.
+                        if (spell.Target == SpellParent.spellTarget.allyCards)
+                        {
+                            target = playerTwo.InPlay[packet[2]];
+                        }
+                        else
+                        {
+                            // target player 1's cards like normal.
+                            target = playerOne.InPlay[packet[2]];
+                        }
+                    }
+                    else
+                    {
+                        target = playerOne.InPlay[packet[2]];
+                    }
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
                     if (packet[3] == 1) requestSecondAttack = true;
@@ -1014,6 +1067,15 @@ namespace Network
                 requestAttack[1] = null;
                 requestSecondAttack = false;
             }
+            // spell action.
+            else if (requestAttack[0] as SpellParent != null)
+            {
+                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
+                CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                requestAttack[0] = null;
+                requestAttack[1] = null;
+                requestSecondAttack = false;
+            }
         }
 
         /// <summary>
@@ -1162,7 +1224,7 @@ namespace Network
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
-        public static void SendCardAttack(MinionParent attacker, MinionParent target, bool isSecondAttack)
+        public static void SendCardAttack(NewVirtualCardParent attacker, NewVirtualCardParent target, bool isSecondAttack)
         {
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
             if (currentState == state.connected)

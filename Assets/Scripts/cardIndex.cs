@@ -24,7 +24,7 @@ namespace cardIndex
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition)
+        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition, SpellParent.spellEffect _spellEffect, SpellParent.spellTarget _spellTarget)
         {
             faction = _faction;
             cost = _cost;
@@ -36,6 +36,8 @@ namespace cardIndex
             ability = _ability;
             flavorText = _flavorText;
             nameIndexPosition = _nameIndexPosition;
+            spellEffect = _spellEffect;
+            spellTarget = _spellTarget;
         }
 
         public string faction;
@@ -48,6 +50,8 @@ namespace cardIndex
         public MinionParent.effect ability;
         public string flavorText;
         public int nameIndexPosition;
+        public SpellParent.spellEffect spellEffect;
+        public SpellParent.spellTarget spellTarget;
     }
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
@@ -96,6 +100,44 @@ namespace cardIndex
         }
 
         /// <summary>
+        /// Creates the requested card.
+        /// </summary>
+        /// <param name="name">Name of the card to create</param>
+        /// <param name="location">location of the card.</param>
+        /// <returns>The requested card.</returns>
+        public static NewVirtualCardParent CreateCard(string name, NewVirtualCardParent.location location)
+        {
+            NewVirtualCardParent cardToCreate = null;
+
+            // Check for any exceptions here.
+            // Exceptions meaning any card that has their own class.
+            // if one is found, create an instance of that class and return it immediately.
+            switch (name)
+            {
+                // (there currently aren't any)
+            }
+
+            // create a card from the details.
+            Details genericDetails = GetDetails(name);
+            if (genericDetails.type == NewVirtualCardParent.type.minion)
+            {
+                // create a minion
+                cardToCreate = new MinionParent(name, location);
+            }
+            else if (genericDetails.type == NewVirtualCardParent.type.spell)
+            {
+                // create a spell
+                cardToCreate = new SpellParent(name, location);
+            }
+            else
+            {
+                Debug.LogWarning($"Found no card named {name}! Double check this card exists?");
+            }
+
+            return cardToCreate;
+        }
+
+        /// <summary>
         /// Creates the index of cards from the provided allCards.tsv file.
         /// This function should ONLY be called in the worst case scenario that the index is not ready by the time a card gets instantiated.
         /// Ideally, an async version of this function should get called when the game starts.
@@ -116,12 +158,15 @@ namespace cardIndex
                 int _cost = -1;
                 int _health = -1;
                 int _damage = -1;
-
                 NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
                 MinionParent.effect _ability = MinionParent.effect.none;
+                SpellParent.spellEffect _spellEffect = (SpellParent.spellEffect) 0;
+                SpellParent.spellTarget _spellTarget = (SpellParent.spellTarget) 0;
+
                 int.TryParse(rawDetails[1], out _cost);
                 int.TryParse(rawDetails[5], out _health);
                 int.TryParse(rawDetails[6], out _damage);
+                // type of card
                 switch (rawDetails[3].Trim().ToLower())
                 {
                     case("minion"):
@@ -140,34 +185,34 @@ namespace cardIndex
                         break;
                     }
                 }
-
+                // minion effect
                 switch (rawDetails[7].Trim().ToLower())
                 {
-                    case("none"):
-                    {
-                        _ability = MinionParent.effect.none;
-                        break;
-                    }
+                    case ("none"):
+                        {
+                            _ability = MinionParent.effect.none;
+                            break;
+                        }
                     case ("na"):
-                    {
-                        _ability = MinionParent.effect.none;
-                        break;
-                    }
+                        {
+                            _ability = MinionParent.effect.none;
+                            break;
+                        }
                     case ("explode"):
-                    {
-                        _ability = MinionParent.effect.explode;
-                        break;
-                    }
-                    case("deathtouch"):
-                    {
-                        _ability = MinionParent.effect.deathtouch;
-                        break;
-                    }
+                        {
+                            _ability = MinionParent.effect.explode;
+                            break;
+                        }
+                    case ("deathtouch"):
+                        {
+                            _ability = MinionParent.effect.deathtouch;
+                            break;
+                        }
                     case ("coordinate"):
-                    {
-                        _ability = MinionParent.effect.coordinate;
-                        break;
-                    }
+                        {
+                            _ability = MinionParent.effect.coordinate;
+                            break;
+                        }
                     case ("overkill"):
                         {
                             _ability = MinionParent.effect.overkill;
@@ -189,13 +234,64 @@ namespace cardIndex
                             break;
                         }
                     default:
-                    {
-                        Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
+                        {
+                            Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
                             break;
+                        }
+                }
+                if (_type == NewVirtualCardParent.type.spell)
+                {
+                    // spell effect
+                    switch (rawDetails[9].Trim().ToLower())
+                    {
+                        case ("damage"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.damage;
+                            break;
+                        }
+                        case ("heal"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.heal;
+                            break;
+                        }
+                        case ("unique"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.unique;
+                            break;
+                        }
+                        default:
+                        {
+                                Debug.LogWarning($"Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
+                            break;
+                        }
+                    }
+                    // spell target
+                    switch (rawDetails[10].Trim().ToLower())
+                    {
+                        case ("allies"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.allyCards;
+                                break;
+                            }
+                        case ("enemies"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.enemyCards;
+                                break;
+                            }
+                        case ("player"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.owner;
+                                break;
+                            }
+                        default:
+                            {
+                                Debug.LogWarning($"Unimplemented or unknown spell target {rawDetails[10].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming enemyCards.");
+                                break;
+                            }
                     }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget);
                 index.Add(rawDetails[2], cardToAdd);
                 nameIndex.Add(rawDetails[2]);
             }
