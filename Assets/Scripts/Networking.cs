@@ -855,7 +855,7 @@ namespace Network
                         Debug.Log("found cardAttack packet");
 #endif
                     NewVirtualCardParent attacker = null;
-                    NewVirtualCardParent target = null; //playerOne.InPlay[packet[2]];
+                    NewVirtualCardParent target = null;
 
                     // check for any overrides.
                     // hand override.
@@ -875,6 +875,11 @@ namespace Network
                         if (spell.Target == SpellParent.spellTarget.allyCards)
                         {
                             target = playerTwo.InPlay[packet[2]];
+                        }
+                        else
+                        {
+                            // target player 1's cards like normal.
+                            target = playerOne.InPlay[packet[2]];
                         }
                     }
                     else
