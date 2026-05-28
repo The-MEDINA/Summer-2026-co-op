@@ -87,6 +87,15 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        Player owner = cardObject.OwnerPlayer;
+
+        if (owner != null && !owner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            ClearSelection();
+            return;
+        }
+
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
@@ -102,6 +111,12 @@ public class CardSelectionManager : MonoBehaviour
         if (owner == null)
         {
             Debug.LogWarning("This card has no owner player.");
+            return;
+        }
+
+        if (!owner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             return;
         }
 
@@ -167,6 +182,15 @@ public class CardSelectionManager : MonoBehaviour
     {
         if (selectedCardObject == null || targetCard == null)
         {
+            ClearSelection();
+            return;
+        }
+
+        Player attackingOwner = selectedCardObject.OwnerPlayer;
+
+        if (attackingOwner != null && !attackingOwner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + attackingOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             ClearSelection();
             return;
         }
@@ -255,6 +279,11 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         attacker.Attack(target);
+
+        if (attackingOwner != null)
+        {
+            attackingOwner.RegisterAction();
+        }
 
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);
