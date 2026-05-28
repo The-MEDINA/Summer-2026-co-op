@@ -75,7 +75,7 @@ namespace Network
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
      * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
-     * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the deck instead.
+     * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
      * bytes 5 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
@@ -465,8 +465,8 @@ namespace Network
             packet[0] = (byte) packetType.cardAttack;
             if (attacker as SpellParent != null)
             {
-                packet[1] = (byte)playerOne.Deck.IndexOf(attacker);
-                // override to grab from deck.
+                packet[1] = (byte)playerOne.Hand.IndexOf(attacker);
+                // override to grab from hand.
                 packet[4] = 1;
             }
             else
@@ -842,13 +842,17 @@ namespace Network
 #if DEBUG_MODE
                         Debug.Log("found cardAttack packet");
 #endif
-                    NewVirtualCardParent attacker = playerTwo.InPlay[packet[1]];
+                    NewVirtualCardParent attacker = null;
 
                     // check for any overrides.
                     // deck override.
                     if (packet[4] == 1)
                     {
-                        attacker = playerTwo.Deck[packet[1]];
+                        attacker = playerTwo.Hand[packet[1]];
+                    }
+                    else
+                    {
+                        attacker = playerTwo.InPlay[packet[1]];
                     }
                     NewVirtualCardParent target = playerOne.InPlay[packet[2]];
                     requestAttack[0] = attacker;
