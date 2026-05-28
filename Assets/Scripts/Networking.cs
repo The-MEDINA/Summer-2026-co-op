@@ -301,14 +301,16 @@ namespace Network
         /// </summary>
         public static async void StartHost()
         {
-            // should probably wrap a lot of this into a do/while loop to retry connections.
+            // setup the server
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
 #if DEBUG_MODE
             Debug.Log("Server started, waiting to accept client.");
 #endif
+            // wait for a client
             client = await server.AcceptTcpClientAsync();
+
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
 #endif
@@ -316,50 +318,77 @@ namespace Network
             stream = client.GetStream();
             byte[] handshake = EncodePacket(packetType.handshake, true);
             byte[] response = new byte[1024];
-            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(50)); // set back to 5 later
+            bool success = false;
+            List<Task> handshakeTask = new List<Task>();
 
             // send a handshake packet to the client and wait for a response.
             await stream.WriteAsync(handshake, 0, handshake.Length);
 
-#if DEBUG_MODE
-            Debug.Log("Post write Async");
-#endif
-            // start waiting for a response.
-            // Will currently close the socket to trigger a response upon timeout.
-            // This will cause a SocketException to exit the function early.
-            // can probably change this from stream.close to something else.
-            using(cts.Token.Register(() => {stream.Close(); server.Stop(); }))
+            // handshake task.
+            handshakeTask.Add(Task.Run(async () =>
             {
-                int receivedCount;
-                try
+#if DEBUG_MODE
+                Debug.Log($"wait for handshake");
+#endif
+                // wait 10 seconds or until read
+                Task<int> result = stream.ReadAsync(response, 0, response.Length);
+                await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+
+                // close if nothing was received.
+                if (!result.IsCompleted)
                 {
-                    receivedCount = await stream.ReadAsync(response, 0, response.Length, cts.Token).ConfigureAwait(false);
+#if DEBUG_MODE
+                    Debug.LogWarning($"timeout on host handshake, closing connection.");
+#endif
+                    CloseConnection();
                 }
-                catch (TimeoutException)
+                // Also close if connection was cleanly closed.
+                else if (result.Result == 0)
                 {
-                    receivedCount = -1;
+                    CloseConnection();
                 }
-            }
+                // Decode the packet if one was found in time.
+                // exit early if the packet is broken, or continue to connection if the packet is valid.
+                else if (result.IsCompleted)
+                {
 #if DEBUG_MODE
-            Debug.Log("Post read Async. Verifying response...");
+                    Debug.Log($"found {result.Result} bytes.");
 #endif
-            // double check the received packet is a handshake response.
-            try
-            {
-                DecodePacket(response);
-                CurrentState = state.connected;
+                    if (DecodePacket(response).IsFaulted)
+                    {
+                        Debug.LogWarning("Broken, unknown or otherwise invalid packet received. aborting.");
+                        CloseConnection();
+                    }
+                    else
+                    {
+                        success = true;
+                    }
+                    /*
+                    try
+                    {
+                        DecodePacket(response);
+                        success = true;
+                    }
+                    catch (Exception e)
+                    {
 #if DEBUG_MODE
-            Debug.Log("Success! This is a valid client.");
-#endif
-                Connection();
-            }
-            catch
-            {
-#if DEBUG_MODE
-                Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
+                        Debug.LogError(e);
+                        Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif  
-                // terminate the connection
-                CloseConnection();
+                    }*/
+                }
+            }));
+
+            // wait for the task to finish.
+            await Task.WhenAll(handshakeTask);
+
+            if (success)
+            {
+#if DEBUG_MODE
+                Debug.Log("Success! This is a valid client.");
+#endif
+                currentState = state.connected;
+                Connection();
             }
         }
 
@@ -635,7 +664,7 @@ namespace Network
         /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
         /// </summary>
         /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
-        private static async void DecodePacket(byte[] packet)
+        private static async Task DecodePacket(byte[] packet)
         {
             bool brokenPacket = false;
             Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
