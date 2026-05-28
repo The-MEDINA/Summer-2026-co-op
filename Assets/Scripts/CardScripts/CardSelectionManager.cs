@@ -195,6 +195,12 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        // send this attack if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttack(attacker, target);
+        }
+
         target.TakeDamage(attacker, attacker.Damage);
 
         RefreshCardVisual(selectedCardObject);

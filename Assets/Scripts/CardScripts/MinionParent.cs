@@ -1,5 +1,6 @@
 using cardIndex;
 using UnityEngine;
+using Network;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -71,6 +72,12 @@ public class MinionParent : NewVirtualCardParent
                 target.TakeDamage(this, Damage);
             }
             canAttack = false;
+
+            // send this attack if the card belongs to player 1.
+            if (!UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+            {
+                Networking.SendCardAttack(this, target);
+            }
         }
     }
 

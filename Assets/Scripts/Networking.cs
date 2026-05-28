@@ -140,7 +140,8 @@ namespace Network
         /// If it wants to instantiate a specific card, the value will be the specific card's index.
         /// </summary>
         private static int requestCardInstantiation = -1;
-        private static NewVirtualCardParent requestTest = null;
+        private static NewVirtualCardParent requestMoveToBattleground = null;
+        private static NewVirtualCardParent[] requestAttack = { null, null }; 
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
@@ -785,7 +786,7 @@ namespace Network
                     cardToMove = oldList[packet[3]];
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
-                        requestTest = cardToMove;
+                        requestMoveToBattleground = cardToMove;
                     }
                     else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
                     {
@@ -829,8 +830,9 @@ namespace Network
                 {
                     MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
                     MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
-                    attacker.Attack(target);
-                    break;
+                    requestAttack[0] = attacker;
+                    requestAttack[1] = target;
+                        break;
                 }
                 default:
                 {
@@ -852,19 +854,6 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
 #endif
-                    if (requestTest != null)
-                    {
-                        try
-                        {
-                            CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
-                            requestTest = null;
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError(e);
-                        }
-                    }
-
                     byte[] packet = new byte[1024];
 
                     // (As far as I know) Make a task to check if this ever finishes on time.
@@ -896,6 +885,8 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
+                    // complete any requests that came from other threads like DecodePacket.
+                    CompleteRequests();
                 }
             }
             // run in the background constantly listening as client.
@@ -985,10 +976,19 @@ namespace Network
 
         private static void CompleteRequests()
         {
-            if (requestTest != null)
+            // move to battleground.
+            if (requestMoveToBattleground != null)
             {
-                CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
-                requestTest = null;
+                CardSelectionManager.Instance.PlayCardToBattleground(requestMoveToBattleground.UnityObject.GetComponent<CardClickHandler>());
+                requestMoveToBattleground = null;
+            }
+
+            // attack.
+            if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
+            {
+                ((MinionParent)requestAttack[0]).Attack((MinionParent)requestAttack[1]);
+                requestAttack[0] = null;
+                requestAttack[1] = null;
             }
         }
 
