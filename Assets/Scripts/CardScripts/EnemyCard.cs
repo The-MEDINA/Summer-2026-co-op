@@ -4,7 +4,7 @@ public class EnemyCard : MonoBehaviour
 {
     private CardClickHandler thisClickHandler;
 
-    [SerializeField] private string cardName = "Tank Cat";
+    [SerializeField] private string cardName = "Mad Scientist Cat";
 
     private void Start()
     {

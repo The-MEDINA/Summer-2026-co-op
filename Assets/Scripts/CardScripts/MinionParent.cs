@@ -1,4 +1,5 @@
 using cardIndex;
+using System.Collections.Generic;
 using UnityEngine;
 using Network;
 
@@ -11,7 +12,10 @@ public class MinionParent : NewVirtualCardParent
         explode,
         haste,
         sloth,
-        coordinate
+        coordinate,
+        twoAttacks,
+        aoe,
+        overkill
     }
 
     private int health;
@@ -55,6 +59,7 @@ public class MinionParent : NewVirtualCardParent
     {
         Debug.Log("a");
     }
+
     public void Attack(MinionParent target)
     {
         if (canAttack)
@@ -63,13 +68,19 @@ public class MinionParent : NewVirtualCardParent
             {
                 return;
             }
-            if (cardEffect == effect.deathtouch)
+            else if (cardEffect == effect.deathtouch)
             {
                 target.TakeDamage(this, 99999999);
             }
             else
             {
                 target.TakeDamage(this, Damage);
+            }
+
+            if(cardEffect == effect.overkill && target.IsDead)
+            {
+                //player takes damage based on negative health of dead enemy
+                Debug.Log("OVERKILL");
             }
             canAttack = false;
 
@@ -81,6 +92,17 @@ public class MinionParent : NewVirtualCardParent
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            Health = 0;
+            Death();
+        }
+    }
+
     public void TakeDamage(MinionParent attacker, int damage)
     {
         Health -= damage;
@@ -88,7 +110,26 @@ public class MinionParent : NewVirtualCardParent
         if (Health <= 0)
         {
             Health = 0;
-            if (cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            if (cardEffect == effect.explode) 
+            {
+                int explodeDamage = 0;
+                switch(CardName)
+                {
+                    case "Mad Scientist Cat":
+                        {
+                            explodeDamage = 3;
+                            break;
+                        }
+
+                    case "Exploding Cat":
+                    default:
+                        {
+                            explodeDamage = 1;
+                            break;
+                        }
+                }
+                attacker.TakeDamage(this, explodeDamage); 
+            }
             Death();
         }
     }
@@ -97,5 +138,31 @@ public class MinionParent : NewVirtualCardParent
     {
         isDead = true;
         CardLocation = location.discard;
+    }
+
+    public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)
+    {
+        Debug.Log(canAttack);
+
+        if(canAttack && (cardEffect == effect.aoe || isSecond))
+        {
+            if (targetList == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                Debug.Log(i);
+                if (targetList[i] is MinionParent)
+                {
+                    MinionParent enemyTarget = (MinionParent)targetList[i];
+                    enemyTarget.TakeDamage(Damage);
+                    Debug.Log("d");
+                }
+            }
+            Debug.Log("z");
+            canAttack = false;
+        }
     }
 }
