@@ -1,4 +1,5 @@
 using UnityEngine;
+using Network;
 using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
@@ -28,6 +29,11 @@ public class CardSelectionManager : MonoBehaviour
     public CardClickHandler SelectedCardObject
     {
         get { return selectedCardObject; }
+        // network manager needs this.
+        // It should only be temporary since I think TryAttackTarget needs to be reworked.
+        // once we have attacking sorted, I should be able to get rid of this. - Dave
+        set { selectedCardObject = value; }
+        
     }
 
     private void Awake()
@@ -104,7 +110,9 @@ public class CardSelectionManager : MonoBehaviour
         ClearSelection();
     }
 
-    private void PlayCardToBattleground(CardClickHandler cardObject)
+    // Network manager needs to be able to access this method, so I'm making it public.
+    // if we *really* don't want that, let me know and i'll find some alternate way to do this. - Dave
+    public void PlayCardToBattleground(CardClickHandler cardObject)
     {
         Player owner = cardObject.OwnerPlayer;
 
@@ -129,6 +137,15 @@ public class CardSelectionManager : MonoBehaviour
         if (!owner.SpendEnergy(cardObject.CardData.Cost))
         {
             return;
+        }
+
+        // check to see if this move should be sent to peer.
+        if (owner == player1)
+        {
+            Networking.SendCardMove(cardObject.CardData, // card to move 
+                NewVirtualCardParent.location.hand, // in the player's hand
+                cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
+                NewVirtualCardParent.location.inPlay); // moved to inPlay
         }
 
         owner.MoveCardToInPlay(cardObject.CardData);
@@ -226,6 +243,13 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        // send this attack if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttack(attacker, target);
+        }
+
+        target.TakeDamage(attacker, attacker.Damage);
         if (attacker is TwoAttackParent)
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;

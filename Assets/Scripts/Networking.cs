@@ -63,8 +63,8 @@ namespace Network
      * --- CARDMOVE: ---
      * byte 1 holds the old location of the card.
      * byte 2 holds the new location of the card.
-     * bytes 3 and 4 hold the card index.
-     * bytes 5 - 1024 are empty so we can use it later to send more info.
+     * byte 3 holds the position of the card in the old location.
+     * bytes 4 - 1024 are empty so we can use it later to send more info.
      * 
      * --- CARDADD: ---
      * Byte 1 holds the location of the card to be made.
@@ -106,6 +106,7 @@ namespace Network
         /// </summary>
         private static Player playerOne;
         private static Player playerTwo;
+        private static Battleground p2Battleground;
 
         /// <summary>
         /// All these variables are for the network manager to actually do the networking.
@@ -122,23 +123,20 @@ namespace Network
         private static TcpClient client;
         private static NetworkStream stream;
 
-        /*
-         * Anything that's prefixed with "request" needs a unity game object to read it and do something manually.
-         * 
-         * Unfortunately, it seems that some stuff, like changing scenes, needs to be done in a "Unity thread" (Whatever that is)
-         * Well, because network runs tasks (which I think are based on threads?) it seems I can't call certain methods like ones to change scene.
-         * 
-         * So basically, these need to be checked by a gameObject and that gameObject needs to do what it's asking.
-         */
-
         /// <summary>
-        /// if this variable is not an empty string, please change the scene using the variable.
+        /// These variables contain info that needs something else to do what it's asking.
+        /// Usually, these are updated by DecodePacket and taken care of in CompleteRequests.
+        /// The values here are the default values for each variable. 
+        /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
         private static string requestSceneChange = "";
+        private static int requestCardInstantiation = -1;
+        private static NewVirtualCardParent requestMoveToBattleground = null;
+        private static NewVirtualCardParent[] requestAttack = { null, null }; 
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
-        public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
+        public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -294,14 +292,16 @@ namespace Network
         /// </summary>
         public static async void StartHost()
         {
-            // should probably wrap a lot of this into a do/while loop to retry connections.
+            // setup the server
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
 #if DEBUG_MODE
             Debug.Log("Server started, waiting to accept client.");
 #endif
+            // wait for a client
             client = await server.AcceptTcpClientAsync();
+
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
 #endif
@@ -309,50 +309,77 @@ namespace Network
             stream = client.GetStream();
             byte[] handshake = EncodePacket(packetType.handshake, true);
             byte[] response = new byte[1024];
-            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            bool success = false;
+            List<Task> handshakeTask = new List<Task>();
 
             // send a handshake packet to the client and wait for a response.
             await stream.WriteAsync(handshake, 0, handshake.Length);
 
-#if DEBUG_MODE
-            Debug.Log("Post write Async");
-#endif
-            // start waiting for a response.
-            // Will currently close the socket to trigger a response upon timeout.
-            // This will cause a SocketException to exit the function early.
-            // can probably change this from stream.close to something else.
-            using(cts.Token.Register(() => {stream.Close(); server.Stop(); }))
+            // handshake task.
+            handshakeTask.Add(Task.Run(async () =>
             {
-                int receivedCount;
-                try
+#if DEBUG_MODE
+                Debug.Log($"wait for handshake");
+#endif
+                // wait 10 seconds or until read
+                Task<int> result = stream.ReadAsync(response, 0, response.Length);
+                await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
+
+                // close if nothing was received.
+                if (!result.IsCompleted)
                 {
-                    receivedCount = await stream.ReadAsync(response, 0, response.Length, cts.Token).ConfigureAwait(false);
+#if DEBUG_MODE
+                    Debug.LogWarning($"timeout on host handshake, closing connection.");
+#endif
+                    CloseConnection();
                 }
-                catch (TimeoutException)
+                // Also close if connection was cleanly closed.
+                else if (result.Result == 0)
                 {
-                    receivedCount = -1;
+                    CloseConnection();
                 }
-            }
+                // Decode the packet if one was found in time.
+                // exit early if the packet is broken, or continue to connection if the packet is valid.
+                else if (result.IsCompleted)
+                {
 #if DEBUG_MODE
-            Debug.Log("Post read Async. Verifying response...");
+                    Debug.Log($"found {result.Result} bytes.");
 #endif
-            // double check the received packet is a handshake response.
-            try
-            {
-                DecodePacket(response);
-                CurrentState = state.connected;
+                    if (DecodePacket(response).IsFaulted)
+                    {
+                        Debug.LogWarning("Broken, unknown or otherwise invalid packet received. aborting.");
+                        CloseConnection();
+                    }
+                    else
+                    {
+                        success = true;
+                    }
+                    /*
+                    try
+                    {
+                        DecodePacket(response);
+                        success = true;
+                    }
+                    catch (Exception e)
+                    {
 #if DEBUG_MODE
-            Debug.Log("Success! This is a valid client.");
-#endif
-                Connection();
-            }
-            catch
-            {
-#if DEBUG_MODE
-                Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
+                        Debug.LogError(e);
+                        Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
 #endif  
-                // terminate the connection
-                CloseConnection();
+                    }*/
+                }
+            }));
+
+            // wait for the task to finish.
+            await Task.WhenAll(handshakeTask);
+
+            if (success)
+            {
+#if DEBUG_MODE
+                Debug.Log("Success! This is a valid client.");
+#endif
+                currentState = state.connected;
+                Connection();
             }
         }
 
@@ -410,7 +437,7 @@ namespace Network
         /// <param name="oldLocation">the card's old location.</param>
         /// <param name="newLocation">the card's new location.</param>
         /// <returns>a byte[1024] packet.</returns>
-        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, NewVirtualCardParent.location newLocation)
+        private static byte[] EncodePacket(NewVirtualCardParent card, NewVirtualCardParent.location oldLocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
             byte[] packet = new byte[1024];
 
@@ -418,22 +445,7 @@ namespace Network
             packet[0] = (byte) packetType.cardMove;
             packet[1] = (byte) oldLocation;
             packet[2] = (byte) newLocation;
-
-            // prepare the card's index to encode into two bytes.
-            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(card.CardName);
-            short cardToEncode = (short)cardDetails.nameIndexPosition;
-            byte highByte = 0;
-            byte lowByte = 0;
-
-            // mask out the top 8 bits.
-            lowByte = (byte)(cardToEncode & 255);
-
-            // shift right 8 bits and then mask.
-            highByte = (byte)((cardToEncode >> 8) & 255);
-
-            // High bytes are in odd indexes, low bytes are in even indexes.
-            packet[3] = highByte;
-            packet[4] = lowByte;
+            packet[3] = (byte) oldLocationPosition;
 
             return packet;
         }
@@ -643,7 +655,7 @@ namespace Network
         /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
         /// </summary>
         /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
-        private static async void DecodePacket(byte[] packet)
+        private static async Task DecodePacket(byte[] packet)
         {
             bool brokenPacket = false;
             Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
@@ -742,54 +754,47 @@ namespace Network
                 }
                 case ((byte) packetType.cardMove):
                 {
-                    // set up these to make code nicer
-                    NewVirtualCardParent.location oldLocation = (NewVirtualCardParent.location)packet[1];
-                    NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[1];
-
-                    // get the card's name from the info.
-                    short indexOfCard = packet[3];
-                    indexOfCard <<= 8;
-                    indexOfCard += packet[4];
-                    string cardName = cardIndex.Index.GetName(indexOfCard);
-
-                    // Get a copy of the card array to check.
-                    // doing this in theory eliminates a LOT of duplicated code.
-                    List<NewVirtualCardParent> cardArray = null; 
-                    switch ((NewVirtualCardParent.location) packet[1])
-                    {
-                        case (NewVirtualCardParent.location.deck): { cardArray = playerTwo.Deck; break; }
-                        case (NewVirtualCardParent.location.discard): { cardArray = playerTwo.Discard; break; }
-                        case (NewVirtualCardParent.location.hand): { cardArray = playerTwo.Hand; break; }
-                        case (NewVirtualCardParent.location.inPlay): { cardArray = playerTwo.InPlay; break; }
-                    }
-
-                    // Search for the card.
-                    for (int i = 0; i < cardArray.Count; i++)
-                    {
-                        if (cardArray[i].CardName == cardName)
-                        {
-                            NewVirtualCardParent cardToMove = cardArray[i];
-                            // FINALLY figure out where to move the card.
-                            if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
-                            {
-                                // uhhh I don't think I should have to cast here.
-                                // Seems like an error.
-                                playerTwo.MoveCardToInPlay((MinionParent) cardToMove);
-                            }
-                            else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard) playerTwo.MoveCardToDiscard(cardToMove);
 #if DEBUG_MODE
-                            else
-                            {
-                                Debug.LogWarning($"Illegal move from old location {oldLocation} to new location {newLocation}! Double check if a method to move it exists?");
-                            }
+                    Debug.Log("found cardMove packet");
 #endif
-                            break;
-                        }
+                    // setup to make code nicer
+                    List<NewVirtualCardParent> oldList = null;
+                    NewVirtualCardParent.location oldLocation = (NewVirtualCardParent.location)packet[1];
+                    NewVirtualCardParent.location newLocation = (NewVirtualCardParent.location)packet[2];
+                    NewVirtualCardParent cardToMove = null;
+                    
+                    // setup old location
+                    switch ((NewVirtualCardParent.location)packet[1])
+                    {
+                        case (NewVirtualCardParent.location.deck): { oldList = playerTwo.Deck; break; }
+                        case (NewVirtualCardParent.location.discard): { oldList = playerTwo.Discard; break; }
+                        case (NewVirtualCardParent.location.hand): { oldList = playerTwo.Hand; break; }
+                        case (NewVirtualCardParent.location.inPlay): { oldList = playerTwo.InPlay; break; }
                     }
+
+                    // grab card and attempt to move
+                    cardToMove = oldList[packet[3]];
+                    if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
+                    {
+                        requestMoveToBattleground = cardToMove;
+                    }
+                    else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
+                    {
+                        playerTwo.MoveCardToDiscard(cardToMove);
+                    }
+#if DEBUG_MODE
+                    else
+                    {
+                        Debug.LogWarning($"Illegal move from old location {oldLocation} to new location {newLocation}! Double check if a method to move it exists?");
+                    }
+#endif
                     break;
                 }
                 case ((byte)packetType.cardAdd):
                 {
+#if DEBUG_MODE
+                    Debug.Log("found cardAdd packet");
+#endif
                     NewVirtualCardParent card;
 
                     // rebuild the card from the info.
@@ -806,16 +811,20 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { playerTwo.Hand.Add(card); break; }
+                        case (NewVirtualCardParent.location.hand): { /*playerTwo.Hand.Add(card);*/ requestCardInstantiation = -2; break; }
                         case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
                     }
-                        break;
+                    break;
                 }
                 case ((byte)packetType.cardAttack):
                 {
+#if DEBUG_MODE
+                        Debug.Log("found cardAttack packet");
+#endif
                     MinionParent attacker = (MinionParent) playerTwo.InPlay[packet[1]];
                     MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
-                    attacker.Attack(target);
+                    requestAttack[0] = attacker;
+                    requestAttack[1] = target;
                     break;
                 }
                 default:
@@ -845,7 +854,7 @@ namespace Network
 
                     // wait for either the task to finish or for timeout.
                     // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 1 minute.
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
 
                     // close the connection on timeout.
                     if (!result.IsCompleted)
@@ -869,6 +878,8 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
+                    // complete any requests that came from other threads like DecodePacket.
+                    CompleteRequests();
                 }
             }
             // run in the background constantly listening as client.
@@ -894,7 +905,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(60)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -949,7 +960,46 @@ namespace Network
 
                     // wait for both tasks to finish before doing it again, if there's still a connection.
                     await Task.WhenAll(connectionTasks);
+
+                    // complete any requests that came from other threads like DecodePacket.
+                    CompleteRequests();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Complete any requests that come from DecodePacket and all the 'request' variables.
+        /// </summary>
+        private static void CompleteRequests()
+        {
+            // scene change.
+            if (Networking.requestSceneChange != "")
+            {
+                SceneManager.LoadScene(Networking.requestSceneChange);
+                Networking.requestSceneChange = "";
+            }
+
+            // card instantiation.
+            if (Networking.requestCardInstantiation != -1)
+            {
+                p2Battleground.DrawCardToHand();
+                Networking.requestCardInstantiation = -1;
+            }
+
+            // move to battleground.
+            if (requestMoveToBattleground != null)
+            {
+                CardSelectionManager.Instance.PlayCardToBattleground(requestMoveToBattleground.UnityObject.GetComponent<CardClickHandler>());
+                requestMoveToBattleground = null;
+            }
+
+            // attack.
+            if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
+            {
+                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
+                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                requestAttack[0] = null;
+                requestAttack[1] = null;
             }
         }
 
@@ -1064,9 +1114,9 @@ namespace Network
         /// <param name="card">The card you're moving.</param>
         /// <param name="Oldlocation">The old location of this card.</param>
         /// <param name="newLocation">The new location of this card.</param>
-        public static void SendMoveCard(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, NewVirtualCardParent.location newLocation)
+        public static void SendCardMove(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
-            byte[] packet = EncodePacket(card, Oldlocation, newLocation);
+            byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
             if (currentState == state.connected)
             {
                 stream.WriteAsync(packet);
@@ -1079,12 +1129,27 @@ namespace Network
 #endif
         }
 
+        public static void SendCardAdd(NewVirtualCardParent card, NewVirtualCardParent.location location)
+        {
+            byte[] packet = EncodePacket(card, location);
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send an add card while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
         /// <summary>
         /// Tell the peer you attacked a card.
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
-        public static void SendAttack(MinionParent attacker, MinionParent target)
+        public static void SendCardAttack(MinionParent attacker, MinionParent target)
         {
             byte[] packet = EncodePacket(attacker, target);
             if (currentState == state.connected)
@@ -1107,7 +1172,3 @@ namespace Network
         }
     }
 }
-/*
- * TODO: ADD A CARD'S INDEX IN ITS ARRAY TO THE PACKET
- * This should add support for duplicate cards.
- */

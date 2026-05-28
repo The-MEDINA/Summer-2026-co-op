@@ -20,7 +20,7 @@ public abstract class NewVirtualCardParent
     private int cost;
     private type cardType;
     private location cardLocation;
-
+    private GameObject unityObject;
     [SerializeField] private string cardName;
     private string flavorText;
 
@@ -29,6 +29,7 @@ public abstract class NewVirtualCardParent
     public string FlavorText { get { return flavorText; } }
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
+    public GameObject UnityObject { get { return unityObject; } set { unityObject = value; } }
 
     public NewVirtualCardParent(int cost, string name, type cardType, location cardLocation)
     {
