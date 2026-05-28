@@ -11,16 +11,10 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     private List<GameObject> cardList = new List<GameObject>();
 
-    // battleground needs an update to check if network manager wants to instantiate a card.
-    // If we REALLY don't want this method let me know and I'll find some other way to do this.
-    // If this is fine, yall can remove this block of comments. - Dave
-    public void Update()
+    // network manager needs this to instantiate cards.
+    public void Start()
     {
-        if (Networking.RequestCardInstantiation != -1 && p.IsPlayerTwo)
-        {
-            DrawCardToHand();
-            Networking.RequestCardInstantiation = -1;
-        }
+        if (p.IsPlayerTwo) Networking.P2Battleground = this;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -30,7 +24,9 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         DrawCardToHand();
     }
 
-    private void DrawCardToHand()
+    // network manager needs this, so i'm making it public for now.
+    // If we REALLY don't want this I'll find some alternate way to do this. - Dave
+    public void DrawCardToHand()
     {
         if (p == null)
         {

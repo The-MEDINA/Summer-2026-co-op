@@ -106,6 +106,7 @@ namespace Network
         /// </summary>
         private static Player playerOne;
         private static Player playerTwo;
+        private static Battleground p2Battleground;
 
         /// <summary>
         /// All these variables are for the network manager to actually do the networking.
@@ -146,6 +147,7 @@ namespace Network
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
+        public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
         public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
         public static int RequestCardInstantiation { get { return requestCardInstantiation; } set { requestCardInstantiation = value; } }
 
@@ -987,6 +989,13 @@ namespace Network
                 Networking.requestSceneChange = "";
             }
 
+            // card instantiation.
+            if (Networking.RequestCardInstantiation != -1)
+            {
+                p2Battleground.DrawCardToHand();
+                Networking.RequestCardInstantiation = -1;
+            }
+
             // move to battleground.
             if (requestMoveToBattleground != null)
             {
@@ -999,7 +1008,6 @@ namespace Network
             {
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
-                // ((MinionParent)requestAttack[0]).Attack((MinionParent)requestAttack[1]);
                 requestAttack[0] = null;
                 requestAttack[1] = null;
             }
