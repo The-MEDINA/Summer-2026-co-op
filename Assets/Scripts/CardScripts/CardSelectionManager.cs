@@ -195,7 +195,7 @@ public class CardSelectionManager : MonoBehaviour
         );
     }
 
-    private void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
+    public void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
     {
         if (selectedCardObject == null || targetCard == null)
         {
@@ -246,7 +246,7 @@ public class CardSelectionManager : MonoBehaviour
         // send this attack if this is player 1.
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
-            Networking.SendCardAttack(attacker, target);
+            Networking.SendCardAttack(attacker, target, wasSecondAttack);
         }
 
         target.TakeDamage(attacker, attacker.Damage);

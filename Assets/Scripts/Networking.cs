@@ -74,7 +74,8 @@ namespace Network
      * --- CARDATTACK: ---
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
-     * bytes 3 - 1023 are empty so we can use it later to send more info.
+     * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
+     * bytes 4 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
     {
@@ -132,7 +133,8 @@ namespace Network
         private static string requestSceneChange = "";
         private static int requestCardInstantiation = -1;
         private static NewVirtualCardParent requestMoveToBattleground = null;
-        private static NewVirtualCardParent[] requestAttack = { null, null }; 
+        private static NewVirtualCardParent[] requestAttack = { null, null };
+        private static bool requestSecondAttack = false;
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
@@ -456,12 +458,20 @@ namespace Network
         /// <param name="attacker">card that's attacking.</param>
         /// <param name="target">card that's being targetted.</param>
         /// <returns>a byte[1024] packet.</returns>
-        private static byte[] EncodePacket(NewVirtualCardParent attacker, NewVirtualCardParent target)
+        private static byte[] EncodePacket(NewVirtualCardParent attacker, NewVirtualCardParent target, bool isSecondAttack)
         {
             byte[] packet = new byte[1024];
             packet[0] = (byte) packetType.cardAttack;
             packet[1] = (byte) playerOne.InPlay.IndexOf(attacker);
             packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
+            if (isSecondAttack)
+            {
+                packet[3] = 1;
+            }
+            else
+            {
+                packet[3] = 0;
+            }
             return packet;
         }
 
@@ -825,6 +835,8 @@ namespace Network
                     MinionParent target = (MinionParent) playerOne.InPlay[packet[2]];
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
+                    if (packet[3] == 1) requestSecondAttack = true;
+                    else requestSecondAttack = false;
                     break;
                 }
                 default:
@@ -997,9 +1009,10 @@ namespace Network
             if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
             {
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>(), requestSecondAttack);
                 requestAttack[0] = null;
                 requestAttack[1] = null;
+                requestSecondAttack = false;
             }
         }
 
@@ -1149,9 +1162,9 @@ namespace Network
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
-        public static void SendCardAttack(MinionParent attacker, MinionParent target)
+        public static void SendCardAttack(MinionParent attacker, MinionParent target, bool isSecondAttack)
         {
-            byte[] packet = EncodePacket(attacker, target);
+            byte[] packet = EncodePacket(attacker, target, isSecondAttack);
             if (currentState == state.connected)
             {
                 stream.WriteAsync(packet);
