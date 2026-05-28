@@ -68,6 +68,15 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        Player owner = cardObject.OwnerPlayer;
+
+        if (owner != null && !owner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            ClearSelection();
+            return;
+        }
+
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
@@ -83,6 +92,12 @@ public class CardSelectionManager : MonoBehaviour
         if (owner == null)
         {
             Debug.LogWarning("This card has no owner player.");
+            return;
+        }
+
+        if (!owner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             return;
         }
 
@@ -152,6 +167,15 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        Player attackingOwner = selectedCardObject.OwnerPlayer;
+
+        if (attackingOwner != null && !attackingOwner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + attackingOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            ClearSelection();
+            return;
+        }
+
         if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
@@ -184,6 +208,11 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         target.TakeDamage(attacker, attacker.Damage);
+
+        if (attackingOwner != null)
+        {
+            attackingOwner.RegisterAction();
+        }
 
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);
