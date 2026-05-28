@@ -1014,6 +1014,15 @@ namespace Network
                 requestAttack[1] = null;
                 requestSecondAttack = false;
             }
+            // spell action.
+            else if (requestAttack[0] as MinionParent != null)
+            {
+                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
+                CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                requestAttack[0] = null;
+                requestAttack[1] = null;
+                requestSecondAttack = false;
+            }
         }
 
         /// <summary>
@@ -1162,7 +1171,7 @@ namespace Network
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
-        public static void SendCardAttack(MinionParent attacker, MinionParent target, bool isSecondAttack)
+        public static void SendCardAttack(NewVirtualCardParent attacker, NewVirtualCardParent target, bool isSecondAttack)
         {
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
             if (currentState == state.connected)
