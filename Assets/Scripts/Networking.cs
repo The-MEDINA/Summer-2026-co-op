@@ -29,6 +29,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Text;
 using cardIndex;
 
@@ -979,6 +980,13 @@ namespace Network
 
         private static void CompleteRequests()
         {
+            // scene change.
+            if (Networking.RequestSceneChange != "")
+            {
+                SceneManager.LoadScene(Networking.RequestSceneChange);
+                Networking.requestSceneChange = "";
+            }
+
             // move to battleground.
             if (requestMoveToBattleground != null)
             {

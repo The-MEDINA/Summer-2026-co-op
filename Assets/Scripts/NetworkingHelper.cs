@@ -13,10 +13,10 @@ public class NetworkingHelper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Networking.RequestSceneChange != "")
+        /*if (Networking.RequestSceneChange != "")
         {
             SceneManager.LoadScene(Networking.RequestSceneChange);
             Networking.RequestSceneChange = "";
-        }
+        }*/
     }
 }
