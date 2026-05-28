@@ -316,7 +316,7 @@ namespace Network
             stream = client.GetStream();
             byte[] handshake = EncodePacket(packetType.handshake, true);
             byte[] response = new byte[1024];
-            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(50)); // set back to 5 later
 
             // send a handshake packet to the client and wait for a response.
             await stream.WriteAsync(handshake, 0, handshake.Length);
@@ -823,6 +823,19 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
 #endif
+                    if (requestTest != null)
+                    {
+                        try
+                        {
+                            CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
+                            requestTest = null;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError(e);
+                        }
+                    }
+
                     byte[] packet = new byte[1024];
 
                     // (As far as I know) Make a task to check if this ever finishes on time.
@@ -854,12 +867,6 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
-                    // complete any requests that came from other threads like DecodePacket.
-                    if (requestTest != null)
-                    {
-                        CardSelectionManager.Instance.PlayCardToBattleground(requestTest.UnityObject.GetComponent<CardClickHandler>());
-                        requestTest = null;
-                    }
                 }
             }
             // run in the background constantly listening as client.
