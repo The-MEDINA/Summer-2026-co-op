@@ -463,18 +463,30 @@ namespace Network
         {
             byte[] packet = new byte[1024];
             packet[0] = (byte) packetType.cardAttack;
+
+            // encode for spells.
             if (attacker as SpellParent != null)
             {
                 packet[1] = (byte)playerOne.Hand.IndexOf(attacker);
                 // override to grab from hand.
                 packet[4] = 1;
+
+                SpellParent spell = (SpellParent)attacker;
+
+                // check if we're targetting ally cards.
+                if (spell.Target == SpellParent.spellTarget.allyCards)
+                {
+                    packet[2] = (byte)playerOne.InPlay.IndexOf(target);
+                }
             }
+
+            // encode for minions.
             else
             {
                 packet[1] = (byte)playerOne.InPlay.IndexOf(attacker);
+                packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
                 packet[4] = 0;
             }
-            packet[2] = (byte) playerTwo.InPlay.IndexOf(target);
             if (isSecondAttack)
             {
                 packet[3] = 1;
@@ -843,9 +855,10 @@ namespace Network
                         Debug.Log("found cardAttack packet");
 #endif
                     NewVirtualCardParent attacker = null;
+                    NewVirtualCardParent target = null; //playerOne.InPlay[packet[2]];
 
                     // check for any overrides.
-                    // deck override.
+                    // hand override.
                     if (packet[4] == 1)
                     {
                         attacker = playerTwo.Hand[packet[1]];
@@ -854,7 +867,20 @@ namespace Network
                     {
                         attacker = playerTwo.InPlay[packet[1]];
                     }
-                    NewVirtualCardParent target = playerOne.InPlay[packet[2]];
+
+                    if (attacker as SpellParent != null)
+                    {
+                        SpellParent spell = (SpellParent)attacker;
+                        // overwrite the target if this card is a spell that targets allies.
+                        if (spell.Target == SpellParent.spellTarget.allyCards)
+                        {
+                            target = playerTwo.InPlay[packet[2]];
+                        }
+                    }
+                    else
+                    {
+                        target = playerOne.InPlay[packet[2]];
+                    }
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
                     if (packet[3] == 1) requestSecondAttack = true;
