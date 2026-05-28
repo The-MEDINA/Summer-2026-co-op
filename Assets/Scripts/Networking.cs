@@ -123,24 +123,13 @@ namespace Network
         private static TcpClient client;
         private static NetworkStream stream;
 
-        /*
-         * Anything that's prefixed with "request" needs a unity game object to read it and do something manually.
-         * 
-         * Unfortunately, it seems that some stuff, like changing scenes, needs to be done in a "Unity thread" (Whatever that is)
-         * Well, because network runs tasks (which I think are based on threads?) it seems I can't call certain methods like ones to change scene.
-         * 
-         * So basically, these need to be checked by a gameObject and that gameObject needs to do what it's asking.
-         */
-
         /// <summary>
-        /// if this variable is not an empty string, please change the scene using the variable.
+        /// These variables contain info that needs something else to do what it's asking.
+        /// Usually, these are updated by DecodePacket and taken care of in CompleteRequests.
+        /// The values here are the default values for each variable. 
+        /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
         private static string requestSceneChange = "";
-        /// <summary>
-        /// If this variable is not -1, please instantiate a card.
-        /// If it's just wanting to make a card from the deck, the value will usually be -2.
-        /// If it wants to instantiate a specific card, the value will be the specific card's index.
-        /// </summary>
         private static int requestCardInstantiation = -1;
         private static NewVirtualCardParent requestMoveToBattleground = null;
         private static NewVirtualCardParent[] requestAttack = { null, null }; 
@@ -148,8 +137,6 @@ namespace Network
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
-        public static string RequestSceneChange { get { return requestSceneChange; } set { requestSceneChange = value; } }
-        public static int RequestCardInstantiation { get { return requestCardInstantiation; } set { requestCardInstantiation = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -980,20 +967,23 @@ namespace Network
             }
         }
 
+        /// <summary>
+        /// Complete any requests that come from DecodePacket and all the 'request' variables.
+        /// </summary>
         private static void CompleteRequests()
         {
             // scene change.
-            if (Networking.RequestSceneChange != "")
+            if (Networking.requestSceneChange != "")
             {
-                SceneManager.LoadScene(Networking.RequestSceneChange);
+                SceneManager.LoadScene(Networking.requestSceneChange);
                 Networking.requestSceneChange = "";
             }
 
             // card instantiation.
-            if (Networking.RequestCardInstantiation != -1)
+            if (Networking.requestCardInstantiation != -1)
             {
                 p2Battleground.DrawCardToHand();
-                Networking.RequestCardInstantiation = -1;
+                Networking.requestCardInstantiation = -1;
             }
 
             // move to battleground.
