@@ -120,18 +120,21 @@ public class CardSelectionManager : MonoBehaviour
         if (owner == null)
         {
             Debug.LogWarning("This card has no owner player.");
+            if (owner.IsPlayerTwo) Networking.DesyncWarning("Player two tried to play a card with no owner");
             return;
         }
 
         if (!owner.CanMove)
         {
             Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            if (owner.IsPlayerTwo) Networking.DesyncWarning("player two move timer active");
             return;
         }
 
         if (!owner.CanAfford(cardObject.CardData))
         {
             Debug.Log("Cannot play card. Not enough energy.");
+            if (owner.IsPlayerTwo) Networking.DesyncWarning("Player two doesn't have enough energy");
             return;
         }
 
@@ -203,7 +206,7 @@ public class CardSelectionManager : MonoBehaviour
     {
         if (selectedCardObject == null || targetCard == null)
         {
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two's attacking or target card was null");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two's attacking or target card was null");
             ClearSelection();
             return;
         }
@@ -213,7 +216,7 @@ public class CardSelectionManager : MonoBehaviour
         if (attackingOwner != null && !attackingOwner.CanMove)
         {
             Debug.Log("Move timer active. Wait " + attackingOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two's move timer is still active");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two's move timer is still active");
             ClearSelection();
             return;
         }
@@ -221,7 +224,7 @@ public class CardSelectionManager : MonoBehaviour
         if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two is attacking with card not in play");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two is attacking with card not in play");
             ClearSelection();
             return;
         }
@@ -229,7 +232,7 @@ public class CardSelectionManager : MonoBehaviour
         if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Target card must be in play.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two is attacking a card that's not in play");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two is attacking a card that's not in play");
             ClearSelection();
             return;
         }
@@ -247,7 +250,7 @@ public class CardSelectionManager : MonoBehaviour
         if (attacker == null || target == null)
         {
             Debug.Log("Only minion cards can attack right now.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Only minion cards can attack right now for player two");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Only minion cards can attack right now for player two");
             ClearSelection();
             return;
         }
@@ -342,14 +345,14 @@ public class CardSelectionManager : MonoBehaviour
         if (selectedCardObject == null || targetCard == null)
         {
             ClearSelection();
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two's attacking or target card was null");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two's attacking or target card was null");
             return;
         }
 
         if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
         {
             Debug.Log("Card must be in your hand before it can be played.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two is playing card from hand");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two is playing card from hand");
             ClearSelection();
             return;
         }
@@ -357,7 +360,7 @@ public class CardSelectionManager : MonoBehaviour
         if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Target card must be in play.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Player two is targetting card not in play");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two is targetting card not in play");
             ClearSelection();
             return;
         }
@@ -368,7 +371,7 @@ public class CardSelectionManager : MonoBehaviour
         if (attacker == null || target == null)
         {
             Debug.Log("Only minion cards can attack right now.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.PotentialDesyncWarning("Only minion cards can attack right now for player two");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Only minion cards can attack right now for player two");
             ClearSelection();
             return;
         }

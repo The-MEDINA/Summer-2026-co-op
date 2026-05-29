@@ -357,19 +357,6 @@ namespace Network
                     {
                         success = true;
                     }
-                    /*
-                    try
-                    {
-                        DecodePacket(response);
-                        success = true;
-                    }
-                    catch (Exception e)
-                    {
-#if DEBUG_MODE
-                        Debug.LogError(e);
-                        Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
-#endif  
-                    }*/
                 }
             }));
 
@@ -468,9 +455,6 @@ namespace Network
             if (attacker as SpellParent != null)
             {
                 packet[1] = (byte)playerOne.Hand.IndexOf(attacker);
-                // override to grab from hand.
-                packet[4] = 1;
-
                 SpellParent spell = (SpellParent)attacker;
 
                 // check if we're targetting ally cards.
@@ -478,6 +462,13 @@ namespace Network
                 {
                     packet[2] = (byte)playerOne.InPlay.IndexOf(target);
                 }
+                else
+                {
+                    packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                }
+
+                // override to grab from hand.
+                packet[4] = 1;
             }
 
             // encode for minions.
@@ -1211,10 +1202,10 @@ namespace Network
 #endif
         }
 
-        public static void PotentialDesyncWarning(string warning)
+        public static void DesyncWarning(string warning)
         {
 #if DEBUG_MODE
-            Debug.LogWarning($"Potential desync detected! {warning}. Consider implementing any corrections if none have been made already. ");
+            Debug.LogError($"Desync detected! {warning}.");
 #endif
         }
     }
