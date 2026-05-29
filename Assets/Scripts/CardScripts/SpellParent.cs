@@ -82,14 +82,11 @@ public class SpellParent : NewVirtualCardParent
                 }
 
             case spellEffect.equipment:
-                {
-                    target.Damage += amount;
-                    target.StartingHealth += secondEquipmentAmount;
-                    target.Health += secondEquipmentAmount;
-                    
+                {   
                     switch(CardName)
                     {
                         case "M16":
+                            target.Damage += amount;
                             {
                                 target.AddEquipment(MinionParent.equipment.m16);
                                 break;
@@ -97,18 +94,25 @@ public class SpellParent : NewVirtualCardParent
 
                         case "I Hungy!!!":
                             {
+                                
                                 target.AddEquipment(MinionParent.equipment.iHungy);
                                 break;
                             }
 
                         case "Terrorize":
                             {
+                                target.Damage -= amount;
+                                target.StartingHealth -= secondEquipmentAmount;
+                                target.Health -= secondEquipmentAmount;
                                 target.AddEquipment(MinionParent.equipment.terrorize);
                                 break;
                             }
 
                         case "Fish Treat":
                             {
+                                target.Damage += amount;
+                                target.StartingHealth += secondEquipmentAmount;
+                                target.Health += secondEquipmentAmount;
                                 target.AddEquipment(MinionParent.equipment.fishTreat);
                                 break;
                             }
