@@ -7,7 +7,8 @@ public class SpellParent : NewVirtualCardParent
     {
         damage,
         heal,
-        unique
+        unique,
+        equipment
     }
 
     public enum spellTarget //what the target type of the spell is
@@ -21,10 +22,12 @@ public class SpellParent : NewVirtualCardParent
     private spellEffect effect;
     private spellTarget target;
     private int amount;
+    private int secondEquipmentAmount;
 
     public spellEffect Effect { get { return effect; } }
     public spellTarget Target { get { return target; } }
     public int Amount { get { return amount; } }//amount of damage done, health healed, etc
+    public int SecondEquipmentAmountAmount { get { return secondEquipmentAmount; } }//startingHealth change in an equipment card
 
     /// <summary>
     /// creates a new Spell card object
@@ -36,12 +39,13 @@ public class SpellParent : NewVirtualCardParent
     /// <param name="name">the spell's name</param>
     /// <param name="cardType">always spell</param>
     /// <param name="cardLocation">always deck</param>
-    public SpellParent(spellEffect thisSpellEffect, spellTarget thisSpellTarget, int amount, 
+    public SpellParent(spellEffect thisSpellEffect, spellTarget thisSpellTarget, int amount, int secondAmount,
         int cost, string name, type cardType, location cardLocation) : base(cost, name, cardType, cardLocation)
     {
         effect = thisSpellEffect;
         target = thisSpellTarget;
         this.amount = amount;
+        this.secondEquipmentAmount = secondAmount;
     }
 
     public SpellParent(string name, location cardLocation) : base(name, cardLocation)
@@ -49,10 +53,8 @@ public class SpellParent : NewVirtualCardParent
         Details spellDetails = cardIndex.Index.GetDetails(name);
         effect = spellDetails.spellEffect;
         target = spellDetails.spellTarget;
-        // so... I see this amount variable and I don't exactly know where it's being used right now.
-        // Since the only thing I see that has an amount in the spreadsheet has it in damage, I'm gonna pull it from there for now.
-        // Let me know if I should change this. - Dave
         amount = spellDetails.damage;
+        secondEquipmentAmount = spellDetails.health;
     }
 
     /// <summary>
@@ -75,6 +77,46 @@ public class SpellParent : NewVirtualCardParent
                     if (target.Health > target.StartingHealth)
                     {
                         target.Health = target.StartingHealth;
+                    }
+                    break;
+                }
+
+            case spellEffect.equipment:
+                {
+                    target.Damage += amount;
+                    target.StartingHealth += secondEquipmentAmount;
+                    target.Health += secondEquipmentAmount;
+                    
+                    switch(CardName)
+                    {
+                        case "M16":
+                            {
+                                target.AddEquipment(MinionParent.equipment.m16);
+                                break;
+                            }
+
+                        case "I Hungy!!!":
+                            {
+                                target.AddEquipment(MinionParent.equipment.iHungy);
+                                break;
+                            }
+
+                        case "Terrorize":
+                            {
+                                target.AddEquipment(MinionParent.equipment.terrorize);
+                                break;
+                            }
+
+                        case "Fish Treat":
+                            {
+                                target.AddEquipment(MinionParent.equipment.fishTreat);
+                                break;
+                            }
+
+                        default:
+                            {
+                                break;
+                            }
                     }
                     break;
                 }

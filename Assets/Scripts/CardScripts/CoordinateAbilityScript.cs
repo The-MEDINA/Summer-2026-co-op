@@ -5,7 +5,7 @@ public class CoordinateAbilityScript
 {
     private int numToHit; //when to award the coordinate bonus
     private bool awarded = false;
-    public int NumToHit {  get { return numToHit; } }
+    public int NumToHit {  get { return numToHit; } set { numToHit = value; } }
     public bool Awarded { get { return awarded; } }
 
     //because the methods are public, the script doesn't need to be added to anything. In the future this should be changed to private (or protected?)

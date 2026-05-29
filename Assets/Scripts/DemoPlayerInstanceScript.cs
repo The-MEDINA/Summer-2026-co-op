@@ -25,12 +25,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.enemyCards, 5, 1, "spellDamageTest", 
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
-        p.Deck.Add(cardIndex.Index.CreateCard("Spontaneous Combustion", NewVirtualCardParent.location.deck));
-        /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.heal, SpellParent.spellTarget.allyCards, 5, 1, "spellHealTest",
-    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
-        p.Deck.Add(cardIndex.Index.CreateCard("Patch Up", NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "equipmentTest",
+            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
             NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)   

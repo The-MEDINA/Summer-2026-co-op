@@ -18,6 +18,14 @@ public class MinionParent : NewVirtualCardParent
         overkill
     }
 
+    public enum equipment
+    {
+        m16,
+        iHungy,
+        terrorize,
+        fishTreat
+    }
+
     private int health;
     private int damage;
     private effect cardEffect;
@@ -25,6 +33,7 @@ public class MinionParent : NewVirtualCardParent
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
     private int startingHealth;
+    private List<equipment> equipmentList;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -42,6 +51,7 @@ public class MinionParent : NewVirtualCardParent
         this.damage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
+        equipmentList = new List<equipment>();
     }
 
     /// <summary>
@@ -56,6 +66,7 @@ public class MinionParent : NewVirtualCardParent
         startingHealth = cardDetails.health;
         damage = cardDetails.damage;
         cardEffect = cardDetails.ability;
+        equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
     }
 
@@ -159,5 +170,10 @@ public class MinionParent : NewVirtualCardParent
             }
             canAttack = false;
         }
+    }
+
+    public void AddEquipment(equipment addToList)
+    {
+        equipmentList.Add(addToList);
     }
 }
