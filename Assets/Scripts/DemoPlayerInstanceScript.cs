@@ -3,6 +3,7 @@ using cardIndex;
 
 public class DemoPlayerInstanceScript : MonoBehaviour
 {
+    //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
         "Comically Large Spoon Cat",

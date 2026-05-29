@@ -19,6 +19,9 @@ public class CardUIManager : MonoBehaviour
         RefreshCardUI();
     }
 
+    /// <summary>
+    /// updates the text on cards to accurately reflect its stats and information
+    /// </summary>
     public void RefreshCardUI()
     {
         if (clickHandler == null || clickHandler.CardData == null)

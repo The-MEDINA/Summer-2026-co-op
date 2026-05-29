@@ -31,6 +31,13 @@ public abstract class NewVirtualCardParent
     public type CardType { get { return cardType; } }
     public GameObject UnityObject { get { return unityObject; } set { unityObject = value; } }
 
+    /// <summary>
+    /// base constructor for all card scripts
+    /// </summary>
+    /// <param name="cost">energy cost to play the card</param>
+    /// <param name="name">name of the card</param>
+    /// <param name="cardType">type of card, spell/minion/etc</param>
+    /// <param name="cardLocation">always starts in the deck</param>
     public NewVirtualCardParent(int cost, string name, type cardType, location cardLocation)
     {
         this.cost = cost;
@@ -51,5 +58,4 @@ public abstract class NewVirtualCardParent
         flavorText = cardDetails.flavorText;
         this.cardLocation = cardLocation;
     }
-    public abstract void OnPlay();
 }

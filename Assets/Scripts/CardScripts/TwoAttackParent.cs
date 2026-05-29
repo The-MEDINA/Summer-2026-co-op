@@ -3,14 +3,27 @@ using UnityEngine;
 
 public class TwoAttackParent : MinionParent
 {
-    [SerializeField] private int firstDamage;
-    [SerializeField] private int secondDamage;
+    [SerializeField] private int firstDamage; //damage for first attack
+    [SerializeField] private int secondDamage; //damage for second attack
     private effect secondAttackEffect;
 
     public int FirstDamage { get { return firstDamage; } set { firstDamage = value; } }
     public int SecondDamage { get { return secondDamage; } set { secondDamage = value; } }
     public effect SecondaryCardEffect { get { return secondAttackEffect; } }
 
+    /// <summary>
+    /// creates a minion with the ability to use two seperate attacks
+    /// </summary>
+    /// <param name="firstD">damage for first attack</param>
+    /// <param name="secondD">damage for second attack</param>
+    /// <param name="secondAttackE">effect, if it exists, for the second attack. First attack will likely never have an ability</param>
+    /// <param name="cost">energy cost to play card</param>
+    /// <param name="health">current health of the card</param>
+    /// <param name="damage">damage the card deals on attack</param>
+    /// <param name="name">the card's name</param>
+    /// <param name="cardType">what type of card, minion/spell/etc</param>
+    /// <param name="cardEffect">It's twoAttacks</param>
+    /// <param name="cardLocation">deck</param>
     public TwoAttackParent(int firstD, int secondD, effect secondAttackE, int cost, int health, int damage, string name, 
         type cardType, effect cardEffect, location cardLocation) : base(cost, health, damage, name, cardType, cardEffect, cardLocation)
     {
@@ -19,6 +32,11 @@ public class TwoAttackParent : MinionParent
         secondAttackEffect = secondAttackE;
     }
 
+    /// <summary>
+    /// checks which attack is being used and calls Attack() with the correct damage
+    /// </summary>
+    /// <param name="numAttack">1st or 2nd attack</param>
+    /// <param name="target">target of the attack</param>
     public void CheckAttack(int numAttack, MinionParent target)
     {
         if(numAttack == 1)
@@ -33,6 +51,12 @@ public class TwoAttackParent : MinionParent
         }
     }
 
+    /// <summary>
+    /// CheckAttack() but adapted for if the second attack happens to be an AOE. Different method because it requires a new parameter
+    /// </summary>
+    /// <param name="numAttack">1st or 2nd attack</param>
+    /// <param name="target">target of the attack NOT REMOVING BECAUSE OF ADJACENT ATTACK POSSIBILITY</param>
+    /// <param name="targetList">the entire InPlay of the opponent</param>
     public void CheckAOEAttack(int numAttack, MinionParent target, List<NewVirtualCardParent> targetList)
     {
         if (secondAttackEffect == effect.aoe)

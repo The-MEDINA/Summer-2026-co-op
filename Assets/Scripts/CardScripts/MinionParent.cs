@@ -55,7 +55,7 @@ public class MinionParent : NewVirtualCardParent
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
     }
 
-    public override void OnPlay()
+    public void OnPlay()
     {
         Debug.Log("a");
     }

@@ -17,6 +17,10 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         if (p.IsPlayerTwo) Networking.P2Battleground = this;
     }
 
+    /// <summary>
+    /// handles clicking a button to draw cards
+    /// </summary>
+    /// <param name="eventData">mouse click on button</param>
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Clicked deck: " + gameObject.name);
@@ -26,6 +30,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
     // network manager needs this, so i'm making it public for now.
     // If we REALLY don't want this I'll find some alternate way to do this. - Dave
+    //Of all the methods to make public, this is high up the board for being completely fine lol I think we're good - Jake
     public void DrawCardToHand()
     {
         if (p == null)

@@ -3,14 +3,14 @@ using cardIndex;
 
 public class SpellParent : NewVirtualCardParent
 {
-    public enum spellEffect
+    public enum spellEffect //what the spell does
     {
         damage,
         heal,
         unique
     }
 
-    public enum spellTarget
+    public enum spellTarget //what the target type of the spell is
     {
         enemyCards,
         allyCards,
@@ -24,8 +24,18 @@ public class SpellParent : NewVirtualCardParent
 
     public spellEffect Effect { get { return effect; } }
     public spellTarget Target { get { return target; } }
-    public int Amount { get { return amount; } }
+    public int Amount { get { return amount; } }//amount of damage done, health healed, etc
 
+    /// <summary>
+    /// creates a new Spell card object
+    /// </summary>
+    /// <param name="thisSpellEffect">the effect of the spell</param>
+    /// <param name="thisSpellTarget">who can be targeted by the spell</param>
+    /// <param name="amount">amount of damage done, health healed, etc</param>
+    /// <param name="cost">how much energy it costs to play this spell</param>
+    /// <param name="name">the spell's name</param>
+    /// <param name="cardType">always spell</param>
+    /// <param name="cardLocation">always deck</param>
     public SpellParent(spellEffect thisSpellEffect, spellTarget thisSpellTarget, int amount, 
         int cost, string name, type cardType, location cardLocation) : base(cost, name, cardType, cardLocation)
     {
@@ -47,13 +57,10 @@ public class SpellParent : NewVirtualCardParent
 
     //index constructor
 
-    public override void OnPlay()
-    {
-        //currently unused, might take OnPlay out of NewVirtualCardParent
-    }
-
-    //not sure an enemy check is needed at all
-    //if it is it could be pulled out but that might not be neater id- Jake
+    /// <summary>
+    /// spell usage when the target is a minion
+    /// </summary>
+    /// <param name="target">the minion being targeted</param>
     public void OnPlay(MinionParent target)
     {
         switch (effect)
@@ -78,6 +85,10 @@ public class SpellParent : NewVirtualCardParent
         }
     }
 
+    /// <summary>
+    /// spell usage when the target is a player
+    /// </summary>
+    /// <param name="target">the player being targeted</param>
     public void OnPlay(Player target)
     {
         switch (effect)

@@ -21,6 +21,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         originalScale = transform.localScale;
     }
 
+    //these should be moved out vvvvvvvvvvvvvvvvvvvv - Jake
     private void Start()
     {
         if (CardData is MinionParent)
@@ -59,6 +60,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             }
         }
     }
+    //these should be moved out ^^^^^^^^^^^^^^^^^^^^^^^ - Jake
 
     public void OnPointerDown(PointerEventData eventData)
     {
