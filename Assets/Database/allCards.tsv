@@ -18,13 +18,13 @@ Cat	4	Cat Man	Minion	Overkill	3	6	Overkill	"Please note: Catman is a legally dis
 Cat	4	Single-Celled Cat	Minion	ON PLAY: Mitosis - splits into 2 identical cards	3	3	ON PLAY	"Please note: picture is not to scale."		
 Cat	5	Tank Cat	Minion	NA	7	7	NA	"I don't want to know who thought this was a good idea (it was me)."		
 Cat	5	Cat Demolition Crew	Minion	Coordinate 5 - rewards Haste	5	5	Coordinate	"So this is your place, huh? Yeah, I could demolish this."		
-Cat	1	M16	Spell	Adds 0/2 to a minion	NA	NA	Equipment	"Please do not give to cats. Thank you."	unique	allies
+Cat	1	M16	Spell	Adds 0/2 to a minion	0	2	Equipment	"Please do not give to cats. Thank you."	unique	allies
 Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	5	ON PLAY	"Not normally known to happen to cats."	damage	enemies
 Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	ON PLAY	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
-Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	ON PLAY	"Mother I hunger! Feed dinner plz!"	unique	allies
-Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	NA	NA	ON PLAY	"Behold! You now speak only in French!"	unique	enemies
+Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
+Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	unique	enemies
 Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	ON PLAY	"Runs on Python. Terrifying (0 . 0)"	heal	player
-Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	NA	NA	ON PLAY	"FISH TREAT FISH TREAT FISH TREAT!!!"	unique	allies
+Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	unique	allies
 Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	NA	ON PLAY	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	unique	allies
 Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	unique	enemies
 Cat	6	Smite	Spell	Smite - Deathtouch	NA	NA	ON PLAY	"Screw you in particular!"	damage	enemies
