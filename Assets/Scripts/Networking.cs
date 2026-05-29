@@ -1210,5 +1210,12 @@ namespace Network
             }
 #endif
         }
+
+        public static void PotentialDesyncWarning(string warning)
+        {
+#if DEBUG_MODE
+            Debug.LogWarning($"Potential desync detected! {warning}. Consider implementing any corrections if none have been made already. ");
+#endif
+        }
     }
 }
