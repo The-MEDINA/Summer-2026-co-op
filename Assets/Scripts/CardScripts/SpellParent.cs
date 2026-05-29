@@ -86,8 +86,18 @@ public class SpellParent : NewVirtualCardParent
                     switch(CardName)
                     {
                         case "M16":
-                            target.Damage += amount;
-                            {
+                            { 
+                                if (target is TwoAttackParent)
+                                {
+                                    TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
+                                    twoAttackTarget.FirstDamage += amount;
+                                    twoAttackTarget.SecondDamage += amount;
+                                }
+                                else
+                                {
+                                    target.Damage += amount;
+                                }
+
                                 target.AddEquipment(MinionParent.equipment.m16);
                                 break;
                             }
@@ -101,7 +111,20 @@ public class SpellParent : NewVirtualCardParent
 
                         case "Terrorize":
                             {
-                                target.Damage -= amount;
+                                if(target is TwoAttackParent)
+                                {
+                                    TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
+                                    twoAttackTarget.FirstDamage -= amount;
+                                    twoAttackTarget.SecondDamage -= amount;
+                                    if(twoAttackTarget.FirstDamage < 0) { twoAttackTarget.FirstDamage = 0; }
+                                    if(twoAttackTarget.SecondDamage < 0) { twoAttackTarget.SecondDamage = 0; }
+                                }
+                                else
+                                {
+                                    target.Damage -= amount;
+                                    if(target.Damage < 0) { target.Damage = 0; }
+                                }
+
                                 target.StartingHealth -= secondEquipmentAmount;
                                 target.Health -= secondEquipmentAmount;
                                 target.AddEquipment(MinionParent.equipment.terrorize);
@@ -110,7 +133,16 @@ public class SpellParent : NewVirtualCardParent
 
                         case "Fish Treat":
                             {
-                                target.Damage += amount;
+                                if (target is TwoAttackParent)
+                                {
+                                    TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
+                                    twoAttackTarget.FirstDamage += amount;
+                                    twoAttackTarget.SecondDamage += amount;
+                                }
+                                else
+                                {
+                                    target.Damage += amount;
+                                }
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
                                 target.AddEquipment(MinionParent.equipment.fishTreat);

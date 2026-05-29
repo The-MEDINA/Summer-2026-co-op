@@ -161,7 +161,6 @@ public class MinionParent : NewVirtualCardParent
 
             for (int i = 0; i < targetList.Count; i++)
             {
-                Debug.Log(i);
                 if (targetList[i] is MinionParent)
                 {
                     MinionParent enemyTarget = (MinionParent)targetList[i];
