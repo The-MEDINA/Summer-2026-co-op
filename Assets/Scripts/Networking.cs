@@ -769,9 +769,9 @@ namespace Network
                             indexOfCard <<= 8;
                             indexOfCard += packet[4 + (2 * i)];
 
-                            // grab its details, check its type, and construct it accordingly.
-                            cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
-                            card = ReconstructCard(cardDetails, (NewVirtualCardParent.location)packet[1]);
+                            // grab its name and create the card.
+                            string cardName = cardIndex.Index.GetName(indexOfCard);
+                            card = cardIndex.Index.CreateCard(cardName, (NewVirtualCardParent.location)packet[1]);
                             cards.Add(card);
                         }
 
@@ -835,12 +835,12 @@ namespace Network
                     indexOfCard <<= 8;
                     indexOfCard += packet[3];
 
-                    // grab its details, check its type, and construct it accordingly.
-                    cardIndex.Details cardDetails = cardIndex.Index.GetDetails(indexOfCard);
-                    card = ReconstructCard(cardDetails, (NewVirtualCardParent.location)packet[1]);
+                        // grab its name and create the card.
+                        string cardName = cardIndex.Index.GetName(indexOfCard);
+                        card = cardIndex.Index.CreateCard(cardName, (NewVirtualCardParent.location)packet[1]);
 
-                    // place the card in the correct spot.
-                    switch ((NewVirtualCardParent.location)packet[1])
+                        // place the card in the correct spot.
+                        switch ((NewVirtualCardParent.location)packet[1])
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
@@ -1115,34 +1115,6 @@ namespace Network
 #endif
             }
             CurrentState = state.disconnected;
-        }
-
-        /// <summary>
-        /// Reconstruct a card based on its details and location.
-        /// </summary>
-        /// <param name="cardDetails">Details struct of the card.</param>
-        /// <param name="location">Location of the card.</param>
-        /// <returns>The card requested from its details.</returns>
-        private static NewVirtualCardParent ReconstructCard(cardIndex.Details cardDetails, NewVirtualCardParent.location location)
-        {
-            NewVirtualCardParent card = null;
-            switch (cardDetails.type)
-            {
-                case (NewVirtualCardParent.type.minion):
-                {
-                    card = new MinionParent(cardDetails.cost, cardDetails.health, cardDetails.damage, cardDetails.name, cardDetails.type, cardDetails.ability, location);
-                    break;
-                }
-                // Don't make this card if its type is not implemented here.
-#if DEBUG_MODE
-                default:
-                {
-                    Debug.LogWarning($"Found unknown card type {cardDetails.type}. Returning null.");
-                    break;
-                }
-#endif
-            }
-            return card;
         }
 
         /// <summary>
