@@ -24,6 +24,7 @@ public class MinionParent : NewVirtualCardParent
     private bool isDead = false;
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
+    private int startingHealth;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -31,11 +32,13 @@ public class MinionParent : NewVirtualCardParent
     public effect CardEffect { get { return cardEffect; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
+    public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
 
     public MinionParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation) 
         : base(cost, name, cardType, cardLocation)
     {
         this.health = health;
+        this.startingHealth = health;
         this.damage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
@@ -50,6 +53,7 @@ public class MinionParent : NewVirtualCardParent
     {
         Details cardDetails = cardIndex.Index.GetDetails(name);
         health = cardDetails.health;
+        startingHealth = cardDetails.health;
         damage = cardDetails.damage;
         cardEffect = cardDetails.ability;
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }

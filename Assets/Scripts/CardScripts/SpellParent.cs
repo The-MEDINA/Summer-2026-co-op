@@ -55,8 +55,6 @@ public class SpellParent : NewVirtualCardParent
         amount = spellDetails.damage;
     }
 
-    //index constructor
-
     /// <summary>
     /// spell usage when the target is a minion
     /// </summary>
@@ -74,6 +72,10 @@ public class SpellParent : NewVirtualCardParent
             case spellEffect.heal:
                 {
                     target.Health += amount;
+                    if (target.Health > target.StartingHealth)
+                    {
+                        target.Health = target.StartingHealth;
+                    }
                     break;
                 }
 
