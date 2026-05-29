@@ -259,6 +259,11 @@ namespace cardIndex
                             _spellEffect = SpellParent.spellEffect.unique;
                             break;
                         }
+                        case ("equipment"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.equipment;
+                            break;
+                            }
                         default:
                         {
                                 Debug.LogWarning($"Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
