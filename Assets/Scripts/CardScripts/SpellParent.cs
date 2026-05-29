@@ -104,7 +104,10 @@ public class SpellParent : NewVirtualCardParent
 
                         case "I Hungy!!!":
                             {
-                                
+                                if(target.CardEffect == MinionParent.effect.coordinate)
+                                {
+                                    target.CoordinateAbility.NumToHit--;
+                                }
                                 target.AddEquipment(MinionParent.equipment.iHungy);
                                 break;
                             }
