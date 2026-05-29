@@ -1210,12 +1210,5 @@ namespace Network
             }
 #endif
         }
-
-        public static void TEMPsendpacket()
-        {
-            byte[] packet = new byte[1024];
-            packet = EncodePacket(packetType.keepAlive);
-            stream.Write(packet, 0, packet.Length);
-        }
     }
 }
