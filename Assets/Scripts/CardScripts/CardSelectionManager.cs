@@ -410,6 +410,84 @@ public class CardSelectionManager : MonoBehaviour
         }
     }
 
+    public void AttackOpposingTeamButton()
+    {
+        if (selectedCardObject == null || selectedCardObject.CardData == null)
+        {
+            Debug.Log("No card selected.");
+            return;
+        }
+
+        Player attackerOwner = selectedCardObject.OwnerPlayer;
+
+        if (attackerOwner == null)
+        {
+            Debug.Log("Selected card has no owner.");
+            ClearSelection();
+            return;
+        }
+
+        if (!attackerOwner.CanMove)
+        {
+            Debug.Log("Move timer active. Wait " + attackerOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            ClearSelection();
+            return;
+        }
+
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        {
+            Debug.Log("Selected card must be in play before attacking.");
+            ClearSelection();
+            return;
+        }
+
+        Player targetPlayer = null;
+
+        if (attackerOwner == player1)
+        {
+            targetPlayer = player2;
+        }
+        else if (attackerOwner == player2)
+        {
+            targetPlayer = player1;
+        }
+
+        if (targetPlayer == null || targetPlayer.InPlay.Count <= 0)
+        {
+            Debug.Log("Opposing team has no cards in play.");
+            ClearSelection();
+            return;
+        }
+
+        CardClickHandler targetCard = FindFirstVisibleCardForPlayer(targetPlayer);
+
+        if (targetCard == null)
+        {
+            Debug.Log("Could not find opposing card object.");
+            ClearSelection();
+            return;
+        }
+
+        TryAttackTarget(targetCard);
+    }
+
+private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)
+{
+    CardClickHandler[] allCards = FindObjectsByType<CardClickHandler>(FindObjectsSortMode.None);
+
+    for (int i = 0; i < allCards.Length; i++)
+    {
+        if (allCards[i].OwnerPlayer == targetPlayer &&
+            allCards[i].CardData != null &&
+            allCards[i].CardData.CardLocation == NewVirtualCardParent.location.inPlay &&
+            allCards[i].gameObject.activeInHierarchy)
+        {
+            return allCards[i];
+        }
+    }
+
+    return null;
+}
     public void ClearSelection()
     {
         if (selectedCardObject != null)
