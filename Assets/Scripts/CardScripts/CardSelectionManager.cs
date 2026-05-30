@@ -127,8 +127,14 @@ public class CardSelectionManager : MonoBehaviour
         if (!owner.CanMove)
         {
             Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-            if (owner.IsPlayerTwo) Networking.DesyncWarning("player two move timer active");
-            return;
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two move timer to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (!owner.CanAfford(cardObject.CardData))
@@ -216,9 +222,15 @@ public class CardSelectionManager : MonoBehaviour
         if (attackingOwner != null && !attackingOwner.CanMove)
         {
             Debug.Log("Move timer active. Wait " + attackingOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two's move timer is still active");
-            ClearSelection();
-            return;
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two active timer to try to prevent desync.");
+            }
+            else
+            {
+                ClearSelection();
+                return;
+            }
         }
 
         if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)

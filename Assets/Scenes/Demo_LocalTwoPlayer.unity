@@ -427,7 +427,7 @@ MonoBehaviour:
   maxEnergy: 10
   startingEnergy: 0
   timeForEnergy: 5
-  isPlayerTwo: 0
+  isPlayerTwo: 1
   moveCooldownTime: 1.5
 --- !u!4 &143358788
 Transform:
@@ -456,12 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
-  startingDeck:
-  - Cat
-  - Macho Cat
-  - Cool Cat
-  - Western Cat
-  - Tank Cat
 --- !u!1 &366108599
 GameObject:
   m_ObjectHideFlags: 0
