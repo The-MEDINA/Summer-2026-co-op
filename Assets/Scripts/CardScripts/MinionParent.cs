@@ -52,6 +52,7 @@ public class MinionParent : NewVirtualCardParent
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         equipmentList = new List<equipment>();
+        if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
     }
 
     /// <summary>
