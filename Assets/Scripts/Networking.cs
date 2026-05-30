@@ -143,7 +143,6 @@ namespace Network
         private static NewVirtualCardParent requestMoveToBattleground = null;
         private static NewVirtualCardParent[] requestAttack = { null, null };
         private static bool requestSecondAttack = false;
-        // card nameIndexPosition, indexOf(card), inPlay.Count
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
 
@@ -1004,7 +1003,7 @@ namespace Network
                     // decode the packet if one was received in time.
                     else
                     {
-                        DecodePacket(packet);
+                        await DecodePacket(packet);
                     }
 #if DEBUG_MODE
                     Debug.Log($"post read");
@@ -1059,7 +1058,7 @@ namespace Network
                             Debug.Log($"found {result.Result} bytes.");
 #endif
                             receivedPacket.Cancel();
-                            DecodePacket(packet);
+                            await DecodePacket(packet);
                         }
                     }));
 
@@ -1146,15 +1145,19 @@ namespace Network
             // death.
             if (requestPlayer != null && requestKill[0] != -1)
             {
-                if (requestKill[2] != requestPlayer.InPlay.Count && requestPlayer.InPlay[requestKill[1]].NameIndexPosition == requestKill[0])
+                int cardNameIndex = requestKill[0];
+                int indexOfCard = requestKill[1];
+                int inplayCount = requestKill[2];
+                Debug.Log($"indexOfCard: {indexOfCard} / inplayCount: {inplayCount} / actual count: {requestPlayer.InPlay.Count}");
+                if(inplayCount == requestPlayer.InPlay.Count && requestPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex)
                 {
 #if DEBUG_MODE
                     Debug.LogWarning("Found card that should've died. Attempting to manually kill to avoid desync.");
 #endif
-                    requestPlayer.InPlay[requestKill[1]].UnityObject.SetActive(false);
-                    if (requestPlayer.InPlay[requestKill[1]] is MinionParent)
+                    requestPlayer.InPlay[indexOfCard].UnityObject.SetActive(false);
+                    if (requestPlayer.InPlay[indexOfCard] is MinionParent)
                     {
-                        MinionParent killThis = (MinionParent) requestPlayer.InPlay[requestKill[1]];
+                        MinionParent killThis = (MinionParent) requestPlayer.InPlay[indexOfCard];
                         killThis.Death();
                     }
                 }
