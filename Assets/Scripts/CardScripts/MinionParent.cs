@@ -60,7 +60,7 @@ public class MinionParent : NewVirtualCardParent
     /// <param name="name">Name of the card.</param>
     /// <param name="cardLocation">location of the card.</param>
     public MinionParent(string name, location cardLocation) : base(name, cardLocation)
-    {
+    { 
         Details cardDetails = cardIndex.Index.GetDetails(name);
         health = cardDetails.health;
         startingHealth = cardDetails.health;
@@ -68,6 +68,7 @@ public class MinionParent : NewVirtualCardParent
         cardEffect = cardDetails.ability;
         equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
+        if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
     }
 
     public void OnPlay()
@@ -147,6 +148,7 @@ public class MinionParent : NewVirtualCardParent
     public void Death()
     {
         isDead = true;
+        if(CardType == NewVirtualCardParent.type.token) { return; }
         CardLocation = location.discard;
     }
 

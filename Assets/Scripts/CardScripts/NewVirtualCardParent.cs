@@ -6,7 +6,8 @@ public abstract class NewVirtualCardParent
     public enum type
     {
         minion,
-        spell
+        spell,
+        token
     }
 
     public enum location
