@@ -1145,11 +1145,14 @@ namespace Network
             // death.
             if (requestPlayer != null && requestKill[0] != -1)
             {
+                // setup
                 int cardNameIndex = requestKill[0];
                 int indexOfCard = requestKill[1];
                 int inplayCount = requestKill[2];
-                Debug.Log($"indexOfCard: {indexOfCard} / inplayCount: {inplayCount} / actual count: {requestPlayer.InPlay.Count}");
-                if(inplayCount == requestPlayer.InPlay.Count && requestPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex)
+                
+                // ONLY kill the card if it's not already dead.
+                if(inplayCount == requestPlayer.InPlay.Count && // these shouldn't be the same if the card died.
+                    requestPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex) // card shouldn't be found if it died.
                 {
 #if DEBUG_MODE
                     Debug.LogWarning("Found card that should've died. Attempting to manually kill to avoid desync.");
