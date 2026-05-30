@@ -410,6 +410,9 @@ public class CardSelectionManager : MonoBehaviour
         }
     }
 
+    // This method probably needs a way to figure out if a second attack was made.
+    // TryAttackTarget needs that to properly function.
+    // Currently I'm setting it always false. - Dave
     public void AttackOpposingTeamButton()
     {
         if (selectedCardObject == null || selectedCardObject.CardData == null)
@@ -468,7 +471,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        TryAttackTarget(targetCard);
+        TryAttackTarget(targetCard, false);
     }
 
 private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)
