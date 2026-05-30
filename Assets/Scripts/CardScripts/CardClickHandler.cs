@@ -10,12 +10,32 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private NewVirtualCardParent cardData;
     private Player ownerPlayer;
 
+    private float timer = 0f;
+    private float timeToAttack = 2f;
+
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
 
     private void Awake()
     {
         originalScale = transform.localScale;
+    }
+
+    //these should be moved out vvvvvvvvvvvvvvvvvvvv - Jake
+    private void Start()
+    {
+        if (CardData is MinionParent)
+        {
+            MinionParent minion = (MinionParent)CardData;
+            if(minion.CardEffect == MinionParent.effect.haste)
+            {
+                timeToAttack = 0.5f;
+            }
+            if (minion.CardEffect == MinionParent.effect.sloth)
+            {
+                timeToAttack = 4f;
+            }
+        }
     }
 
     private void Update()
@@ -28,8 +48,19 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 gameObject.SetActive(false);
             }
+
+            if(timer > timeToAttack)
+            {
+                minion.CanAttack = true;
+                timer = 0f;
+            }
+            else if (timer < timeToAttack && !minion.CanAttack)
+            {
+                timer += Time.deltaTime;
+            }
         }
     }
+    //these should be moved out ^^^^^^^^^^^^^^^^^^^^^^^ - Jake
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -52,7 +83,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     {
         if (CardSelectionManager.Instance != null)
         {
-            CardSelectionManager.Instance.SelectCard(this);
+            CardSelectionManager.Instance.SelectCard(this, eventData);
         }
     }
 

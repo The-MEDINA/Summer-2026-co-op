@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int health = 50;
     [SerializeField] private int maxEnergy = 10;
     [SerializeField] private int startingEnergy = 10;
-    [SerializeField] private int timeForEnergy = 5;
+    [SerializeField] private float timeForEnergy = 5f;
     [SerializeField] private bool isPlayerTwo = false;
 
     [Header("Move Timer")]
@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
+    public bool IsPlayerTwo { get { return isPlayerTwo; } }
     public int MaxEnergy { get { return maxEnergy; } }
 
     public float EnergyTimer { get { return timer; } }
@@ -42,15 +43,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         energy = startingEnergy;
+        if (isPlayerTwo) Networking.PlayerTwo = this;
+        else Networking.PlayerOne = this;
 
-        if (isPlayerTwo)
-        {
-            Networking.PlayerTwo = this;
-        }
-        else
-        {
-            Networking.PlayerOne = this;
-        }
+        // need player two to be able to act whenever on player 1's side.
+        // Easiest way to do this right now is to just make them never run out of energy or have to wait on the timer.
+        // doing this should prevent any situations where player 2 does something on their screen, but it doesn't happen on player 1's screen because they didn't have enough energy.
+        // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
+        //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
+        if (isPlayerTwo) energy = 999; 
     }
 
     private void Update()
@@ -64,7 +65,7 @@ public class Player : MonoBehaviour
         if (timer >= timeForEnergy)
         {
             GainEnergy(1);
-            timer = 0f;
+            if (!isPlayerTwo) timer = 0f;
         }
         else
         {
@@ -87,7 +88,7 @@ public class Player : MonoBehaviour
 
     public void RegisterAction()
     {
-        timer = 0f;
+        if (!isPlayerTwo) timer = 0f;
         moveCooldownTimer = moveCooldownTime;
     }
 
@@ -103,7 +104,7 @@ public class Player : MonoBehaviour
             return false;
         }
 
-        Energy -= amount;
+        if (!isPlayerTwo) Energy -= amount;
         RegisterAction();
         return true;
     }
@@ -185,7 +186,7 @@ public class Player : MonoBehaviour
                 {
                     MinionParent newMinion = (MinionParent)InPlay[j];
 
-                    if (newMinion.CardEffect == MinionParent.effect.coordinate)
+                    if (newMinion.CardEffect == MinionParent.effect.coordinate && newMinion.UnityObject.activeSelf)
                     {
                         coordNum++;
                     }

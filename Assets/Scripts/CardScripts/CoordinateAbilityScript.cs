@@ -3,11 +3,18 @@ using UnityEngine;
 
 public class CoordinateAbilityScript
 {
-    private int numToHit;
+    private int numToHit; //when to award the coordinate bonus
     private bool awarded = false;
-    public int NumToHit {  get { return numToHit; } }
+    public int NumToHit {  get { return numToHit; } set { numToHit = value; } }
     public bool Awarded { get { return awarded; } }
 
+    //because the methods are public, the script doesn't need to be added to anything. In the future this should be changed to private (or protected?)
+    //and attatched to the game object, but this works for now - Jake
+
+    /// <summary>
+    /// assigns numToHit because there isn't a constructor
+    /// </summary>
+    /// <param name="name"></param>
     public CoordinateAbilityScript(string name)
     {
         switch (name)
@@ -38,6 +45,10 @@ public class CoordinateAbilityScript
         }
     }
 
+    /// <summary>
+    /// rewards the minion with its coordinate reward
+    /// </summary>
+    /// <param name="minion">the minion being awarded</param>
     public void RewardAbility(MinionParent minion)
     {
         switch (minion.CardName)
@@ -46,6 +57,7 @@ public class CoordinateAbilityScript
                 {
                     minion.Damage++;
                     minion.Health++;
+                    Debug.Log($"{minion.CardName}, {minion.Health}, {minion.Damage}");
                     break;
                 }
 
@@ -53,6 +65,7 @@ public class CoordinateAbilityScript
                 {
                     minion.Damage += 2;
                     minion.Health += 2;
+                    Debug.Log($"{minion.CardName}, {minion.Health}, {minion.Damage}");
                     break;
                 }
 

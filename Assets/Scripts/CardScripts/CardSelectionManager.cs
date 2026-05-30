@@ -1,4 +1,7 @@
 using UnityEngine;
+using Network;
+using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class CardSelectionManager : MonoBehaviour
 {
@@ -27,6 +30,11 @@ public class CardSelectionManager : MonoBehaviour
     public CardClickHandler SelectedCardObject
     {
         get { return selectedCardObject; }
+        // network manager needs this.
+        // It should only be temporary since I think TryAttackTarget needs to be reworked.
+        // once we have attacking sorted, I should be able to get rid of this. - Dave
+        set { selectedCardObject = value; }
+        
     }
 
     private void Awake()
@@ -34,7 +42,7 @@ public class CardSelectionManager : MonoBehaviour
         Instance = this;
     }
 
-    public void SelectCard(CardClickHandler clickedCard)
+    public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)
     {
         if (clickedCard == null || clickedCard.CardData == null)
         {
@@ -44,14 +52,32 @@ public class CardSelectionManager : MonoBehaviour
 
         if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
-            TryAttackTarget(clickedCard);
+            if (selectedCardObject.CardData is MinionParent)
+            {
+                MinionParent minion = (MinionParent)selectedCardObject.CardData;
+                if (minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
+                {
+                    TryAttackTarget(clickedCard, true);
+                }
+                else
+                {
+                    TryAttackTarget(clickedCard, false);
+                }
+            }
+            else if(selectedCardObject.CardData is SpellParent) //still need to implement spelling and attacking players
+            {
+                TrySpellTarget(clickedCard);
+            }
             return;
         }
 
         if (selectedCardObject == clickedCard)
         {
-            ActivateCard(clickedCard);
-            return;
+            if(clickedCard.CardData is MinionParent)
+            {
+                ActivateCard(clickedCard);
+                return;
+            }
         }
 
         selectedCardObject = clickedCard;
@@ -85,7 +111,9 @@ public class CardSelectionManager : MonoBehaviour
         ClearSelection();
     }
 
-    private void PlayCardToBattleground(CardClickHandler cardObject)
+    // Network manager needs to be able to access this method, so I'm making it public.
+    // if we *really* don't want that, let me know and i'll find some alternate way to do this. - Dave
+    public void PlayCardToBattleground(CardClickHandler cardObject)
     {
         Player owner = cardObject.OwnerPlayer;
 
@@ -110,6 +138,15 @@ public class CardSelectionManager : MonoBehaviour
         if (!owner.SpendEnergy(cardObject.CardData.Cost))
         {
             return;
+        }
+
+        // check to see if this move should be sent to peer.
+        if (owner == player1)
+        {
+            Networking.SendCardMove(cardObject.CardData, // card to move 
+                NewVirtualCardParent.location.hand, // in the player's hand
+                cardObject.OwnerPlayer.Hand.IndexOf(cardObject.CardData), // index of card in their hand
+                NewVirtualCardParent.location.inPlay); // moved to inPlay
         }
 
         owner.MoveCardToInPlay(cardObject.CardData);
@@ -139,7 +176,10 @@ public class CardSelectionManager : MonoBehaviour
             Debug.LogWarning("Card owner does not match Player 1 or Player 2.");
         }
 
-        RefreshCardVisual(cardObject);
+        for (int i = 0; i < owner.InPlay.Count; i++)
+        {
+            RefreshCardVisual(owner.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+        }
 
         Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
     }
@@ -159,7 +199,7 @@ public class CardSelectionManager : MonoBehaviour
         );
     }
 
-    private void TryAttackTarget(CardClickHandler targetCard)
+    public void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
     {
         if (selectedCardObject == null || targetCard == null)
         {
@@ -207,7 +247,75 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        target.TakeDamage(attacker, attacker.Damage);
+        // send this attack if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttack(attacker, target, wasSecondAttack);
+        }
+
+        if (attacker is TwoAttackParent)
+        {
+            TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
+
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.aoe)
+            {
+                if (wasSecondAttack)
+                {
+                    twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
+                    ClearSelection();
+                    return;
+                }
+                else
+                {
+                    twoAttackMinion.CheckAttack(1, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
+                    ClearSelection();
+                    return;
+                }
+            }
+            else
+            {
+                if (wasSecondAttack)
+                {
+                    twoAttackMinion.CheckAttack(2, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
+                    ClearSelection();
+                    return;
+                }
+                else
+                {
+                    twoAttackMinion.CheckAttack(1, target);
+                    Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
+                    selectedCardObject.OwnerPlayer.RegisterAction();
+                    RefreshCardVisual(selectedCardObject);
+                    RefreshCardVisual(targetCard);
+                    ClearSelection();
+                    return;
+                }
+            }
+        }
+
+        if(attacker.CardEffect == MinionParent.effect.aoe)
+        {
+            attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
+            selectedCardObject.OwnerPlayer.RegisterAction();
+            RefreshCardVisual(selectedCardObject);
+            RefreshCardVisual(targetCard);
+            ClearSelection();
+            return;
+        }
+
+        attacker.Attack(target);
 
         if (attackingOwner != null)
         {
@@ -218,6 +326,59 @@ public class CardSelectionManager : MonoBehaviour
         RefreshCardVisual(targetCard);
 
         Debug.Log(attacker.CardName + " attacked " + target.CardName + ". Target health: " + target.Health);
+        selectedCardObject.OwnerPlayer.RegisterAction();
+
+        ClearSelection();
+    }
+
+    // network manager needs this, so I'm making it public. - Dave
+    public void TrySpellTarget(CardClickHandler targetCard)
+    {
+        if (selectedCardObject == null || targetCard == null)
+        {
+            ClearSelection();
+            return;
+        }
+
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
+        {
+            Debug.Log("Card must be in your hand before it can be played.");
+            ClearSelection();
+            return;
+        }
+
+        if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        {
+            Debug.Log("Target card must be in play.");
+            ClearSelection();
+            return;
+        }
+
+        SpellParent attacker = selectedCardObject.CardData as SpellParent;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        if (attacker == null || target == null)
+        {
+            Debug.Log("Only minion cards can attack right now.");
+            ClearSelection();
+            return;
+        }
+
+        attacker.OnPlay(target);
+
+        // send this action if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttack(attacker, target, false);
+        }
+
+        selectedCardObject.gameObject.SetActive(false);
+
+        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(targetCard);
+
+        Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
+        selectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();
     }

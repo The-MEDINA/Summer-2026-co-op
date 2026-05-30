@@ -1,5 +1,7 @@
 using cardIndex;
+using System.Collections.Generic;
 using UnityEngine;
+using Network;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -10,7 +12,18 @@ public class MinionParent : NewVirtualCardParent
         explode,
         haste,
         sloth,
-        coordinate
+        coordinate,
+        twoAttacks,
+        aoe,
+        overkill
+    }
+
+    public enum equipment
+    {
+        m16,
+        iHungy,
+        terrorize,
+        fishTreat
     }
 
     private int health;
@@ -19,6 +32,8 @@ public class MinionParent : NewVirtualCardParent
     private bool isDead = false;
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
+    private int startingHealth;
+    private List<equipment> equipmentList;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -26,14 +41,17 @@ public class MinionParent : NewVirtualCardParent
     public effect CardEffect { get { return cardEffect; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
+    public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
 
     public MinionParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation) 
         : base(cost, name, cardType, cardLocation)
     {
         this.health = health;
+        this.startingHealth = health;
         this.damage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
+        equipmentList = new List<equipment>();
     }
 
     /// <summary>
@@ -45,24 +63,29 @@ public class MinionParent : NewVirtualCardParent
     {
         Details cardDetails = cardIndex.Index.GetDetails(name);
         health = cardDetails.health;
+        startingHealth = cardDetails.health;
         damage = cardDetails.damage;
         cardEffect = cardDetails.ability;
+        equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
     }
 
-    public override void OnPlay()
+    public void OnPlay()
     {
         Debug.Log("a");
     }
+
     public void Attack(MinionParent target)
     {
         if (canAttack)
         {
+            Debug.Log(Damage);
+            Debug.Log(target.Health);
             if (target == null || isDead)
             {
                 return;
             }
-            if (cardEffect == effect.deathtouch)
+            else if (cardEffect == effect.deathtouch)
             {
                 target.TakeDamage(this, 99999999);
             }
@@ -70,7 +93,23 @@ public class MinionParent : NewVirtualCardParent
             {
                 target.TakeDamage(this, Damage);
             }
+
+            if(cardEffect == effect.overkill && target.IsDead)
+            {
+                //player takes damage based on negative health of dead enemy
+                Debug.Log("OVERKILL");
+            }
             canAttack = false;
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+        if (Health <= 0)
+        {
+            Health = 0;
+            Death();
         }
     }
 
@@ -81,7 +120,26 @@ public class MinionParent : NewVirtualCardParent
         if (Health <= 0)
         {
             Health = 0;
-            if (cardEffect == effect.explode) { attacker.TakeDamage(this, Damage); }
+            if (cardEffect == effect.explode) 
+            {
+                int explodeDamage = 0;
+                switch(CardName)
+                {
+                    case "Mad Scientist Cat":
+                        {
+                            explodeDamage = 3;
+                            break;
+                        }
+
+                    case "Exploding Cat":
+                    default:
+                        {
+                            explodeDamage = 1;
+                            break;
+                        }
+                }
+                attacker.TakeDamage(this, explodeDamage); 
+            }
             Death();
         }
     }
@@ -90,5 +148,31 @@ public class MinionParent : NewVirtualCardParent
     {
         isDead = true;
         CardLocation = location.discard;
+    }
+
+    public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)
+    {
+        if(canAttack && (cardEffect == effect.aoe || isSecond))
+        {
+            if (targetList == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                if (targetList[i] is MinionParent)
+                {
+                    MinionParent enemyTarget = (MinionParent)targetList[i];
+                    enemyTarget.TakeDamage(Damage);
+                }
+            }
+            canAttack = false;
+        }
+    }
+
+    public void AddEquipment(equipment addToList)
+    {
+        equipmentList.Add(addToList);
     }
 }

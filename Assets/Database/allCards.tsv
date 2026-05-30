@@ -1,32 +1,32 @@
-Cat	1	Cat	Minion	NA	1	2	NA	"The classic, the original."
-Cat	1	Cool Cat	Minion	NA	2	1	NA	"Has really sensitive eyes, supposedly."
-Cat	1	Exploding Cat	Minion	Explode 1	1	1	Explode	"Cool cats get caught in their own explosions."
-Cat	1	Scaredy Cat	Minion	Haste	1	1	Haste	"Seasonaly appropriate for approximatly one month."
-Cat	1	Comically Large Spoon Cat	Minion	Sloth	1	3	Sloth	"No idea where he got that."
-Cat	1	Night Vision Cat	Minion	Coordinate 1/1 - EDIT LATER top two card total 3	1	1	Coordinate	"I thought night vision goggles were usually green, but whatever it's a video game."
-Cat	2	Cave Cat	Minion	Sloth	3	4	Sloth	"Ooga booga fish treat smooga."
-Cat	2	Cat?	Minion	NA	2	3	NA	"Best disguise since I robbed that bank."
-Cat	2	Western Cat	Minion	NA	3	2	NA	"Straight outta Texas. Texas Roadhouse."
-Cat	2	Gold Miner Cat	Minion	Haste	2	2	Haste	"Has found absolutely nothing so far."
-Cat	2	Ninja Cat	Minion	Coordinate 2/2 - EDIT LATER TERMS	2	2	Coordinate	"Attack him where he is unprepared, appear where you are not expected." - Sun Tzu (not afiliated with ninjas)
-Cat	3	Ratta-tat-Cat	Minion	Overkill	2	5	Overkill	"He's the bee's knees...whatever that means..."
-Cat	3	Mad Scientist Cat	Minion	Explode 3	3	4	Explode	"Better at chemistry than the girl you dated in High School."
-Cat	3	Macho Cat	Minion	NA	4	3	NA	"Dave named this one."
-Cat	3	Beeg Cat	Minion	Coordinate 0/3 - total 5	7	0	Coordinate	"Corporate has asked me to note that cats do not usually grow this big. I don't know why they assumed you'd think that."
-Cat	4	Magic Cat / Septimus Mrreep	Minion	Fireball - 3 damage to target / Thunderwave - 1 damage to all opposing minions	4	3/1	Two Attacks	"Real name: Leroy Jenkins."
-Cat	4	Cat Man	Minion	Overkill	3	6	Overkill	"Please note: Catman is a legally distinct character and is not in anyway linked to any copyrighted material anywhere."
-Cat	4	Single-Celled Cat	Minion	ON PLAY: Mitosis - splits into 2 identical cards	3	3	ON PLAY	"Please note: picture is not to scale."
-Cat	5	Tank Cat	Minion	NA	7	7	NA	"I don't want to know who thought this was a good idea (it was me)."
-Cat	5	Cat Demolition Crew	Minion	Coordinate - haste on (ADD TERMS)	5	5	Coordinate	"So this is your place, huh? Yeah, I could demolish this."
-Cat	1	M16	Spell	Adds 0/2 to a minion	NA	NA	Equipment	"Please do not give to cats. Thank you."
-Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	2	ON PLAY	"Not normally known to happen to cats."
-Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	NA	ON PLAY	"I don't have any idea what I'm doing, but its probably close enough."
-Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"
-Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	NA	NA	Equipment	"Behold! You now speak only in French!"
-Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	ON PLAY	"Runs on Python. Terrifying (0 . 0)"
-Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	NA	NA	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"
-Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	NA	ON PLAY	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"
-Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."
-Cat	6	Smite	Spell	Smite - Deathtouch	NA	NA	Deathtouch	"Begone with ye!"
-Cat	NA	Major Munchkin	Commander	Spawns 2 token creatures (1H 1D) every 20 seconds	NA	NA	NA	"Figurehead of the Feline Firearms Force."
-Cat	NA	Kitten	Token	NA	1	1	NA	"The weakest cat we could find."
+Cat	1	Cat	Minion	NA	1	2	NA	"The classic, the original."		
+Cat	1	Cool Cat	Minion	NA	2	1	NA	"Has really sensitive eyes, supposedly."		
+Cat	1	Exploding Cat	Minion	Explode 1	1	1	Explode	"Cool cats get caught in their own explosions."		
+Cat	1	Scaredy Cat	Minion	Haste	1	1	Haste	"Seasonaly appropriate for approximatly one month."		
+Cat	1	Comically Large Spoon Cat	Minion	Sloth	1	3	Sloth	"No idea where he got that."		
+Cat	1	Night Vision Cat	Minion	Coordinate 3 - rewards 1/1	1	1	Coordinate	"I thought night vision goggles were usually green, but whatever it's a video game."		
+Cat	2	Cave Cat	Minion	Sloth	3	4	Sloth	"Ooga booga fish treat smooga."		
+Cat	2	Cat?	Minion	NA	2	3	NA	"Best disguise since I robbed that bank."		
+Cat	2	Western Cat	Minion	NA	3	2	NA	"Straight outta Texas. Texas Roadhouse."		
+Cat	2	Gold Miner Cat	Minion	Haste	2	2	Haste	"Has found absolutely nothing so far."		
+Cat	2	Ninja Cat	Minion	Coordinate 3 - rewards 2/2	2	2	Coordinate	"Attack him where he is unprepared, appear where you are not expected." - Sun Tzu (not afiliated with ninjas)		
+Cat	3	Ratta-tat-Cat	Minion	Overkill	2	5	Overkill	"He's the bee's knees...whatever that means..."		
+Cat	3	Mad Scientist Cat	Minion	Explode 3	3	4	Explode	"Better at chemistry than the girl you dated in High School."		
+Cat	3	Macho Cat	Minion	NA	4	3	NA	"Dave named this one."		
+Cat	3	Beeg Cat	Minion	Coordinate 5 - rewards 0/3	7	0	Coordinate	"Corporate has asked me to note that cats do not usually grow this big. I don't know why they assumed you'd think that."		
+Cat	4	Magic Cat / Septimus Mrreep	Minion	Fireball - 3 damage to target / Thunderwave - 1 damage to all opposing minions	4	3/1	Two Attacks	"Real name: Leroy Jenkins."		
+Cat	4	Cat Man	Minion	Overkill	3	6	Overkill	"Please note: Catman is a legally distinct character and is not in anyway linked to any copyrighted material anywhere."		
+Cat	4	Single-Celled Cat	Minion	ON PLAY: Mitosis - splits into 2 identical cards	3	3	ON PLAY	"Please note: picture is not to scale."		
+Cat	5	Tank Cat	Minion	NA	7	7	NA	"I don't want to know who thought this was a good idea (it was me)."		
+Cat	5	Cat Demolition Crew	Minion	Coordinate 5 - rewards Haste	5	5	Coordinate	"So this is your place, huh? Yeah, I could demolish this."		
+Cat	1	M16	Spell	Adds 0/2 to a minion	0	2	Equipment	"Please do not give to cats. Thank you."	unique	allies
+Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	5	ON PLAY	"Not normally known to happen to cats."	damage	enemies
+Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	ON PLAY	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
+Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
+Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
+Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	ON PLAY	"Runs on Python. Terrifying (0 . 0)"	heal	player
+Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	unique	allies
+Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	NA	ON PLAY	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	unique	allies
+Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	unique	enemies
+Cat	6	Smite	Spell	Smite - Deathtouch	NA	NA	ON PLAY	"Screw you in particular!"	damage	enemies
+Cat	NA	Major Munchkin	Commander	Spawns 2 token creatures (1H 1D) every 30 seconds	NA	NA	NA	"Figurehead of the Feline Firearms Force."		
+Cat	NA	Kitten	Token	NA	1	1	NA	"The smallest, weakest cat we could find."		
