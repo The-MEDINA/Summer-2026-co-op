@@ -80,4 +80,46 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         handUIManager.AddCardToHand(newCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
+
+    public void SpawnCardToInPlay(NewVirtualCardParent spawnCard)
+    {
+        if (p == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Player assigned.");
+            return;
+        }
+
+        if (cardProto == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Card Proto assigned.");
+            return;
+        }
+
+        if (handUIManager == null)
+        {
+            Debug.LogWarning(gameObject.name + " has no Hand UI Manager assigned.");
+            return;
+        }
+
+        spawnCard.CardLocation = NewVirtualCardParent.location.hand;
+
+        GameObject newCard = Instantiate(cardProto);
+        cardList.Add(newCard);
+
+        CardClickHandler clickHandler = newCard.GetComponent<CardClickHandler>();
+
+        if (clickHandler != null)
+        {
+            clickHandler.CardData = spawnCard;
+            clickHandler.OwnerPlayer = p;
+        }
+        // every card instantiated needs a reference to its gameobject from now on.
+        spawnCard.UnityObject = newCard;
+
+        p.InPlay.Add(spawnCard);
+
+        //NEED SOME WAY TO MOVE CARD TO INPLAY ON THE FIELD
+        //handUIManager.AddCardToHand(newCard);
+        Debug.Log(p.gameObject.name + " played card: " + spawnCard.CardName);
+    }
 }
