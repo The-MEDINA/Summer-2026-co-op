@@ -976,10 +976,25 @@ namespace Network
                 }
                 default:
                 {
-                    throw e;
+                    // ONLY throw exceptions if there is not an active connection.
+                    if (currentState == state.disconnected) throw e;
+#if DEBUG_MODE
+                    Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
+#endif
+                    break;
                 }
             }
-            if (brokenPacket) throw e;
+            // also only throw exceptions if there is not an active connection.
+            if (brokenPacket && currentState == state.disconnected)
+            {
+                throw e;
+            }
+#if DEBUG_MODE
+            else if (brokenPacket)
+            {
+                Debug.LogWarning("Broken packet received.");
+            }
+#endif
         }
         private static async void Connection()
         {
