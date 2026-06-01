@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
         // doing this should prevent any situations where player 2 does something on their screen, but it doesn't happen on player 1's screen because they didn't have enough energy.
         // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
         //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
-        if (isPlayerTwo) energy = 999; 
+        // if (isPlayerTwo) energy = 999; 
     }
 
     private void Update()
@@ -65,7 +65,8 @@ public class Player : MonoBehaviour
         if (timer >= timeForEnergy)
         {
             GainEnergy(1);
-            if (!isPlayerTwo) timer = 0f;
+            // if (!isPlayerTwo) 
+                timer = 0f;
         }
         else
         {
@@ -88,7 +89,8 @@ public class Player : MonoBehaviour
 
     public void RegisterAction()
     {
-        if (!isPlayerTwo) timer = 0f;
+        // if (!isPlayerTwo) 
+            timer = 0f;
         moveCooldownTimer = moveCooldownTime;
     }
 

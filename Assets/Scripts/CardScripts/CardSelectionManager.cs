@@ -100,7 +100,14 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             ClearSelection();
-            return;
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding playerTwo.CanMove to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
