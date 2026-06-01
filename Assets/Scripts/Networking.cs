@@ -77,6 +77,13 @@ namespace Network
      * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
      * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
      * bytes 5 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- CARDDEATH: ---
+     * byte 1 holds whether to check player 1 or player 2.
+     * bytes 2 - 3 hold the card's nameIndexPosition.
+     * byte 4 holds the position of the card in the player's inplay array.
+     * byte 5 holds the length of the player's inplay array.
+     * bytes 6 - 1023 are empty so we can use it later to send more info.
      */
     enum packetType
     {
@@ -86,7 +93,8 @@ namespace Network
         cardArray,
         cardMove,
         cardAdd,
-        cardAttack
+        cardAttack,
+        cardDeath
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -115,7 +123,6 @@ namespace Network
         /// </summary>
         private static int port = 6767;
         private static readonly string handshakeContent = "BLITZBURN HANDSHAKE";
-
         private static state currentState = state.disconnected;
         private static mode currentMode = mode.client;
         private static string localHostName = Dns.GetHostName();
@@ -136,6 +143,8 @@ namespace Network
         private static NewVirtualCardParent requestMoveToBattleground = null;
         private static NewVirtualCardParent[] requestAttack = { null, null };
         private static bool requestSecondAttack = false;
+        private static int[] requestKill = { -1, -1, -1 };
+        private static Player requestPlayer = null;
 
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
@@ -357,19 +366,6 @@ namespace Network
                     {
                         success = true;
                     }
-                    /*
-                    try
-                    {
-                        DecodePacket(response);
-                        success = true;
-                    }
-                    catch (Exception e)
-                    {
-#if DEBUG_MODE
-                        Debug.LogError(e);
-                        Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
-#endif  
-                    }*/
                 }
             }));
 
@@ -468,9 +464,6 @@ namespace Network
             if (attacker as SpellParent != null)
             {
                 packet[1] = (byte)playerOne.Hand.IndexOf(attacker);
-                // override to grab from hand.
-                packet[4] = 1;
-
                 SpellParent spell = (SpellParent)attacker;
 
                 // check if we're targetting ally cards.
@@ -478,6 +471,13 @@ namespace Network
                 {
                     packet[2] = (byte)playerOne.InPlay.IndexOf(target);
                 }
+                else
+                {
+                    packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                }
+
+                // override to grab from hand.
+                packet[4] = 1;
             }
 
             // encode for minions.
@@ -656,6 +656,7 @@ namespace Network
             packet[3] = lowByte;
             return packet;
         }
+
         /// <summary>
         /// Encode a keepAlive packet to send to a peer.
         /// </summary>
@@ -681,6 +682,50 @@ namespace Network
                     break;
                 }
             }
+            return packet;
+        }
+
+        /// <summary>
+        /// encode a cardDeath packet to send to a peer.
+        /// </summary>
+        /// <param name="isPlayerTwo">whether or not this is player 1 or player 2's card.</param>
+        /// <param name="card">card that died.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(bool isPlayerTwo, NewVirtualCardParent card)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.cardDeath;
+
+            // encode if this is player two.
+            if (isPlayerTwo) packet[1] = 1;
+            else packet[1] = 0;
+
+            // encode the card's index.
+            short indexToEncode = (short)card.NameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(indexToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((indexToEncode >> 8) & 255);
+
+            packet[2] = highByte;
+            packet[3] = lowByte;
+
+            // encode the position of the card and length of the inplay array.
+            if (isPlayerTwo)
+            {
+                packet[4] = (byte)playerTwo.InPlay.IndexOf(card);
+                packet[5] = (byte)playerTwo.InPlay.Count;
+            }
+            else
+            {
+                packet[4] = (byte)playerOne.InPlay.IndexOf(card);
+                packet[5] = (byte)playerOne.InPlay.Count;
+            }
+
             return packet;
         }
 
@@ -823,7 +868,7 @@ namespace Network
 #endif
                     break;
                 }
-                case ((byte)packetType.cardAdd):
+                case ((byte) packetType.cardAdd):
                 {
 #if DEBUG_MODE
                     Debug.Log("found cardAdd packet");
@@ -849,7 +894,7 @@ namespace Network
                     }
                     break;
                 }
-                case ((byte)packetType.cardAttack):
+                case ((byte) packetType.cardAttack):
                 {
 #if DEBUG_MODE
                         Debug.Log("found cardAttack packet");
@@ -890,6 +935,26 @@ namespace Network
                     requestAttack[1] = target;
                     if (packet[3] == 1) requestSecondAttack = true;
                     else requestSecondAttack = false;
+                    break;
+                }
+                case ((byte)packetType.cardDeath):
+                {
+#if DEBUG_MODE
+                        Debug.Log("found cardDeath packet");
+#endif
+                    // this is flipped since the peer's player 2 is us, player 1.
+                    if (packet[1] == 0) requestPlayer = playerTwo;
+                    else requestPlayer = playerOne;
+
+                    // rebuild the card's index.
+                    short indexOfCard = packet[2];
+                    indexOfCard <<= 8;
+                    indexOfCard += packet[3];
+
+                    // prepare the request.
+                    requestKill[0] = indexOfCard;
+                    requestKill[1] = packet[4];
+                    requestKill[2] = packet[5];
                     break;
                 }
                 default:
@@ -938,7 +1003,7 @@ namespace Network
                     // decode the packet if one was received in time.
                     else
                     {
-                        DecodePacket(packet);
+                        await DecodePacket(packet);
                     }
 #if DEBUG_MODE
                     Debug.Log($"post read");
@@ -993,7 +1058,7 @@ namespace Network
                             Debug.Log($"found {result.Result} bytes.");
 #endif
                             receivedPacket.Cancel();
-                            DecodePacket(packet);
+                            await DecodePacket(packet);
                         }
                     }));
 
@@ -1018,7 +1083,7 @@ namespace Network
                         catch
                         {
 #if DEBUG_MODE
-                            Debug.LogWarning($"keepalive task was cancelled.");
+                            Debug.Log($"keepalive task was cancelled.");
 #endif
                         }
                     }));
@@ -1075,6 +1140,35 @@ namespace Network
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+            }
+
+            // death.
+            if (requestPlayer != null && requestKill[0] != -1)
+            {
+                // setup
+                int cardNameIndex = requestKill[0];
+                int indexOfCard = requestKill[1];
+                int inplayCount = requestKill[2];
+                
+                // ONLY kill the card if it's not already dead.
+                if(inplayCount == requestPlayer.InPlay.Count && // these shouldn't be the same if the card died.
+                    requestPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex) // card shouldn't be found if it died.
+                {
+#if DEBUG_MODE
+                    Debug.LogWarning("Found card that should've died. Attempting to manually kill to avoid desync.");
+#endif
+                    requestPlayer.InPlay[indexOfCard].UnityObject.SetActive(false);
+                    if (requestPlayer.InPlay[indexOfCard] is MinionParent)
+                    {
+                        MinionParent killThis = (MinionParent) requestPlayer.InPlay[indexOfCard];
+                        killThis.Death();
+                    }
+                }
+                requestPlayer = null;
+                for (int i = 0; i < requestKill.Length; i++)
+                {
+                    requestKill[i] = -1;
+                }
             }
         }
 
@@ -1208,6 +1302,33 @@ namespace Network
             {
                 Debug.LogWarning("Tried to send an attack while disconnected! Double check that network manager is connected to a peer.");
             }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer a card died.
+        /// </summary>
+        /// <param name="isPlayerTwo">whether or not this is player 1 or player 2's card.</param>
+        /// <param name="cardToDie">the card that died.</param>
+        public static void SendCardDeath(bool isPlayerTwo, NewVirtualCardParent cardToDie)
+        {
+            byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
+            if (currentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send a death while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        public static void DesyncWarning(string warning)
+        {
+#if DEBUG_MODE
+            Debug.LogError($"Desync detected! {warning}.");
 #endif
         }
     }
