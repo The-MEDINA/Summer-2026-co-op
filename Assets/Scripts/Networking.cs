@@ -912,7 +912,7 @@ namespace Network
                         if (playerTwo.Hand.Count <= packet[1])
                         {
 #if DEBUG_MODE
-                            DesyncWarning($"playertwo.Hand ({playerTwo.Hand.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
+                            Debug.LogWarning($"playertwo.Hand ({playerTwo.Hand.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
 #endif
                             break;
                         }
@@ -923,7 +923,7 @@ namespace Network
                         if (playerTwo.InPlay.Count <= packet[1])
                         {
 #if DEBUG_MODE
-                            DesyncWarning($"playertwo.InPlay ({playerTwo.InPlay.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
+                            Debug.LogWarning($"playertwo.InPlay ({playerTwo.InPlay.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
 #endif
                             break;
                         }

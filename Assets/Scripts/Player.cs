@@ -103,10 +103,20 @@ public class Player : MonoBehaviour
     {
         if (Energy < amount)
         {
-            return false;
+            if (!IsPlayerTwo) return false;
+            else
+            {
+                Debug.LogWarning("Overriding player two SpendEnergy to prevent desync.");
+            }
         }
 
-        if (!isPlayerTwo) Energy -= amount;
+        //if (!isPlayerTwo)
+            Energy -= amount;
+        if (Energy < 0)
+        {
+            Energy = 0;
+            if (IsPlayerTwo) Debug.LogWarning("Energy fell below 0! Setting it back to prevent desync.");
+        }
         RegisterAction();
         return true;
     }

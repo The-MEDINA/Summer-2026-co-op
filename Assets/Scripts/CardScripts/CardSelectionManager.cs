@@ -147,8 +147,14 @@ public class CardSelectionManager : MonoBehaviour
         if (!owner.CanAfford(cardObject.CardData))
         {
             Debug.Log("Cannot play card. Not enough energy.");
-            if (owner.IsPlayerTwo) Networking.DesyncWarning("Player two doesn't have enough energy");
-            return;
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two CanAfford to prevent desync.");
+            }
+            else 
+            {
+                return;
+            }
         }
 
         if (!owner.SpendEnergy(cardObject.CardData.Cost))
