@@ -8,6 +8,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
     [SerializeField] private HandUIManager handUIManager;
+    [SerializeField] private CommanderCardScript commanderCard;
 
     private List<GameObject> cardList = new List<GameObject>();
 
@@ -101,7 +102,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        spawnCard.CardLocation = NewVirtualCardParent.location.hand;
+        spawnCard.CardLocation = NewVirtualCardParent.location.inPlay;
 
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
@@ -117,6 +118,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         spawnCard.UnityObject = newCard;
 
         p.InPlay.Add(spawnCard);
+
+        if (spawnCard.CardType == NewVirtualCardParent.type.token)
+        {
+            CardSelectionManager.Instance.PlayCardToBattleground(clickHandler);
+        }
 
         //NEED SOME WAY TO MOVE CARD TO INPLAY ON THE FIELD
         //handUIManager.AddCardToHand(newCard);

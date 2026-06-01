@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CommanderCardScript : NewVirtualCardParent
@@ -9,6 +10,8 @@ public class CommanderCardScript : NewVirtualCardParent
     }
 
     private ability commanderAbility;
+    [SerializeField] private GameObject tokenPrefab;
+    [SerializeField] private Battleground bg;
 
     public ability CommanderAbility { get { return commanderAbility; } }
 
