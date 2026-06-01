@@ -580,7 +580,7 @@ MonoBehaviour:
   maxEnergy: 10
   startingEnergy: 0
   timeForEnergy: 5
-  isPlayerTwo: 0
+  isPlayerTwo: 1
   moveCooldownTime: 1.5
 --- !u!4 &143358788
 Transform:

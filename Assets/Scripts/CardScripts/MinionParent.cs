@@ -151,6 +151,11 @@ public class MinionParent : NewVirtualCardParent
         isDead = true;
         if(CardType == NewVirtualCardParent.type.token) { return; }
         CardLocation = location.discard;
+        if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
+        }
+        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
     }
 
     public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)

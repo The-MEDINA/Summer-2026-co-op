@@ -17,7 +17,7 @@ public abstract class NewVirtualCardParent
         inPlay,
         discard
     }
-
+    private int nameIndexPosition;
     private int cost;
     private type cardType;
     private location cardLocation;
@@ -25,6 +25,7 @@ public abstract class NewVirtualCardParent
     [SerializeField] private string cardName;
     private string flavorText;
 
+    public int NameIndexPosition { get { return nameIndexPosition; } }
     public int Cost { get { return cost; } }
     public string CardName { get { return cardName; } }
     public string FlavorText { get { return flavorText; } }
@@ -45,6 +46,7 @@ public abstract class NewVirtualCardParent
         this.cardName = name;
         this.cardType = cardType;
         this.cardLocation = cardLocation;
+        nameIndexPosition = cardIndex.Index.GetDetails(name).nameIndexPosition;
     }
     /// <summary>
     /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
@@ -57,6 +59,7 @@ public abstract class NewVirtualCardParent
         cost = cardDetails.cost;
         cardName = cardDetails.name;
         flavorText = cardDetails.flavorText;
+        nameIndexPosition = cardDetails.nameIndexPosition;
         this.cardLocation = cardLocation;
     }
 }
