@@ -83,23 +83,13 @@ public class MinionParent : NewVirtualCardParent
         {
             Debug.Log(Damage);
             Debug.Log(target.Health);
-            if (target == null || isDead)
+            if (target == null || isDead || target.IsDead)
             {
                 return;
-            }
-            else if (cardEffect == effect.deathtouch)
-            {
-                target.TakeDamage(this, 99999999);
             }
             else
             {
                 target.TakeDamage(this, Damage);
-            }
-
-            if(cardEffect == effect.overkill && target.IsDead)
-            {
-                //player takes damage based on negative health of dead enemy
-                Debug.Log("OVERKILL");
             }
             canAttack = false;
         }
@@ -117,11 +107,21 @@ public class MinionParent : NewVirtualCardParent
 
     public void TakeDamage(MinionParent attacker, int damage)
     {
+        if(attacker.CardEffect == effect.deathtouch)
+        {
+            Health = 0;
+        }
+
         Health -= damage;
 
         if (Health <= 0)
         {
+            if (attacker.CardEffect == effect.overkill)
+            {
+                this.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TakeDamage(-1 * Health);
+            }
             Health = 0;
+
             if (cardEffect == effect.explode) 
             {
                 int explodeDamage = 0;
