@@ -574,7 +574,7 @@ namespace Network
         }
 
         /// <summary>
-        /// Encode a packet to send to someone else.
+        /// Encode a handshake or keepAlive packet to send to a peer.
         /// </summary>
         /// <param name="type">packet type.</param>
         /// <param name="isRequest">whether it's a request or a response. This is mainly for the handshake.</param>
