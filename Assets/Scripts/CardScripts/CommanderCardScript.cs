@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-public class CommanderCardScript
+public class CommanderCardScript : MonoBehaviour
 {
     public enum ability
     {
@@ -45,6 +45,7 @@ public class CommanderCardScript
 
     private void SpawnTokenMinions()
     {
-        //bg.SpawnCardToInPlay();
+        bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+        bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
     }
 }

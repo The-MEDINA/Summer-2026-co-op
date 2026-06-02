@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 44404139}
   - component: {fileID: 44404141}
   - component: {fileID: 44404142}
+  - component: {fileID: 44404143}
   m_Layer: 0
   m_Name: CommanderCard1
   m_TagString: Untagged
@@ -409,6 +410,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &44404143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44404138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 729f33ed9b31e5548b3f9ebe402637ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommanderCardScript
+  tokenPrefab: {fileID: 0}
 --- !u!1 &105514367
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,6 +1302,7 @@ MonoBehaviour:
   p: {fileID: 427913135}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 502840342}
+  commanderCard: {fileID: 0}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1414,6 +1429,7 @@ MonoBehaviour:
   p: {fileID: 143358787}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 1375896096}
+  commanderCard: {fileID: 0}
 --- !u!212 &564985595
 SpriteRenderer:
   serializedVersion: 2
@@ -2624,6 +2640,7 @@ MonoBehaviour:
   p: {fileID: 143358787}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 1375896096}
+  commanderCard: {fileID: 0}
 --- !u!61 &1385689322
 BoxCollider2D:
   m_ObjectHideFlags: 0
