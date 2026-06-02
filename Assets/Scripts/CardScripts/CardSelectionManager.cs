@@ -124,7 +124,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (!owner.CanMove)
+        if (!owner.CanMove && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
         {
             Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             if (owner.IsPlayerTwo)

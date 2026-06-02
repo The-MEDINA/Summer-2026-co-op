@@ -120,8 +120,10 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
         p.InPlay.Add(spawnCard);
 
+        Debug.Log("a");
         if (spawnCard.CardType == NewVirtualCardParent.type.token)
         {
+            Debug.Log("b");
             CardSelectionManager.Instance.PlayCardToBattleground(clickHandler);
         }
 
