@@ -32,10 +32,8 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
 
     public override void PerformAbility()
     {
-        Debug.Log("1");
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
             MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
-        Debug.Log("2");
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
             MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         canAttack = false;
