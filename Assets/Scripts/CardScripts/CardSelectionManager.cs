@@ -100,7 +100,14 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             ClearSelection();
-            return;
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding playerTwo.CanMove to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
@@ -140,8 +147,14 @@ public class CardSelectionManager : MonoBehaviour
         if (!owner.CanAfford(cardObject.CardData))
         {
             Debug.Log("Cannot play card. Not enough energy.");
-            if (owner.IsPlayerTwo) Networking.DesyncWarning("Player two doesn't have enough energy");
-            return;
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two CanAfford to prevent desync.");
+            }
+            else 
+            {
+                return;
+            }
         }
 
         if (!owner.SpendEnergy(cardObject.CardData.Cost))

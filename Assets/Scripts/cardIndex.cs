@@ -13,6 +13,10 @@
  *  - Dave :>
  */
 
+// This #define enables any warnings involving anything that comes out undefined.
+// Comment it out to remove any undefined warnings.
+// #define WARN_UNDEFINED
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
@@ -129,10 +133,12 @@ namespace cardIndex
                 // create a spell
                 cardToCreate = new SpellParent(name, location);
             }
+#if WARN_UNDEFINED
             else
             {
                 Debug.LogWarning($"Found no card named {name}! Double check this card exists?");
             }
+#endif
 
             return cardToCreate;
         }
@@ -181,7 +187,9 @@ namespace cardIndex
                     }
                     default:
                     {
+#if WARN_UNDEFINED
                         Debug.LogWarning($"Unimplemented or unknown card type {rawDetails[3].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming it's a minion.");
+#endif
                         break;
                     }
                 }
@@ -235,7 +243,9 @@ namespace cardIndex
                         }
                     default:
                         {
+#if WARN_UNDEFINED
                             Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
+#endif
                             break;
                         }
                 }
@@ -266,7 +276,9 @@ namespace cardIndex
                             }
                         default:
                         {
-                                Debug.LogWarning($"Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
+#if WARN_UNDEFINED
+                            Debug.LogWarning($"Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
+#endif
                             break;
                         }
                     }
@@ -290,7 +302,9 @@ namespace cardIndex
                             }
                         default:
                             {
+#if WARN_UNDEFINED
                                 Debug.LogWarning($"Unimplemented or unknown spell target {rawDetails[10].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming enemyCards.");
+#endif
                                 break;
                             }
                     }

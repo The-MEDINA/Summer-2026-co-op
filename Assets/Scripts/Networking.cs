@@ -40,8 +40,8 @@ namespace Network
      * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
      * 
      * --- HANDSHAKE: ---
-     * the second byte determines if it's a request or response.
-     * currently bytes 3 - 39 store the handshakeContent variable.
+     * byte 2 determines if it's a request or response.
+     * bytes 3 - 39 store the handshakeContent variable.
      * bytes 40 - 43 hold the host system's IP Address.
      * bytes 44 - 1023 are empty so we can use it later to send more info.
      * 
@@ -574,7 +574,7 @@ namespace Network
         }
 
         /// <summary>
-        /// Encode a packet to send to someone else.
+        /// Encode a handshake or keepAlive packet to send to a peer.
         /// </summary>
         /// <param name="type">packet type.</param>
         /// <param name="isRequest">whether it's a request or a response. This is mainly for the handshake.</param>
@@ -586,8 +586,11 @@ namespace Network
             {
                 case (packetType.handshake):
                 {
-                    // the first byte of each packet will always be its type.
-                    packet[0] = (byte) packetType.handshake;
+#if DEBUG_MODE
+                        Debug.Log("encode handshake");
+#endif
+                        // the first byte of each packet will always be its type.
+                        packet[0] = (byte) packetType.handshake;
 
                     // the second byte determines if it's a a request or response.
                     if (isRequest) packet[1] = 0;
@@ -906,11 +909,25 @@ namespace Network
                     // hand override.
                     if (packet[4] == 1)
                     {
+                        if (playerTwo.Hand.Count <= packet[1])
+                        {
+#if DEBUG_MODE
+                            Debug.LogWarning($"playertwo.Hand ({playerTwo.Hand.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
+#endif
+                            break;
+                        }
                         attacker = playerTwo.Hand[packet[1]];
                     }
                     else
                     {
-                        attacker = playerTwo.InPlay[packet[1]];
+                        if (playerTwo.InPlay.Count <= packet[1])
+                        {
+#if DEBUG_MODE
+                            Debug.LogWarning($"playertwo.InPlay ({playerTwo.InPlay.Count}) is less than or equal to {packet[1]}. Ignoring card attack to keep connection alive.");
+#endif
+                            break;
+                        }
+                            attacker = playerTwo.InPlay[packet[1]];
                     }
 
                     if (attacker as SpellParent != null)
@@ -959,10 +976,25 @@ namespace Network
                 }
                 default:
                 {
-                    throw e;
+                    // ONLY throw exceptions if there is not an active connection.
+                    if (currentState == state.disconnected) throw e;
+#if DEBUG_MODE
+                    Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
+#endif
+                    break;
                 }
             }
-            if (brokenPacket) throw e;
+            // also only throw exceptions if there is not an active connection.
+            if (brokenPacket && currentState == state.disconnected)
+            {
+                throw e;
+            }
+#if DEBUG_MODE
+            else if (brokenPacket)
+            {
+                Debug.LogWarning("Broken packet received.");
+            }
+#endif
         }
         private static async void Connection()
         {
@@ -1217,6 +1249,9 @@ namespace Network
         /// <param name="sceneName">name of the scene to switch to.</param>
         public static void SendSceneSwitch(string sceneName)
         {
+#if DEBUG_MODE
+            Debug.Log("encode scene switch");
+#endif
             byte[] packet = EncodePacket(sceneName);
             if (currentState == state.connected)
             {
@@ -1236,6 +1271,9 @@ namespace Network
         /// <param name="location"></param>
         public static void SendCardArray(List<NewVirtualCardParent> cards, NewVirtualCardParent.location location)
         {
+#if DEBUG_MODE
+            Debug.Log("encode card array");
+#endif
             byte[] packet = EncodePacket(cards, location);
             if (currentState == state.connected)
             {
@@ -1257,6 +1295,9 @@ namespace Network
         /// <param name="newLocation">The new location of this card.</param>
         public static void SendCardMove(NewVirtualCardParent card, NewVirtualCardParent.location Oldlocation, int oldLocationPosition, NewVirtualCardParent.location newLocation)
         {
+#if DEBUG_MODE
+            Debug.Log("encode card move");
+#endif
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
             if (currentState == state.connected)
             {
@@ -1272,6 +1313,9 @@ namespace Network
 
         public static void SendCardAdd(NewVirtualCardParent card, NewVirtualCardParent.location location)
         {
+#if DEBUG_MODE
+            Debug.Log("encode card add");
+#endif
             byte[] packet = EncodePacket(card, location);
             if (currentState == state.connected)
             {
@@ -1292,6 +1336,9 @@ namespace Network
         /// <param name="target">The target of the attack.</param>
         public static void SendCardAttack(NewVirtualCardParent attacker, NewVirtualCardParent target, bool isSecondAttack)
         {
+#if DEBUG_MODE
+            Debug.Log("encode card attack");
+#endif
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
             if (currentState == state.connected)
             {
@@ -1312,6 +1359,9 @@ namespace Network
         /// <param name="cardToDie">the card that died.</param>
         public static void SendCardDeath(bool isPlayerTwo, NewVirtualCardParent cardToDie)
         {
+#if DEBUG_MODE
+            Debug.Log("encode card death");
+#endif
             byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
             if (currentState == state.connected)
             {
