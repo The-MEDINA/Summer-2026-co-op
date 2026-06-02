@@ -219,6 +219,12 @@ public class CardSelectionManager : MonoBehaviour
             field.transform.position.y,
             -0.1f
         );
+
+        if (cardObject.CardData is MinionParent)
+        {
+            MinionParent minion = (MinionParent)cardObject.CardData;
+            minion.OnPlay();
+        }
     }
 
     public void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)

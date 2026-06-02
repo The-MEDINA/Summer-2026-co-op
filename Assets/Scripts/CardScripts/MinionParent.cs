@@ -15,7 +15,8 @@ public class MinionParent : NewVirtualCardParent
         coordinate,
         twoAttacks,
         aoe,
-        overkill
+        overkill,
+        duplicate
     }
 
     public enum equipment
@@ -75,6 +76,12 @@ public class MinionParent : NewVirtualCardParent
     public void OnPlay()
     {
         Debug.Log("a");
+        if (CardEffect == effect.duplicate)
+        {
+            Debug.Log("b");
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, Health, Damage, CardName, 
+                NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+        }
     }
 
     public void Attack(MinionParent target)
