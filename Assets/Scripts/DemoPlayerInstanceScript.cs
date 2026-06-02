@@ -25,8 +25,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "M16",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "I Hungy!!!",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
