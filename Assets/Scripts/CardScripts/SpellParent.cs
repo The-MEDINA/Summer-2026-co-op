@@ -8,7 +8,8 @@ public class SpellParent : NewVirtualCardParent
         damage,
         heal,
         unique,
-        equipment
+        equipment,
+        spawnTokens
     }
 
     public enum spellTarget //what the target type of the spell is
@@ -156,6 +157,16 @@ public class SpellParent : NewVirtualCardParent
                             {
                                 break;
                             }
+                    }
+                    break;
+                }
+
+            case spellEffect.spawnTokens:
+                {
+                    for(int i = 0; i < amount; i++)
+                    {
+                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                            new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token,MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
                     }
                     break;
                 }

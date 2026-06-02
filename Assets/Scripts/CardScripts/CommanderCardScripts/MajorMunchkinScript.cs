@@ -1,5 +1,4 @@
 using Network;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,11 +11,12 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
 
     private void Start()
     {
-        Name = "Major Munchkin";
+        Name = "Major Munchkin";//assigns name
     }
 
     private void Update()
     {
+        //controls effect timer
         if (timer > timeToEffect)
         {
             canAttack = true;
@@ -28,8 +28,15 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
         }
     }
 
+    /// <summary>
+    /// calls PerformAbility() on mouse click
+    /// </summary>
+    /// <param name="eventData">data for mouse pointer click</param>
     public void OnPointerClick(PointerEventData eventData) { if (canAttack) { PerformAbility(); } }
 
+    /// <summary>
+    /// spawns two token creatures
+    /// </summary>
     public override void PerformAbility()
     {
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 

@@ -7,7 +7,11 @@ public class CommanderCardScript : MonoBehaviour
     [SerializeField] protected Battleground bg;
     private string name;
 
+    public Battleground BG { get { return bg; } set { bg = value; } }
     public string Name { get { return name; } set { name = value; } }
 
+    /// <summary>
+    /// does whatever the Commander does
+    /// </summary>
     public virtual void PerformAbility() { }
 }

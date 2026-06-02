@@ -26,13 +26,15 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         }
 
         p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.allyCards, 3, 2, 1, "Conscript",
+            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "I Hungy!!!",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
             NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)   
         {
-            p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
+                p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
         }
 
         Debug.Log(gameObject.name + " deck loaded with " + p.Deck.Count + " cards.");
