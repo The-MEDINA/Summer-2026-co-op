@@ -163,7 +163,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         // check to see if this move should be sent to peer.
-        if (owner == player1)
+        if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
         {
             Networking.SendCardMove(cardObject.CardData, // card to move 
                 NewVirtualCardParent.location.hand, // in the player's hand

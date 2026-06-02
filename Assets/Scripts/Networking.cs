@@ -893,7 +893,7 @@ namespace Network
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
                         case (NewVirtualCardParent.location.hand): { /*playerTwo.Hand.Add(card);*/ requestCardInstantiation = -2; break; }
-                        case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay.Add(card); break; }
+                        case (NewVirtualCardParent.location.inPlay): { requestCardInstantiation = indexOfCard; break; }
                     }
                     break;
                 }
@@ -1142,10 +1142,15 @@ namespace Network
             }
 
             // card instantiation.
-            if (Networking.requestCardInstantiation != -1)
+            if (Networking.requestCardInstantiation == -2)
             {
                 p2Battleground.DrawCardToHand();
                 Networking.requestCardInstantiation = -1;
+            }
+            // create token creatures.
+            else if (Networking.requestCardInstantiation == cardIndex.Index.GetDetails("Kitten").nameIndexPosition)
+            {
+                p2Battleground.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
             }
 
             // move to battleground.
