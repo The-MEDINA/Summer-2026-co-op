@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private List<NewVirtualCardParent> hand = new List<NewVirtualCardParent>();
     private List<NewVirtualCardParent> inPlay = new List<NewVirtualCardParent>();
     private List<NewVirtualCardParent> discard = new List<NewVirtualCardParent>();
+    private CommanderCardScript commanderCard;
 
     private float timer = 0f;
     private float moveCooldownTimer = 0f;
@@ -39,6 +40,7 @@ public class Player : MonoBehaviour
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
     public List<NewVirtualCardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
     public List<NewVirtualCardParent> Discard { get { return discard; } set { discard = value; } }
+    public CommanderCardScript CommanderCard { get { return commanderCard; } set { commanderCard = value; } }
 
     private void Start()
     {

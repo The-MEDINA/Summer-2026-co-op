@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-public class CommanderCardScript : NewVirtualCardParent
+[System.Serializable]
+public class CommanderCardScript
 {
     public enum ability
     {
@@ -11,14 +12,17 @@ public class CommanderCardScript : NewVirtualCardParent
 
     private ability commanderAbility;
     [SerializeField] private GameObject tokenPrefab;
-    [SerializeField] private Battleground bg;
+    private Battleground bg;
+    private string name;
 
     public ability CommanderAbility { get { return commanderAbility; } }
+    public string Name { get { return name; } set { name = value; } }
 
-    public CommanderCardScript(ability commAbility, int cost, string name, NewVirtualCardParent.type cardType, NewVirtualCardParent.location cardLocation)
-         : base(cost, name, cardType, cardLocation)
+    public CommanderCardScript(ability commAbility, string name, Battleground batGro)
     {
         commanderAbility = commAbility;
+        this.name = name;
+        bg = batGro;
     }
 
     private void PerformAbility()
@@ -41,6 +45,6 @@ public class CommanderCardScript : NewVirtualCardParent
 
     private void SpawnTokenMinions()
     {
-
+        //bg.SpawnCardToInPlay();
     }
 }

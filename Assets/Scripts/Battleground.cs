@@ -8,7 +8,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
     [SerializeField] private HandUIManager handUIManager;
-    [SerializeField] private CommanderCardScript commanderCard;
+    private CommanderCardScript commanderCard;//why is this broken
 
     private List<GameObject> cardList = new List<GameObject>();
 
@@ -16,6 +16,8 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     public void Start()
     {
         if (p.IsPlayerTwo) Networking.P2Battleground = this;
+        commanderCard = new CommanderCardScript(CommanderCardScript.ability.spawnTokens, "Major Munchkin", this);
+        p.CommanderCard = commanderCard;
     }
 
     /// <summary>
