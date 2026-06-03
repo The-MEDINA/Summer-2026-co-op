@@ -75,10 +75,8 @@ public class MinionParent : NewVirtualCardParent
 
     public void OnPlay()
     {
-        Debug.Log("a");
         if (CardEffect == effect.duplicate)
         {
-            Debug.Log("b");
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, Health, Damage, CardName, 
                 NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         }
