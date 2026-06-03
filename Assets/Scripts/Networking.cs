@@ -1150,7 +1150,8 @@ namespace Network
             // create token creatures.
             else if (Networking.requestCardInstantiation == cardIndex.Index.GetDetails("Kitten").nameIndexPosition)
             {
-                p2Battleground.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
+                playerTwo.CommanderCard.PerformAbility();
+                Networking.requestCardInstantiation = -1;
             }
 
             // move to battleground.
