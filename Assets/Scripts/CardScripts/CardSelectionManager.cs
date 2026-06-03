@@ -203,6 +203,12 @@ public class CardSelectionManager : MonoBehaviour
             RefreshCardVisual(owner.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
         }
 
+        if (cardObject.CardData is MinionParent)
+        {
+            MinionParent minion = (MinionParent)cardObject.CardData;
+            minion.OnPlay();
+        }
+
         Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
     }
 
@@ -219,12 +225,6 @@ public class CardSelectionManager : MonoBehaviour
             field.transform.position.y,
             -0.1f
         );
-
-        if (cardObject.CardData is MinionParent)
-        {
-            MinionParent minion = (MinionParent)cardObject.CardData;
-            minion.OnPlay();
-        }
     }
 
     public void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
