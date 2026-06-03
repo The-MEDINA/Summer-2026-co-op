@@ -10,6 +10,8 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private HandUIManager handUIManager;
     [SerializeField] private CommanderCardScript commanderCard;//why is this broken
 
+    public Player P { get { return p; } }
+
     private List<GameObject> cardList = new List<GameObject>();
 
     // network manager needs this to instantiate cards.

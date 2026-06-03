@@ -43,6 +43,12 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
             MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
             MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+        if (!bg.P.IsPlayerTwo)
+        {
+            // this should really be its own packet and not sendCardAdd.
+            // this should work for now though. - Dave
+            Networking.SendCardAdd(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay), NewVirtualCardParent.location.inPlay);
+        }
         canAttack = false;
     }
 }

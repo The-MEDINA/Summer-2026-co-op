@@ -1416,7 +1416,7 @@ MonoBehaviour:
   p: {fileID: 143358787}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 1375896096}
-  commanderCard: {fileID: 0}
+  commanderCard: {fileID: 677338736}
 --- !u!212 &564985595
 SpriteRenderer:
   serializedVersion: 2
@@ -2683,7 +2683,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1385689320}
   - component: {fileID: 1385689319}
-  - component: {fileID: 1385689321}
   - component: {fileID: 1385689322}
   m_Layer: 0
   m_Name: Player2Deck
@@ -2766,22 +2765,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1385689321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1385689318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c863e5055f748406aa293bf99a33b657, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battleground
-  p: {fileID: 143358787}
-  cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
-  handUIManager: {fileID: 1375896096}
-  commanderCard: {fileID: 0}
 --- !u!61 &1385689322
 BoxCollider2D:
   m_ObjectHideFlags: 0
