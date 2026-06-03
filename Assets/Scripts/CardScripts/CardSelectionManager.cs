@@ -527,7 +527,8 @@ public class CardSelectionManager : MonoBehaviour
         // send this action if this is player 1.
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
-            //Networking.SendCardAttack(attacker, target, false);
+            // spells that use isSecondAttack have no target.
+            Networking.SendCardAttack(attacker, null, true);
         }
 
         selectedCardObject.gameObject.SetActive(false);

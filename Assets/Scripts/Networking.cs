@@ -938,9 +938,10 @@ namespace Network
                         {
                             target = playerTwo.InPlay[packet[2]];
                         }
-                        else
+                        // target of index 255 implies this spell has no target.
+                        else if (packet[2] != 255)
                         {
-                            // target player 1's cards like normal.
+                            // target player 1's cards like normal if the index is valid.
                             target = playerOne.InPlay[packet[2]];
                         }
                     }
@@ -1174,7 +1175,8 @@ namespace Network
             else if (requestAttack[0] as SpellParent != null)
             {
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
