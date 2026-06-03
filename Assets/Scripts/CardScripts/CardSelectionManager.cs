@@ -78,6 +78,11 @@ public class CardSelectionManager : MonoBehaviour
                 ActivateCard(clickedCard);
                 return;
             }
+
+            if (clickedCard.CardData is SpellParent)
+            {
+                TrySpellNoTarget();
+            }
         }
 
         selectedCardObject = clickedCard;
@@ -421,6 +426,51 @@ public class CardSelectionManager : MonoBehaviour
         RefreshCardVisual(targetCard);
 
         Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
+        selectedCardObject.OwnerPlayer.RegisterAction();
+
+        ClearSelection();
+    }
+
+    public void TrySpellNoTarget()
+    {
+        if (selectedCardObject == null)
+        {
+            ClearSelection();
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two's attacking or target card was null");
+            return;
+        }
+
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
+        {
+            Debug.Log("Card must be in your hand before it can be played.");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Player two is playing card from hand");
+            ClearSelection();
+            return;
+        }
+
+        SpellParent attacker = selectedCardObject.CardData as SpellParent;
+
+        if (attacker == null)
+        {
+            Debug.Log("Only minion cards can attack right now.");
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Only minion cards can attack right now for player two");
+            ClearSelection();
+            return;
+        }
+
+        attacker.OnPlay();
+
+        // send this action if this is player 1.
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            //Networking.SendCardAttack(attacker, target, false);
+        }
+
+        selectedCardObject.gameObject.SetActive(false);
+
+        RefreshCardVisual(selectedCardObject);
+
+        Debug.Log(attacker.CardName + " played");
         selectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();

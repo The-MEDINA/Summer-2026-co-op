@@ -17,7 +17,8 @@ public class SpellParent : NewVirtualCardParent
         enemyCards,
         allyCards,
         opponent,
-        owner
+        owner,
+        none
     }
 
     private spellEffect effect;
@@ -56,6 +57,27 @@ public class SpellParent : NewVirtualCardParent
         target = spellDetails.spellTarget;
         amount = spellDetails.damage;
         secondEquipmentAmount = spellDetails.health;
+    }
+
+    public void OnPlay()
+    {
+        switch(effect)
+        {
+            case spellEffect.spawnTokens:
+                {
+                    for (int i = 0; i < amount; i++)
+                    {
+                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                            new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+                    }
+                    break;
+                }
+
+            default:
+                {
+                    break;
+                }
+        }
     }
 
     /// <summary>
@@ -157,16 +179,6 @@ public class SpellParent : NewVirtualCardParent
                             {
                                 break;
                             }
-                    }
-                    break;
-                }
-
-            case spellEffect.spawnTokens:
-                {
-                    for(int i = 0; i < amount; i++)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
-                            new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token,MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
                     }
                     break;
                 }
