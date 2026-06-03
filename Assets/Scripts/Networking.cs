@@ -938,9 +938,10 @@ namespace Network
                         {
                             target = playerTwo.InPlay[packet[2]];
                         }
-                        else
+                        // target of index 255 implies this spell has no target.
+                        else if (packet[2] != 255)
                         {
-                            // target player 1's cards like normal.
+                            // target player 1's cards like normal if the index is valid.
                             target = playerOne.InPlay[packet[2]];
                         }
                     }
