@@ -1174,7 +1174,8 @@ namespace Network
             else if (requestAttack[0] as SpellParent != null)
             {
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
