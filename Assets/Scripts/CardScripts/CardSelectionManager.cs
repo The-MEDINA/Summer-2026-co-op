@@ -402,6 +402,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
+        Player owner = selectedCardObject.OwnerPlayer;
         MinionParent target = targetCard.CardData as MinionParent;
 
         if (attacker == null || target == null)
@@ -409,6 +410,37 @@ public class CardSelectionManager : MonoBehaviour
             Debug.Log("Only minion cards can attack right now.");
             if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Only minion cards can attack right now for player two");
             ClearSelection();
+            return;
+        }
+
+        if (!owner.CanMove && attacker.CardType != NewVirtualCardParent.type.token)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two move timer to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (!owner.CanAfford(attacker))
+        {
+            Debug.Log("Cannot play card. Not enough energy.");
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two CanAfford to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (!owner.SpendEnergy(attacker.Cost))
+        {
             return;
         }
 
@@ -449,12 +481,44 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
+        Player owner = selectedCardObject.OwnerPlayer;
 
         if (attacker == null)
         {
             Debug.Log("Only minion cards can attack right now.");
             if (selectedCardObject.OwnerPlayer.IsPlayerTwo) Networking.DesyncWarning("Only minion cards can attack right now for player two");
             ClearSelection();
+            return;
+        }
+
+        if (!owner.CanMove && attacker.CardType != NewVirtualCardParent.type.token)
+        {
+            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two move timer to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (!owner.CanAfford(attacker))
+        {
+            Debug.Log("Cannot play card. Not enough energy.");
+            if (owner.IsPlayerTwo)
+            {
+                Debug.LogWarning("Overriding player two CanAfford to prevent desync.");
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (!owner.SpendEnergy(attacker.Cost))
+        {
             return;
         }
 
