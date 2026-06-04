@@ -59,6 +59,9 @@ public class SpellParent : NewVirtualCardParent
         secondEquipmentAmount = spellDetails.health;
     }
 
+    /// <summary>
+    /// spell usage when there is no target
+    /// </summary>
     public void OnPlay()
     {
         switch(effect)

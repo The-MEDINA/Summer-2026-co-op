@@ -123,7 +123,8 @@ public class MinionParent : NewVirtualCardParent
         {
             if (attacker.CardEffect == effect.overkill)
             {
-                this.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TakeDamage(-1 * Health);
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TakeDamage(-1 * Health);
+                Debug.Log(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health);
             }
             Health = 0;
 

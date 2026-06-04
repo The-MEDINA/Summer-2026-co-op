@@ -186,6 +186,10 @@ public class Player : MonoBehaviour
         Debug.Log(gameObject.name + " has lost.");
     }
 
+    /// <summary>
+    /// goes through every unit inPlay and checks if they 1) have coordinate, 2) if there are enough other units with coordinate to trigger
+    /// the reward, and 3) if there is, apply the reward to that unit
+    /// </summary>
     private void CheckCoordinate()
     {
         for (int i = 0; i < InPlay.Count; i++)
