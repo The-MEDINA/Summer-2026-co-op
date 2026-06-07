@@ -556,8 +556,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 143358788}
-  - component: {fileID: 143358787}
   - component: {fileID: 143358789}
+  - component: {fileID: 143358790}
   m_Layer: 0
   m_Name: Player2InstanceDemo
   m_TagString: Untagged
@@ -565,24 +565,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &143358787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 143358786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79e41cb2c8fd94658b020024baa190ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  health: 50
-  maxEnergy: 10
-  startingEnergy: 0
-  timeForEnergy: 1
-  isPlayerTwo: 1
-  moveCooldownTime: 1.5
 --- !u!4 &143358788
 Transform:
   m_ObjectHideFlags: 0
@@ -607,9 +589,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 143358786}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
+  m_Script: {fileID: 11500000, guid: b19e0bd670f176e408e45f8148e0ea20, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleAIScript
+  player: {fileID: 143358790}
+  bg: {fileID: 564985594}
+  opponent: {fileID: 427913135}
+--- !u!114 &143358790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143358786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e41cb2c8fd94658b020024baa190ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  health: 50
+  maxEnergy: 10
+  startingEnergy: 10
+  timeForEnergy: 5
+  isPlayerTwo: 1
+  moveCooldownTime: 1.5
 --- !u!1 &366108599
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,7 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c863e5055f748406aa293bf99a33b657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
-  p: {fileID: 143358787}
+  p: {fileID: 143358790}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 1375896096}
   commanderCard: {fileID: 677338736}
@@ -2240,7 +2243,7 @@ MonoBehaviour:
   player1: {fileID: 427913135}
   player1CardField: {fileID: 426793723}
   player1HandUI: {fileID: 502840342}
-  player2: {fileID: 143358787}
+  player2: {fileID: 0}
   player2CardField: {fileID: 1487410306}
   player2HandUI: {fileID: 1375896096}
   player1StartX: -5.75
@@ -3614,7 +3617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88c7c7356122429bb0e0e729bd7250b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTimerUI
-  player: {fileID: 143358787}
+  player: {fileID: 0}
   energyText: {fileID: 31641065}
   energyTimerText: {fileID: 951809795}
   moveTimerText: {fileID: 366108600}

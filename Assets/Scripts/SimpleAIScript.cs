@@ -1,9 +1,10 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class SimpleAIScript : MonoBehaviour
 {
-    private Player player;
+    [SerializeField] private Player player;
     private float timer = 0f;
     private float moveTime = 2f;
     private System.Random rng;
@@ -13,7 +14,6 @@ public class SimpleAIScript : MonoBehaviour
 
     void Start()
     {
-        player = new Player();
         PopulatePlayer();
         rng = new System.Random();
         drawNum = 2;
@@ -77,14 +77,16 @@ public class SimpleAIScript : MonoBehaviour
 
     private void MoveCardToBattleground()
     {
-        int moveNum = rng.Next(1, player.Hand.Count + 1);
+        Debug.Log("c");
+        int moveNum = rng.Next(1, player.Hand.Count);
         CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
     }
 
     private void AttackSomething()
     {
-        int attackNum = rng.Next(1, player.InPlay.Count + 1);
-        int targetNum = rng.Next(1, opponent.InPlay.Count + 1);
+        Debug.Log("a");
+        int attackNum = rng.Next(1, player.InPlay.Count);
+        int targetNum = rng.Next(1, opponent.InPlay.Count);
 
         if (player.InPlay[attackNum] is TwoAttackParent)
         {
@@ -108,6 +110,7 @@ public class SimpleAIScript : MonoBehaviour
 
     private void Draw()
     {
+        Debug.Log("b");
         bg.DrawCardToHand();
     }
 
