@@ -33,7 +33,7 @@ public class SimpleAIScript : MonoBehaviour
 
         if(drawNum >= 2)
         {
-            //draw
+            Draw();
             drawNum = 0;
         }
     }
@@ -43,20 +43,49 @@ public class SimpleAIScript : MonoBehaviour
         if(player.InPlay.Count == 0 && player.Hand.Count == 0) { return; }
         else if(player.InPlay.Count == 0) 
         {
-            /*move to field*/
+            MoveCardToBattleground();
             return;
         }
         else if(player.Hand.Count == 0)
         {
-            //attack
+            AttackSomething();
             return;
         }
-        int moveNum = rng.Next();
+        int moveNum = rng.Next(1, 4);
         switch (moveNum)
         {
-            //move to field
-            //attack
+            case 1:
+                {
+                    MoveCardToBattleground();
+                    break;
+                }
+
+            case 2:
+            case 3:
+            default:
+                {
+                    AttackSomething();
+                    break;
+                }
         }
+    }
+
+    private void MoveCardToBattleground()
+    {
+        int moveNum = rng.Next(1, player.Hand.Count + 1);
+        CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
+    }
+
+    private void AttackSomething()
+    {
+        int attackNum = rng.Next(1, player.InPlay.Count + 1);
+        //int targetNum =
+        //CardSelectionManager.Instance
+    }
+
+    private void Draw()
+    {
+
     }
 
     private void PopulatePlayer()
