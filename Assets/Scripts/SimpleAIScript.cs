@@ -8,6 +8,8 @@ public class SimpleAIScript : MonoBehaviour
     private float moveTime = 2f;
     private System.Random rng;
     private int drawNum;
+    [SerializeField] private Battleground bg;
+    [SerializeField] private Player opponent;
 
     void Start()
     {
@@ -36,6 +38,9 @@ public class SimpleAIScript : MonoBehaviour
             Draw();
             drawNum = 0;
         }
+
+        if(opponent == null) { Debug.Log("Attach a player object in inspector."); }
+        if(bg == null) { Debug.Log("Attach a battleground object in inspector."); }
     }
 
     private void Move()
@@ -79,13 +84,31 @@ public class SimpleAIScript : MonoBehaviour
     private void AttackSomething()
     {
         int attackNum = rng.Next(1, player.InPlay.Count + 1);
-        //int targetNum =
-        //CardSelectionManager.Instance
+        int targetNum = rng.Next(1, opponent.InPlay.Count + 1);
+
+        if (player.InPlay[attackNum] is TwoAttackParent)
+        {
+            int randAttack = rng.Next(1, 3);
+            if (randAttack == 1)
+            {
+                CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), true);
+            }
+            else
+            {
+                CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
+
+            }
+        }
+        else
+        {
+            CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
+
+        }
     }
 
     private void Draw()
     {
-
+        bg.DrawCardToHand();
     }
 
     private void PopulatePlayer()
