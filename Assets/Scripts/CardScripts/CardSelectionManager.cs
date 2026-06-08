@@ -456,7 +456,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        TryAttackTarget(targetCard);
+        TryAttackTarget(targetCard, false);
     }
 
 private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)
