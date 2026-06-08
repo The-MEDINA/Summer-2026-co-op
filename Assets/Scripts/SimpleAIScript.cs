@@ -45,13 +45,16 @@ public class SimpleAIScript : MonoBehaviour
 
     private void Move()
     {
-        if(player.InPlay.Count == 0 && player.Hand.Count == 0) { return; }
-        else if(player.InPlay.Count == 0) 
+        Debug.Log(player.Hand.Count);
+        Debug.Log(player.InPlay.Count);
+        Debug.Log(opponent.InPlay.Count);
+        if((player.InPlay.Count == 0 || opponent.InPlay.Count == 0)&& player.Hand.Count == 0) { return; }
+        else if(player.InPlay.Count == 0 || opponent.InPlay.Count < 0) 
         {
             MoveCardToBattleground();
             return;
         }
-        else if(player.Hand.Count == 0)
+        else if(player.Hand.Count == 0 && opponent.InPlay.Count > 0)
         {
             AttackSomething();
             return;
@@ -78,21 +81,23 @@ public class SimpleAIScript : MonoBehaviour
     private void MoveCardToBattleground()
     {
         Debug.Log("c");
-        int moveNum = rng.Next(1, player.Hand.Count);
+        int moveNum = rng.Next(0, player.Hand.Count);
         CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
     }
 
     private void AttackSomething()
     {
+        if(opponent.InPlay.Count == 0) { return; }
         Debug.Log("a");
-        int attackNum = rng.Next(1, player.InPlay.Count);
-        int targetNum = rng.Next(1, opponent.InPlay.Count);
+        int attackNum = rng.Next(0, player.InPlay.Count);
+        int targetNum = rng.Next(0, opponent.InPlay.Count);
 
         if (player.InPlay[attackNum] is TwoAttackParent)
         {
             int randAttack = rng.Next(1, 3);
             if (randAttack == 1)
             {
+                //selected card is wrong
                 CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), true);
             }
             else
