@@ -396,8 +396,6 @@ namespace Network
                     if (DecodePacket(response).IsFaulted)
                     {
                         Debug.LogWarning("Broken, unknown or otherwise invalid packet received. aborting.");
-                        CloseConnection();
-                        // networkError.Invoke("Broken, unknown or otherwise invalid packet received. aborting.");
                     }
                     else
                     {
@@ -419,6 +417,7 @@ namespace Network
             }
             else
             {
+                networkError.Invoke("Unknown error when attempting to connect to a peer. closing connection.");
                 CloseConnection();
             }
         }

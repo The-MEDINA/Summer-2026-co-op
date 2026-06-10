@@ -122,10 +122,4 @@ public class button : MonoBehaviour
             statusText.text += $"{error}\n";
         }
     }
-
-    public void TEMPSendaPacket()
-    {
-        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
-        // Networking.TEMPsendpacket();
-    }
 }
