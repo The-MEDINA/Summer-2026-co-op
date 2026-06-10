@@ -14,6 +14,7 @@ public class button : MonoBehaviour
     public TextMeshProUGUI IPbutton;
     public TextMeshProUGUI hostname;
     public TextMeshProUGUI IPtext;
+    public TextMeshProUGUI statusText;
     private bool showIP = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -22,6 +23,8 @@ public class button : MonoBehaviour
         Networking.SetLocalDetails();
         Networking.Details();
         if (hostname != null) hostname.text = $"Hostname: {Dns.GetHostName()}";
+        Network.Networking.stateChange += status;
+        Network.Networking.networkError += error;
     }
 
     // Update is called once per frame
@@ -90,6 +93,33 @@ public class button : MonoBehaviour
         if (Networking.CurrentMode == Network.mode.client)
         {
             Networking.StartClient();
+        }
+    }
+
+    private void status(Network.state currentState)
+    {
+        if (statusText != null)
+        {
+            if (currentState == state.disconnected)
+            {
+                statusText.text += "Disconnected.\n";
+            }
+            else if (currentState == state.searching)
+            {
+                statusText.text = "Searching...\n";
+            }
+            else if (currentState == state.connected)
+            {
+                statusText.text += "Connected!\n";
+            }
+        }
+    }
+
+    private void error(string error)
+    {
+        if (statusText != null)
+        {
+            statusText.text += $"{error}\n";
         }
     }
 
