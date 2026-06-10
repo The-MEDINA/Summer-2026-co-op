@@ -107,6 +107,7 @@ namespace Network
     public enum state
     {
         disconnected,
+        searching,
         connected
     }
     public static class Networking
@@ -146,6 +147,19 @@ namespace Network
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
 
+        /// <summary>
+        /// delegates to set up events.
+        /// </summary>
+        public delegate void StateChange(state newState);
+        public delegate void NetworkError(string error);
+
+        /// <summary>
+        /// These are the actual events that other scripts can subscribe to.
+        /// Use these to basically track what network manager is doing from the outside.
+        /// </summary>
+        public static event StateChange stateChange;
+        public static event NetworkError networkError;
+
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
@@ -167,6 +181,7 @@ namespace Network
                 Debug.Log($"changing state to: {value}");          
 #endif
                 currentState = value;
+                stateChange.Invoke(currentState);
             } 
         }
 
@@ -249,13 +264,24 @@ namespace Network
             // return the IPAddress if one was passed.
             if (IPAddress.TryParse(raw, out ip)) return ip;
             // determine the IPAddress from the hostname otherwise.
-            IPHostEntry hostEntry = Dns.GetHostEntry(raw);
-            foreach (var ipEntry in hostEntry.AddressList)
+            IPHostEntry hostEntry;
+            try
             {
-                if (ipEntry.AddressFamily == AddressFamily.InterNetwork)
+                hostEntry = Dns.GetHostEntry(raw);
+                foreach (var ipEntry in hostEntry.AddressList)
                 {
-                    ip = ipEntry;
+                    if (ipEntry.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        ip = ipEntry;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Error while resolving IP Address! {e.Message}");
+#endif
+                networkError.Invoke(e.Message);
             }
             if (ip == null) throw new Exception("No ipv4 address found.");
             return ip;
@@ -304,10 +330,20 @@ namespace Network
         /// </summary>
         public static async void StartHost()
         {
+            // Close existing connection and check if we're already searching.
+            if (CurrentState == state.connected) CloseConnection();
+            if (CurrentState == state.searching)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning("Host was already started!");
+#endif
+                return;
+            }
             // setup the server
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
+            CurrentState = state.searching;
 #if DEBUG_MODE
             Debug.Log("Server started, waiting to accept client.");
 #endif
@@ -360,7 +396,6 @@ namespace Network
                     if (DecodePacket(response).IsFaulted)
                     {
                         Debug.LogWarning("Broken, unknown or otherwise invalid packet received. aborting.");
-                        CloseConnection();
                     }
                     else
                     {
@@ -377,8 +412,13 @@ namespace Network
 #if DEBUG_MODE
                 Debug.Log("Success! This is a valid client.");
 #endif
-                currentState = state.connected;
+                CurrentState = state.connected;
                 Connection();
+            }
+            else
+            {
+                networkError.Invoke("Unknown error when attempting to connect to a peer. closing connection.");
+                CloseConnection();
             }
         }
 
@@ -387,13 +427,40 @@ namespace Network
         /// </summary>
         public static async void StartClient()
         {
+            // Close existing connection and check if we're already searching.
+            if (CurrentState == state.connected) CloseConnection();
+            if (CurrentState == state.searching)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning("Client was already started!");
+#endif
+                return;
+            }
 #if DEBUG_MODE
             Debug.Log("starting client.");
 #endif
             client = new();
-            // both of these lines of code can and will throw exceptions if the ipaddress or endpoint are invalid.
-            // endpoint = new IPEndPoint(OtherIPv4Address, port);
-            await client.ConnectAsync(OtherIPv4Address, port);
+            CurrentState = state.searching;
+            bool validClient = false;
+
+            // connect to a valid client, or exit early.
+            try
+            {
+                await client.ConnectAsync(OtherIPv4Address, port);
+                validClient = true;
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Aborting StartClient! {e.Message}");
+#endif
+                networkError.Invoke(e.Message);
+            }
+            finally
+            {
+                if (!validClient) CurrentState = state.disconnected;
+            }
+            if (!validClient) return;
 
             // start the handshake process here.
             stream = client.GetStream();
@@ -403,14 +470,13 @@ namespace Network
 #if DEBUG_MODE
             Debug.Log("Connection made, waiting for packet");
 #endif
-
-            await stream.ReadAsync(response, 0, response.Length);
-
-#if DEBUG_MODE
-            Debug.Log("Packet received. Verifying...");
-#endif
             try
             {
+                await stream.ReadAsync(response, 0, response.Length);
+
+#if DEBUG_MODE
+                Debug.Log("Packet received. Verifying...");
+#endif
                 DecodePacket(response);
 #if DEBUG_MODE
                 Debug.Log("Success! Valid handshake packet. Sending response.");
@@ -419,11 +485,12 @@ namespace Network
                 CurrentState = state.connected;
                 Connection();
             }
-            catch
+            catch (Exception e)
             {
 #if DEBUG_MODE
                 Debug.Log("Broken, unknown or otherwise invalid packet received. aborting.");
-#endif               
+#endif
+                networkError.Invoke($"Broken, unknown or otherwise invalid packet received. Reason: {e.Message} aborting.");
                 // terminate connection
                 CloseConnection();
             }
@@ -977,8 +1044,11 @@ namespace Network
                 }
                 default:
                 {
-                    // ONLY throw exceptions if there is not an active connection.
-                    if (currentState == state.disconnected) throw e;
+                        // ONLY throw exceptions if there is not an active connection.
+                        if (CurrentState != state.connected) 
+                        { 
+                            throw e; 
+                        }
 #if DEBUG_MODE
                     Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
 #endif
@@ -986,7 +1056,7 @@ namespace Network
                 }
             }
             // also only throw exceptions if there is not an active connection.
-            if (brokenPacket && currentState == state.disconnected)
+            if (brokenPacket && CurrentState == state.disconnected)
             {
                 throw e;
             }
@@ -1005,7 +1075,7 @@ namespace Network
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
             {
-                while (currentState == state.connected)
+                while (CurrentState == state.connected)
                 {
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
@@ -1048,7 +1118,7 @@ namespace Network
             // run in the background constantly listening as client.
             if (currentMode == mode.client)
             {
-                while (currentState == state.connected)
+                while (CurrentState == state.connected)
                 {
 #if DEBUG_MODE
                     Debug.Log("Client connection while loop");
@@ -1261,7 +1331,7 @@ namespace Network
             Debug.Log("encode scene switch");
 #endif
             byte[] packet = EncodePacket(sceneName);
-            if (currentState == state.connected)
+            if (CurrentState == state.connected)
             {
                 stream.Write(packet);
             }
@@ -1283,7 +1353,7 @@ namespace Network
             Debug.Log("encode card array");
 #endif
             byte[] packet = EncodePacket(cards, location);
-            if (currentState == state.connected)
+            if (CurrentState == state.connected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1307,7 +1377,7 @@ namespace Network
             Debug.Log("encode card move");
 #endif
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
-            if (currentState == state.connected)
+            if (CurrentState == state.connected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1348,7 +1418,7 @@ namespace Network
             Debug.Log("encode card attack");
 #endif
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
-            if (currentState == state.connected)
+            if (CurrentState == state.connected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1371,7 +1441,7 @@ namespace Network
             Debug.Log("encode card death");
 #endif
             byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
-            if (currentState == state.connected)
+            if (CurrentState == state.connected)
             {
                 stream.WriteAsync(packet);
             }
