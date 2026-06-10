@@ -397,6 +397,7 @@ namespace Network
                     {
                         Debug.LogWarning("Broken, unknown or otherwise invalid packet received. aborting.");
                         CloseConnection();
+                        // networkError.Invoke("Broken, unknown or otherwise invalid packet received. aborting.");
                     }
                     else
                     {
@@ -415,6 +416,10 @@ namespace Network
 #endif
                 CurrentState = state.connected;
                 Connection();
+            }
+            else
+            {
+                CloseConnection();
             }
         }
 
@@ -1040,8 +1045,11 @@ namespace Network
                 }
                 default:
                 {
-                    // ONLY throw exceptions if there is not an active connection.
-                    if (CurrentState == state.disconnected) throw e;
+                        // ONLY throw exceptions if there is not an active connection.
+                        if (CurrentState != state.connected) 
+                        { 
+                            throw e; 
+                        }
 #if DEBUG_MODE
                     Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
 #endif
