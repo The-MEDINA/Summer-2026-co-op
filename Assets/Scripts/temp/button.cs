@@ -3,17 +3,25 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Network;
 using TMPro;
+using System.Net;
+using System.Net.Sockets;
 
 public class button : MonoBehaviour
 {
     public TMP_InputField inputfield;
     public TextMeshProUGUI modebutton;
-    
+    public TextMeshProUGUI startbutton;
+    public TextMeshProUGUI IPbutton;
+    public TextMeshProUGUI hostname;
+    public TextMeshProUGUI IPtext;
+    private bool showIP = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Networking.SetLocalDetails();
         Networking.Details();
+        if (hostname != null) hostname.text = $"Hostname: {Dns.GetHostName()}";
     }
 
     // Update is called once per frame
@@ -21,14 +29,35 @@ public class button : MonoBehaviour
     {
         
     }
-    private void OnDestroy()
-    {
-        // Networking.CloseConnection();
-    }
     public void switchScene()
     {
         Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
         SceneManager.LoadScene("Demo_LocalTwoPlayer");
+    }
+
+    public void showIPs()
+    {
+        if (showIP) showIP = false;
+        else showIP = true;
+
+        if (showIP)
+        {
+            IPbutton.text = "Hide IPs";
+            IPtext.text = "IP Address(es): \n";
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    IPtext.text += $"{ip.ToString()}\n";
+                }
+            }
+        }
+        else
+        {
+            IPbutton.text = "Show IPs";
+            IPtext.text = "";
+        }
     }
 
     public void changeMode()
@@ -36,12 +65,14 @@ public class button : MonoBehaviour
         if (Networking.CurrentMode == Network.mode.unset || Networking.CurrentMode == Network.mode.host)
         {
             Networking.CurrentMode = Network.mode.client;
-            modebutton.text = "client";
+            modebutton.text = "client"; 
+            startbutton.text = "Find game";
         }
         else
         {
             Networking.CurrentMode = Network.mode.host;
             modebutton.text = "host";
+            startbutton.text = "Start hosting";
         }
     }
 
