@@ -85,14 +85,16 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+        // if you need to test locally, comment out where it says and run again.
+        // Maybe this could be changed to a variable that can be interacted with in the inspector, but this works for now. - Dave
+        if (!clickedCard.OwnerPlayer.IsPlayerTwo) // here
         {
             selectedCardObject = clickedCard;
             selectedCardObject.SetSelectedVisual(true); 
             Debug.Log("Selected card: " + clickedCard.CardData.CardName);
-        }
-        else
-        {
+        } // here
+        else // here
+        { // here
             Debug.LogWarning("Playing player 2's cards are not allowed.");
         }
     }
