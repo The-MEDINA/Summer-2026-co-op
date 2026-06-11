@@ -32,7 +32,14 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     /// calls PerformAbility() on mouse click
     /// </summary>
     /// <param name="eventData">data for mouse pointer click</param>
-    public void OnPointerClick(PointerEventData eventData) { if (canAttack) { PerformAbility(); } }
+    public void OnPointerClick(PointerEventData eventData) 
+    {
+        if (!bg.P.IsPlayerTwo)
+        {
+            if (canAttack) { PerformAbility(); }
+        }
+        else { Debug.LogWarning("Cannot interact with Player 2's commander."); }
+    }
 
     /// <summary>
     /// spawns two token creatures
