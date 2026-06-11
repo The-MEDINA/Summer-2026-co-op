@@ -1003,7 +1003,16 @@ namespace Network
                         // overwrite the target if this card is a spell that targets allies.
                         if (spell.Target == SpellParent.spellTarget.allyCards)
                         {
-                            target = playerTwo.InPlay[packet[2]];
+                            if (packet[2] != 255)
+                            {
+                                target = playerTwo.InPlay[packet[2]];
+                            }
+#if DEBUG_MODE
+                            else
+                            {
+                                Debug.LogWarning("Found spell with an invalid target! Setting to no target.");
+                            }
+#endif
                         }
                         // target of index 255 implies this spell has no target.
                         else if (packet[2] != 255)
@@ -1014,7 +1023,16 @@ namespace Network
                     }
                     else
                     {
-                        target = playerOne.InPlay[packet[2]];
+                        if (packet[2] < playerOne.InPlay.Count)
+                        {
+                            target = playerOne.InPlay[packet[2]];
+                        }
+#if DEBUG_MODE
+                        else
+                        {
+                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                        }
+#endif
                     }
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;

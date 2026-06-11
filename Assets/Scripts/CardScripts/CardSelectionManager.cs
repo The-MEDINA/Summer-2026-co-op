@@ -85,10 +85,16 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        selectedCardObject = clickedCard;
-        selectedCardObject.SetSelectedVisual(true);
-
-        Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+        if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+        {
+            selectedCardObject = clickedCard;
+            selectedCardObject.SetSelectedVisual(true); 
+            Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+        }
+        else
+        {
+            Debug.LogWarning("Playing player 2's cards are not allowed.");
+        }
     }
 
     private void ActivateCard(CardClickHandler cardObject)
