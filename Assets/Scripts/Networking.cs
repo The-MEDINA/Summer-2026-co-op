@@ -1474,7 +1474,7 @@ namespace Network
         public static void DesyncWarning(string warning)
         {
 #if DEBUG_MODE
-            Debug.LogError($"Desync detected! {warning}.");
+            Debug.LogWarning($"Desync detected! {warning}.");
 #endif
         }
     }

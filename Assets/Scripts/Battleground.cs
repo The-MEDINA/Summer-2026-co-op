@@ -136,4 +136,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         }
         Debug.Log(p.gameObject.name + " played card: " + spawnCard.CardName);
     }
+
+    // adding this because the connection often stays active even after the game is closed.
+    // This is a quick solution to close it manually and shouldn't be called very often, if at all later on. - Dave
+    private void OnApplicationQuit()
+    {
+        Networking.CloseConnection();
+    }
 }
