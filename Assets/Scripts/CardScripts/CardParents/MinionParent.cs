@@ -16,7 +16,9 @@ public class MinionParent : NewVirtualCardParent
         twoAttacks,
         aoe,
         overkill,
-        duplicate
+        duplicate,
+        heal,
+        thorns
     }
 
     public enum equipment
