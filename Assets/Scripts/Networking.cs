@@ -1258,21 +1258,37 @@ namespace Network
             // attack.
             if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
             {
+                // store player 1's selection if one was made.
+                CardClickHandler previousSelection = null;
+                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>(), requestSecondAttack);
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+
+                // restore player 1's selection if needed.
+                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
             // spell action.
             else if (requestAttack[0] as SpellParent != null)
             {
+                // store player 1's selection if one was made.
+                CardClickHandler previousSelection = null;
+                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+
+                // restore player 1's selection if needed.
+                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
 
             // death.

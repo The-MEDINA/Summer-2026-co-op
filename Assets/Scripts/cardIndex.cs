@@ -15,7 +15,7 @@
 
 // This #define enables any warnings involving anything that comes out undefined.
 // Comment it out to remove any undefined warnings.
-#define WARN_UNDEFINED
+// #define WARN_UNDEFINED
 
 using UnityEngine;
 using System.Collections.Generic;
