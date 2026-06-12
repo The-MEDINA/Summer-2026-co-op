@@ -194,25 +194,28 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < InPlay.Count; i++)
         {
-            MinionParent minion = (MinionParent)InPlay[i];
-
-            if (minion.CardEffect == MinionParent.effect.coordinate && minion.CoordinateAbility.Awarded == false)
+            if (InPlay[i] is MinionParent)
             {
-                int coordNum = 0;
+                MinionParent minion = (MinionParent)InPlay[i];
 
-                for (int j = 0; j < InPlay.Count; j++)
+                if (minion.CardEffect == MinionParent.effect.coordinate && minion.CoordinateAbility.Awarded == false)
                 {
-                    MinionParent newMinion = (MinionParent)InPlay[j];
+                    int coordNum = 0;
 
-                    if (newMinion.CardEffect == MinionParent.effect.coordinate && newMinion.UnityObject.activeSelf)
+                    for (int j = 0; j < InPlay.Count; j++)
                     {
-                        coordNum++;
-                    }
-                }
+                        MinionParent newMinion = (MinionParent)InPlay[j];
 
-                if (coordNum >= minion.CoordinateAbility.NumToHit)
-                {
-                    minion.CoordinateAbility.RewardAbility(minion);
+                        if (newMinion.CardEffect == MinionParent.effect.coordinate && newMinion.UnityObject.activeSelf)
+                        {
+                            coordNum++;
+                        }
+                    }
+
+                    if (coordNum >= minion.CoordinateAbility.NumToHit)
+                    {
+                        minion.CoordinateAbility.RewardAbility(minion);
+                    }
                 }
             }
         }

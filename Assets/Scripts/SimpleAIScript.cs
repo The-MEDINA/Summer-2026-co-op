@@ -97,19 +97,19 @@ public class SimpleAIScript : MonoBehaviour
             int randAttack = rng.Next(1, 3);
             if (randAttack == 1)
             {
-                //selected card is wrong
+                CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), true);
             }
             else
             {
+                CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
-
             }
         }
         else
         {
+            CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
             CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
-
         }
     }
 
