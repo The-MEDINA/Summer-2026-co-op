@@ -15,7 +15,7 @@
 
 // This #define enables any warnings involving anything that comes out undefined.
 // Comment it out to remove any undefined warnings.
-// #define WARN_UNDEFINED
+#define WARN_UNDEFINED
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -133,12 +133,12 @@ namespace cardIndex
                 // create a spell
                 cardToCreate = new SpellParent(name, location);
             }
-#if WARN_UNDEFINED
             else
             {
+#if WARN_UNDEFINED
                 Debug.LogWarning($"Found no card named {name}! Double check this card exists?");
-            }
 #endif
+            }
 
             return cardToCreate;
         }
@@ -244,7 +244,7 @@ namespace cardIndex
                     default:
                         {
 #if WARN_UNDEFINED
-                            Debug.LogWarning($"Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
+                            Debug.LogWarning($"Minion: Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
 #endif
                             break;
                         }
@@ -273,11 +273,16 @@ namespace cardIndex
                         {
                             _spellEffect = SpellParent.spellEffect.equipment;
                             break;
-                            }
+                        }
+                        case ("spawntokens"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.spawnTokens;
+                            break;
+                        }
                         default:
                         {
 #if WARN_UNDEFINED
-                            Debug.LogWarning($"Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
+                            Debug.LogWarning($"Spell: Unimplemented or unknown spell effect {rawDetails[9].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming damage.");
 #endif
                             break;
                         }
@@ -298,6 +303,11 @@ namespace cardIndex
                         case ("player"):
                             {
                                 _spellTarget = SpellParent.spellTarget.owner;
+                                break;
+                            }
+                        case ("none"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.none;
                                 break;
                             }
                         default:
