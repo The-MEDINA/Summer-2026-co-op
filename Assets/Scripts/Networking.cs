@@ -562,6 +562,11 @@ namespace Network
             {
                 packet[3] = 0;
             }
+            // bandaid fix, overwrite second attack value if this card is conscript and it grabbed a target for whatever reason.
+            if (attacker.CardName == "Conscript")
+            {
+                packet[3] = 1;
+            }
             return packet;
         }
 
