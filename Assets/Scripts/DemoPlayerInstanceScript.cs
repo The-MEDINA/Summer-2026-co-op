@@ -28,8 +28,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         p.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 3, 2, 1, "Conscript",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent("Conscript", NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "I Hungy!!!",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",

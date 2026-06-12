@@ -27,9 +27,17 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     /// <param name="eventData">mouse click on button</param>
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clicked deck: " + gameObject.name);
-        if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
-        DrawCardToHand();
+        // To test locally you need to also comment out where it's marked. - Dave
+        if (!P.IsPlayerTwo) // here
+        {
+            Debug.Log("Clicked deck: " + gameObject.name);
+            if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
+            DrawCardToHand();
+        } // here
+        else // here
+        { // here
+            Debug.LogWarning("Drawing player 2's cards are not allowed.");
+        }
     }
 
     // network manager needs this, so i'm making it public for now.
@@ -127,5 +135,12 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             CardSelectionManager.Instance.PlayCardToBattleground(clickHandler);
         }
         Debug.Log(p.gameObject.name + " played card: " + spawnCard.CardName);
+    }
+
+    // adding this because the connection often stays active even after the game is closed.
+    // This is a quick solution to close it manually and shouldn't be called very often, if at all later on. - Dave
+    private void OnApplicationQuit()
+    {
+        Networking.CloseConnection();
     }
 }

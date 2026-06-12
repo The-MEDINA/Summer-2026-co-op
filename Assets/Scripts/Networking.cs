@@ -562,6 +562,11 @@ namespace Network
             {
                 packet[3] = 0;
             }
+            // bandaid fix, overwrite second attack value if this card is conscript and it grabbed a target for whatever reason.
+            if (attacker.CardName == "Conscript")
+            {
+                packet[3] = 1;
+            }
             return packet;
         }
 
@@ -1003,7 +1008,16 @@ namespace Network
                         // overwrite the target if this card is a spell that targets allies.
                         if (spell.Target == SpellParent.spellTarget.allyCards)
                         {
-                            target = playerTwo.InPlay[packet[2]];
+                            if (packet[2] != 255)
+                            {
+                                target = playerTwo.InPlay[packet[2]];
+                            }
+#if DEBUG_MODE
+                            else
+                            {
+                                Debug.LogWarning("Found spell with an invalid target! Setting to no target.");
+                            }
+#endif
                         }
                         // target of index 255 implies this spell has no target.
                         else if (packet[2] != 255)
@@ -1014,7 +1028,16 @@ namespace Network
                     }
                     else
                     {
-                        target = playerOne.InPlay[packet[2]];
+                        if (packet[2] < playerOne.InPlay.Count)
+                        {
+                            target = playerOne.InPlay[packet[2]];
+                        }
+#if DEBUG_MODE
+                        else
+                        {
+                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                        }
+#endif
                     }
                     requestAttack[0] = attacker;
                     requestAttack[1] = target;
@@ -1235,21 +1258,37 @@ namespace Network
             // attack.
             if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
             {
+                // store player 1's selection if one was made.
+                CardClickHandler previousSelection = null;
+                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>(), requestSecondAttack);
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+
+                // restore player 1's selection if needed.
+                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
             // spell action.
             else if (requestAttack[0] as SpellParent != null)
             {
+                // store player 1's selection if one was made.
+                CardClickHandler previousSelection = null;
+                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+
+                // restore player 1's selection if needed.
+                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
 
             // death.
@@ -1456,7 +1495,7 @@ namespace Network
         public static void DesyncWarning(string warning)
         {
 #if DEBUG_MODE
-            Debug.LogError($"Desync detected! {warning}.");
+            Debug.LogWarning($"Desync detected! {warning}.");
 #endif
         }
     }
