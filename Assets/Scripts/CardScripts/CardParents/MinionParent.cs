@@ -155,12 +155,16 @@ public class MinionParent : NewVirtualCardParent
     public void Death()
     {
         isDead = true;
-        if(CardType == NewVirtualCardParent.type.token) { return; }
-        CardLocation = location.discard;
         if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
         }
+        if (CardType == NewVirtualCardParent.type.token) 
+        {
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Remove(this);
+            return; 
+        }
+        CardLocation = location.discard;
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
     }
 
