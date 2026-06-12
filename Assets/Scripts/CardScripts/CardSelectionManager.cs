@@ -273,15 +273,15 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer)
+        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal)
         {
             Debug.Log("You cannot attack your own card.");
             ClearSelection();
             return;
         }
-
-        MinionParent attacker = selectedCardObject.CardData as MinionParent;
-        MinionParent target = targetCard.CardData as MinionParent;
 
         if (attacker == null || target == null)
         {

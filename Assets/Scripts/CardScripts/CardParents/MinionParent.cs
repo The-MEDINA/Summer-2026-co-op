@@ -88,11 +88,13 @@ public class MinionParent : NewVirtualCardParent
     {
         if (canAttack)
         {
-            Debug.Log(Damage);
-            Debug.Log(target.Health);
             if (target == null || isDead || target.IsDead)
             {
                 return;
+            }
+            else if (CardEffect == effect.heal)
+            {
+
             }
             else
             {
@@ -105,6 +107,7 @@ public class MinionParent : NewVirtualCardParent
     public void TakeDamage(int damage)
     {
         Health -= damage;
+
         if (Health <= 0)
         {
             Health = 0;
@@ -120,6 +123,33 @@ public class MinionParent : NewVirtualCardParent
         }
 
         Health -= damage;
+
+        if (CardEffect == effect.thorns)
+        {
+            int thornsDamage = 0;
+            switch (CardName)
+            {
+                case "Shoto Cat":
+                    {
+                        thornsDamage = 3;
+                        break;
+                    }
+
+                case "Chonkmeister":
+                    {
+                        thornsDamage = 2;
+                        break;
+                    }
+
+                case "Nacho Cat":
+                default:
+                    {
+                        thornsDamage = 1;
+                        break;
+                    }
+            }
+            attacker.TakeDamage(this, thornsDamage);
+        }
 
         if (Health <= 0)
         {
@@ -175,12 +205,14 @@ public class MinionParent : NewVirtualCardParent
                 return;
             }
 
-            for (int i = 0; i < targetList.Count; i++)
+            for (int i = targetList.Count - 1; i >= 0; i--)
             {
+                Debug.Log(targetList[i].CardName);
                 if (targetList[i] is MinionParent)
                 {
                     MinionParent enemyTarget = (MinionParent)targetList[i];
                     enemyTarget.TakeDamage(Damage);
+                    Debug.Log(enemyTarget.CardName);
                 }
             }
             canAttack = false;

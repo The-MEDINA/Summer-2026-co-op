@@ -25,9 +25,10 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        p.Deck.Add(new MinionParent(4, 3, 3, "AOETEst",
+        p.Deck.Add(new MinionParent(1, 3, 3, "Nacho Cat",
+                NewVirtualCardParent.type.minion, MinionParent.effect.thorns, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
                 NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
-        p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
