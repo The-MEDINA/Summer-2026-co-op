@@ -25,6 +25,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
+        p.Deck.Add(new MinionParent(1, 3, 3, "HealTest",
+        NewVirtualCardParent.type.minion, MinionParent.effect.heal, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 3, 3, "Nacho Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.thorns, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",

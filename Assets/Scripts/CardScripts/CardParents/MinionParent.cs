@@ -94,7 +94,8 @@ public class MinionParent : NewVirtualCardParent
             }
             else if (CardEffect == effect.heal)
             {
-
+                target.Health += Damage;
+                if(target.Health > target.StartingHealth) { target.Health = target.StartingHealth; }
             }
             else
             {

@@ -283,6 +283,13 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
+        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
+        {
+            Debug.Log("You cannot heal your opponent's card.");
+            ClearSelection();
+            return;
+        }
+
         if (attacker == null || target == null)
         {
             Debug.Log("Only minion cards can attack right now.");
