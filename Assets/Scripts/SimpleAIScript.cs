@@ -45,8 +45,8 @@ public class SimpleAIScript : MonoBehaviour
 
     private void Move()
     {
-        Debug.Log(player.Hand.Count);
-        Debug.Log(player.InPlay.Count);
+        Debug.Log(player.Hand.Count);//inplay cards are moving weird once then arent moving anymore
+        Debug.Log(player.InPlay.Count);//its all ui the actual interactions seem to work
         Debug.Log(opponent.InPlay.Count);
         if((player.InPlay.Count == 0 || opponent.InPlay.Count == 0)&& player.Hand.Count == 0) { return; }
         else if(player.InPlay.Count == 0 || opponent.InPlay.Count < 0) 
@@ -80,7 +80,6 @@ public class SimpleAIScript : MonoBehaviour
 
     private void MoveCardToBattleground()
     {
-        Debug.Log("c");
         int moveNum = rng.Next(0, player.Hand.Count);
         CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
     }
@@ -88,7 +87,6 @@ public class SimpleAIScript : MonoBehaviour
     private void AttackSomething()
     {
         if(opponent.InPlay.Count == 0) { return; }
-        Debug.Log("a");
         int attackNum = rng.Next(0, player.InPlay.Count);
         int targetNum = rng.Next(0, opponent.InPlay.Count);
 
@@ -115,7 +113,6 @@ public class SimpleAIScript : MonoBehaviour
 
     private void Draw()
     {
-        Debug.Log("b");
         bg.DrawCardToHand();
     }
 
