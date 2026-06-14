@@ -293,7 +293,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && (attacker.CardEffect == MinionParent.effect.heal || isThisMinionATwoAttackHealer))
+        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
         {
             Debug.Log("You cannot heal your opponent's card.");
             ClearSelection();
@@ -317,6 +317,13 @@ public class CardSelectionManager : MonoBehaviour
         if (attacker is TwoAttackParent)
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
+
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && ((targetCard.OwnerPlayer == selectedCardObject.OwnerPlayer &&
+                !wasSecondAttack) || (targetCard.OwnerPlayer != selectedCardObject.OwnerPlayer && wasSecondAttack))) 
+            { 
+                ClearSelection(); 
+                return; 
+            }
 
             if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.aoe)
             {

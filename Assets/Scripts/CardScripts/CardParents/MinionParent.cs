@@ -18,7 +18,8 @@ public class MinionParent : NewVirtualCardParent
         overkill,
         duplicate,
         heal,
-        thorns
+        thorns,
+        spawnToken
     }
 
     public enum equipment
@@ -101,11 +102,17 @@ public class MinionParent : NewVirtualCardParent
             {
                 target.TakeDamage(this, Damage);
             }
+
+            if(this.CardEffect == effect.spawnToken)
+            {
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, 
+                    "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+            }
             canAttack = false;
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage)//being used by SpellParent because its not a minion
     {
         Health -= damage;
 
@@ -212,7 +219,7 @@ public class MinionParent : NewVirtualCardParent
                 if (targetList[i] is MinionParent)
                 {
                     MinionParent enemyTarget = (MinionParent)targetList[i];
-                    enemyTarget.TakeDamage(Damage);
+                    enemyTarget.TakeDamage(this, Damage);
                     Debug.Log(enemyTarget.CardName);
                 }
             }
