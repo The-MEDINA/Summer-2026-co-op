@@ -276,14 +276,24 @@ public class CardSelectionManager : MonoBehaviour
         MinionParent attacker = selectedCardObject.CardData as MinionParent;
         MinionParent target = targetCard.CardData as MinionParent;
 
-        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal)
+        bool isThisMinionATwoAttackHealer = false;
+        if(attacker is TwoAttackParent)
+        {
+            TwoAttackParent thisTestSucksBro = (TwoAttackParent)attacker;
+            if(thisTestSucksBro.SecondaryCardEffect == MinionParent.effect.heal)
+            {
+                isThisMinionATwoAttackHealer = true;
+            }
+        }
+
+        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal && !isThisMinionATwoAttackHealer)
         {
             Debug.Log("You cannot attack your own card.");
             ClearSelection();
             return;
         }
 
-        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
+        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && (attacker.CardEffect == MinionParent.effect.heal || isThisMinionATwoAttackHealer))
         {
             Debug.Log("You cannot heal your opponent's card.");
             ClearSelection();

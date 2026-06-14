@@ -47,7 +47,13 @@ public class TwoAttackParent : MinionParent
         else
         {
             Damage = secondDamage;
+
+            if(secondAttackEffect == effect.heal)
+            {
+                CardEffect = effect.heal;
                 Attack(target);
+                CardEffect = effect.twoAttacks;
+            }
         }
     }
 
