@@ -27,6 +27,9 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     /// <param name="eventData">mouse click on button</param>
     public void OnPointerClick(PointerEventData eventData)
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         // To test locally you need to also comment out where it's marked. - Dave
         if (!P.IsPlayerTwo) // here
         {

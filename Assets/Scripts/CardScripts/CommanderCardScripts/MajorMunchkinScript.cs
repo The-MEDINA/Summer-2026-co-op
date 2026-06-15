@@ -46,6 +46,9 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     /// </summary>
     public override void PerformAbility()
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
             MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
