@@ -1,4 +1,5 @@
 using UnityEngine;
+using Network;
 using UnityEngine.EventSystems;
 
 public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
@@ -40,6 +41,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private void Update()
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
         if (CardData is MinionParent)
         {
             MinionParent minion = (MinionParent)CardData;
