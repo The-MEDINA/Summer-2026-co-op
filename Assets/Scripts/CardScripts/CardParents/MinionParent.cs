@@ -28,7 +28,11 @@ public class MinionParent : NewVirtualCardParent
         m16,
         iHungy,
         terrorize,
-        fishTreat
+        fishTreat,
+        empower,
+        curse,
+        hex,
+        catnap
     }
 
     private int health;

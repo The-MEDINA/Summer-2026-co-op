@@ -24,6 +24,9 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
             return;
         }
+
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 2, 0, 2, "Curse",
+    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(3, 3, 2, "Mother Cat",
 NewVirtualCardParent.type.minion, MinionParent.effect.spwnTokOnPlay, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
