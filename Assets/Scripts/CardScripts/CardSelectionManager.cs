@@ -200,6 +200,7 @@ public class CardSelectionManager : MonoBehaviour
         }
         else if (owner == player2)
         {
+            Debug.Log("A");
             if (player2HandUI != null)
             {
                 player2HandUI.RemoveCardFromHand(cardObject.gameObject);
@@ -361,15 +362,32 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer)
+        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        bool isThisMinionATwoAttackHealer = false;
+        if(attacker is TwoAttackParent)
+        {
+            TwoAttackParent thisTestSucksBro = (TwoAttackParent)attacker;
+            if(thisTestSucksBro.SecondaryCardEffect == MinionParent.effect.heal)
+            {
+                isThisMinionATwoAttackHealer = true;
+            }
+        }
+
+        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal && !isThisMinionATwoAttackHealer)
         {
             Debug.Log("You cannot attack your own card.");
             ClearSelection();
             return;
         }
 
-        MinionParent attacker = selectedCardObject.CardData as MinionParent;
-        MinionParent target = targetCard.CardData as MinionParent;
+        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
+        {
+            Debug.Log("You cannot heal your opponent's card.");
+            ClearSelection();
+            return;
+        }
 
         if (attacker == null || target == null)
         {
@@ -392,6 +410,13 @@ public class CardSelectionManager : MonoBehaviour
         if (attacker is TwoAttackParent)
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
+
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && ((targetCard.OwnerPlayer == selectedCardObject.OwnerPlayer &&
+                !wasSecondAttack) || (targetCard.OwnerPlayer != selectedCardObject.OwnerPlayer && wasSecondAttack))) 
+            { 
+                ClearSelection(); 
+                return; 
+            }
 
             if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.aoe)
             {

@@ -24,7 +24,12 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
             return;
         }
-
+        p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
+        NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
+    NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
+                NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
