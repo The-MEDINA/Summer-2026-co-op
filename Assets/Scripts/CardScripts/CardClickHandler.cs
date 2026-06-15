@@ -1,4 +1,5 @@
 using UnityEngine;
+using Network;
 using UnityEngine.EventSystems;
 
 public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
@@ -64,11 +65,17 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         transform.localScale = originalScale * magnifiedScale;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         if (CardSelectionManager.Instance != null && CardSelectionManager.Instance.SelectedCardObject == this)
         {
             transform.localScale = originalScale * selectedScale;
@@ -81,6 +88,9 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         if (CardSelectionManager.Instance != null)
         {
             CardSelectionManager.Instance.SelectCard(this, eventData);

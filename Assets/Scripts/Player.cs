@@ -58,6 +58,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
         UpdateMoveCooldown();
     }
