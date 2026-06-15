@@ -404,11 +404,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 44404138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b0ffa1a746b76640b0e4e8906549a89, type: 3}
+  m_Script: {fileID: 11500000, guid: d311e0c13dcc3c94b8f7a12ee4756dc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MajorMunchkinScript
+  m_EditorClassIdentifier: Assembly-CSharp::SeargentZoomieScript
   bg: {fileID: 531251190}
-  tokenPrefab: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   timeToEffect: 3
 --- !u!1 &57451178
 GameObject:
@@ -1469,7 +1468,7 @@ MonoBehaviour:
   p: {fileID: 427913135}
   cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
   handUIManager: {fileID: 502840342}
-  commanderCard: {fileID: 44404143}
+  commanderCard: {fileID: 0}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0

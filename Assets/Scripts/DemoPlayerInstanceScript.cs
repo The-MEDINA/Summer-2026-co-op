@@ -27,8 +27,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
 
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new MinionParent(3, 3, 2, "Mother Cat",
-NewVirtualCardParent.type.minion, MinionParent.effect.spwnTokOnPlay, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
         NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.deck));
         p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
@@ -39,10 +37,6 @@ NewVirtualCardParent.type.minion, MinionParent.effect.spwnTokOnPlay, NewVirtualC
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         p.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent("Conscript", NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "I Hungy!!!",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
-            NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)   
         {
                 p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
