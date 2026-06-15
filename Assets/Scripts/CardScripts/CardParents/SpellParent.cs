@@ -197,7 +197,16 @@ public class SpellParent : NewVirtualCardParent
 
                         case "Hex":
                             {
-                                target.Damage = 1;
+                                if (target is TwoAttackParent)
+                                {
+                                    TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
+                                    twoAttackTarget.FirstDamage = 1;
+                                    twoAttackTarget.SecondDamage = 1;
+                                }
+                                else
+                                {
+                                    target.Damage = 1;
+                                }
                                 target.AddEquipment(MinionParent.equipment.hex);
                                 break;
                             }
