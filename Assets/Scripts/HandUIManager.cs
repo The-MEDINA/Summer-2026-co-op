@@ -16,7 +16,11 @@ public class HandUIManager : MonoBehaviour
             return;
         }
 
-        cardObjects.Add(cardObject);
+        if (!cardObjects.Contains(cardObject))
+        {
+            cardObjects.Add(cardObject);
+        }
+
         UpdateHandPositions();
     }
 
@@ -38,6 +42,8 @@ public class HandUIManager : MonoBehaviour
 
     public void UpdateHandPositions()
     {
+        cardObjects.RemoveAll(cardObject => cardObject == null);
+
         for (int i = 0; i < cardObjects.Count; i++)
         {
             float xPos = startXPosition + (i * cardSpacing);
