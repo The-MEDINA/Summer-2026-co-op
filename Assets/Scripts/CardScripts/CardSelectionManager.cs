@@ -59,7 +59,9 @@ public class CardSelectionManager : MonoBehaviour
             }
             else if (selectedCardObject.CardData is SpellParent)
             {
-                TrySpellTarget(clickedCard);
+                SpellParent spell = (SpellParent)selectedCardObject.CardData;
+                if (spell.Target != SpellParent.spellTarget.none) TrySpellTarget(clickedCard);
+                else TrySpellNoTarget();
             }
 
             return;
@@ -79,10 +81,18 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        selectedCardObject = clickedCard;
-        selectedCardObject.SetSelectedVisual(true);
-
-        Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+        // if you need to test locally, comment out where it says and run again.
+        // Maybe this could be changed to a variable that can be interacted with in the inspector, but this works for now. - Dave
+        if (!clickedCard.OwnerPlayer.IsPlayerTwo) // here
+        {
+            selectedCardObject = clickedCard;
+            selectedCardObject.SetSelectedVisual(true); 
+            Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+        } // here
+        else // here
+        { // here
+            Debug.LogWarning("Playing player 2's cards are not allowed.");
+        }
     }
 
     private void ActivateCard(CardClickHandler cardObject)
