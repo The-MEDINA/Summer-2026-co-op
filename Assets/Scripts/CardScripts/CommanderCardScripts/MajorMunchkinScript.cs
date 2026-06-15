@@ -34,7 +34,8 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     /// <param name="eventData">data for mouse pointer click</param>
     public void OnPointerClick(PointerEventData eventData) 
     {
-        if (!bg.P.IsPlayerTwo)
+        //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
+        if (!bg.P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
         {
             if (canAttack) { PerformAbility(); }
         }
