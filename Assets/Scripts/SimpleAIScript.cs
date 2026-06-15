@@ -87,9 +87,39 @@ public class SimpleAIScript : MonoBehaviour
         }
         else if (player.Hand[moveNum] is SpellParent)
         {
-            if (opponent.InPlay.Count == 0) { return; }
-            int targetNum = rng.Next(0, opponent.InPlay.Count);
-            CardSelectionManager.Instance.TrySpellTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
+            SpellParent aiSpell = (SpellParent)player.Hand[moveNum];
+            CardSelectionManager.Instance.SelectedCardObject = player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>();
+
+            switch (aiSpell.Target)
+            {
+                case SpellParent.spellTarget.enemyCards:
+                    {
+                        if (opponent.InPlay.Count == 0) { return; }
+                        int targetNum = rng.Next(0, opponent.InPlay.Count);
+                        CardSelectionManager.Instance.TrySpellTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
+                        break;
+                    }
+
+                case SpellParent.spellTarget.allyCards:
+                    {
+                        if (player.InPlay.Count == 0) { return; }
+                        int targetNum = rng.Next(0, player.InPlay.Count);
+                        CardSelectionManager.Instance.TrySpellTarget(player.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
+                        break;
+                    }
+
+                case SpellParent.spellTarget.none:
+                    {
+                        CardSelectionManager.Instance.TrySpellNoTarget();
+                        break;
+                    }
+
+                default: 
+                    {
+                        Debug.Log("NOT IMPLEMENTED");
+                        break; 
+                    }
+            }
         }
     }
 
