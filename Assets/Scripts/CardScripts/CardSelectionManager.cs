@@ -190,6 +190,7 @@ public class CardSelectionManager : MonoBehaviour
         }
         else if (owner == player2)
         {
+            Debug.Log("A");
             if (player2HandUI != null)
             {
                 player2HandUI.RemoveCardFromHand(cardObject.gameObject);

@@ -2243,7 +2243,7 @@ MonoBehaviour:
   player1: {fileID: 427913135}
   player1CardField: {fileID: 426793723}
   player1HandUI: {fileID: 502840342}
-  player2: {fileID: 0}
+  player2: {fileID: 143358790}
   player2CardField: {fileID: 1487410306}
   player2HandUI: {fileID: 1375896096}
   player1StartX: -5.75

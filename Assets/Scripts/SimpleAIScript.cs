@@ -81,7 +81,16 @@ public class SimpleAIScript : MonoBehaviour
     private void MoveCardToBattleground()
     {
         int moveNum = rng.Next(0, player.Hand.Count);
-        CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
+        if (player.Hand[moveNum] is MinionParent)
+        {
+            CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
+        }
+        else if (player.Hand[moveNum] is SpellParent)
+        {
+            if (opponent.InPlay.Count == 0) { return; }
+            int targetNum = rng.Next(0, opponent.InPlay.Count);
+            CardSelectionManager.Instance.TrySpellTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
+        }
     }
 
     private void AttackSomething()
