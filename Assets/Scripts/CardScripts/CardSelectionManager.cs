@@ -185,6 +185,7 @@ public class CardSelectionManager : MonoBehaviour
 
         if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
         {
+            // tell the peer you moved a card to Inplay.
             Networking.SendCardMove(
                 cardObject.CardData,
                 NewVirtualCardParent.location.hand,
@@ -233,6 +234,12 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
+
+        // send the current inplay array to peer.
+        if (!cardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardArray(cardObject.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+        }
     }
 
     private void MoveCardToField(CardClickHandler cardObject, GameObject field, float startX, int position)

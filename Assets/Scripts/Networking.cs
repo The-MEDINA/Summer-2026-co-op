@@ -74,7 +74,7 @@ namespace Network
      * --- CARDATTACK: ---
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
-     * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
+     * byte 3 holds whether this is a card's second attack. 1 means there is one, 0 means there isn't.
      * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
      * bytes 5 - 1023 are empty so we can use it later to send more info.
      * 
@@ -133,8 +133,8 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
-        private static byte[][] previousPackets = new byte[5][];
-        private static NewVirtualCardParent[][] previousInplay = new NewVirtualCardParent[5][];
+        private static List<byte[]> previousPackets = new List<byte[]>();
+        private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -149,6 +149,7 @@ namespace Network
         private static bool requestSecondAttack = false;
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
+        private static bool requestInplayCheck = false;
 
         /// <summary>
         /// delegates to set up events.
@@ -815,6 +816,7 @@ namespace Network
         {
             bool brokenPacket = false;
             Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
+            AddToList(packet);
             switch(packet[0])
             {
                 case ((byte) packetType.handshake):
@@ -904,7 +906,12 @@ namespace Network
                             case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
                             case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
                             case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
-                            case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay = cards; break; }
+                            case (NewVirtualCardParent.location.inPlay): 
+                                {
+                                    AddToPreviousInplays(cards);
+                                    requestInplayCheck = true;
+                                    break; 
+                                }
                         }
                         break;
                 }
@@ -1322,6 +1329,50 @@ namespace Network
                     requestKill[i] = -1;
                 }
             }
+            // inPlay cards.
+            if (requestInplayCheck == true)
+            {
+                int index = (previousInplay.Count < 8) ? previousInplay.Count - 1: 7;
+                if (playerTwo.InPlay != previousInplay[index])
+                {
+#if DEBUG_MODE
+                    DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
+#endif
+                    bool foundSolution = false;
+                    for (int i = previousInplay.Count - 1; i <= 0; i--)
+                    {
+
+                    }
+                    if (!foundSolution)
+                    {
+#if DEBUG_MODE
+                        Debug.LogError("No previously stored array matches incoming array! Pausing connection.");
+#endif
+                        CurrentState = state.paused;
+                    }
+                }
+                requestInplayCheck = false;
+            }
+        }
+
+        /// <summary>
+        /// Add to the list of previous packets and cap the size to 8.
+        /// </summary>
+        /// <param name="packet">packet to add.</param>
+        private static void AddToList(byte[] packet)
+        {
+            previousPackets.Add(packet);
+            if (previousPackets.Count > 8) previousPackets.RemoveAt(0); 
+        }
+
+        /// <summary>
+        /// Add to the list of previous inplay arrays and cap the size to 8.
+        /// </summary>
+        /// <param name="inPlay"></param>
+        private static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
+        {
+            previousInplay.Add(inPlay);
+            if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
         }
 
         /// <summary>

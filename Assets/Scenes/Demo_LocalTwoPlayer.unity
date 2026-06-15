@@ -462,7 +462,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &69715797
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2463,7 +2463,7 @@ MonoBehaviour:
   player1StartX: -5.75
   player2StartX: -5.75
   cardSpacing: 2
-  isLocalTesting: 1
+  isLocalTesting: 0
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
