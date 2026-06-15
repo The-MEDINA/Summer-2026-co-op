@@ -27,15 +27,15 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     /// <param name="eventData">mouse click on button</param>
     public void OnPointerClick(PointerEventData eventData)
     {
-        // To test locally you need to also comment out where it's marked. - Dave
-        if (!P.IsPlayerTwo) // here
+        //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
+        if (!P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
         {
             Debug.Log("Clicked deck: " + gameObject.name);
             if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
             DrawCardToHand();
-        } // here
-        else // here
-        { // here
+        } 
+        else 
+        { 
             Debug.LogWarning("Drawing player 2's cards are not allowed.");
         }
     }

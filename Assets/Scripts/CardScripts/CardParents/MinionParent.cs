@@ -19,7 +19,8 @@ public class MinionParent : NewVirtualCardParent
         duplicate,
         heal,
         thorns,
-        spawnToken
+        spawnToken,
+        spwnTokOnPlay
     }
 
     public enum equipment
@@ -81,6 +82,13 @@ public class MinionParent : NewVirtualCardParent
         if (CardEffect == effect.duplicate)
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, Health, Damage, CardName, 
+                NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+        }
+        if (CardEffect == effect.spwnTokOnPlay)
+        {
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten",
+                NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten",
                 NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         }
     }

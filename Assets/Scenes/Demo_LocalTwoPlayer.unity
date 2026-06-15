@@ -2315,6 +2315,7 @@ MonoBehaviour:
   player1StartX: -5.75
   player2StartX: -5.75
   cardSpacing: 2
+  isLocalTesting: 1
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0

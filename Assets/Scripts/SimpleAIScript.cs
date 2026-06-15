@@ -68,6 +68,12 @@ public class SimpleAIScript : MonoBehaviour
                     break;
                 }
 
+            case 4:
+                {
+
+                    break;
+                }
+
             case 2:
             case 3:
             default:

@@ -21,6 +21,8 @@ public class CardSelectionManager : MonoBehaviour
     [SerializeField] private float player2StartX = -5f;
     [SerializeField] private float cardSpacing = 2f;
 
+    [SerializeField] private bool isLocalTesting = false;
+
     private CardClickHandler selectedCardObject;
 
     public CardClickHandler SelectedCardObject
@@ -28,6 +30,8 @@ public class CardSelectionManager : MonoBehaviour
         get { return selectedCardObject; }
         set { selectedCardObject = value; }
     }
+
+    public bool IsLocalTesting { get { return isLocalTesting; }  }
 
     private void Awake()
     {
@@ -81,18 +85,17 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        // if you need to test locally, comment out where it says and run again.
-        // Maybe this could be changed to a variable that can be interacted with in the inspector, but this works for now. - Dave
-        if (!clickedCard.OwnerPlayer.IsPlayerTwo) // here
-        {
-            selectedCardObject = clickedCard;
-            selectedCardObject.SetSelectedVisual(true); 
-            Debug.Log("Selected card: " + clickedCard.CardData.CardName);
-        } // here
-        else // here
-        { // here
-            Debug.LogWarning("Playing player 2's cards are not allowed.");
-        }
+        //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
+        if (!clickedCard.OwnerPlayer.IsPlayerTwo || IsLocalTesting) 
+       {
+           selectedCardObject = clickedCard;
+           selectedCardObject.SetSelectedVisual(true);
+           Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+       } 
+       else 
+       { 
+           Debug.LogWarning("Playing player 2's cards are not allowed.");
+       }
     }
 
     private void ActivateCard(CardClickHandler cardObject)
@@ -200,7 +203,6 @@ public class CardSelectionManager : MonoBehaviour
         }
         else if (owner == player2)
         {
-            Debug.Log("A");
             if (player2HandUI != null)
             {
                 player2HandUI.RemoveCardFromHand(cardObject.gameObject);
