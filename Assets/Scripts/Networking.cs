@@ -108,7 +108,8 @@ namespace Network
     {
         disconnected,
         searching,
-        connected
+        connected,
+        paused
     }
     public static class Networking
     {
@@ -132,6 +133,8 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
+        private static byte[][] previousPackets = new byte[5][];
+        private static NewVirtualCardParent[][] previousInplay = new NewVirtualCardParent[5][];
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -171,7 +174,7 @@ namespace Network
             get
             {
 #if DEBUG_MODE
-                Debug.Log($"Current state: {currentState}");          
+                // Debug.Log($"Current state: {currentState}");          
 #endif
                 return currentState;
             } 
@@ -1098,7 +1101,7 @@ namespace Network
             // run in the background constantly listening for info as host.
             if (currentMode == mode.host)
             {
-                while (CurrentState == state.connected)
+                while (CurrentState == state.connected || CurrentState == state.paused)
                 {
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
@@ -1141,7 +1144,7 @@ namespace Network
             // run in the background constantly listening as client.
             if (currentMode == mode.client)
             {
-                while (CurrentState == state.connected)
+                while (CurrentState == state.connected || CurrentState == state.paused)
                 {
 #if DEBUG_MODE
                     Debug.Log("Client connection while loop");

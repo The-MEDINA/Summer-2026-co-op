@@ -40,6 +40,9 @@ public class CardSelectionManager : MonoBehaviour
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)
     {
+        // Don't run if network manager is trying to resolve a desync.
+        if (Networking.CurrentState == state.paused) return;
+
         if (clickedCard == null || clickedCard.CardData == null)
         {
             Debug.LogWarning("Clicked card has no card data.");
