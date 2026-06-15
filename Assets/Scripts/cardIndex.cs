@@ -15,7 +15,7 @@
 
 // This #define enables any warnings involving anything that comes out undefined.
 // Comment it out to remove any undefined warnings.
-// #define WARN_UNDEFINED
+#define WARN_UNDEFINED
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace cardIndex
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition, SpellParent.spellEffect _spellEffect, SpellParent.spellTarget _spellTarget)
+        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition, SpellParent.spellEffect _spellEffect, SpellParent.spellTarget _spellTarget, int _secondDamage, MinionParent.effect _secondAbility)
         {
             faction = _faction;
             cost = _cost;
@@ -42,6 +42,8 @@ namespace cardIndex
             nameIndexPosition = _nameIndexPosition;
             spellEffect = _spellEffect;
             spellTarget = _spellTarget;
+            secondDamage = _secondDamage;
+            secondAbility = _secondAbility;
         }
 
         public string faction;
@@ -51,7 +53,9 @@ namespace cardIndex
         public string text;
         public int health;
         public int damage;
+        public int secondDamage;
         public MinionParent.effect ability;
+        public MinionParent.effect secondAbility;
         public string flavorText;
         public int nameIndexPosition;
         public SpellParent.spellEffect spellEffect;
@@ -125,8 +129,23 @@ namespace cardIndex
             Details genericDetails = GetDetails(name);
             if (genericDetails.type == NewVirtualCardParent.type.minion)
             {
-                // create a minion
-                cardToCreate = new MinionParent(name, location);
+                // check for an ability with a separate class and create the minion.
+                switch (genericDetails.ability)
+                {
+                    // two attacks.
+                    case (MinionParent.effect.twoAttacks):
+                        {
+                            cardToCreate = new TwoAttackParent(name, location);
+                            break;
+                        }
+                    // regular minion.
+                    default:
+                        {
+                            cardToCreate = new MinionParent(name, location);
+                            break;
+                        }
+                }
+
             }
             else if (genericDetails.type == NewVirtualCardParent.type.spell)
             {
@@ -164,8 +183,10 @@ namespace cardIndex
                 int _cost = -1;
                 int _health = -1;
                 int _damage = -1;
+                int _secondDamage = -1;
                 NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
                 MinionParent.effect _ability = MinionParent.effect.none;
+                MinionParent.effect _secondAbility = MinionParent.effect.none;
                 SpellParent.spellEffect _spellEffect = (SpellParent.spellEffect) 0;
                 SpellParent.spellTarget _spellTarget = (SpellParent.spellTarget) 0;
 
@@ -194,61 +215,90 @@ namespace cardIndex
                     }
                 }
                 // minion effect
-                switch (rawDetails[7].Trim().ToLower())
+                string[] effects = rawDetails[7].Trim().Split('/');
+                for (int j = 0; j < effects.Length; j++)
                 {
-                    case ("none"):
-                        {
-                            _ability = MinionParent.effect.none;
-                            break;
-                        }
-                    case ("na"):
-                        {
-                            _ability = MinionParent.effect.none;
-                            break;
-                        }
-                    case ("explode"):
-                        {
-                            _ability = MinionParent.effect.explode;
-                            break;
-                        }
-                    case ("deathtouch"):
-                        {
-                            _ability = MinionParent.effect.deathtouch;
-                            break;
-                        }
-                    case ("coordinate"):
-                        {
-                            _ability = MinionParent.effect.coordinate;
-                            break;
-                        }
-                    case ("overkill"):
-                        {
-                            _ability = MinionParent.effect.overkill;
-                            break;
-                        }
-                    case ("haste"):
-                        {
-                            _ability = MinionParent.effect.haste;
-                            break;
-                        }
-                    case ("sloth"):
-                        {
-                            _ability = MinionParent.effect.sloth;
-                            break;
-                        }
-                    case ("two attacks"):
-                        {
-                            _ability = MinionParent.effect.twoAttacks;
-                            break;
-                        }
-                    default:
-                        {
+                    switch (effects[j].ToLower())
+                    {
+                        case ("none"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.none;
+                                else _secondAbility = MinionParent.effect.none;
+                                break;
+                            }
+                        case ("na"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.none;
+                                else _secondAbility = MinionParent.effect.none;
+                                break;
+                            }
+                        case ("explode"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.explode;
+                                else _secondAbility = MinionParent.effect.explode;
+                                break;
+                            }
+                        case ("deathtouch"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.deathtouch;
+                                else _secondAbility = MinionParent.effect.deathtouch;
+                                break;
+                            }
+                        case ("coordinate"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.coordinate;
+                                else _secondAbility = MinionParent.effect.coordinate;
+                                break;
+                            }
+                        case ("overkill"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.overkill;
+                                else _secondAbility = MinionParent.effect.overkill;
+                                break;
+                            }
+                        case ("haste"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.haste;
+                                else _secondAbility = MinionParent.effect.haste;
+                                break;
+                            }
+                        case ("sloth"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.sloth;
+                                else _secondAbility = MinionParent.effect.sloth;
+                                break;
+                            }
+                        case ("aoe"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.aoe;
+                                else _secondAbility = MinionParent.effect.aoe;
+                                break;
+                            }
+                        case ("two attacks"):
+                            {
+                                if (j == 0)
+                                {
+                                    _ability = MinionParent.effect.twoAttacks;
+                                    string[] twoAttackDamages = rawDetails[6].Split("/");
+                                    _damage = int.Parse(twoAttackDamages[0]);
+                                    _secondDamage = int.Parse(twoAttackDamages[1]);
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"Minion {rawDetails[2]} has TwoAttacks set twice! Please double check this minion.");
+                                }
+                                break;
+                            }
+                        default:
+                            {
 #if WARN_UNDEFINED
-                            Debug.LogWarning($"Minion: Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
+                                Debug.LogWarning($"Minion: Unimplemented or unknown card ability {rawDetails[7].Trim().ToLower()}! Please add it to cardIndex.cs. Otherwise assuming no ability.");
 #endif
-                            break;
-                        }
+                                break;
+                            }
+                    }
                 }
+                
                 if (_type == NewVirtualCardParent.type.spell)
                 {
                     // spell effect
@@ -320,7 +370,7 @@ namespace cardIndex
                     }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
                 index.Add(rawDetails[2], cardToAdd);
                 nameIndex.Add(rawDetails[2]);
             }

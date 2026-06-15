@@ -881,6 +881,9 @@ namespace Network
                 }
                 case ((byte) packetType.cardArray):
                 {
+#if DEBUG_MODE
+                        Debug.Log("Found cardArray packet");
+#endif
                         // New array to replace the old one.
                         List<NewVirtualCardParent> cards = new List<NewVirtualCardParent>();
 
