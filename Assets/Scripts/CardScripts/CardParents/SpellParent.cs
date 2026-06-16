@@ -50,6 +50,11 @@ public class SpellParent : NewVirtualCardParent
         this.secondEquipmentAmount = secondAmount;
     }
 
+    /// <summary>
+    /// creates a new Spell card using its name and cardIndex
+    /// </summary>
+    /// <param name="name">the name of the spell</param>
+    /// <param name="cardLocation">always deck</param>
     public SpellParent(string name, location cardLocation) : base(name, cardLocation)
     {
         Details spellDetails = cardIndex.Index.GetDetails(name);

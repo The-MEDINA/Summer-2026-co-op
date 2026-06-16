@@ -9,6 +9,7 @@ public class CoordinateAbilityScript
 
     //because the methods are public, the script doesn't need to be added to anything. In the future this should be changed to private (or protected?)
     //and attatched to the game object, but this works for now - Jake
+    //the above comment may no longer be applicable - Future Jake
 
     /// <summary>
     /// assigns numToHit because there isn't a constructor
