@@ -1494,7 +1494,7 @@ namespace Network
             Debug.Log("encode scene switch");
 #endif
             byte[] packet = EncodePacket(sceneName);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.Write(packet);
             }
@@ -1516,7 +1516,7 @@ namespace Network
             Debug.Log("encode card array");
 #endif
             byte[] packet = EncodePacket(cards, location);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1540,7 +1540,7 @@ namespace Network
             Debug.Log("encode card move");
 #endif
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1558,7 +1558,7 @@ namespace Network
             Debug.Log("encode card add");
 #endif
             byte[] packet = EncodePacket(card, location);
-            if (currentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1581,7 +1581,7 @@ namespace Network
             Debug.Log("encode card attack");
 #endif
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1604,7 +1604,7 @@ namespace Network
             Debug.Log("encode card death");
 #endif
             byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1616,13 +1616,17 @@ namespace Network
 #endif
         }
 
+        /// <summary>
+        /// Tell the peer to pause or unpause.
+        /// </summary>
+        /// <param name="pause">whether to pause or unpause.</param>
         public static void SendPauseUnpause(bool pause)
         {
 #if DEBUG_MODE
             Debug.Log("Encode pause/unpause packet");
 #endif
             byte[] packet = EncodePacket(pause);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
