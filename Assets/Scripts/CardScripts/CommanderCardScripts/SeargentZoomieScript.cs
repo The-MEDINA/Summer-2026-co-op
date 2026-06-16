@@ -41,7 +41,9 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
         else { Debug.LogWarning("Cannot interact with Player 2's commander."); }
     }
 
-
+    /// <summary>
+    /// gives owner player +2 energy upon use
+    /// </summary>
     public override void PerformAbility()
     {
         // Don't run if network manager is trying to resolve a desync.

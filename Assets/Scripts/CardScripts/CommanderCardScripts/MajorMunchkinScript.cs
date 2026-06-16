@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
 {
-    [SerializeField] private GameObject tokenPrefab;
+    [SerializeField] private GameObject tokenPrefab; //cardPrefab
     private float timer = 0f;
     [SerializeField] private float timeToEffect = 3f;
     private bool canAttack = false;
