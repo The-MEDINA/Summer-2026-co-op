@@ -68,7 +68,14 @@ public class CardSelectionManager : MonoBehaviour
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
                 if (spell.Target != SpellParent.spellTarget.none) TrySpellTarget(clickedCard);
-                else TrySpellNoTarget();
+                else
+                {
+                    TrySpellNoTarget();
+                    if (!spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+                    {
+                        Networking.SendCardArray(spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                    }
+                }
             }
 
             return;
@@ -85,6 +92,10 @@ public class CardSelectionManager : MonoBehaviour
             if (clickedCard.CardData is SpellParent)
             {
                 TrySpellNoTarget();
+                if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+                {
+                    Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                }
             }
         }
 

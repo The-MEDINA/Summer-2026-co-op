@@ -939,7 +939,17 @@ namespace Network
                     }
 
                     // grab card and attempt to move
-                    cardToMove = oldList[packet[3]];
+                    if (packet[3] < oldList.Count)
+                    {
+                        cardToMove = oldList[packet[3]];
+                    }
+                    else
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning($"Index of card to move ({packet[3]}) is invalid! (size is {oldList.Count}). Ignoring move.");
+#endif
+                        break;
+                    }
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
                         requestMoveToBattleground = cardToMove;
