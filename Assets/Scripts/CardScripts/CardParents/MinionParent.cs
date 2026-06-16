@@ -20,7 +20,8 @@ public class MinionParent : NewVirtualCardParent
         heal,
         thorns,
         spawnToken,
-        spwnTokOnPlay
+        spwnTokOnPlay,
+        guard
     }
 
     public enum equipment
@@ -101,7 +102,7 @@ public class MinionParent : NewVirtualCardParent
     {
         if (canAttack)
         {
-            if (target == null || isDead || target.IsDead)
+            if (target == null || isDead || target.IsDead || CheckGuard(target))
             {
                 return;
             }
@@ -117,7 +118,7 @@ public class MinionParent : NewVirtualCardParent
 
             if(this.CardEffect == effect.spawnToken)
             {
-                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, 
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1,
                     "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
             }
             canAttack = false;
@@ -246,5 +247,21 @@ public class MinionParent : NewVirtualCardParent
     public void AddEquipment(equipment addToList)
     {
         equipmentList.Add(addToList);
+    }
+
+    public bool CheckGuard(MinionParent target)
+    {
+        if (target.CardEffect == MinionParent.effect.guard) { return false; }
+
+        for (int i = 0; i < target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
+        {
+            if (target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i] is MinionParent)
+            {
+                MinionParent otherMinion = (MinionParent)target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i];
+                if (otherMinion.CardEffect == MinionParent.effect.guard) { return true; }
+            }
+        }
+
+        return false;
     }
 }
