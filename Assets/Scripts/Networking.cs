@@ -1381,6 +1381,9 @@ namespace Network
         /// <param name="inPlay"></param>
         public static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
         {
+#if DEBUG_MODE
+            Debug.Log("Added to previous inPlay arrays");
+#endif
             previousInplay.Add(inPlay);
             if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
         }
