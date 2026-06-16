@@ -1416,10 +1416,12 @@ namespace Network
                             MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
                             killThis.Death();
                         }
-                        for (int j = 0; j < previousInplay[i].Count; j++)
+                        for (int j = 0; j < previousInplay[index].Count; j++)
                         {
-                            p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                            p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
                         }
+                        CurrentState = state.connected;
+                        SendPauseUnpause(false);
                     }
                 }
                 requestInplayCheck = false;
