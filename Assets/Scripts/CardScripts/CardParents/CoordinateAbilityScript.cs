@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CoordinateAbilityScript
@@ -75,9 +74,9 @@ public class CoordinateAbilityScript
                     break;
                 }
 
-            case "Cat Demolition Crew": //not implemented YET!!!
+            case "Cat Demolition Crew": 
                 {
-                  //  minion.
+                    minion.UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.haste);
                     break;
                 }
         }

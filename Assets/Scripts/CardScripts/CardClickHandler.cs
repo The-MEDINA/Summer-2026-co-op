@@ -4,6 +4,14 @@ using UnityEngine.EventSystems;
 
 public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
+    public enum speed
+    {
+        normal,
+        haste,
+        sloth,
+        frozen
+    }
+
     [SerializeField] private float magnifiedScale = 1.3f;
     [SerializeField] private float selectedScale = 1.15f;
 
@@ -28,13 +36,17 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         if (CardData is MinionParent)
         {
             MinionParent minion = (MinionParent)CardData;
-            if(minion.CardEffect == MinionParent.effect.haste)
+            if (minion.CardEffect == MinionParent.effect.haste)
             {
-                timeToAttack = 0.5f;
+                SetSpeed(speed.haste);
             }
-            if (minion.CardEffect == MinionParent.effect.sloth)
+            else if (minion.CardEffect == MinionParent.effect.sloth)
             {
-                timeToAttack = 4f;
+                SetSpeed(speed.sloth);
+            }
+            else
+            {
+                SetSpeed(speed.normal);
             }
         }
     }
@@ -61,7 +73,42 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             }
         }
     }
-    //these should be moved out ^^^^^^^^^^^^^^^^^^^^^^^ - Jake
+
+    public void SetSpeed(speed newSpeed)
+    {
+        switch(newSpeed)
+        {
+            default:
+            case speed.normal:
+                {
+                    timeToAttack = 2f;
+                    break;
+                }
+
+            case speed.haste:
+                {
+                    timeToAttack = 1f;
+                    break;
+                }
+
+            case speed.sloth:
+                {
+                    timeToAttack = 4f;
+                    break;
+                }
+
+            case speed.frozen:
+                {
+                    timeToAttack = 9999999f;
+                    if (cardData is MinionParent)
+                    {
+                        MinionParent minion = ( MinionParent)cardData;
+                        minion.CanAttack = false;
+                    }
+                    break;
+                }
+        }
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {

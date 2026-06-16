@@ -8,7 +8,7 @@ public class MinionParent : NewVirtualCardParent
     public enum effect
     {
         none,
-        deathtouch, //just works off base damage for right now, probably want to change this
+        deathtouch,
         explode,
         haste,
         sloth,
