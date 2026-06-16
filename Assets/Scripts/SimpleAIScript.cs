@@ -141,8 +141,8 @@ public class SimpleAIScript : MonoBehaviour
                     }
             }
 
-            Debug.Log("Spent " + player.Hand[moveNum].Cost + " energy from " + player.Hand[moveNum].CardName);
-            player.SpendEnergy(player.Hand[moveNum].Cost);
+            Debug.Log("Spent " + aiSpell.Cost + " energy from " + aiSpell.CardName);
+            player.SpendEnergy(aiSpell.Cost);
         }
     }
 

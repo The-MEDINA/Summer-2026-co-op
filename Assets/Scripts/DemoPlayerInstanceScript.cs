@@ -25,6 +25,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 1, 0, 1, "Pspspsps!",
+            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
