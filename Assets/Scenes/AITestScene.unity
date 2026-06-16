@@ -610,7 +610,7 @@ MonoBehaviour:
   health: 50
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 5
+  timeForEnergy: 2
   isPlayerTwo: 1
   moveCooldownTime: 1.5
 --- !u!1 &366108599

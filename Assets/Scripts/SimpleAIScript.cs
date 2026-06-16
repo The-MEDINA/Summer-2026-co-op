@@ -87,9 +87,22 @@ public class SimpleAIScript : MonoBehaviour
 
     private void MoveCardToBattleground()
     {
-        int moveNum = rng.Next(0, player.Hand.Count);
+        int moveNum = 0;
+        int tries = 0;
+        bool loopbreaker = true;
+
+        while (loopbreaker)
+        {
+            moveNum = rng.Next(0, player.Hand.Count);
+            if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
+            else { loopbreaker = false; }
+            if (tries >= 3) { return; }
+        }
+
         if (player.Hand[moveNum] is MinionParent)
         {
+            Debug.Log("Spent " + player.Hand[moveNum].Cost + " energy from " + player.Hand[moveNum].CardName);
+            player.SpendEnergy(player.Hand[moveNum].Cost);
             CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
         }
         else if (player.Hand[moveNum] is SpellParent)
@@ -127,6 +140,9 @@ public class SimpleAIScript : MonoBehaviour
                         break; 
                     }
             }
+
+            Debug.Log("Spent " + player.Hand[moveNum].Cost + " energy from " + player.Hand[moveNum].CardName);
+            player.SpendEnergy(player.Hand[moveNum].Cost);
         }
     }
 
@@ -173,7 +189,7 @@ public class SimpleAIScript : MonoBehaviour
         player.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         player.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 3, 2, 1, "Conscript",
+        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 0, 0, 4, "Conscript",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
     }
 }
