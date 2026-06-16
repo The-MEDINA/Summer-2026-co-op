@@ -1382,13 +1382,24 @@ namespace Network
                     DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
 #endif
                     bool foundSolution = false;
+                    // search for a previous deck that matches the old one
                     for (int i = previousInplay.Count - 1; i >= 0; i--)
                     {
                         if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
                         {
 #if DEBUG_MODE
-                            Debug.Log("Found a previous array that matches the player's current array. Continuing.");
+                            Debug.Log("Found a previous array that matches the player's current array. Reverting.");
 #endif
+                            // swap out the current deck for an old one
+                            while (playerTwo.InPlay.Count != 0)
+                            {
+                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                killThis.Death();
+                            }
+                            for (int j = 0; j < previousInplay[i].Count; j++)
+                            {
+                                p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                            }
                             foundSolution = true;
                             break;
                         }
@@ -1396,9 +1407,19 @@ namespace Network
                     if (!foundSolution)
                     {
 #if DEBUG_MODE
-                        Debug.LogError("No previously stored array matches incoming array! Pausing connection.");
+                        Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
 #endif
                         CurrentState = state.paused;
+                        // swap out the current deck for an old one
+                        while (playerTwo.InPlay.Count != 0)
+                        {
+                            MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                            killThis.Death();
+                        }
+                        for (int j = 0; j < previousInplay[i].Count; j++)
+                        {
+                            p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                        }
                     }
                 }
                 requestInplayCheck = false;
@@ -1649,6 +1670,5 @@ namespace Network
 }
 
 /*
- * TODO: Figure out what to do when a card array packet arrives out of order.
  * TODO: Figure out the best way to instantiate and remove gameObjects that hold the cards when editing the array.
  */
