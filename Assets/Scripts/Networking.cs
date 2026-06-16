@@ -84,6 +84,9 @@ namespace Network
      * byte 4 holds the position of the card in the player's inplay array.
      * byte 5 holds the length of the player's inplay array.
      * bytes 6 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- PAUSE_UNPAUSE ---
+     * byte 1 holds whether to pause or unpause.
      */
     enum packetType
     {
@@ -94,7 +97,8 @@ namespace Network
         cardMove,
         cardAdd,
         cardAttack,
-        cardDeath
+        cardDeath,
+        pause_unpause
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -113,6 +117,7 @@ namespace Network
     }
     public static class Networking
     {
+        #region VARIABLES_PROPERTIES
         /// <summary>
         /// These variables are for the network manager to manipulate the game.
         /// </summary>
@@ -255,7 +260,7 @@ namespace Network
         }
 
         public static IPAddress OtherIPv4Address { get { return otherIPv4Address; } set { otherIPv4Address = value; } }
-
+        #endregion
         /// <summary>
         /// Take a string containing EITHER an ip address or hostname and convert it to an IPAddress object.
         /// </summary>
@@ -500,6 +505,7 @@ namespace Network
             }
         }
 
+        #region ENCODE_PACKETS
         /// <summary>
         /// encode a cardMove packet to send to a peer.
         /// </summary>
@@ -809,6 +815,21 @@ namespace Network
         }
 
         /// <summary>
+        /// Encode a pause_unpause packet to send to a peer.
+        /// </summary>
+        /// <param name="pause">Whether to pause or unpause.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(bool pause)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.pause_unpause;
+            if (pause) packet[1] = 1;
+            else packet[1] = 0;
+            return packet;
+        }
+        #endregion
+
+        /// <summary>
         /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
         /// </summary>
         /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
@@ -1068,7 +1089,7 @@ namespace Network
                     else requestSecondAttack = false;
                     break;
                 }
-                case ((byte)packetType.cardDeath):
+                case ((byte) packetType.cardDeath):
                 {
 #if DEBUG_MODE
                         Debug.Log("found cardDeath packet");
@@ -1086,6 +1107,15 @@ namespace Network
                     requestKill[0] = indexOfCard;
                     requestKill[1] = packet[4];
                     requestKill[2] = packet[5];
+                    break;
+                }
+                case ((byte) packetType.pause_unpause):
+                {
+#if DEBUG_MODE
+                    Debug.Log("found pause/unpause packet");
+#endif
+                    if (packet[1] == 1) CurrentState = state.paused;
+                    else CurrentState = state.connected;
                     break;
                 }
                 default:
@@ -1386,19 +1416,6 @@ namespace Network
         }
 
         /// <summary>
-        /// Add to the list of previous inplay arrays and cap the size to 8.
-        /// </summary>
-        /// <param name="inPlay"></param>
-        public static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
-        {
-#if DEBUG_MODE
-            Debug.Log("Added to previous inPlay arrays");
-#endif
-            previousInplay.Add(inPlay);
-            if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
-        }
-
-        /// <summary>
         /// See if both card arrays are the same by their nameIndexPosition value.
         /// </summary>
         /// <param name="first">first array to check.</param>
@@ -1412,6 +1429,20 @@ namespace Network
                 if (first[i].NameIndexPosition != second[i].NameIndexPosition) return false;
             }
             return true;
+        }
+
+        #region PUBLIC_METHODS
+        /// <summary>
+        /// Add to the list of previous inplay arrays and cap the size to 8.
+        /// </summary>
+        /// <param name="inPlay"></param>
+        public static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
+        {
+#if DEBUG_MODE
+            Debug.Log("Added to previous inPlay arrays");
+#endif
+            previousInplay.Add(inPlay);
+            if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
         }
 
         /// <summary>
@@ -1585,12 +1616,31 @@ namespace Network
 #endif
         }
 
+        public static void SendPauseUnpause(bool pause)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode pause/unpause packet");
+#endif
+            byte[] packet = EncodePacket(pause);
+            if (CurrentState == state.connected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to pause/unpause while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
         public static void DesyncWarning(string warning)
         {
 #if DEBUG_MODE
             Debug.LogWarning($"Desync detected! {warning}.");
 #endif
         }
+        #endregion
     }
 }
 

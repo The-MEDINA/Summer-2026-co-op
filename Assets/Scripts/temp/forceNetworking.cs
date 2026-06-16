@@ -35,11 +35,13 @@ public class forceNetworking : MonoBehaviour
             if (Networking.CurrentState == state.connected)
             {
                 Networking.CurrentState = state.paused;
+                Networking.SendPauseUnpause(true);
                 pauseText.text = "force unpause";
             }
             else
             {
                 Networking.CurrentState = state.connected;
+                Networking.SendPauseUnpause(false);
                 pauseText.text = "force pause";
             }
         }
