@@ -58,6 +58,10 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
             // this should work for now though. - Dave
             Networking.SendCardAdd(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay), NewVirtualCardParent.location.inPlay);
         }
+        else
+        {
+            Networking.AddToPreviousInplays(bg.P.InPlay);
+        }
         canAttack = false;
     }
 }

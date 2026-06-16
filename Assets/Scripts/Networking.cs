@@ -1342,9 +1342,16 @@ namespace Network
                     DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
 #endif
                     bool foundSolution = false;
-                    for (int i = previousInplay.Count - 1; i <= 0; i--)
+                    for (int i = previousInplay.Count - 1; i >= 0; i--)
                     {
-
+                        if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
+                        {
+#if DEBUG_MODE
+                            Debug.Log("Found a previous array that matches the player's current array. Continuing.");
+#endif
+                            foundSolution = true;
+                            break;
+                        }
                     }
                     if (!foundSolution)
                     {
@@ -1372,7 +1379,7 @@ namespace Network
         /// Add to the list of previous inplay arrays and cap the size to 8.
         /// </summary>
         /// <param name="inPlay"></param>
-        private static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
+        public static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
         {
             previousInplay.Add(inPlay);
             if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
