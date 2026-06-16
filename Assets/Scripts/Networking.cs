@@ -1333,10 +1333,10 @@ namespace Network
                 }
             }
             // inPlay cards.
-            if (requestInplayCheck == true)
+            if (requestInplayCheck)
             {
                 int index = (previousInplay.Count < 8) ? previousInplay.Count - 1: 7;
-                if (playerTwo.InPlay != previousInplay[index])
+                if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
                 {
 #if DEBUG_MODE
                     DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
@@ -1376,6 +1376,22 @@ namespace Network
         {
             previousInplay.Add(inPlay);
             if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
+        }
+
+        /// <summary>
+        /// See if both card arrays are the same by their nameIndexPosition value.
+        /// </summary>
+        /// <param name="first">first array to check.</param>
+        /// <param name="second">second array to check.</param>
+        /// <returns>whether both arrays are the same.</returns>
+        private static bool SameCardArray(List<NewVirtualCardParent> first, List<NewVirtualCardParent> second)
+        {
+            if (first.Count != second.Count) return false;
+            for (int i = 0; i < first.Count; i++)
+            {
+                if (first[i].NameIndexPosition != second[i].NameIndexPosition) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -1557,3 +1573,8 @@ namespace Network
         }
     }
 }
+
+/*
+ * TODO: Figure out what to do when a card array packet arrives out of order.
+ * TODO: Figure out the best way to instantiate and remove gameObjects that hold the cards when editing the array.
+ */

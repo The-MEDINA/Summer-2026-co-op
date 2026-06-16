@@ -50,10 +50,8 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
 
-        bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
-            MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
-        bg.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, 
-            MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+        bg.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
+        bg.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
         if (!bg.P.IsPlayerTwo)
         {
             // this should really be its own packet and not sendCardAdd.

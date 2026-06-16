@@ -60,6 +60,7 @@ public abstract class NewVirtualCardParent
         cardName = cardDetails.name;
         flavorText = cardDetails.flavorText;
         nameIndexPosition = cardDetails.nameIndexPosition;
+        cardType = cardDetails.type;
         this.cardLocation = cardLocation;
     }
 }

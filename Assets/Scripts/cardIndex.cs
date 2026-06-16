@@ -127,7 +127,7 @@ namespace cardIndex
 
             // create a card from the details.
             Details genericDetails = GetDetails(name);
-            if (genericDetails.type == NewVirtualCardParent.type.minion)
+            if (genericDetails.type == NewVirtualCardParent.type.minion || genericDetails.type == NewVirtualCardParent.type.token)
             {
                 // check for an ability with a separate class and create the minion.
                 switch (genericDetails.ability)
@@ -204,6 +204,11 @@ namespace cardIndex
                     case("spell"):
                     {
                         _type = NewVirtualCardParent.type.spell;
+                        break;
+                    }
+                    case("token"):
+                    {
+                        _type = NewVirtualCardParent.type.token;
                         break;
                     }
                     default:
