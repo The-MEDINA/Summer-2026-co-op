@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class DeckInstanceDeckbuilderScript : MonoBehaviour
 {
-    private static DeckInstanceDeckbuilderScript instance;
+    public static DeckInstanceDeckbuilderScript instance;
 
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
 
@@ -21,20 +21,28 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         instance = this;
 
         DontDestroyOnLoad(gameObject);
-
-        Deck.Add((new MinionParent(5, 4, 6, "Vampire Cat",
-        NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.deck)));
     }
 
-    public void AddCard(NewVirtualCardParent card)
+    public void AddCard(string cardName)
     {
         //deck at capacity
         //too many copies of that card
+
+        Deck.Add(new MinionParent(cardName, NewVirtualCardParent.location.deck));
     }
 
-    public void RemoveCard(NewVirtualCardParent card)
+    public void RemoveCard(string cardName)
     {
         //no cards in list
         //no copies of that card in list
+
+        for (int i = 0; i < Deck.Count; i++)
+        {
+            if (Deck[i].CardName == cardName)
+            {
+                Deck.RemoveAt(i);
+                return;
+            }
+        }
     }
 }
