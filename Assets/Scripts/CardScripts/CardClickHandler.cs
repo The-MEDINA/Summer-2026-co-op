@@ -30,7 +30,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         originalScale = transform.localScale;
     }
 
-    //these should be moved out vvvvvvvvvvvvvvvvvvvv - Jake
     private void Start()
     {
         if (CardData is MinionParent)
@@ -48,6 +47,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 SetSpeed(speed.normal);
             }
+
+            SetColor(minion.CardEffect);
         }
     }
 
@@ -105,6 +106,90 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                         MinionParent minion = ( MinionParent)cardData;
                         minion.CanAttack = false;
                     }
+                    break;
+                }
+        }
+    }
+    private void SetColor(MinionParent.effect ability)
+    {
+        switch (ability)
+        {
+            case MinionParent.effect.overkill:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.softRed;
+                    break;
+                }
+
+            case MinionParent.effect.deathtouch:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.darkRed;
+                    break;
+                }
+
+            case MinionParent.effect.explode:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                    break;
+                }
+
+            case MinionParent.effect.thorns:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.darkOrange;
+                    break;
+                }
+
+            case MinionParent.effect.spawnToken:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.lawnGreen;
+                    break;
+                }
+
+            case MinionParent.effect.guard:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.darkGreen;
+                    break;
+                }
+
+            case MinionParent.effect.haste:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.lightBlue;
+                    break;
+                }
+
+            case MinionParent.effect.sloth:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.deepSkyBlue;
+                    break;
+                }
+
+            case MinionParent.effect.coordinate:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.purple;
+                    break;
+                }
+
+            case MinionParent.effect.twoAttacks:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.rebeccaPurple;
+                    break;
+                }
+
+            case MinionParent.effect.heal:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.lightPink;
+                    break;
+                }
+
+            case MinionParent.effect.aoe:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.deepPink;
+                    break;
+                }
+
+            case MinionParent.effect.none:
+            default:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.yellow;
                     break;
                 }
         }

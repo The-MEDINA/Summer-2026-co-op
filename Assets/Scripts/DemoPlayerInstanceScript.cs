@@ -6,14 +6,21 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
+        /*"Cat",
         "Scaredy Cat",
         "Comically Large Spoon Cat",
+        "Ratta-tat-Cat",*/
+        "Cat",
+        "Exploding Cat",
+        "Scaredy Cat",
+        "Comically Large Spoon Cat",
+        "Night Vision Cat",
         "Ratta-tat-Cat",
     };
 
     private Player p;
 
-    private void Start()
+    private void Start() //test other colors and remember to flip these back
     {
         p = GetComponent<Player>();
         
@@ -23,7 +30,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
+        /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 1, 1, "Roughly A Cat",
         NewVirtualCardParent.type.minion, MinionParent.effect.guard, NewVirtualCardParent.location.deck));
@@ -36,7 +43,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
                 NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent("M16", NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));*/
         for (int i = 0; i < startingDeck.Length; i++)   
         {
                 p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
