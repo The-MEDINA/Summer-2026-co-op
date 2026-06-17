@@ -26,12 +26,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using cardIndex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Text;
-using cardIndex;
 
 namespace Network
 {
@@ -74,7 +74,7 @@ namespace Network
      * --- CARDATTACK: ---
      * byte 1 holds the position of the card in the attacker's inplay array.
      * byte 2 holds the position of the card in the target's inplay array.
-     * byte 3 holds whether this is a card's second attack. 1 means there is one, 2 means there isn't.
+     * byte 3 holds whether this is a card's second attack. 1 means there is one, 0 means there isn't.
      * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
      * bytes 5 - 1023 are empty so we can use it later to send more info.
      * 
@@ -84,6 +84,9 @@ namespace Network
      * byte 4 holds the position of the card in the player's inplay array.
      * byte 5 holds the length of the player's inplay array.
      * bytes 6 - 1023 are empty so we can use it later to send more info.
+     * 
+     * --- PAUSE_UNPAUSE ---
+     * byte 1 holds whether to pause or unpause.
      */
     enum packetType
     {
@@ -94,7 +97,8 @@ namespace Network
         cardMove,
         cardAdd,
         cardAttack,
-        cardDeath
+        cardDeath,
+        pause_unpause
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -113,6 +117,7 @@ namespace Network
     }
     public static class Networking
     {
+        #region VARIABLES_PROPERTIES
         /// <summary>
         /// These variables are for the network manager to manipulate the game.
         /// </summary>
@@ -133,8 +138,8 @@ namespace Network
         private static TcpListener server;
         private static TcpClient client;
         private static NetworkStream stream;
-        private static byte[][] previousPackets = new byte[5][];
-        private static NewVirtualCardParent[][] previousInplay = new NewVirtualCardParent[5][];
+        private static List<byte[]> previousPackets = new List<byte[]>();
+        private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -149,6 +154,7 @@ namespace Network
         private static bool requestSecondAttack = false;
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
+        private static bool requestInplayCheck = false;
 
         /// <summary>
         /// delegates to set up events.
@@ -254,7 +260,7 @@ namespace Network
         }
 
         public static IPAddress OtherIPv4Address { get { return otherIPv4Address; } set { otherIPv4Address = value; } }
-
+        #endregion
         /// <summary>
         /// Take a string containing EITHER an ip address or hostname and convert it to an IPAddress object.
         /// </summary>
@@ -499,6 +505,7 @@ namespace Network
             }
         }
 
+        #region ENCODE_PACKETS
         /// <summary>
         /// encode a cardMove packet to send to a peer.
         /// </summary>
@@ -808,6 +815,21 @@ namespace Network
         }
 
         /// <summary>
+        /// Encode a pause_unpause packet to send to a peer.
+        /// </summary>
+        /// <param name="pause">Whether to pause or unpause.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(bool pause)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.pause_unpause;
+            if (pause) packet[1] = 1;
+            else packet[1] = 0;
+            return packet;
+        }
+        #endregion
+
+        /// <summary>
         /// Decode a packet and manipulate data accordingly. CAN AND WILL throw exceptions if it receives a broken or unidentified packet.
         /// </summary>
         /// <param name="packet">raw packet to manipulate, should be a byte[1024].</param>
@@ -815,6 +837,7 @@ namespace Network
         {
             bool brokenPacket = false;
             Exception e = new Exception("Unidentified, corrupted or otherwise invalid packet received.");
+            AddToList(packet);
             switch(packet[0])
             {
                 case ((byte) packetType.handshake):
@@ -879,6 +902,9 @@ namespace Network
                 }
                 case ((byte) packetType.cardArray):
                 {
+#if DEBUG_MODE
+                        Debug.Log("Found cardArray packet");
+#endif
                         // New array to replace the old one.
                         List<NewVirtualCardParent> cards = new List<NewVirtualCardParent>();
 
@@ -904,7 +930,12 @@ namespace Network
                             case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
                             case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
                             case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
-                            case (NewVirtualCardParent.location.inPlay): { playerTwo.InPlay = cards; break; }
+                            case (NewVirtualCardParent.location.inPlay): 
+                                {
+                                    AddToPreviousInplays(cards);
+                                    requestInplayCheck = true;
+                                    break; 
+                                }
                         }
                         break;
                 }
@@ -929,7 +960,17 @@ namespace Network
                     }
 
                     // grab card and attempt to move
-                    cardToMove = oldList[packet[3]];
+                    if (packet[3] < oldList.Count)
+                    {
+                        cardToMove = oldList[packet[3]];
+                    }
+                    else
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning($"Index of card to move ({packet[3]}) is invalid! (size is {oldList.Count}). Ignoring move.");
+#endif
+                        break;
+                    }
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
                         requestMoveToBattleground = cardToMove;
@@ -1048,7 +1089,7 @@ namespace Network
                     else requestSecondAttack = false;
                     break;
                 }
-                case ((byte)packetType.cardDeath):
+                case ((byte) packetType.cardDeath):
                 {
 #if DEBUG_MODE
                         Debug.Log("found cardDeath packet");
@@ -1066,6 +1107,15 @@ namespace Network
                     requestKill[0] = indexOfCard;
                     requestKill[1] = packet[4];
                     requestKill[2] = packet[5];
+                    break;
+                }
+                case ((byte) packetType.pause_unpause):
+                {
+#if DEBUG_MODE
+                    Debug.Log("found pause/unpause packet");
+#endif
+                    if (packet[1] == 1) CurrentState = state.paused;
+                    else CurrentState = state.connected;
                     break;
                 }
                 default:
@@ -1284,7 +1334,10 @@ namespace Network
 
                 // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                if (!requestSecondAttack)
+                {
+                    CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                }
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
@@ -1322,6 +1375,117 @@ namespace Network
                     requestKill[i] = -1;
                 }
             }
+            // inPlay cards.
+            if (requestInplayCheck)
+            {
+                int index = (previousInplay.Count < 8) ? previousInplay.Count - 1: 7;
+                if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
+                {
+#if DEBUG_MODE
+                    DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
+#endif
+                    bool foundSolution = false;
+                    // search for a previous deck that matches the old one
+                    for (int i = previousInplay.Count - 1; i >= 0; i--)
+                    {
+                        if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
+                        {
+#if DEBUG_MODE
+                            Debug.Log("Found a previous array that matches the player's current array. Reverting.");
+#endif
+                            // swap out the current deck for an old one
+                            while (playerTwo.InPlay.Count != 0)
+                            {
+                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                killThis.Death();
+                            }
+                            for (int j = 0; j < previousInplay[i].Count; j++)
+                            {
+                                p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                            }
+                            foundSolution = true;
+                            break;
+                        }
+                    }
+                    if (!foundSolution)
+                    {
+#if DEBUG_MODE
+                        Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
+#endif
+                        CurrentState = state.paused;
+                        SendPauseUnpause(true);
+                        // remove the current cards
+                        while (playerTwo.InPlay.Count != 0)
+                        {
+                            if (playerTwo.InPlay[0] as MinionParent != null)
+                            {
+                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                killThis.Death();
+                            }
+                            // on the offchance a spell ends up in InPlay somehow remove it manually
+                            else
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
+                                NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
+                                killThisInvalid.UnityObject.SetActive(false);
+                                playerTwo.InPlay.RemoveAt(0);
+
+#endif
+                            }
+                        }
+                        // repopulate the array with the one from the cardArray packet
+                        for (int j = 0; j < previousInplay[index].Count; j++)
+                        {
+                            p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
+                        }
+                        CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
+                        CurrentState = state.connected;
+                        SendPauseUnpause(false);
+                    }
+                }
+                requestInplayCheck = false;
+            }
+        }
+
+        /// <summary>
+        /// Add to the list of previous packets and cap the size to 8.
+        /// </summary>
+        /// <param name="packet">packet to add.</param>
+        private static void AddToList(byte[] packet)
+        {
+            previousPackets.Add(packet);
+            if (previousPackets.Count > 8) previousPackets.RemoveAt(0); 
+        }
+
+        /// <summary>
+        /// See if both card arrays are the same by their nameIndexPosition value.
+        /// </summary>
+        /// <param name="first">first array to check.</param>
+        /// <param name="second">second array to check.</param>
+        /// <returns>whether both arrays are the same.</returns>
+        private static bool SameCardArray(List<NewVirtualCardParent> first, List<NewVirtualCardParent> second)
+        {
+            if (first.Count != second.Count) return false;
+            for (int i = 0; i < first.Count; i++)
+            {
+                if (first[i].NameIndexPosition != second[i].NameIndexPosition) return false;
+            }
+            return true;
+        }
+
+        #region PUBLIC_METHODS
+        /// <summary>
+        /// Add to the list of previous inplay arrays and cap the size to 8.
+        /// </summary>
+        /// <param name="inPlay"></param>
+        public static void AddToPreviousInplays(List<NewVirtualCardParent> inPlay)
+        {
+#if DEBUG_MODE
+            Debug.Log("Added to previous inPlay arrays");
+#endif
+            previousInplay.Add(inPlay);
+            if (previousInplay.Count > 8) previousInplay.RemoveAt(0);
         }
 
         /// <summary>
@@ -1373,7 +1537,7 @@ namespace Network
             Debug.Log("encode scene switch");
 #endif
             byte[] packet = EncodePacket(sceneName);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.Write(packet);
             }
@@ -1395,7 +1559,7 @@ namespace Network
             Debug.Log("encode card array");
 #endif
             byte[] packet = EncodePacket(cards, location);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1419,7 +1583,7 @@ namespace Network
             Debug.Log("encode card move");
 #endif
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1437,7 +1601,7 @@ namespace Network
             Debug.Log("encode card add");
 #endif
             byte[] packet = EncodePacket(card, location);
-            if (currentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1460,7 +1624,7 @@ namespace Network
             Debug.Log("encode card attack");
 #endif
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1483,7 +1647,7 @@ namespace Network
             Debug.Log("encode card death");
 #endif
             byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
-            if (CurrentState == state.connected)
+            if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);
             }
@@ -1495,11 +1659,38 @@ namespace Network
 #endif
         }
 
+        /// <summary>
+        /// Tell the peer to pause or unpause.
+        /// </summary>
+        /// <param name="pause">whether to pause or unpause.</param>
+        public static void SendPauseUnpause(bool pause)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode pause/unpause packet");
+#endif
+            byte[] packet = EncodePacket(pause);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to pause/unpause while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
         public static void DesyncWarning(string warning)
         {
 #if DEBUG_MODE
             Debug.LogWarning($"Desync detected! {warning}.");
 #endif
         }
+        #endregion
     }
 }
+
+/*
+ * TODO: Figure out the best way to instantiate and remove gameObjects that hold the cards when editing the array.
+ */

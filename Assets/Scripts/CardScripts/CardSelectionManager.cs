@@ -68,7 +68,14 @@ public class CardSelectionManager : MonoBehaviour
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
                 if (spell.Target != SpellParent.spellTarget.none) TrySpellTarget(clickedCard);
-                else TrySpellNoTarget();
+                else
+                {
+                    TrySpellNoTarget();
+                    if (!spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+                    {
+                        Networking.SendCardArray(spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                    }
+                }
             }
 
             return;
@@ -85,6 +92,10 @@ public class CardSelectionManager : MonoBehaviour
             if (clickedCard.CardData is SpellParent)
             {
                 TrySpellNoTarget();
+                if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+                {
+                    Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                }
             }
         }
 
@@ -129,6 +140,12 @@ public class CardSelectionManager : MonoBehaviour
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
         {
             PlayCardToBattleground(cardObject);
+        }
+
+        // send the current inplay array to peer.
+        if (!cardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardArray(cardObject.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
         }
 
         ClearSelection();
@@ -185,6 +202,7 @@ public class CardSelectionManager : MonoBehaviour
 
         if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
         {
+            // tell the peer you moved a card to Inplay.
             Networking.SendCardMove(
                 cardObject.CardData,
                 NewVirtualCardParent.location.hand,
@@ -250,7 +268,10 @@ public class CardSelectionManager : MonoBehaviour
         );
     }
 
-    private void RepositionInPlayCards(Player owner)
+    // Hi Brandon
+    // network manager needs this so this is public now
+    // if I shouldn't do this tell me and i'll find some alternate way to get this done - Dave
+    public void RepositionInPlayCards(Player owner)
     {
         if (owner == null)
         {
@@ -568,12 +589,12 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        attacker.OnPlay(target);
-
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttack(attacker, target, false);
         }
+
+        attacker.OnPlay(target);
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);

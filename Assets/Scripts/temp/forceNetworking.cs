@@ -14,7 +14,18 @@ public class forceNetworking : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Networking.CurrentState == state.disconnected)
+        {
+            pauseText.text = "not connected.";
+        }
+        else if (Networking.CurrentState == state.paused)
+        {
+            pauseText.text = "force unpause";
+        }
+        else if (Networking.CurrentState == state.connected)
+        {
+            pauseText.text = "force pause";
+        }
     }
 
     public void ForcePauseUnpause()
@@ -24,11 +35,13 @@ public class forceNetworking : MonoBehaviour
             if (Networking.CurrentState == state.connected)
             {
                 Networking.CurrentState = state.paused;
+                Networking.SendPauseUnpause(true);
                 pauseText.text = "force unpause";
             }
             else
             {
                 Networking.CurrentState = state.connected;
+                Networking.SendPauseUnpause(false);
                 pauseText.text = "force pause";
             }
         }

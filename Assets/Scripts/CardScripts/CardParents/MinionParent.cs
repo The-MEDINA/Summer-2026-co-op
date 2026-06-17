@@ -241,7 +241,7 @@ public class MinionParent : NewVirtualCardParent
     public void Death()
     {
         isDead = true;
-        if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+        if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo && Networking.CurrentState != state.paused)
         {
             Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
         }

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// This script is attached to a minion through the minion constructor
 public class CoordinateAbilityScript
 {
     private int numToHit; //when to award the coordinate bonus
