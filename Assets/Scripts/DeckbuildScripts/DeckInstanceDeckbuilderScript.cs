@@ -23,26 +23,28 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void AddCard(string cardName)
+    public bool AddCard(string cardName)
     {
         //deck at capacity
         //too many copies of that card
 
         Deck.Add(new MinionParent(cardName, NewVirtualCardParent.location.deck));
+        return true;
     }
 
-    public void RemoveCard(string cardName)
+    public bool RemoveCard(string cardName)
     {
-        //no cards in list
-        //no copies of that card in list
+        if(Deck.Count <= 0) { return false; }
 
         for (int i = 0; i < Deck.Count; i++)
         {
             if (Deck[i].CardName == cardName)
             {
                 Deck.RemoveAt(i);
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 }

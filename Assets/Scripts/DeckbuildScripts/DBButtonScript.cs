@@ -13,17 +13,21 @@ public class DBButtonScript : MonoBehaviour, IPointerClickHandler
     {
         if (isAdding) 
         {
-            DeckInstanceDeckbuilderScript.instance.AddCard(cardName);
-            int currentNum = Convert.ToInt32(numCardsText.text);
-            currentNum++;
-            numCardsText.text = currentNum.ToString();
+            if (DeckInstanceDeckbuilderScript.instance.AddCard(cardName))
+            {
+                int currentNum = Convert.ToInt32(numCardsText.text);
+                currentNum++;
+                numCardsText.text = currentNum.ToString();
+            }
         }
         else 
         {
-            DeckInstanceDeckbuilderScript.instance.RemoveCard(cardName);
-            int currentNum = Convert.ToInt32(numCardsText.text);
-            currentNum--;
-            numCardsText.text = currentNum.ToString();
+            if(DeckInstanceDeckbuilderScript.instance.RemoveCard(cardName))
+            {
+                int currentNum = Convert.ToInt32(numCardsText.text);
+                currentNum--;
+                numCardsText.text = currentNum.ToString();
+            }
         }
     }
 }
