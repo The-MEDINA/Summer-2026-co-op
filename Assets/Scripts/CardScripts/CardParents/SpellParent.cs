@@ -276,8 +276,21 @@ public class SpellParent : NewVirtualCardParent
         }
     }
 
-    private void RevertEquipment(MinionParent target)
+    private void RevertEquipment(MinionParent target)//does not work for twoattackparents, and test more plz
     {
+        if (target.EquipmentList.Count <= 0) { return; }
 
+        for (int i = 0; i < target.EquipmentList.Count; i++)
+        {
+            switch(target.EquipmentList[i])
+            {
+                case MinionParent.equipment.m16: { target.Damage -= 2; break; }
+                case MinionParent.equipment.terrorize: { target.Damage++; target.Health++; target.StartingHealth++; break; }
+                case MinionParent.equipment.fishTreat: { target.Damage -= 2; target.Health -= 2; target.StartingHealth -= 2; break; }
+                case MinionParent.equipment.empower: { target.Damage--; target.Health--; target.StartingHealth--; break; }
+                case MinionParent.equipment.curse: { target.Damage += 2; break; }
+                case MinionParent.equipment.catnap: { target.Health -= 3; target.StartingHealth -= 3; break; }
+            }
+        }
     }
 }

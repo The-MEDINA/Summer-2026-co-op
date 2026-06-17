@@ -52,6 +52,7 @@ public class MinionParent : NewVirtualCardParent
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
     public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
+    public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
 
     /// <summary>
     /// hard codes a minion

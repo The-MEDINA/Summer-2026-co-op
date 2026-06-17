@@ -8,9 +8,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     {
         "Scaredy Cat",
         "Comically Large Spoon Cat",
-        "Ninja Cat",
-        "Night Vision Cat",
-        "Night Vision Cat",
         "Ratta-tat-Cat",
     };
 
@@ -26,7 +23,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 6, "Clone",
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 1, 1, "Roughly A Cat",
         NewVirtualCardParent.type.minion, MinionParent.effect.guard, NewVirtualCardParent.location.deck));
@@ -38,6 +35,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
                 NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent("M16", NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));
         for (int i = 0; i < startingDeck.Length; i++)   
         {
                 p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
