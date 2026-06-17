@@ -26,12 +26,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using cardIndex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Text;
-using cardIndex;
 
 namespace Network
 {
@@ -1336,13 +1336,7 @@ namespace Network
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 if (!requestSecondAttack)
                 {
-                    if (requestAttack[1] != null) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
-                    else
-                    {
-#if DEBUG_MODE
-                        Debug.LogWarning("Tried attacking card that was null! This card likely already died, so ignoring spell target.");
-#endif
-                    }
+                    CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
                 }
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;

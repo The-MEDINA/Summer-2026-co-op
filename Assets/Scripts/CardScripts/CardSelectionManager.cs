@@ -589,12 +589,12 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        attacker.OnPlay(target);
-
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttack(attacker, target, false);
         }
+
+        attacker.OnPlay(target);
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
