@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DeckbuilderScene.unity
     guid: e10b33549555906479f0f386fdf547e3
+  - enabled: 1
+    path: Assets/Scenes/DBTESTCOPYOFDEMOBUTCHANGED.unity
+    guid: a7004159d5733b94bbd0f20e14421944
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
