@@ -1334,7 +1334,16 @@ namespace Network
 
                 // action.
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                if (!requestSecondAttack) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                if (!requestSecondAttack)
+                {
+                    if (requestAttack[1] != null) CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                    else
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning("Tried attacking card that was null! This card likely already died, so ignoring spell target.");
+#endif
+                    }
+                }
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
                 requestAttack[1] = null;
