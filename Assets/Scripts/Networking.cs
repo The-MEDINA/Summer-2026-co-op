@@ -1419,16 +1419,33 @@ namespace Network
                         Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
 #endif
                         CurrentState = state.paused;
-                        // swap out the current deck for an old one
+                        SendPauseUnpause(true);
+                        // remove the current cards
                         while (playerTwo.InPlay.Count != 0)
                         {
-                            MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                            killThis.Death();
+                            if (playerTwo.InPlay[0] as MinionParent != null)
+                            {
+                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                killThis.Death();
+                            }
+                            // on the offchance a spell ends up in InPlay somehow remove it manually
+                            else
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
+                                NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
+                                killThisInvalid.UnityObject.SetActive(false);
+                                playerTwo.InPlay.RemoveAt(0);
+
+#endif
+                            }
                         }
+                        // repopulate the array with the one from the cardArray packet
                         for (int j = 0; j < previousInplay[index].Count; j++)
                         {
                             p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
                         }
+                        CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
                         CurrentState = state.connected;
                         SendPauseUnpause(false);
                     }

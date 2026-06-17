@@ -268,7 +268,10 @@ public class CardSelectionManager : MonoBehaviour
         );
     }
 
-    private void RepositionInPlayCards(Player owner)
+    // Hi Brandon
+    // network manager needs this so this is public now
+    // if I shouldn't do this tell me and i'll find some alternate way to get this done - Dave
+    public void RepositionInPlayCards(Player owner)
     {
         if (owner == null)
         {
