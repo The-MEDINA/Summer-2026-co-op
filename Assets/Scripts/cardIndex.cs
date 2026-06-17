@@ -23,6 +23,7 @@ using System.IO;
 
 namespace cardIndex
 {
+    #region STRUCT
     // The reason why this is a struct and not a class is because all this needs to contain is the details for card parent.
     // it's up to card constructors themselves to use the data in here.
     // the struct also shouldn't do anything.
@@ -61,6 +62,7 @@ namespace cardIndex
         public SpellParent.spellEffect spellEffect;
         public SpellParent.spellTarget spellTarget;
     }
+    #endregion
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
     // The index is only made once and not remade every time a card needs to be constructed.
@@ -279,7 +281,7 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.aoe;
                                 break;
                             }
-                        case ("two attacks"):
+                        case ("twoattacks"):
                             {
                                 if (j == 0)
                                 {
