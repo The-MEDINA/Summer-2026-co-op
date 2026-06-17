@@ -8,9 +8,10 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
     [SerializeField] private HandUIManager handUIManager;
-    [SerializeField] private CommanderCardScript commanderCard;//why is this broken
+    [SerializeField] private CommanderCardScript commanderCard;
 
     public Player P { get { return p; } }
+    public CommanderCardScript CommanderCard { get { return commanderCard; } }
 
     private List<GameObject> cardList = new List<GameObject>();
 

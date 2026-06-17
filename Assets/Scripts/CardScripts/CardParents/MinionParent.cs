@@ -5,10 +5,10 @@ using Network;
 
 public class MinionParent : NewVirtualCardParent
 {
-    public enum effect
+    public enum effect //the card's ability
     {
         none,
-        deathtouch, //just works off base damage for right now, probably want to change this
+        deathtouch,
         explode,
         haste,
         sloth,
@@ -20,15 +20,20 @@ public class MinionParent : NewVirtualCardParent
         heal,
         thorns,
         spawnToken,
-        spwnTokOnPlay
+        spwnTokOnPlay,
+        guard
     }
 
-    public enum equipment
+    public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
     {
         m16,
         iHungy,
         terrorize,
-        fishTreat
+        fishTreat,
+        empower,
+        curse,
+        hex,
+        catnap
     }
 
     private int health;
@@ -47,7 +52,18 @@ public class MinionParent : NewVirtualCardParent
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
     public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
+    public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
 
+    /// <summary>
+    /// hard codes a minion
+    /// </summary>
+    /// <param name="cost">energy cost of the minion</param>
+    /// <param name="health">starting health of the minion</param>
+    /// <param name="damage">damage value for the minion</param>
+    /// <param name="name">the minion's name</param>
+    /// <param name="cardType">what type of card the minion is (it's minion, sometimes token)</param>
+    /// <param name="cardEffect">what ability the minion has</param>
+    /// <param name="cardLocation">where the minion is rn (it's Hand, unless it's token, whereas it's inPlay)</param>
     public MinionParent(int cost, int health, int damage, string name, type cardType, effect cardEffect, location cardLocation) 
         : base(cost, name, cardType, cardLocation)
     {
@@ -77,14 +93,17 @@ public class MinionParent : NewVirtualCardParent
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
     }
 
+    /// <summary>
+    /// resolve any onPlay abilities
+    /// </summary>
     public void OnPlay()
     {
-        if (CardEffect == effect.duplicate)
+        if (CardEffect == effect.duplicate) //create a temporary clone of a minion
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, Health, Damage, CardName, 
                 NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
         }
-        if (CardEffect == effect.spwnTokOnPlay)
+        if (CardEffect == effect.spwnTokOnPlay) //spawn token creatures when entering play
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten",
                 NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
@@ -93,34 +112,43 @@ public class MinionParent : NewVirtualCardParent
         }
     }
 
+    /// <summary>
+    /// attack an opposing minion
+    /// </summary>
+    /// <param name="target">the minion being attacked</param>
     public void Attack(MinionParent target)
     {
         if (canAttack)
         {
-            if (target == null || isDead || target.IsDead)
+            if (target == null || isDead || target.IsDead || CheckGuard(target)) //parameters upon which attack is impossible
             {
                 return;
             }
-            else if (CardEffect == effect.heal)
+            else if (CardEffect == effect.heal) //if the card has the heal ability then target will be healed, not damaged
             {
                 target.Health += Damage;
                 if(target.Health > target.StartingHealth) { target.Health = target.StartingHealth; }
             }
             else
             {
-                target.TakeDamage(this, Damage);
+                target.TakeDamage(this, Damage, false);
             }
 
             if(this.CardEffect == effect.spawnToken)
-            {
-                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, 
+            { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1,
                     "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
             }
             canAttack = false;
         }
     }
 
-    public void TakeDamage(int damage)//being used by SpellParent because its not a minion
+    /// <summary>
+    /// an alt version of TakeDamage used by SpellParent, as spells cannot take revenge damage (thorns, explode, etc) and spells cannot
+    /// be taken as the "attacker" parameter
+    /// </summary>
+    /// <param name="damage"></param>
+    public void TakeDamage(int damage)
     {
         Health -= damage;
 
@@ -131,16 +159,22 @@ public class MinionParent : NewVirtualCardParent
         }
     }
 
-    public void TakeDamage(MinionParent attacker, int damage)
+    /// <summary>
+    /// causes this minion to take damage when attacked, and deal revenge dammage to an attacker if applicable
+    /// </summary>
+    /// <param name="attacker">the minion that attacked this one</param>
+    /// <param name="damage">how much damage is being dealt</param>
+    /// <param name="wasRevenge">records whether or not this was triggered by revenge damage to prevent infinite loops</param>
+    public void TakeDamage(MinionParent attacker, int damage, bool wasRevenge)
     {
-        if(attacker.CardEffect == effect.deathtouch)
+        if(attacker.CardEffect == effect.deathtouch) //instantly kills b/c of deathtouch
         {
             Health = 0;
         }
 
         Health -= damage;
 
-        if (CardEffect == effect.thorns)
+        if (CardEffect == effect.thorns && !wasRevenge) //covers thorns damage
         {
             int thornsDamage = 0;
             switch (CardName)
@@ -164,19 +198,20 @@ public class MinionParent : NewVirtualCardParent
                         break;
                     }
             }
-            attacker.TakeDamage(this, thornsDamage);
+            attacker.TakeDamage(this, thornsDamage, true);
         }
 
-        if (Health <= 0)
+        if (Health <= 0) //if this minion has died
         {
             if (attacker.CardEffect == effect.overkill)
-            {
+            { 
+                //if the attacker had overkill and the target (this) dies, damage is dealt to the target's owner player
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TakeDamage(-1 * Health);
                 Debug.Log(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health);
             }
             Health = 0;
 
-            if (cardEffect == effect.explode) 
+            if (cardEffect == effect.explode) //covers explode damage
             {
                 int explodeDamage = 0;
                 switch(CardName)
@@ -194,12 +229,15 @@ public class MinionParent : NewVirtualCardParent
                             break;
                         }
                 }
-                attacker.TakeDamage(this, explodeDamage); 
+                attacker.TakeDamage(this, explodeDamage, true); 
             }
             Death();
         }
     }
 
+    /// <summary>
+    /// causes code to run upon the death of a minion
+    /// </summary>
     public void Death()
     {
         isDead = true;
@@ -209,6 +247,7 @@ public class MinionParent : NewVirtualCardParent
         }
         if (CardType == NewVirtualCardParent.type.token) 
         {
+            //if this card is a token it should not enter discard
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Remove(this);
             return; 
         }
@@ -216,8 +255,14 @@ public class MinionParent : NewVirtualCardParent
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
     }
 
+    /// <summary>
+    /// attack method for cards that have aoe (hit all opposing cards)
+    /// </summary>
+    /// <param name="targetList">list of all opposing cards</param>
+    /// <param name="isSecond">records whether this was a secondary attack from a TwoAttackParent (i.e. Magic Cat)</param>
     public void AOEAttack(List<NewVirtualCardParent> targetList, bool isSecond)
     {
+        //isSecond is a fast work around to TwoAttackParent's complications
         if(canAttack && (cardEffect == effect.aoe || isSecond))
         {
             if (targetList == null)
@@ -225,13 +270,14 @@ public class MinionParent : NewVirtualCardParent
                 return;
             }
 
+            //hits every minion inPlay
             for (int i = targetList.Count - 1; i >= 0; i--)
             {
                 Debug.Log(targetList[i].CardName);
                 if (targetList[i] is MinionParent)
                 {
                     MinionParent enemyTarget = (MinionParent)targetList[i];
-                    enemyTarget.TakeDamage(this, Damage);
+                    enemyTarget.TakeDamage(this, Damage, false);
                     Debug.Log(enemyTarget.CardName);
                 }
             }
@@ -239,8 +285,33 @@ public class MinionParent : NewVirtualCardParent
         }
     }
 
+    /// <summary>
+    /// adds a piece of equipment to a minion's equipment list
+    /// </summary>
+    /// <param name="addToList">equipment piece being added to the list</param>
     public void AddEquipment(equipment addToList)
     {
         equipmentList.Add(addToList);
+    }
+
+    /// <summary>
+    /// checks to make sure there are no minions with guard that need to be attacked first
+    /// </summary>
+    /// <param name="target">the target of the Attack(MinionParent target)</param>
+    /// <returns>bool stating whether or not the target can be attacked</returns>
+    public bool CheckGuard(MinionParent target)
+    {
+        if (target.CardEffect == MinionParent.effect.guard) { return false; }
+
+        for (int i = 0; i < target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
+        {
+            if (target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i] is MinionParent)
+            {
+                MinionParent otherMinion = (MinionParent)target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i];
+                if (otherMinion.CardEffect == MinionParent.effect.guard) { return true; }
+            }
+        }
+
+        return false;
     }
 }

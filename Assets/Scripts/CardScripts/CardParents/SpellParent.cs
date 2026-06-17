@@ -50,6 +50,11 @@ public class SpellParent : NewVirtualCardParent
         this.secondEquipmentAmount = secondAmount;
     }
 
+    /// <summary>
+    /// creates a new Spell card using its name and cardIndex
+    /// </summary>
+    /// <param name="name">the name of the spell</param>
+    /// <param name="cardLocation">always deck</param>
     public SpellParent(string name, location cardLocation) : base(name, cardLocation)
     {
         Details spellDetails = cardIndex.Index.GetDetails(name);
@@ -138,6 +143,7 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
+                        case "Curse":
                         case "Terrorize":
                             {
                                 if(target is TwoAttackParent)
@@ -145,8 +151,8 @@ public class SpellParent : NewVirtualCardParent
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage -= amount;
                                     twoAttackTarget.SecondDamage -= amount;
-                                    if(twoAttackTarget.FirstDamage < 0) { twoAttackTarget.FirstDamage = 0; }
-                                    if(twoAttackTarget.SecondDamage < 0) { twoAttackTarget.SecondDamage = 0; }
+                                    if(twoAttackTarget.FirstDamage < 1) { twoAttackTarget.FirstDamage = 1; }
+                                    if(twoAttackTarget.SecondDamage < 1) { twoAttackTarget.SecondDamage = 1; }
                                 }
                                 else
                                 {
@@ -156,10 +162,15 @@ public class SpellParent : NewVirtualCardParent
 
                                 target.StartingHealth -= secondEquipmentAmount;
                                 target.Health -= secondEquipmentAmount;
-                                target.AddEquipment(MinionParent.equipment.terrorize);
+                                if (target.StartingHealth < 1) { target.StartingHealth = 1; }
+                                if (target.Health < 1) { target.Health = 1; }
+
+                                if(CardName == "Curse") { target.AddEquipment(MinionParent.equipment.curse); }
+                                if(CardName == "Terrorize") { target.AddEquipment(MinionParent.equipment.terrorize); }
                                 break;
                             }
 
+                        case "Empower":
                         case "Fish Treat":
                             {
                                 if (target is TwoAttackParent)
@@ -174,7 +185,34 @@ public class SpellParent : NewVirtualCardParent
                                 }
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
-                                target.AddEquipment(MinionParent.equipment.fishTreat);
+
+                                if(CardName == "Empower") { target.AddEquipment(MinionParent.equipment.empower); }
+                                if (CardName == "Fish Treat") { target.AddEquipment(MinionParent.equipment.fishTreat); }
+                                break;
+                            }
+
+                        case "Catnap":
+                            {
+                                target.StartingHealth += secondEquipmentAmount;
+                                target.Health += secondEquipmentAmount;
+                                target.AddEquipment(MinionParent.equipment.catnap);
+
+                                break;
+                            }
+
+                        case "Hex":
+                            {
+                                if (target is TwoAttackParent)
+                                {
+                                    TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
+                                    twoAttackTarget.FirstDamage = 1;
+                                    twoAttackTarget.SecondDamage = 1;
+                                }
+                                else
+                                {
+                                    target.Damage = 1;
+                                }
+                                target.AddEquipment(MinionParent.equipment.hex);
                                 break;
                             }
 
@@ -189,6 +227,22 @@ public class SpellParent : NewVirtualCardParent
             case spellEffect.unique:
             default:
                 {
+                    switch(CardName)
+                    {
+                        case "Clone":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 
+                                target.Health, target.Damage, target.CardName, NewVirtualCardParent.type.token, target.CardEffect, 
+                                NewVirtualCardParent.location.inPlay));
+                                break;
+                            }
+
+                        case "No Thoughts, Head Empty":
+                            {
+                                RevertEquipment(target); //not implemented
+                                break;
+                            }
+                    }
                     break;
                 }
         }
@@ -219,6 +273,24 @@ public class SpellParent : NewVirtualCardParent
                 {
                     break;
                 }
+        }
+    }
+
+    private void RevertEquipment(MinionParent target)//does not work for twoattackparents, and test more plz
+    {
+        if (target.EquipmentList.Count <= 0) { return; }
+
+        for (int i = 0; i < target.EquipmentList.Count; i++)
+        {
+            switch(target.EquipmentList[i])
+            {
+                case MinionParent.equipment.m16: { target.Damage -= 2; break; }
+                case MinionParent.equipment.terrorize: { target.Damage++; target.Health++; target.StartingHealth++; break; }
+                case MinionParent.equipment.fishTreat: { target.Damage -= 2; target.Health -= 2; target.StartingHealth -= 2; break; }
+                case MinionParent.equipment.empower: { target.Damage--; target.Health--; target.StartingHealth--; break; }
+                case MinionParent.equipment.curse: { target.Damage += 2; break; }
+                case MinionParent.equipment.catnap: { target.Health -= 3; target.StartingHealth -= 3; break; }
+            }
         }
     }
 }

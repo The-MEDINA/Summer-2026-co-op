@@ -3,14 +3,14 @@ using cardIndex;
 
 public abstract class NewVirtualCardParent
 {
-    public enum type
+    public enum type //type of card
     {
         minion,
         spell,
         token
     }
 
-    public enum location
+    public enum location //where the card is
     {
         deck,
         hand,

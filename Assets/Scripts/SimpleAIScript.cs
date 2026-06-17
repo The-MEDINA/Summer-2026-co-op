@@ -45,9 +45,7 @@ public class SimpleAIScript : MonoBehaviour
 
     private void Move()
     {
-        Debug.Log(player.Hand.Count);//inplay cards are moving weird once then arent moving anymore
-        Debug.Log(player.InPlay.Count);//its all ui the actual interactions seem to work
-        Debug.Log(opponent.InPlay.Count);
+        Debug.Log($"Cards in Deck: {player.Deck.Count}, Cards in Hand: {player.Hand.Count}, Cards in Play: {player.InPlay.Count}");
         if((player.InPlay.Count == 0 || opponent.InPlay.Count == 0)&& player.Hand.Count == 0) { return; }
         else if(player.InPlay.Count == 0 || opponent.InPlay.Count < 0) 
         {
@@ -59,26 +57,29 @@ public class SimpleAIScript : MonoBehaviour
             AttackSomething();
             return;
         }
-        int moveNum = rng.Next(1, 4);
+        int moveNum = rng.Next(1, 7);
+        Debug.Log("Rolled a " + moveNum);
         switch (moveNum)
         {
             case 1:
+            case 2:
                 {
                     MoveCardToBattleground();
                     break;
                 }
 
-            case 4:
-                {
-
-                    break;
-                }
-
-            case 2:
             case 3:
+            case 4:
+            case 5:
             default:
                 {
                     AttackSomething();
+                    break;
+                }
+
+            case 6:
+                {
+                    UseCommanderCard();
                     break;
                 }
         }
@@ -86,9 +87,22 @@ public class SimpleAIScript : MonoBehaviour
 
     private void MoveCardToBattleground()
     {
-        int moveNum = rng.Next(0, player.Hand.Count);
+        int moveNum = 0;
+        int tries = 0;
+        bool loopbreaker = true;
+
+        while (loopbreaker)
+        {
+            moveNum = rng.Next(0, player.Hand.Count);
+            if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
+            else { loopbreaker = false; }
+            if (tries >= 3) { return; }
+        }
+
         if (player.Hand[moveNum] is MinionParent)
         {
+            Debug.Log("Spent " + player.Hand[moveNum].Cost + " energy from " + player.Hand[moveNum].CardName);
+            player.SpendEnergy(player.Hand[moveNum].Cost);
             CardSelectionManager.Instance.PlayCardToBattleground(player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>());
         }
         else if (player.Hand[moveNum] is SpellParent)
@@ -126,6 +140,9 @@ public class SimpleAIScript : MonoBehaviour
                         break; 
                     }
             }
+
+            Debug.Log("Spent " + aiSpell.Cost + " energy from " + aiSpell.CardName);
+            player.SpendEnergy(aiSpell.Cost);
         }
     }
 
@@ -156,6 +173,12 @@ public class SimpleAIScript : MonoBehaviour
         }
     }
 
+    private void UseCommanderCard()
+    {
+        Debug.Log("COMMANDER CARD USED");
+        bg.CommanderCard.PerformAbility();
+    }
+
     private void Draw()
     {
         bg.DrawCardToHand();
@@ -166,11 +189,7 @@ public class SimpleAIScript : MonoBehaviour
         player.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         player.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 3, 2, 1, "Conscript",
+        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 0, 0, 4, "Conscript",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 2, 2, 1, "I Hungy!!!",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        player.Deck.Add(new TwoAttackParent(3, 1, MinionParent.effect.aoe, 4, 4, 0, "Mage Cat",
-            NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
     }
 }

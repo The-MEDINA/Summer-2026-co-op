@@ -2,16 +2,15 @@ using Network;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
+public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
 {
-    [SerializeField] private GameObject tokenPrefab; //cardPrefab
     private float timer = 0f;
     [SerializeField] private float timeToEffect = 3f;
     private bool canAttack = false;
 
     private void Start()
     {
-        Name = "Major Munchkin";//assigns name
+        Name = "Seargent Zoomie";//assigns name
     }
 
     private void Update()
@@ -32,7 +31,7 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     /// calls PerformAbility() on mouse click
     /// </summary>
     /// <param name="eventData">data for mouse pointer click</param>
-    public void OnPointerClick(PointerEventData eventData) 
+    public void OnPointerClick(PointerEventData eventData)
     {
         //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
         if (!bg.P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
@@ -43,23 +42,16 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     }
 
     /// <summary>
-    /// spawns two token creatures
+    /// gives owner player +2 energy upon use
     /// </summary>
     public override void PerformAbility()
     {
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
 
-        bg.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
-        bg.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay));
-
-        if (!bg.P.IsPlayerTwo)
-        {
-            // this should really be its own packet and not sendCardAdd.
-            // this should work for now though. - Dave
-            Networking.SendCardAdd(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay), NewVirtualCardParent.location.inPlay);
-            Networking.SendCardArray(bg.P.InPlay, NewVirtualCardParent.location.inPlay);
-        }
+        //implement energy
+        bg.P.Energy += 2;
+       
         canAttack = false;
     }
 }

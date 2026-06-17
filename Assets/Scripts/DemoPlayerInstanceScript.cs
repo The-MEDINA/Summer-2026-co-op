@@ -10,10 +10,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "M16",
         "Conscript",
         "Smite",
+        "Scaredy Cat",
         "Comically Large Spoon Cat",
-        "Ninja Cat",
-        "Night Vision Cat",
-        "Night Vision Cat",
         "Ratta-tat-Cat",
     };
 

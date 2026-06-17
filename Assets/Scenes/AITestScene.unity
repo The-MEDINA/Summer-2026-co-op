@@ -609,8 +609,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   health: 50
   maxEnergy: 10
-  startingEnergy: 10
-  timeForEnergy: 5
+  startingEnergy: 0
+  timeForEnergy: 2
   isPlayerTwo: 1
   moveCooldownTime: 1.5
 --- !u!1 &366108599
@@ -2249,6 +2249,7 @@ MonoBehaviour:
   player1StartX: -5.75
   player2StartX: -5.75
   cardSpacing: 2
+  isLocalTesting: 0
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
@@ -3708,7 +3709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88c7c7356122429bb0e0e729bd7250b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTimerUI
-  player: {fileID: 0}
+  player: {fileID: 143358790}
   energyText: {fileID: 31641065}
   energyTimerText: {fileID: 951809795}
   moveTimerText: {fileID: 366108600}
