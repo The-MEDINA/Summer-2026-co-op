@@ -227,6 +227,22 @@ public class SpellParent : NewVirtualCardParent
             case spellEffect.unique:
             default:
                 {
+                    switch(CardName)
+                    {
+                        case "Clone":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 
+                                target.Health, target.Damage, target.CardName, NewVirtualCardParent.type.token, target.CardEffect, 
+                                NewVirtualCardParent.location.inPlay));
+                                break;
+                            }
+
+                        case "No Thoughts, Head Empty":
+                            {
+                                RevertEquipment(target); //not implemented
+                                break;
+                            }
+                    }
                     break;
                 }
         }
@@ -258,5 +274,10 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+    }
+
+    private void RevertEquipment(MinionParent target)
+    {
+
     }
 }
