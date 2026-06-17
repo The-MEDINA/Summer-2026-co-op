@@ -1,13 +1,21 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System;
 
 public class DBButtonScript : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private string cardName = "Cat";
     [SerializeField] private bool isAdding = true;
     [SerializeField] private TMP_Text numCardsText;
+    [SerializeField] private TMP_Text cardStatText;
+
+    private void Start()
+    {
+        MinionParent thisMinion = new MinionParent(cardName, NewVirtualCardParent.location.deck);
+        cardStatText.text = $"Name: {thisMinion.CardName}\nCost: {thisMinion.Cost}\nHealth: {thisMinion.StartingHealth}" +
+            $"\nDamage: {thisMinion.Damage}\nAbility: {thisMinion.CardEffect}";
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
