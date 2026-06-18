@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class CardUIManager : MonoBehaviour
@@ -8,6 +9,7 @@ public class CardUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cardDamage;
     [SerializeField] private TextMeshProUGUI cardFlavortext;
     [SerializeField] private CardClickHandler clickHandler;
+    [SerializeField] private Image cardArt;
 
     private void Start()
     {
@@ -15,7 +17,6 @@ public class CardUIManager : MonoBehaviour
         {
             clickHandler = GetComponent<CardClickHandler>();
         }
-
         RefreshCardUI();
     }
 
@@ -39,5 +40,9 @@ public class CardUIManager : MonoBehaviour
             cardHealth.text = "Health: " + minionData.Health;
             cardDamage.text = "Damage: " + minionData.Damage;
         }
+
+        Sprite updatedArt = null;
+        updatedArt = cardIndex.Index.GetSprite(clickHandler.CardData.NameIndexPosition);
+        if (updatedArt != null) cardArt.sprite = updatedArt;
     }
 }

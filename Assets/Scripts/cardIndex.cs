@@ -71,6 +71,7 @@ namespace cardIndex
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
         private static List<string> nameIndex = new List<string>();
+        private static List<Sprite> cardSprites = new List<Sprite>();
 
         /// <summary>
         /// Return a details struct for CardParent to instantiate with. Also creates the index if it's not made already.
@@ -164,6 +165,11 @@ namespace cardIndex
             return cardToCreate;
         }
 
+        public static Sprite GetSprite(int nameIndexPosition)
+        {
+            return cardSprites[nameIndexPosition];
+        }
+
         /// <summary>
         /// Creates the index of cards from the provided allCards.tsv file.
         /// This function should ONLY be called in the worst case scenario that the index is not ready by the time a card gets instantiated.
@@ -174,6 +180,8 @@ namespace cardIndex
             // setup
             StreamReader reader = new StreamReader("Assets/Database/allCards.tsv");
             string raw;
+            int catCardsOffset = 0;
+            Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
 
             // while allCards.tsv has data.
             // for loop is only here because I need an int for the nameIndex.
@@ -186,6 +194,7 @@ namespace cardIndex
                 int _health = -1;
                 int _damage = -1;
                 int _secondDamage = -1;
+                int _spriteIndex = -1;
                 NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
                 MinionParent.effect _ability = MinionParent.effect.none;
                 MinionParent.effect _secondAbility = MinionParent.effect.none;
@@ -405,6 +414,32 @@ namespace cardIndex
                                 break;
                             }
                     }
+                }
+
+                // load the sprite
+                switch (rawDetails[0].Trim().ToLower())
+                {
+                    case ("cat"):
+                        {
+                            Sprite spriteToAdd = null;
+                            if (catCardsOffset < catSpritesheet.Length)
+                            {
+                                spriteToAdd = catSpritesheet[catCardsOffset];
+                            }
+#if WARN_UNDEFINED
+                            else
+                            {
+                                Debug.LogWarning($"More cat cards than sprites found! Double check the size of both the spritesheet and allCards.tsv?");
+                            }
+                            if (spriteToAdd == null)
+                            {
+                                Debug.LogWarning($"Could not find sprite at spritesheet Cat_{catCardsOffset}! card will have fallback sprite.");
+                            }
+#endif
+                            cardSprites.Add(spriteToAdd);
+                            catCardsOffset++;
+                            break;
+                        }
                 }
                 // create the struct and add.
                 Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
