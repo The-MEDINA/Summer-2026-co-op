@@ -76,7 +76,7 @@ public class SpellParent : NewVirtualCardParent
                     for (int i = 0; i < amount; i++)
                     {
                         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
-                            new MinionParent(0, 1, 1, "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+                            cardIndex.Index.CreateCard("Kitten", location.inPlay));
                     }
                     break;
                 }

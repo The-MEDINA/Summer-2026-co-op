@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using cardIndex;
 using UnityEngine;
 
 public class TwoAttackParent : MinionParent
@@ -30,6 +31,19 @@ public class TwoAttackParent : MinionParent
         FirstDamage = firstD;
         SecondDamage = secondD;
         secondAttackEffect = secondAttackE;
+    }
+
+    /// <summary>
+    /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
+    /// </summary>
+    /// <param name="name">Name of the card.</param>
+    /// <param name="cardLocation">location of the card.</param>
+    public TwoAttackParent(string name, location cardLocation) : base(name, cardLocation)
+    {
+        Details cardDetails = cardIndex.Index.GetDetails(name);
+        FirstDamage = cardDetails.damage;
+        SecondDamage = cardDetails.secondDamage;
+        secondAttackEffect = cardDetails.secondAbility;
     }
 
     /// <summary>

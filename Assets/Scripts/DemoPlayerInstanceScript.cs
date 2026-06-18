@@ -7,6 +7,10 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     private string[] startingDeck =
     {
         /*"Cat",
+        "Magic Cat / Septimus Mrreep",
+        "M16",
+        "Conscript",
+        "Smite",
         "Scaredy Cat",
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",*/
@@ -29,7 +33,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
             return;
         }
-
         /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new MinionParent(1, 1, 1, "Roughly A Cat",
@@ -46,7 +49,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));*/
         for (int i = 0; i < startingDeck.Length; i++)   
         {
-                p.Deck.Add(new MinionParent(startingDeck[i], NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
         }
 
         Debug.Log(gameObject.name + " deck loaded with " + p.Deck.Count + " cards.");

@@ -7,7 +7,6 @@ public class PlayerTimerUI : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI energyText;
     [SerializeField] private TextMeshProUGUI energyTimerText;
-    [SerializeField] private TextMeshProUGUI moveTimerText;
 
     private void Update()
     {
@@ -26,16 +25,5 @@ public class PlayerTimerUI : MonoBehaviour
             energyTimerText.text = "Next Energy: " + player.EnergyTimerRemaining.ToString("0.0") + "s";
         }
 
-        if (moveTimerText != null)
-        {
-            if (player.CanMove)
-            {
-                moveTimerText.text = "Move: Ready";
-            }
-            else
-            {
-                moveTimerText.text = "Move: " + player.MoveCooldownRemaining.ToString("0.0") + "s";
-            }
-        }
     }
 }
