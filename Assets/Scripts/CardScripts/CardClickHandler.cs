@@ -122,13 +122,13 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             case MinionParent.effect.deathtouch:
                 {
-                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.darkRed;
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.mediumVioletRed;
                     break;
                 }
 
             case MinionParent.effect.explode:
                 {
-                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.orangeRed;
                     break;
                 }
 
