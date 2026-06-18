@@ -50,6 +50,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             SetColor(minion.CardEffect);
         }
+        else if (CardData is SpellParent) 
+        {
+            SpellParent spell = (SpellParent)CardData;
+            SetColor(spell.Effect);
+        }
     }
 
     private void Update()
@@ -190,6 +195,41 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             default:
                 {
                     CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                    break;
+                }
+        }
+    }
+
+    private void SetColor(SpellParent.spellEffect ability)
+    {
+        switch (ability)
+        {
+            case SpellParent.spellEffect.damage:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.coral;                    break;
+                }
+
+            case SpellParent.spellEffect.heal:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    break;
+                }
+
+            case SpellParent.spellEffect.unique:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.beige;
+                    break;
+                }
+
+            case SpellParent.spellEffect.equipment:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.slateGray;
+                    break;
+                }
+
+            case SpellParent.spellEffect.spawnTokens:
+                {
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.olive;
                     break;
                 }
         }

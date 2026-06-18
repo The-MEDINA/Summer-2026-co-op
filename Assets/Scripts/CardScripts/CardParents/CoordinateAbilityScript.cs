@@ -71,7 +71,7 @@ public class CoordinateAbilityScript
 
             case "Beeg Cat":
                 {
-                    minion.Health += 3;
+                    minion.Damage += 3;
                     break;
                 }
 

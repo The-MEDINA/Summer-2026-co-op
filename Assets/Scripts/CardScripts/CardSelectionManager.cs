@@ -581,7 +581,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
 
-        if (attacker == null)
+        if (attacker == null || attacker.Target != SpellParent.spellTarget.none)
         {
             Debug.Log("Only spell cards can be played this way.");
 
