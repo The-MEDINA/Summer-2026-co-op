@@ -6,17 +6,20 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        /*"Cat",
-        "Magic Cat / Septimus Mrreep",
-        "M16",
-        "Conscript",
-        "Smite",*/
-        //"Scaredy Cat",
-        //"Comically Large Spoon Cat",
-        //"Ratta-tat-Cat",
-        //"Cat",
-        //"Exploding Cat",
-        //"Night Vision Cat",
+        "Dr. House(Cat)",
+        "Bobby",
+        "Viking Cat",
+        "Mother Cat",
+        "Shoto Cat",
+        "Cat Demolition Crew",
+        "Witch Cat",
+        "Slasher Cat",
+        "Vampire Cat",
+        "Spontaneous Combustion",
+        "Terrorize",
+        "Catnap",
+        "Curse",
+        "Pspspsps!",
     };
 
     private Player p;
@@ -31,6 +34,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
+        /*
         if (p.IsPlayerTwo)
         {
             p.Deck.Add(new MinionParent(4, 3, 4, "Dr House(Cat)", NewVirtualCardParent.type.minion,

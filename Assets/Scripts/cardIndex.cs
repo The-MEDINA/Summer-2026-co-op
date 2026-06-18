@@ -281,6 +281,36 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.aoe;
                                 break;
                             }
+                        case ("heal"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.heal;
+                                else _secondAbility = MinionParent.effect.heal;
+                                break;
+                            }
+                        case ("thorns"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.thorns;
+                                else _secondAbility = MinionParent.effect.thorns;
+                                break;
+                            }
+                        case ("guard"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.guard;
+                                else _secondAbility = MinionParent.effect.guard;
+                                break;
+                            }
+                        case ("spawntokens"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.spawnToken;
+                                else _secondAbility = MinionParent.effect.spawnToken;
+                                break;
+                            }
+                        case ("duplicate"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.duplicate;
+                                else _secondAbility = MinionParent.effect.duplicate;
+                                break;
+                            }
                         case ("twoattacks"):
                             {
                                 if (j == 0)
