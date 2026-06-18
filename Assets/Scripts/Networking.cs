@@ -1095,16 +1095,16 @@ namespace Network
                     }
                     else
                     {
-                        if (packet[2] < playerOne.InPlay.Count)
-                        {
-                            target = playerOne.InPlay[packet[2]];
-                        }
-                        else if (packet[5] == 1 && packet[2] < playerTwo.InPlay.Count)
+                        if (packet[5] == 1 && packet[2] < playerTwo.InPlay.Count)
                         {
                             target = playerTwo.InPlay[packet[2]];
                         }
+                        else if (packet[2] < playerOne.InPlay.Count)
+                        {
+                            target = playerOne.InPlay[packet[2]];
+                        }
 #if DEBUG_MODE
-                    else
+                        else
                         {
                             DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
                         }
