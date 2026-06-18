@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float timeForEnergy = 5f;
     [SerializeField] private bool isPlayerTwo = false;
 
-    [Header("Move Timer")]
     [SerializeField] private float moveCooldownTime = 1.5f;
 
     private int energy;
@@ -21,7 +20,6 @@ public class Player : MonoBehaviour
     private CommanderCardScript commanderCard;
 
     private float timer = 0f;
-    private float moveCooldownTimer = 0f;
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
@@ -31,10 +29,6 @@ public class Player : MonoBehaviour
     public float EnergyTimer { get { return timer; } }
     public float TimeForEnergy { get { return timeForEnergy; } }
     public float EnergyTimerRemaining { get { return Mathf.Max(0f, timeForEnergy - timer); } }
-
-    public float MoveCooldownTime { get { return moveCooldownTime; } }
-    public float MoveCooldownRemaining { get { return Mathf.Max(0f, moveCooldownTimer); } }
-    public bool CanMove { get { return moveCooldownTimer <= 0f; } }
 
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
@@ -61,7 +55,6 @@ public class Player : MonoBehaviour
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
-        UpdateMoveCooldown();
     }
 
     private void GainEnergyOverTime()
@@ -78,24 +71,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void UpdateMoveCooldown()
-    {
-        if (moveCooldownTimer > 0f)
-        {
-            moveCooldownTimer -= Time.deltaTime;
-
-            if (moveCooldownTimer < 0f)
-            {
-                moveCooldownTimer = 0f;
-            }
-        }
-    }
-
     public void RegisterAction()
     {
-        // if (!isPlayerTwo) 
-            timer = 0f;
-        moveCooldownTimer = moveCooldownTime;
+        timer = 0f;
     }
 
     public bool CanAfford(NewVirtualCardParent card)

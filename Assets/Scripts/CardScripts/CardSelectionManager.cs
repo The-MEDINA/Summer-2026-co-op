@@ -31,7 +31,7 @@ public class CardSelectionManager : MonoBehaviour
         set { selectedCardObject = value; }
     }
 
-    public bool IsLocalTesting { get { return isLocalTesting; }  }
+    public bool IsLocalTesting { get { return isLocalTesting; } }
 
     private void Awake()
     {
@@ -67,10 +67,15 @@ public class CardSelectionManager : MonoBehaviour
             else if (selectedCardObject.CardData is SpellParent)
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
-                if (spell.Target != SpellParent.spellTarget.none) TrySpellTarget(clickedCard);
+
+                if (spell.Target != SpellParent.spellTarget.none)
+                {
+                    TrySpellTarget(clickedCard);
+                }
                 else
                 {
                     TrySpellNoTarget();
+
                     if (!spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
                     {
                         Networking.SendCardArray(spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
@@ -92,6 +97,7 @@ public class CardSelectionManager : MonoBehaviour
             if (clickedCard.CardData is SpellParent)
             {
                 TrySpellNoTarget();
+
                 if (!clickedCard.OwnerPlayer.IsPlayerTwo)
                 {
                     Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
@@ -99,17 +105,17 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
-        if (!clickedCard.OwnerPlayer.IsPlayerTwo || IsLocalTesting) 
-       {
-           selectedCardObject = clickedCard;
-           selectedCardObject.SetSelectedVisual(true);
-           Debug.Log("Selected card: " + clickedCard.CardData.CardName);
-       } 
-       else 
-       { 
-           Debug.LogWarning("Playing player 2's cards are not allowed.");
-       }
+        // when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
+        if (!clickedCard.OwnerPlayer.IsPlayerTwo || IsLocalTesting)
+        {
+            selectedCardObject = clickedCard;
+            selectedCardObject.SetSelectedVisual(true);
+            Debug.Log("Selected card: " + clickedCard.CardData.CardName);
+        }
+        else
+        {
+            Debug.LogWarning("Playing player 2's cards are not allowed.");
+        }
     }
 
     private void ActivateCard(CardClickHandler cardObject)
@@ -118,23 +124,6 @@ public class CardSelectionManager : MonoBehaviour
         {
             ClearSelection();
             return;
-        }
-
-        Player owner = cardObject.OwnerPlayer;
-
-        if (owner != null && !owner.CanMove)
-        {
-            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-            ClearSelection();
-
-            if (owner.IsPlayerTwo)
-            {
-                Debug.LogWarning("Overriding playerTwo.CanMove to prevent desync.");
-            }
-            else
-            {
-                return;
-            }
         }
 
         if (cardObject.CardData.CardLocation == NewVirtualCardParent.location.hand)
@@ -165,20 +154,6 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.LogWarning("This card has no owner player.");
             return;
-        }
-
-        if (!owner.CanMove && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
-        {
-            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-
-            if (owner.IsPlayerTwo)
-            {
-                Debug.LogWarning("Overriding player two move timer to prevent desync.");
-            }
-            else
-            {
-                return;
-            }
         }
 
         if (!owner.CanAfford(cardObject.CardData))
@@ -347,21 +322,6 @@ public class CardSelectionManager : MonoBehaviour
 
         Player attackingOwner = selectedCardObject.OwnerPlayer;
 
-        if (attackingOwner != null && !attackingOwner.CanMove)
-        {
-            Debug.Log("Move timer active. Wait " + attackingOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
-            {
-                Debug.LogWarning("Overriding player two active timer to try to prevent desync.");
-            }
-            else
-            {
-                ClearSelection();
-                return;
-            }
-        }
-
         if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
@@ -392,10 +352,12 @@ public class CardSelectionManager : MonoBehaviour
         MinionParent target = targetCard.CardData as MinionParent;
 
         bool isThisMinionATwoAttackHealer = false;
-        if(attacker is TwoAttackParent)
+
+        if (attacker is TwoAttackParent)
         {
             TwoAttackParent thisTestSucksBro = (TwoAttackParent)attacker;
-            if(thisTestSucksBro.SecondaryCardEffect == MinionParent.effect.heal)
+
+            if (thisTestSucksBro.SecondaryCardEffect == MinionParent.effect.heal)
             {
                 isThisMinionATwoAttackHealer = true;
             }
@@ -438,10 +400,10 @@ public class CardSelectionManager : MonoBehaviour
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
 
             if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && ((targetCard.OwnerPlayer == selectedCardObject.OwnerPlayer &&
-                !wasSecondAttack) || (targetCard.OwnerPlayer != selectedCardObject.OwnerPlayer && wasSecondAttack))) 
-            { 
-                ClearSelection(); 
-                return; 
+                !wasSecondAttack) || (targetCard.OwnerPlayer != selectedCardObject.OwnerPlayer && wasSecondAttack)))
+            {
+                ClearSelection();
+                return;
             }
 
             if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.aoe)
@@ -556,20 +518,6 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (!owner.CanMove && attacker.CardType != NewVirtualCardParent.type.token)
-        {
-            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-
-            if (owner.IsPlayerTwo)
-            {
-                Debug.LogWarning("Overriding player two move timer to prevent desync.");
-            }
-            else
-            {
-                return;
-            }
-        }
-
         if (!owner.CanAfford(attacker))
         {
             Debug.Log("Cannot play card. Not enough energy.");
@@ -644,20 +592,6 @@ public class CardSelectionManager : MonoBehaviour
 
             ClearSelection();
             return;
-        }
-
-        if (!owner.CanMove && attacker.CardType != NewVirtualCardParent.type.token)
-        {
-            Debug.Log("Move timer active. Wait " + owner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
-
-            if (owner.IsPlayerTwo)
-            {
-                Debug.LogWarning("Overriding player two move timer to prevent desync.");
-            }
-            else
-            {
-                return;
-            }
         }
 
         if (!owner.CanAfford(attacker))
@@ -749,13 +683,6 @@ public class CardSelectionManager : MonoBehaviour
         if (attackerOwner == null)
         {
             Debug.Log("Selected card has no owner.");
-            ClearSelection();
-            return;
-        }
-
-        if (!attackerOwner.CanMove)
-        {
-            Debug.Log("Move timer active. Wait " + attackerOwner.MoveCooldownRemaining.ToString("0.0") + " seconds.");
             ClearSelection();
             return;
         }
