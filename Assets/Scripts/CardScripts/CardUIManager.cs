@@ -37,8 +37,8 @@ public class CardUIManager : MonoBehaviour
         {
             MinionParent minionData = (MinionParent)clickHandler.CardData;
 
-            cardHealth.text = "Health: " + minionData.Health;
-            cardDamage.text = "Damage: " + minionData.Damage;
+            cardHealth.text = $"{minionData.Health}";
+            cardDamage.text = $"{minionData.Damage}";
         }
 
         Sprite updatedArt = null;

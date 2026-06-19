@@ -1329,7 +1329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
   p: {fileID: 427913135}
-  cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
+  cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 502840342}
   commanderCard: {fileID: 44404143}
 --- !u!61 &531251191
@@ -1456,7 +1456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battleground
   p: {fileID: 143358787}
-  cardProto: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
+  cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 1375896096}
   commanderCard: {fileID: 677338736}
 --- !u!212 &564985595
@@ -1898,7 +1898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MajorMunchkinScript
   bg: {fileID: 564985594}
-  tokenPrefab: {fileID: 7087468605010202404, guid: 0664fa36c5420154dabbb6e054666675, type: 3}
+  tokenPrefab: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   timeToEffect: 3
 --- !u!61 &677338737
 BoxCollider2D:
