@@ -1,5 +1,6 @@
 using UnityEngine;
 using cardIndex;
+using System.Collections.Generic;
 
 public class SpellParent : NewVirtualCardParent
 {
@@ -271,6 +272,21 @@ public class SpellParent : NewVirtualCardParent
             case spellEffect.unique:
             default:
                 {
+                    break;
+                }
+        }
+    }
+
+    public void OnPlayAOE(List<NewVirtualCardParent> cards)
+    {
+        switch(CardName)
+        {
+            case "Blizzard":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+
+                    }
                     break;
                 }
         }
