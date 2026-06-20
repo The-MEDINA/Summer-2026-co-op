@@ -9,6 +9,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Dr. House(Cat)",
         "Cat?",
         "Cat",
+        "M16",
+        "Fish Treat",
         "Cool Cat",
         "Bobby",
         "Viking Cat",

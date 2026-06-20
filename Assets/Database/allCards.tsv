@@ -24,7 +24,7 @@ Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	Heal	"I don't have any idea
 Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
 Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
 Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	player
-Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	unique	allies
+Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
 Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
 Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	enemies
 Cat	6	Smite	Spell	Smite - Deathtouch	0	9999	Damage	"Screw you in particular!"	damage	enemies
