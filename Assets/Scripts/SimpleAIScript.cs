@@ -210,10 +210,26 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     private void PopulatePlayer()
     {
-        player.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
-                NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
-        player.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 3, 0, 4, "Conscript",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        string[] startingDeck =
+        {
+        "Spontaneous Combustion",
+        "Patch Up",
+        "M16",
+        "Conscript",
+        "Cat Demolition Crew",
+        "Cat",
+        "Magic Cat / Septimus Mrreep",
+        "Smite",
+        "Scaredy Cat",
+        "Comically Large Spoon Cat",
+        "Ratta-tat-Cat",
+        "Exploding Cat",
+        "Night Vision Cat",
+        };
+
+        for (int i = 0; i < startingDeck.Length; i++)
+        {
+            player.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
+        }
     }
 }
