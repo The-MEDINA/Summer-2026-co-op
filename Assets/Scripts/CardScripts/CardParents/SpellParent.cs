@@ -70,10 +70,12 @@ public class SpellParent : NewVirtualCardParent
     /// </summary>
     public void OnPlay()
     {
-        switch(effect)
+        switch (effect)
         {
             case spellEffect.spawnTokens:
                 {
+                    Debug.Log("e");
+
                     for (int i = 0; i < amount; i++)
                     {
                         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(

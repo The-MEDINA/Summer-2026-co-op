@@ -213,7 +213,7 @@ public class SimpleAIScript : MonoBehaviour
         player.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
                 NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
         player.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 0, 0, 4, "Conscript",
+        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 3, 0, 4, "Conscript",
             NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
     }
 }
