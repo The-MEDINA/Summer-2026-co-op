@@ -26,11 +26,20 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Catnap",
         "Curse",
         "Pspspsps!",
+        "Empower",
+        "Terrorize",
+        "Conscript",
+        "Cat",
+        "Magic Cat / Septimus Mrreep",
+        "Smite",
+        "Scaredy Cat",
+        "Comically Large Spoon Cat",
+        "Ratta-tat-Cat",
     };
 
     private Player p;
 
-    private void Start() //test other colors and remember to flip these back
+    private void Start()
     {
         p = GetComponent<Player>();
         
@@ -43,56 +52,23 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         /*
         if (p.IsPlayerTwo)
         {
-            p.Deck.Add(new MinionParent(4, 3, 4, "Dr House(Cat)", NewVirtualCardParent.type.minion,
-    MinionParent.effect.heal, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
-NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(6, 6, 9999, "Slasher Cat", NewVirtualCardParent.type.minion,
-MinionParent.effect.deathtouch, NewVirtualCardParent.location.deck));
+            //p.Deck.Add(new MinionParent("Dr. House(Cat)", NewVirtualCardParent.location.deck));
+            p.Deck.Add(new MinionParent("Bobby", NewVirtualCardParent.location.deck));
+            p.Deck.Add(new MinionParent("Slasher Cat", NewVirtualCardParent.location.deck));
             p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
 NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Night Vision Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Comically Large Spoon Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Scaredy Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 1, 1, "Roughly A Cat",
-NewVirtualCardParent.type.minion, MinionParent.effect.guard, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
-NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(2, 3, 1, "Nacho Cat", NewVirtualCardParent.type.minion,
-MinionParent.effect.thorns, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Exploding Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Ratta-tat-Cat", NewVirtualCardParent.location.deck));
+            //p.Deck.Add(new MinionParent("Roughly A Cat", NewVirtualCardParent.location.deck));
+            //p.Deck.Add(new MinionParent("Vampire Cat", NewVirtualCardParent.location.deck));
+            //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
         }
-        else
-        {
-            p.Deck.Add(new MinionParent("Ratta-tat-Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Exploding Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(2, 3, 1, "Nacho Cat", NewVirtualCardParent.type.minion,
-        MinionParent.effect.thorns, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(5, 4, 6, "Vampire Cat",
-    NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 1, 1, "Roughly A Cat",
-            NewVirtualCardParent.type.minion, MinionParent.effect.guard, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Scaredy Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Comically Large Spoon Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Night Vision Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
-        NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(6, 6, 9999, "Slasher Cat", NewVirtualCardParent.type.minion,
-        MinionParent.effect.deathtouch, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 3, 3, "AOETEst",
-    NewVirtualCardParent.type.minion, MinionParent.effect.aoe, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(4, 3, 4, "Dr House(Cat)", NewVirtualCardParent.type.minion,
-    MinionParent.effect.heal, NewVirtualCardParent.location.deck));
-        }
-        /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
-        /*p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
-        /*p.Deck.Add(new SpellParent("M16", NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));*/
+
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
         for (int i = 0; i < startingDeck.Length; i++)   
         {
             p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));

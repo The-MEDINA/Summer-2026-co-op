@@ -1,5 +1,6 @@
 using UnityEngine;
 using cardIndex;
+using System.Collections.Generic;
 
 public class SpellParent : NewVirtualCardParent
 {
@@ -18,6 +19,7 @@ public class SpellParent : NewVirtualCardParent
         allyCards,
         opponent,
         owner,
+        allEnemies,
         none
     }
 
@@ -69,10 +71,12 @@ public class SpellParent : NewVirtualCardParent
     /// </summary>
     public void OnPlay()
     {
-        switch(effect)
+        switch (effect)
         {
             case spellEffect.spawnTokens:
                 {
+                    Debug.Log("e");
+
                     for (int i = 0; i < amount; i++)
                     {
                         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
@@ -276,13 +280,29 @@ public class SpellParent : NewVirtualCardParent
         }
     }
 
+    public void OnPlayAOE(List<NewVirtualCardParent> cards)
+    {
+        switch(CardName)
+        {
+            case "Blizzard":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        cards[i].UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+                        cards[i].UnityObject.GetComponent<CardClickHandler>().ResetTimer();
+                    }
+                    break;
+                }
+        }
+    }
+
     private void RevertEquipment(MinionParent target)//does not work for twoattackparents, and test more plz
     {
         if (target.EquipmentList.Count <= 0) { return; }
 
         for (int i = 0; i < target.EquipmentList.Count; i++)
         {
-            switch(target.EquipmentList[i])
+            switch(target.EquipmentList[i])//errors occur when health taken below 1 and then tried to revert it
             {
                 case MinionParent.equipment.m16: { target.Damage -= 2; break; }
                 case MinionParent.equipment.terrorize: { target.Damage++; target.Health++; target.StartingHealth++; break; }

@@ -12,6 +12,9 @@ public class SimpleAIScript : MonoBehaviour
     [SerializeField] private Battleground bg;
     [SerializeField] private Player opponent;
 
+    /// <summary>
+    /// menial set up for the bot
+    /// </summary>
     void Start()
     {
         PopulatePlayer();
@@ -22,6 +25,7 @@ public class SimpleAIScript : MonoBehaviour
     
     void Update()
     {
+        //timer to make multiple moves after set amounts of time
         if (timer >= moveTime)
         {
             Move();
@@ -33,16 +37,21 @@ public class SimpleAIScript : MonoBehaviour
             timer += Time.deltaTime;
         }
 
+        //draw slower than available moves
         if(drawNum >= 2)
         {
             Draw();
             drawNum = 0;
         }
 
+        //null error checks
         if(opponent == null) { Debug.Log("Attach a player object in inspector."); }
         if(bg == null) { Debug.Log("Attach a battleground object in inspector."); }
     }
 
+    /// <summary>
+    /// lets the ai bot "decide" what move to make and call that method
+    /// </summary>
     private void Move()
     {
         Debug.Log($"Cards in Deck: {player.Deck.Count}, Cards in Hand: {player.Hand.Count}, Cards in Play: {player.InPlay.Count}");
@@ -85,6 +94,9 @@ public class SimpleAIScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// moves a card from the ai's hand to inPlay
+    /// </summary>
     private void MoveCardToBattleground()
     {
         int moveNum = 0;
@@ -146,6 +158,9 @@ public class SimpleAIScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// lets the ai's minions attack opposing minions
+    /// </summary>
     private void AttackSomething()
     {
         if(opponent.InPlay.Count == 0) { return; }
@@ -173,23 +188,48 @@ public class SimpleAIScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// lets the ai activate its commander card ability
+    /// </summary>
     private void UseCommanderCard()
     {
         Debug.Log("COMMANDER CARD USED");
         bg.CommanderCard.PerformAbility();
     }
 
+    /// <summary>
+    /// draws a card for the ai into its hand
+    /// </summary>
     private void Draw()
     {
         bg.DrawCardToHand();
     }
 
+    /// <summary>
+    /// add cards here for the ai to have in its hand
+    /// </summary>
     private void PopulatePlayer()
     {
-        player.Deck.Add(new MinionParent(4, 3, 3, "Single Celled Cat",
-                NewVirtualCardParent.type.minion, MinionParent.effect.duplicate, NewVirtualCardParent.location.deck));
-        player.Deck.Add(cardIndex.Index.CreateCard("M16", NewVirtualCardParent.location.deck));
-        player.Deck.Add(new SpellParent(SpellParent.spellEffect.spawnTokens, SpellParent.spellTarget.none, 0, 0, 4, "Conscript",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        string[] startingDeck =
+        {
+        "Spontaneous Combustion",
+        "Patch Up",
+        "M16",
+        "Conscript",
+        "Cat Demolition Crew",
+        "Cat",
+        "Magic Cat / Septimus Mrreep",
+        "Smite",
+        "Scaredy Cat",
+        "Comically Large Spoon Cat",
+        "Ratta-tat-Cat",
+        "Exploding Cat",
+        "Night Vision Cat",
+        };
+
+        for (int i = 0; i < startingDeck.Length; i++)
+        {
+            player.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
+        }
     }
 }

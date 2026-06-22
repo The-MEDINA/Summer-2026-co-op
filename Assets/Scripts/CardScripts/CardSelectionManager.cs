@@ -411,6 +411,10 @@ public class CardSelectionManager : MonoBehaviour
                 if (wasSecondAttack)
                 {
                     twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
+                    for (int i = 0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+                    {
+                        RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+                    }
                 }
                 else
                 {
@@ -441,6 +445,12 @@ public class CardSelectionManager : MonoBehaviour
         {
             attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
             selectedCardObject.OwnerPlayer.RegisterAction();
+            
+            for(int i =0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+            {
+                RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+            }
+
             RefreshCardVisual(selectedCardObject);
             RefreshCardVisual(targetCard);
             ClearSelection();
@@ -542,7 +552,14 @@ public class CardSelectionManager : MonoBehaviour
             Networking.SendCardAttack(attacker, target, false);
         }
 
-        attacker.OnPlay(target);
+        if(attacker.Target == SpellParent.spellTarget.allEnemies)
+        {
+            attacker.OnPlayAOE(target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
+        }
+        else
+        {
+            attacker.OnPlay(target);
+        }
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
@@ -581,7 +598,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
 
-        if (attacker == null)
+        if (attacker == null || attacker.Target != SpellParent.spellTarget.none)
         {
             Debug.Log("Only spell cards can be played this way.");
 
