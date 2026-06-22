@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b2a9fcdf4dcb3634e87ab1709644d98e
+guid: c44c70446448b064ba4c333577274de5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3757403325842565977
-    second: Kitten_0
+      213: 976508318212584436
+    second: minion_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Kitten_0
+      name: minion_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 480
-        height: 480
+        width: 256
+        height: 144
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 95ba7b2da6af42430800000000000000
-      internalID: 3757403325842565977
+      spriteID: 4f3764344214d8d00800000000000000
+      internalID: 976508318212584436
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Kitten_0: 3757403325842565977
+      minion_0: 976508318212584436
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

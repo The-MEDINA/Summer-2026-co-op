@@ -10,6 +10,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Cat?",
         "Cat",
         "M16",
+        "Empower",
         "Fish Treat",
         "Cool Cat",
         "Bobby",

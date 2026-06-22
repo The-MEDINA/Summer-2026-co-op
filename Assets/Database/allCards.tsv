@@ -45,7 +45,7 @@ Cat	4	Astro Cat	Minion	Coordinate 4 - rewards 3/3	4	3	Coordinate	"One small step
 Cat	5	Shoto Cat	Minion	Thorns 3	5	5	Thorns	"Weeb."		
 Cat	5	Vampire Cat	Minion	SpawnTokens 1 ONHIT	4	6	SpawnTokens	"Draculcat? Nosfuratu? Catmilla? These all suck, just name it Vampire Cat and be done with it."		
 Cat	6	The Mad Catter	Minion	AOE 3	4	3	AOE	"Are you playing Blitzburn? I'll tell you a secret: all the best people are."		
-Cat	6	Slasher Cat	Minion	Deathtouch	6	999999	Deathtouch	"Who's your favorite scary kitty?"		
+Cat	6	Slasher Cat	Minion	Deathtouch	6	999	Deathtouch	"Who's your favorite scary kitty?"		
 Cat	7	Chonkmeister	Minion	Guard/Thorns 2	12	3	Guard/Thorns	"The Meow, the Myth, the Legend."		
 Cat	1	Empower	Spell	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty comment machine broke.' 'Understandable, have a good day.'"	equipment	allies
 Cat	1	2 Cats in a Trenchcoat	Spell	The next minion you play will not reset your move timer			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"	unique	allies

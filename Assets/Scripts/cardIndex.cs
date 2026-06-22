@@ -23,7 +23,7 @@ using System.IO;
 
 namespace cardIndex
 {
-    #region STRUCT
+    #region STRUCTS
     // The reason why this is a struct and not a class is because all this needs to contain is the details for card parent.
     // it's up to card constructors themselves to use the data in here.
     // the struct also shouldn't do anything.
@@ -35,7 +35,7 @@ namespace cardIndex
             cost = _cost;
             name = _name;
             type = _type;
-            text = _text;
+            description = _text;
             health = _health;
             damage = _damage;
             ability = _ability;
@@ -51,7 +51,7 @@ namespace cardIndex
         public int cost;
         public string name;
         public NewVirtualCardParent.type type;
-        public string text;
+        public string description;
         public int health;
         public int damage;
         public int secondDamage;
@@ -62,6 +62,17 @@ namespace cardIndex
         public SpellParent.spellEffect spellEffect;
         public SpellParent.spellTarget spellTarget;
     }
+
+    public struct Sprites
+    {
+        public Sprites(Sprite _cardImage, Sprite _DescBackground)
+        {
+            cardImage = _cardImage;
+            DescBackground = _DescBackground;
+        }
+        public Sprite cardImage;
+        public Sprite DescBackground;
+    }
     #endregion
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
@@ -70,6 +81,7 @@ namespace cardIndex
     {
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
+        private static Dictionary<string, Sprites> spritesIndex = new Dictionary<string, Sprites>();
         private static List<string> nameIndex = new List<string>();
         private static List<Sprite> cardSprites = new List<Sprite>();
 
@@ -165,9 +177,11 @@ namespace cardIndex
             return cardToCreate;
         }
 
-        public static Sprite GetSprite(int nameIndexPosition)
+        public static Sprites GetSprites(string name)
         {
-            return cardSprites[nameIndexPosition];
+            Sprites spritesDetails;
+            spritesIndex.TryGetValue(name, out spritesDetails);
+            return spritesDetails;
         }
 
         /// <summary>
@@ -182,6 +196,7 @@ namespace cardIndex
             string raw;
             int catCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
+            Sprite[] descBackgrounds = Resources.LoadAll<Sprite>($"DescBackgrounds");
 
             // while allCards.tsv has data.
             // for loop is only here because I need an int for the nameIndex.
@@ -194,12 +209,13 @@ namespace cardIndex
                 int _health = -1;
                 int _damage = -1;
                 int _secondDamage = -1;
-                int _spriteIndex = -1;
                 NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
                 MinionParent.effect _ability = MinionParent.effect.none;
                 MinionParent.effect _secondAbility = MinionParent.effect.none;
                 SpellParent.spellEffect _spellEffect = (SpellParent.spellEffect) 0;
                 SpellParent.spellTarget _spellTarget = (SpellParent.spellTarget) 0;
+                Sprite cardImage = null;
+                Sprite descBackground = null;
 
                 int.TryParse(rawDetails[1], out _cost);
                 int.TryParse(rawDetails[5], out _health);
@@ -210,11 +226,13 @@ namespace cardIndex
                     case("minion"):
                     {
                         _type = NewVirtualCardParent.type.minion;
+                        descBackground = descBackgrounds[(int) NewVirtualCardParent.type.minion];
                         break;
                     }
                     case("spell"):
                     {
                         _type = NewVirtualCardParent.type.spell;
+                        descBackground = descBackgrounds[(int)NewVirtualCardParent.type.spell];
                         break;
                     }
                     case("token"):
@@ -416,33 +434,34 @@ namespace cardIndex
                     }
                 }
 
-                // load the sprite
+                // load the sprites
                 switch (rawDetails[0].Trim().ToLower())
                 {
                     case ("cat"):
                         {
-                            Sprite spriteToAdd = null;
                             if (catCardsOffset < catSpritesheet.Length)
                             {
-                                spriteToAdd = catSpritesheet[catCardsOffset];
+                                cardImage = catSpritesheet[catCardsOffset];
                             }
 #if WARN_UNDEFINED
                             else
                             {
                                 Debug.LogWarning($"More cat cards than sprites found! Double check the size of both the spritesheet and allCards.tsv?");
                             }
-                            if (spriteToAdd == null)
+                            if (cardImage == null)
                             {
                                 Debug.LogWarning($"Could not find sprite at spritesheet Cat_{catCardsOffset}! card will have fallback sprite.");
                             }
 #endif
-                            cardSprites.Add(spriteToAdd);
+                            cardSprites.Add(cardImage);
                             catCardsOffset++;
                             break;
                         }
                 }
                 // create the struct and add.
                 Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
+                Sprites spritesToAdd = new Sprites(cardImage, descBackground);
+                spritesIndex.Add(rawDetails[2], spritesToAdd);
                 index.Add(rawDetails[2], cardToAdd);
                 nameIndex.Add(rawDetails[2]);
             }

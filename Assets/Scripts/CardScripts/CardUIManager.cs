@@ -11,8 +11,13 @@ public class CardUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cardCost;
     [SerializeField] private TextMeshProUGUI cardEquipment;
     [SerializeField] private TextMeshProUGUI cardFlavortext;
+    [SerializeField] private TextMeshProUGUI cardDescription;
+    [SerializeField] private TextMeshProUGUI cardExtraDamage;
     [SerializeField] private CardClickHandler clickHandler;
     [SerializeField] private Image cardArt;
+    [SerializeField] private Image DescriptionBackground;
+
+    int initialDamage;
     #endregion
 
     private void Start()
@@ -22,6 +27,11 @@ public class CardUIManager : MonoBehaviour
             clickHandler = GetComponent<CardClickHandler>();
         }
         clickHandler.OwnerPlayer.energyChange += ChangeCostColor;
+        if (clickHandler.CardData is MinionParent)
+        {
+            MinionParent minion = (MinionParent)clickHandler.CardData;
+            initialDamage = minion.Damage;
+        }
         RefreshCardUI();
     }
 
@@ -55,6 +65,21 @@ public class CardUIManager : MonoBehaviour
             {
                 cardCost.text = "";
             }
+            if (minionData.Damage == initialDamage)
+            {
+                cardExtraDamage.text = "";
+            }
+            else
+            {
+                if (minionData.Damage > initialDamage)
+                {
+                    cardExtraDamage.text = $"+{minionData.Damage - initialDamage}";
+                }
+                else
+                {
+                    cardExtraDamage.text = $"{minionData.Damage - initialDamage}";
+                }
+            }
         }
         else if (clickHandler.CardData is SpellParent)
         {
@@ -70,11 +95,17 @@ public class CardUIManager : MonoBehaviour
         {
             cardCost.color = Color.red;
         }
+        else
+        {
+            cardCost.color = Color.black;
+        }
+        cardDescription.text = cardIndex.Index.GetDetails(cardName.text).description;
 
-        // add sprite.
-        Sprite updatedArt = null;
-        updatedArt = cardIndex.Index.GetSprite(clickHandler.CardData.NameIndexPosition);
-        if (updatedArt != null) cardArt.sprite = updatedArt;
+        // add sprites.
+        cardIndex.Sprites updatedArt;
+        updatedArt = cardIndex.Index.GetSprites(cardName.text);
+        if (updatedArt.cardImage != null) cardArt.sprite = updatedArt.cardImage;
+        if (updatedArt.DescBackground != null) DescriptionBackground.sprite = updatedArt.DescBackground;
     }
 
 
