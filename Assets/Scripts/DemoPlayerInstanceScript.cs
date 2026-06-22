@@ -6,9 +6,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "Spontaneous Combustion",
-        "Patch Up",
-        "M16",
         "Conscript",
         "Cat Demolition Crew",
         "Cat",
@@ -36,7 +33,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         if (p.IsPlayerTwo)
         {
             //p.Deck.Add(new MinionParent("Dr. House(Cat)", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 1, 1, "s", NewVirtualCardParent.type.minion, MinionParent.effect.heal, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent("Bobby", NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent("Slasher Cat", NewVirtualCardParent.location.deck));
             p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
@@ -52,7 +48,6 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent("Terrorize", NewVirtualCardParent.location.deck));
 
         for (int i = 0; i < startingDeck.Length; i++)   
         {

@@ -441,6 +441,12 @@ public class CardSelectionManager : MonoBehaviour
         {
             attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
             selectedCardObject.OwnerPlayer.RegisterAction();
+            
+            for(int i =0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+            {
+                RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+            }
+
             RefreshCardVisual(selectedCardObject);
             RefreshCardVisual(targetCard);
             ClearSelection();
