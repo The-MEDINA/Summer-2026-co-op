@@ -19,6 +19,7 @@ public class SpellParent : NewVirtualCardParent
         allyCards,
         opponent,
         owner,
+        allEnemies,
         none
     }
 
@@ -288,6 +289,7 @@ public class SpellParent : NewVirtualCardParent
                     for (int i = 0; i < cards.Count; i++)
                     {
                         cards[i].UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+                        cards[i].UnityObject.GetComponent<CardClickHandler>().ResetTimer();
                     }
                     break;
                 }

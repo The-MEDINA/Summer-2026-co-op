@@ -542,7 +542,14 @@ public class CardSelectionManager : MonoBehaviour
             Networking.SendCardAttack(attacker, target, false);
         }
 
-        attacker.OnPlay(target);
+        if(attacker.Target == SpellParent.spellTarget.allEnemies)
+        {
+            attacker.OnPlayAOE(target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
+        }
+        else
+        {
+            attacker.OnPlay(target);
+        }
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);

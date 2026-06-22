@@ -46,6 +46,8 @@ NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCard
             //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
         }
 
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
