@@ -411,6 +411,10 @@ public class CardSelectionManager : MonoBehaviour
                 if (wasSecondAttack)
                 {
                     twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
+                    for (int i = 0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+                    {
+                        RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+                    }
                 }
                 else
                 {
