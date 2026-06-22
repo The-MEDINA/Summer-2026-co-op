@@ -287,7 +287,7 @@ public class SpellParent : NewVirtualCardParent
                 {
                     for (int i = 0; i < cards.Count; i++)
                     {
-
+                        cards[i].UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
                     }
                     break;
                 }

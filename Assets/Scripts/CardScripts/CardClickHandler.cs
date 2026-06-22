@@ -21,6 +21,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private float timer = 0f;
     private float timeToAttack = 2f;
+    private speed currentSpeed = speed.normal;
 
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
@@ -35,19 +36,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         if (CardData is MinionParent)
         {
             MinionParent minion = (MinionParent)CardData;
-            if (minion.CardEffect == MinionParent.effect.haste)
-            {
-                SetSpeed(speed.haste);
-            }
-            else if (minion.CardEffect == MinionParent.effect.sloth)
-            {
-                SetSpeed(speed.sloth);
-            }
-            else
-            {
-                SetSpeed(speed.normal);
-            }
-
+            FindSpeed(minion.CardEffect);
             SetColor(minion.CardEffect);
         }
         else if (CardData is SpellParent) 
@@ -72,11 +61,43 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 minion.CanAttack = true;
                 timer = 0f;
+
+                if(currentSpeed == speed.frozen) //won't be frozen if froze ready, timeToAttack, lots of fix needed
+                {
+                    FindSpeed(minion.CardEffect);
+                }
             }
             else if (timer < timeToAttack && !minion.CanAttack)
             {
                 timer += Time.deltaTime;
             }
+        }
+    }
+
+    private void FindSpeed(MinionParent.effect speed)
+    {
+        switch(speed)
+        {
+            case MinionParent.effect.haste:
+                {
+                    SetSpeed(CardClickHandler.speed.haste);
+                    currentSpeed = CardClickHandler.speed.haste;
+                    break;
+                }
+
+            case MinionParent.effect.sloth:
+                {
+                    SetSpeed(CardClickHandler.speed.sloth);
+                    currentSpeed = CardClickHandler.speed.sloth;
+                    break;
+                }
+
+            default:
+                {
+                    SetSpeed(CardClickHandler.speed.normal);
+                    currentSpeed = CardClickHandler.speed.normal;
+                    break;
+                }
         }
     }
 
@@ -105,7 +126,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             case speed.frozen:
                 {
-                    timeToAttack = 9999999f;
+                    timeToAttack = 10f;
                     if (cardData is MinionParent)
                     {
                         MinionParent minion = ( MinionParent)cardData;
