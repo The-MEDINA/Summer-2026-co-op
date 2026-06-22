@@ -302,7 +302,7 @@ public class SpellParent : NewVirtualCardParent
 
         for (int i = 0; i < target.EquipmentList.Count; i++)
         {
-            switch(target.EquipmentList[i])
+            switch(target.EquipmentList[i])//errors occur when health taken below 1 and then tried to revert it
             {
                 case MinionParent.equipment.m16: { target.Damage -= 2; break; }
                 case MinionParent.equipment.terrorize: { target.Damage++; target.Health++; target.StartingHealth++; break; }

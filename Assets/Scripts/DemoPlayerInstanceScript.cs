@@ -6,6 +6,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
+        "Terrorize",
+        "Terrorize",
         "Conscript",
         "Cat Demolition Crew",
         "Cat",

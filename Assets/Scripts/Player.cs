@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
 
     private float timer = 0f;
 
+    private bool hasThorns = false;
+
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { energy = value; } }
     public bool IsPlayerTwo { get { return isPlayerTwo; } }
@@ -158,6 +160,22 @@ public class Player : MonoBehaviour
         {
             Health = 0;
             Death();
+        }
+    }
+
+    public void TakeDamage(int damage, MinionParent minionAttacker)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            Health = 0;
+            Death();
+        }
+
+        if (Health > 0 && hasThorns)//needs tested
+        {
+            minionAttacker.TakeDamage(1);
         }
     }
 
