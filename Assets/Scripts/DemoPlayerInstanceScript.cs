@@ -6,18 +6,15 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "Terrorize",
+        "Empower",
         "Terrorize",
         "Conscript",
-        "Cat Demolition Crew",
         "Cat",
         "Magic Cat / Septimus Mrreep",
         "Smite",
         "Scaredy Cat",
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
-        "Exploding Cat",
-        "Night Vision Cat",
     };
 
     private Player p;
