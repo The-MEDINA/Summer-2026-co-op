@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
     [SerializeField] private int startingEnergy = 10;
     [SerializeField] private float timeForEnergy = 5f;
     [SerializeField] private bool isPlayerTwo = false;
-
     [SerializeField] private float moveCooldownTime = 1.5f;
 
     private int energy;
@@ -24,7 +23,11 @@ public class Player : MonoBehaviour
     private bool hasThorns = false;
 
     public int Health { get { return health; } set { health = value; } }
-    public int Energy { get { return energy; } set { energy = value; } }
+    public int Energy { get { return energy; } set { 
+            energy = value; 
+            if (energyChange != null) 
+                energyChange.Invoke(); } 
+    }
     public bool IsPlayerTwo { get { return isPlayerTwo; } }
     public int MaxEnergy { get { return maxEnergy; } }
 
@@ -37,6 +40,9 @@ public class Player : MonoBehaviour
     public List<NewVirtualCardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
     public List<NewVirtualCardParent> Discard { get { return discard; } set { discard = value; } }
     public CommanderCardScript CommanderCard { get { return commanderCard; } set { commanderCard = value; } }
+
+    public delegate void EnergyChange();
+    public event EnergyChange energyChange;
 
     private void Start()
     {

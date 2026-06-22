@@ -12,8 +12,9 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         frozen
     }
 
-    [SerializeField] private float magnifiedScale = 1.3f;
-    [SerializeField] private float selectedScale = 1.15f;
+    [SerializeField] private float magnifiedScale = 1.6f;
+    [SerializeField] private float selectedScale = 1.5f;
+    [SerializeField] private float defaultScale = 0.2f;
 
     private Vector3 originalScale;
     private NewVirtualCardParent cardData;
@@ -30,7 +31,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private void Awake()
     {
-        originalScale = transform.localScale;
+        originalScale = transform.localScale * defaultScale;
+        transform.localScale = originalScale;
     }
 
     private void Start()

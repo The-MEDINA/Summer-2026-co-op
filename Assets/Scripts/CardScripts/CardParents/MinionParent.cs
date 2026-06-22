@@ -105,10 +105,8 @@ public class MinionParent : NewVirtualCardParent
         }
         if (CardEffect == effect.spwnTokOnPlay) //spawn token creatures when entering play
         {
-            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten",
-                NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
-            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1, "Kitten",
-                NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
         }
     }
 
@@ -136,8 +134,7 @@ public class MinionParent : NewVirtualCardParent
 
             if(this.CardEffect == effect.spawnToken)
             { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
-                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 1, 1,
-                    "Kitten", NewVirtualCardParent.type.token, MinionParent.effect.none, NewVirtualCardParent.location.inPlay));
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             }
             canAttack = false;
         }
