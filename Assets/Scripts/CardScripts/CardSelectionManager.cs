@@ -735,12 +735,6 @@ public class CardSelectionManager : MonoBehaviour
                 return;
             }
 
-            // send this attack on player to peer
-            if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
-            {
-                Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
-            }
-
             /* TwoAttack AoE can be checked here if we want it to still hit cards when attacking player */
 
             // handle specifically the first or second attack
@@ -756,20 +750,21 @@ public class CardSelectionManager : MonoBehaviour
                 selectedCardObject.OwnerPlayer.RegisterAction();
             }
             RefreshCardVisual(selectedCardObject);
-            ClearSelection();
-            Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
-            return;
+            // ClearSelection();
+            // Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
+            /* AoE check can be done here if we want it to still hit cards when attacking player */
+
         }
-
-        /* AoE check can be done here if we want it to still hit cards when attacking player */
-
         // regular minion
-        if (attackingOwner != null && attacker.CanAttack)
+        else
         {
-            int minionDamage = attacker.Damage;
-            opposingPlayer.TakeDamage(minionDamage, attacker);
-            attacker.CanAttack = false;
-            attackingOwner.RegisterAction();
+            if (attackingOwner != null && attacker.CanAttack)
+            {
+                int minionDamage = attacker.Damage;
+                opposingPlayer.TakeDamage(minionDamage, attacker);
+                attacker.CanAttack = false;
+                attackingOwner.RegisterAction();
+            }
         }
 
         RefreshCardVisual(selectedCardObject);
@@ -777,6 +772,12 @@ public class CardSelectionManager : MonoBehaviour
         Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
 
         ClearSelection();
+
+        // send this attack on player to peer
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
+        {
+            Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
+        }
     }
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
