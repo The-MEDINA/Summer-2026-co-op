@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using cardIndex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Network
 {
@@ -76,7 +77,7 @@ namespace Network
      * byte 2 holds the position of the card in the target's inplay array.
      * byte 3 holds whether this is a card's second attack. 1 means there is one, 0 means there isn't.
      * byte 4 holds an override for the array to grab from. If it's 0, ignore. If it's 1, grab from the hand instead.
-     * byte 5 holds an override for the player whose cards to target. 1 means target the other player's cards. This is mainly for healing cards.
+     * byte 5 holds an override for the player whose cards to target. 1 means target the other player's cards. 2 means target the opponent player.
      * bytes 6 - 1023 are empty so we can use it later to send more info.
      * 
      * --- CARDDEATH: ---
@@ -603,6 +604,13 @@ namespace Network
             return packet;
         }
 
+        private static byte[] EncodePacket(NewVirtualCardParent attacker, Player player, bool isSecondAttack)
+        {
+            byte[] packet = new byte[1024];
+            packet = EncodePacket(attacker, attacker, isSecondAttack);
+            packet[5] = 2;
+            return packet;
+        }
         /// <summary>
         /// encode a sceneSwitch packet to send to a peer.
         /// </summary>
@@ -1103,6 +1111,10 @@ namespace Network
                         {
                             target = playerOne.InPlay[packet[2]];
                         }
+                        else if (packet[5] == 2)
+                        {
+                            requestPlayer = playerOne;
+                        }
 #if DEBUG_MODE
                         else
                         {
@@ -1348,6 +1360,23 @@ namespace Network
                 requestAttack[0] = null;
                 requestAttack[1] = null;
                 requestSecondAttack = false;
+
+                // restore player 1's selection if needed.
+                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
+            }
+            // minion attacks player.
+            else if (requestAttack[0] as MinionParent != null && requestPlayer != null)
+            {                
+                // store player 1's selection if one was made.
+                CardClickHandler previousSelection = null;
+                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
+                CardSelectionManager.Instance.TryAttackPlayer(requestSecondAttack);
+                requestAttack[0] = null;
+                requestAttack[1] = null;
+                requestSecondAttack = false;
+                requestPlayer = null;
 
                 // restore player 1's selection if needed.
                 if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
@@ -1645,12 +1674,37 @@ namespace Network
         /// </summary>
         /// <param name="attacker">The card attacking.</param>
         /// <param name="target">The target of the attack.</param>
+        /// <param name="isSecondAttack">Whether this is the attacker's second attack.</param>
         public static void SendCardAttack(NewVirtualCardParent attacker, NewVirtualCardParent target, bool isSecondAttack)
         {
 #if DEBUG_MODE
             Debug.Log("encode card attack");
 #endif
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send an attack while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer you attacked a player.
+        /// </summary>
+        /// <param name="attacker">the card attacking.</param>
+        /// <param name="player">the player being targetted.</param>
+        /// <param name="isSecondAttack">Whether this is the attacker's second attack.</param>
+        public static void SendCardAttackPlayer(NewVirtualCardParent attacker, Player player, bool isSecondAttack)
+        {
+#if DEBUG_MODE
+            Debug.Log("encode card attack on player");
+#endif
+            byte[] packet = EncodePacket(attacker, player, isSecondAttack);
             if (CurrentState != state.disconnected)
             {
                 stream.WriteAsync(packet);

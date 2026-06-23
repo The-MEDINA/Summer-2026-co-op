@@ -7,6 +7,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     private string[] startingDeck =
     {
         "Dr. House(Cat)",
+        "Heal Bot",
         "Cat?",
         "Cat",
         "M16",

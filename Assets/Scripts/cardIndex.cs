@@ -414,7 +414,7 @@ namespace cardIndex
                                 _spellTarget = SpellParent.spellTarget.enemyCards;
                                 break;
                             }
-                        case ("player"):
+                        case ("owner"):
                             {
                                 _spellTarget = SpellParent.spellTarget.owner;
                                 break;
