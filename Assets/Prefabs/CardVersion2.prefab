@@ -1373,8 +1373,7 @@ MonoBehaviour:
   clickHandler: {fileID: 4841469300024249587}
   cardArt: {fileID: 2721754451764683522}
   DescriptionBackground: {fileID: 68413708136174173}
-  attackTimerBG: {fileID: 0}
-  attackTimerFill: {fileID: 0}
+  attackTimerFill: {fileID: 6057259953460116088}
 --- !u!61 &3879588291129866743
 BoxCollider2D:
   m_ObjectHideFlags: 0

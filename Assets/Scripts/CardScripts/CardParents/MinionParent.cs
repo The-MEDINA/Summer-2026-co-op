@@ -137,6 +137,7 @@ public class MinionParent : NewVirtualCardParent
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             }
             canAttack = false;
+            UnityObject.GetComponent<CardUIManager>().ResetProgress();
         }
     }
 
@@ -279,6 +280,7 @@ public class MinionParent : NewVirtualCardParent
                 }
             }
             canAttack = false;
+            UnityObject.GetComponent<CardUIManager>().ResetProgress();
         }
     }
 

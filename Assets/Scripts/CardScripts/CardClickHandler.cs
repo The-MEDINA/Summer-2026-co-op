@@ -94,7 +94,23 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             float timePercent = timer / timeToAttack;
 
-            if (timePercent >= 1f) { }
+            if (timePercent >= 1f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(4f);
+            }
+            else if (1f > timePercent && timePercent >= 0.75f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(3f);
+
+            }
+            else if (0.75f > timePercent && timePercent >= 0.5f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(2f);
+            }
+            else if (0.5f > timePercent && timePercent >= 0.25f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(1f);
+            }
         }
     }
 

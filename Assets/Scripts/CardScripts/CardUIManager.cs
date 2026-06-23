@@ -20,7 +20,6 @@ public class CardUIManager : MonoBehaviour
     int initialDamage;
 
     [SerializeField] private Image attackTimerFill;
-    private int fillProgress = 0;
     #endregion
 
     private void Start()
@@ -131,21 +130,21 @@ public class CardUIManager : MonoBehaviour
         {
             case 1:
                 {
-                    attackTimerFill.fillAmount = 25f;
+                    attackTimerFill.fillAmount = 0.25f;
                     attackTimerFill.color = Color.red;
                     break;
                 }
 
             case 2:
                 {
-                    attackTimerFill.fillAmount = 50f;
+                    attackTimerFill.fillAmount = 0.50f;
                     attackTimerFill.color = Color.orange;
                     break;
                 }
 
             case 3:
                 {
-                    attackTimerFill.fillAmount = 75f;
+                    attackTimerFill.fillAmount = 0.75f;
                     attackTimerFill.color = Color.yellow;
                     break;
                 }
@@ -161,7 +160,6 @@ public class CardUIManager : MonoBehaviour
 
     public void ResetProgress()
     {
-        fillProgress = 0;
         attackTimerFill.fillAmount = 0f;
         attackTimerFill.color = Color.gray;
     }
