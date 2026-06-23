@@ -749,6 +749,11 @@ public class CardSelectionManager : MonoBehaviour
                 twoAttackMinion.CanAttack = false;
                 selectedCardObject.OwnerPlayer.RegisterAction();
             }
+            else
+            {
+                ClearSelection();
+                return;
+            }
             RefreshCardVisual(selectedCardObject);
             // ClearSelection();
             // Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
@@ -765,19 +770,23 @@ public class CardSelectionManager : MonoBehaviour
                 attacker.CanAttack = false;
                 attackingOwner.RegisterAction();
             }
+            else
+            {
+                ClearSelection();
+                return;
+            }
         }
 
         RefreshCardVisual(selectedCardObject);
 
         Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
 
-        ClearSelection();
-
         // send this attack on player to peer
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
         }
+        ClearSelection();
     }
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
