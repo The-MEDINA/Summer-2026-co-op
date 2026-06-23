@@ -91,6 +91,10 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 timer += Time.deltaTime;
             }
+
+            float timePercent = timer / timeToAttack;
+
+            if (timePercent >= 1f) { }
         }
     }
 
