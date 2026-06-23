@@ -23,7 +23,7 @@ Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	2	Damage	"Not normally know
 Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	Heal	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
 Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
 Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
-Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	player
+Cat	3	Heal Bot	Spell	Heals player for 10 health	0	10	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	owner
 Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
 Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
 Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	enemies
@@ -58,7 +58,7 @@ Cat	3	Catnap	Spell	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	eq
 Cat	4	Hex	Spell	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"	equipment	enemies
 Cat	4	Cat Fusion	Spell	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."	unique	allies
 Cat	5	No Thoughts, Head Empty	Spell	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."	unique	allies
-Cat	5	Barbed Wire	Spell	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	player
+Cat	5	Barbed Wire	Spell	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
 Cat	6	Clone	Spell	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."		
 Cat	NA	Sergeant Zoomie	Commander	Gives 2 energy every 30 seconds				"Eight more laps around the coffee table and you'll have enough energy for a Tank Cat."		
 Cat	NA	Tiger the Cat	Token	NA	X	X	None	"Looking at this thing just makes me uncomfortable."		

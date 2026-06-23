@@ -84,6 +84,12 @@ public class SpellParent : NewVirtualCardParent
                     }
                     break;
                 }
+            case spellEffect.heal:
+                {
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += Amount;
+                    Debug.Log($"Healed player for {Amount} health. Current health: {UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health}");
+                    break;
+                }
 
             default:
                 {

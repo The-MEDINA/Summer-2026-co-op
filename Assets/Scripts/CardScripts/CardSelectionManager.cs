@@ -24,7 +24,6 @@ public class CardSelectionManager : MonoBehaviour
     [SerializeField] private bool isLocalTesting = false;
 
     private CardClickHandler selectedCardObject;
-    private PointerEventData lastEventData;
 
     public CardClickHandler SelectedCardObject
     {
@@ -49,7 +48,6 @@ public class CardSelectionManager : MonoBehaviour
             Debug.LogWarning("Clicked card has no card data.");
             return;
         }
-        lastEventData = eventData;
 
         if (selectedCardObject != null && selectedCardObject != clickedCard)
         {
@@ -70,7 +68,7 @@ public class CardSelectionManager : MonoBehaviour
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
 
-                if (spell.Target != SpellParent.spellTarget.none)
+                if (spell.Target != SpellParent.spellTarget.none && spell.Target != SpellParent.spellTarget.owner)
                 {
                     TrySpellTarget(clickedCard);
                 }
@@ -600,7 +598,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
 
-        if (attacker == null || attacker.Target != SpellParent.spellTarget.none)
+        if (attacker == null || (attacker.Target != SpellParent.spellTarget.none && attacker.Target != SpellParent.spellTarget.owner))
         {
             Debug.Log("Only spell cards can be played this way.");
 
@@ -859,8 +857,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (lastEventData.button == PointerEventData.InputButton.Right) TryAttackPlayer(true);
-        else TryAttackPlayer(false);
+        TryAttackPlayer(false);
     }
 
     private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)
