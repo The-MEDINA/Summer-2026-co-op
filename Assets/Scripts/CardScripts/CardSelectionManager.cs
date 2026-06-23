@@ -722,12 +722,6 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        // send this attack on player to peer
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
-        {
-            Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
-        }
-
         // twoattacks specific behavior
         if (attacker is TwoAttackParent)
         {
@@ -739,6 +733,12 @@ public class CardSelectionManager : MonoBehaviour
                 Debug.Log("You cannot heal the other player with your second attack.");
                 ClearSelection();
                 return;
+            }
+
+            // send this attack on player to peer
+            if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
+            {
+                Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
             }
 
             /* TwoAttack AoE can be checked here if we want it to still hit cards when attacking player */
