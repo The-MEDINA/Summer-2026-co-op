@@ -155,6 +155,13 @@ public class CardUIManager : MonoBehaviour
                     attackTimerFill.color = Color.green;
                     break;
                 }
+
+            case 5:
+                {
+                    attackTimerFill.fillAmount = 100f;
+                    attackTimerFill.color = Color.lightSkyBlue;
+                    break;
+                }
         }
     }
 

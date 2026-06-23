@@ -77,7 +77,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                 minion.CanAttack = false;
                 timer = 0f;
 
-                if(freezeTimer > timeToUnfreeze)
+                if(freezeTimer >= timeToUnfreeze)
                 {
                     timer = timeToAttack + 1f;
                 }
@@ -170,6 +170,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             case speed.frozen:
                 {
                     timeToAttack = 10f;
+                    currentSpeed = speed.frozen;
                     if (cardData is MinionParent)
                     {
                         MinionParent minion = ( MinionParent)cardData;
