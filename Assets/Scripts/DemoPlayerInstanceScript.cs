@@ -31,7 +31,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Terrorize",
         "Conscript",
         "Cat",
-        "Magic Cat / Septimus Mrreep",
+        "Magic Cat",
         "Smite",
         "Scaredy Cat",
         "Comically Large Spoon Cat",
