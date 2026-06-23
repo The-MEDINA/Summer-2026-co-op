@@ -1373,6 +1373,10 @@ namespace Network
 
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackPlayer(requestSecondAttack);
+                requestAttack[0] = null;
+                requestAttack[1] = null;
+                requestSecondAttack = false;
+                requestPlayer = null;
 
                 // restore player 1's selection if needed.
                 if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
