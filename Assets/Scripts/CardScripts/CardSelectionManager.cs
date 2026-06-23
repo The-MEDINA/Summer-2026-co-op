@@ -725,7 +725,7 @@ public class CardSelectionManager : MonoBehaviour
         // send this attack on player to peer
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo && attacker.CanAttack)
         {
-            // Networking.SendCardAttack(attacker, wasSecondAttack);
+            Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
         }
 
         // twoattacks specific behavior
