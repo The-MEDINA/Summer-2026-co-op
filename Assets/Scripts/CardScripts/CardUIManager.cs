@@ -124,7 +124,7 @@ public class CardUIManager : MonoBehaviour
         }
     }
 
-    public void AddProgress(float fillProgress)
+    public void AddProgress(float fillProgress)//needs freeze
     {
         switch(fillProgress)
         {
