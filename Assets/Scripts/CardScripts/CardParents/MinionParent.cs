@@ -39,6 +39,7 @@ public class MinionParent : NewVirtualCardParent
     private int health;
     private int damage;
     private effect cardEffect;
+    private bool hasGuard = false;
     private bool isDead = false;
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
@@ -47,6 +48,7 @@ public class MinionParent : NewVirtualCardParent
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
+    public bool HasGuard { get { return hasGuard; } set { hasGuard = value; } }
     public bool IsDead { get { return isDead; } }
     public effect CardEffect { get { return cardEffect; } set { cardEffect = value; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
@@ -87,7 +89,15 @@ public class MinionParent : NewVirtualCardParent
         health = cardDetails.health;
         startingHealth = cardDetails.health;
         damage = cardDetails.damage;
-        cardEffect = cardDetails.ability;
+        if (cardDetails.ability == effect.guard)
+        {
+            hasGuard = true;
+            if (cardDetails.secondAbility != effect.none) cardEffect = cardDetails.secondAbility;
+        }
+        else
+        {
+            cardEffect = cardDetails.ability;
+        }
         equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
@@ -300,14 +310,14 @@ public class MinionParent : NewVirtualCardParent
     /// <returns>bool stating whether or not the target can be attacked</returns>
     public bool CheckGuard(MinionParent target)
     {
-        if (target.CardEffect == MinionParent.effect.guard) { return false; }
+        if (target.hasGuard) { return false; }
 
         for (int i = 0; i < target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
         {
             if (target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i] is MinionParent)
             {
                 MinionParent otherMinion = (MinionParent)target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i];
-                if (otherMinion.CardEffect == MinionParent.effect.guard) { return true; }
+                if (otherMinion.hasGuard) { return true; }
             }
         }
 
