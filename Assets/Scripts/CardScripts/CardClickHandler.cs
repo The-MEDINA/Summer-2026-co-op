@@ -26,8 +26,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private float freezeTimer = 0f;
     private float timeToUnfreeze = 10f;
 
+    [SerializeField] private GameObject damagePopUpTextPrefab;
+
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
+    public GameObject DamagePopUpTextPrefab { get { return damagePopUpTextPrefab; } set { damagePopUpTextPrefab = value; }  }
 
     private void Awake()
     {

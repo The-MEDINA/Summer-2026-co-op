@@ -172,6 +172,10 @@ public class MinionParent : NewVirtualCardParent
 
         Health -= damage;
 
+        Vector2 spawnPos = new Vector2(UnityObject.GetComponent<CardClickHandler>().transform.position.x,
+            UnityObject.GetComponent<CardClickHandler>().transform.position.y + 0.5f);
+     //   GameObject instanceOfPopUpText = Instantiate(UnityObject.GetComponent<CardClickHandler>().DamagePopUpTextPrefab, spawnPos, Quaternion.identity);
+
         if (CardEffect == effect.thorns && !wasRevenge) //covers thorns damage
         {
             int thornsDamage = 0;
