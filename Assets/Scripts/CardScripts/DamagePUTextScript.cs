@@ -15,7 +15,7 @@ public class DamagePUTextScript : MonoBehaviour
         else if (timer < 0.4f)
         {
             text.alpha -= 2.5f * Time.deltaTime;
-            text.color = Color.red;
+            text.color = Color.black;
         }
     }
 

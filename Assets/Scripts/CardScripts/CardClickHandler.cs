@@ -30,8 +30,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
-    public GameObject DamagePopUpTextPrefab { get { return damagePopUpTextPrefab; } set { damagePopUpTextPrefab = value; }  }
-
+   
     private void Awake()
     {
         originalScale = transform.localScale * defaultScale;
@@ -115,6 +114,13 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                 CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(1f);
             }
         }
+    }
+
+    public void PopUpDamageText(int damage)
+    {
+        Vector2 spawnPos = new Vector2(transform.position.x, transform.position.y + 0.5f);
+        GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
+        damagePopUpTextPrefab.GetComponent<DamagePUTextScript>().SetNumber(damage);
     }
 
     private void FindSpeed(MinionParent.effect speed)

@@ -1350,6 +1350,7 @@ MonoBehaviour:
   magnifiedScale: 1.6
   selectedScale: 1.5
   defaultScale: 0.2
+  damagePopUpTextPrefab: {fileID: 66256372836773535, guid: 03ac45cd83484024f90c2f1abdc71594, type: 3}
 --- !u!114 &7297376667633930727
 MonoBehaviour:
   m_ObjectHideFlags: 0
