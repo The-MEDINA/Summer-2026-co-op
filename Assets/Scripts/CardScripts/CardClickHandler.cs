@@ -119,8 +119,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     public void PopUpDamageText(int damage)
     {
         Vector2 spawnPos = new Vector2(transform.position.x, transform.position.y + 0.5f);
-        GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
         damagePopUpTextPrefab.GetComponent<DamagePUTextScript>().SetNumber(damage);
+        GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
     }
 
     private void FindSpeed(MinionParent.effect speed)
