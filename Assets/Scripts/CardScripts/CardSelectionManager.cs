@@ -737,6 +737,12 @@ public class CardSelectionManager : MonoBehaviour
 
             /* TwoAttack AoE can be checked here if we want it to still hit cards when attacking player */
 
+            // send this attack on player to peer
+            if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
+            }
+
             // handle specifically the first or second attack
             int damage = twoAttackMinion.FirstDamage;
             if (wasSecondAttack)
@@ -765,6 +771,12 @@ public class CardSelectionManager : MonoBehaviour
         {
             if (attackingOwner != null && attacker.CanAttack)
             {
+                // send this attack on player to peer
+                if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+                {
+                    Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
+                }
+
                 int minionDamage = attacker.Damage;
                 opposingPlayer.TakeDamage(minionDamage, attacker);
                 attacker.CanAttack = false;
@@ -781,11 +793,6 @@ public class CardSelectionManager : MonoBehaviour
 
         Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
 
-        // send this attack on player to peer
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
-        {
-            Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
-        }
         ClearSelection();
     }
     private void RemoveSelectedCardFromHandUI(Player owner)
