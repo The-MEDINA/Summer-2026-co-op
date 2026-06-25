@@ -7,9 +7,11 @@ public class TwoAttackParent : MinionParent
     [SerializeField] private int firstDamage; //damage for first attack
     [SerializeField] private int secondDamage; //damage for second attack
     private effect secondAttackEffect;
+    private int startingSecondDamage;
 
     public int FirstDamage { get { return firstDamage; } set { firstDamage = value; } }
     public int SecondDamage { get { return secondDamage; } set { secondDamage = value; } }
+    public int StartingSecondDamage { get { return startingSecondDamage; } set { startingSecondDamage = value; } }
     public effect SecondaryCardEffect { get { return secondAttackEffect; } }
 
     /// <summary>
@@ -30,6 +32,7 @@ public class TwoAttackParent : MinionParent
     {
         FirstDamage = firstD;
         SecondDamage = secondD;
+        startingSecondDamage = secondD;
         secondAttackEffect = secondAttackE;
     }
 
@@ -43,6 +46,7 @@ public class TwoAttackParent : MinionParent
         Details cardDetails = cardIndex.Index.GetDetails(name);
         FirstDamage = cardDetails.damage;
         SecondDamage = cardDetails.secondDamage;
+        startingSecondDamage = cardDetails.secondDamage;
         secondAttackEffect = cardDetails.secondAbility;
     }
 

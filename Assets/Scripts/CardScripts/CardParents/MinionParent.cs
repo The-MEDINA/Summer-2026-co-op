@@ -36,6 +36,8 @@ public class MinionParent : NewVirtualCardParent
         catnap
     }
 
+    private int startingHealth;
+    private int startingDamage;
     private int health;
     private int damage;
     private effect cardEffect;
@@ -43,7 +45,6 @@ public class MinionParent : NewVirtualCardParent
     private bool isDead = false;
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
-    private int startingHealth;
     private List<equipment> equipmentList;
 
     public int Health { get { return health; } set { health = value; } }
@@ -54,6 +55,7 @@ public class MinionParent : NewVirtualCardParent
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
     public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
+    public int StartingDamage { get { return startingDamage; } set { startingDamage = value; } }
     public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
 
     /// <summary>
@@ -72,6 +74,7 @@ public class MinionParent : NewVirtualCardParent
         this.health = health;
         this.startingHealth = health;
         this.damage = damage;
+        this.startingDamage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         equipmentList = new List<equipment>();
@@ -89,6 +92,7 @@ public class MinionParent : NewVirtualCardParent
         health = cardDetails.health;
         startingHealth = cardDetails.health;
         damage = cardDetails.damage;
+        startingDamage = cardDetails.damage;
         if (cardDetails.ability == effect.guard)
         {
             hasGuard = true;
