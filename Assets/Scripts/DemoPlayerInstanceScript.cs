@@ -7,6 +7,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     private string[] startingDeck =
     {
         "Chonkmeister",
+        "Scaredy Cat",
+        "Comically Large Spoon Cat",
         "Dr. House(Cat)",
         "Heal Bot",
         "Cat?",
@@ -31,11 +33,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Empower",
         "Terrorize",
         "Conscript",
-        "Cat",
         "Magic Cat",
         "Smite",
-        "Scaredy Cat",
-        "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
     };
 
@@ -62,15 +61,17 @@ NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCard
             //p.Deck.Add(new MinionParent("Roughly A Cat", NewVirtualCardParent.location.deck));
             //p.Deck.Add(new MinionParent("Vampire Cat", NewVirtualCardParent.location.deck));
             //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
-        }
+        }*/
 
+        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        */
+        
         for (int i = 0; i < startingDeck.Length; i++)   
         {
             p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));

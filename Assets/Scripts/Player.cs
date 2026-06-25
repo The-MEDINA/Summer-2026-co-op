@@ -232,4 +232,6 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public void PlayerGainThorns() { hasThorns = true; }
 }

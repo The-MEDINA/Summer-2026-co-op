@@ -159,6 +159,7 @@ public class MinionParent : NewVirtualCardParent
     public void TakeDamage(int damage)
     {
         Health -= damage;
+        UnityObject.GetComponent<CardClickHandler>().PopUpDamageText(damage);
 
         if (Health <= 0)
         {
@@ -179,8 +180,9 @@ public class MinionParent : NewVirtualCardParent
         {
             Health = 0;
         }
-
+        
         Health -= damage;
+        UnityObject.GetComponent<CardClickHandler>().PopUpDamageText(damage);
 
         if (CardEffect == effect.thorns && !wasRevenge) //covers thorns damage
         {
