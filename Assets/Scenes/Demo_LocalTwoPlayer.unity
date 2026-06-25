@@ -2515,8 +2515,9 @@ MonoBehaviour:
   loopx2: {fileID: 8300000, guid: fe98c8880a2326043a7668d0f7718f93, type: 3}
   musicPlayer1: {fileID: 1005726554}
   musicPlayer2: {fileID: 1005726553}
-  volume: 0.5
-  offset: 5
+  volume: 0.25
+  transitionTime: 0.2
+  offset: -0.075
 --- !u!82 &1005726553
 AudioSource:
   m_ObjectHideFlags: 0
