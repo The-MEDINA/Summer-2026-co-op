@@ -93,6 +93,14 @@ public class SpellParent : NewVirtualCardParent
 
             default:
                 {
+                    switch (CardName)
+                    {
+                        case "Barbed Wire":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.PlayerGainThorns();
+                                break;
+                            }
+                    }
                     break;
                 }
         }
