@@ -542,6 +542,13 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
+        if (owner == targetCard.OwnerPlayer && attacker.Target == SpellParent.spellTarget.enemyCards)
+        {
+            Debug.Log("You cannot play spell targetting enemies on allies.");
+            ClearSelection();
+            return;
+        }
+
         if (!owner.SpendEnergy(attacker.Cost))
         {
             return;
