@@ -1093,7 +1093,17 @@ namespace Network
                         {
                             if (packet[2] != 255)
                             {
-                                target = playerTwo.InPlay[packet[2]];
+                                if (packet[5] == 1)
+                                {
+#if DEBUG_MODE
+                                    Debug.LogWarning("Found card incorrectly targetting enemies when it should target allies! Double check this card is working right?");
+#endif
+                                    target = playerOne.InPlay[packet[2]];
+                                }
+                                else
+                                {
+                                    target = playerTwo.InPlay[packet[2]];
+                                }
                             }
 #if DEBUG_MODE
                             else
