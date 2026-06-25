@@ -363,7 +363,13 @@ public class SpellParent : NewVirtualCardParent
                         }
                         break; 
                     }
-                case MinionParent.equipment.empower: { target.Damage--; target.Health--; target.StartingHealth--; break; }
+                case MinionParent.equipment.empower: 
+                    { 
+                        target.Damage--; 
+                        target.Health--; 
+                        target.StartingHealth--; 
+                        break; 
+                    }
                 case MinionParent.equipment.curse: { target.Damage += 2; break; }
                 case MinionParent.equipment.catnap: { target.Health -= 3; target.StartingHealth -= 3; break; }
             }

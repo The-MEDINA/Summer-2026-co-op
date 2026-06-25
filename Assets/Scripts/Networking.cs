@@ -549,6 +549,14 @@ namespace Network
                 if (spell.Target == SpellParent.spellTarget.allyCards)
                 {
                     packet[2] = (byte)playerOne.InPlay.IndexOf(target);
+                    if (packet[2] == 255)
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning("Spell targetting allies is targetting a card outside of player's inPlay array! Attempting to target an enemy card instead.");
+#endif
+                        packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                        packet[5] = 1;
+                    }
                 }
                 else
                 {
