@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using cardIndex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Network
 {
@@ -88,9 +87,13 @@ namespace Network
      * bytes 6 - 1023 are empty so we can use it later to send more info.
      * 
      * --- PAUSE_UNPAUSE ---
-     * byte 1 holds whether to pause or unpause.
+     * byte 1 holds whether to pause or unpause. true (1) means pause, false (0) means unpause.
+     * 
+     *  --- REQUEST: ---
+     * byte 1 holds the enum of the packet that's being requested.
+     * byte 2 holds any overrides or extra info. For a CardArray, that means 0 = deck, 1 = hand, 2 = inPlay.
      */
-    enum packetType
+    public enum packetType
     {
         handshake,
         keepAlive,
@@ -100,7 +103,8 @@ namespace Network
         cardAdd,
         cardAttack,
         cardDeath,
-        pause_unpause
+        pause_unpause,
+        request
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -126,6 +130,7 @@ namespace Network
         private static Player playerOne;
         private static Player playerTwo;
         private static Battleground p2Battleground;
+        private static HandUIManager p2HandUI;
 
         /// <summary>
         /// All these variables are for the network manager to actually do the networking.
@@ -157,6 +162,7 @@ namespace Network
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
+        private static List<short> requestArray = null;
 
         /// <summary>
         /// delegates to set up events.
@@ -174,6 +180,7 @@ namespace Network
         public static Player PlayerOne { get { return playerOne; } set { playerOne = value; } }
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
+        public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -866,6 +873,21 @@ namespace Network
             else packet[1] = 0;
             return packet;
         }
+
+        /// <summary>
+        /// Encode a request packet to send to a peer.
+        /// </summary>
+        /// <param name="packetToRequest">The type of packet to request.</param>
+        /// <param name="overrides">Any overrides for this packet.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(packetType packetToRequest, int overrides)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.request;
+            packet[1] = (byte)packetToRequest;
+            packet[2] = (byte)overrides;
+            return packet;
+        }
         #endregion
 
         /// <summary>
@@ -946,6 +968,7 @@ namespace Network
 #endif
                         // New array to replace the old one.
                         List<NewVirtualCardParent> cards = new List<NewVirtualCardParent>();
+                        List<short> cardIndices = new List<short>();
 
                         // For every card in the array.
                         for (int i = 0; i < packet[2]; i++)
@@ -956,6 +979,7 @@ namespace Network
                             short indexOfCard = packet[3 + (2 * i)];
                             indexOfCard <<= 8;
                             indexOfCard += packet[4 + (2 * i)];
+                            cardIndices.Add(indexOfCard);
 
                             // grab its name and create the card.
                             string cardName = cardIndex.Index.GetName(indexOfCard);
@@ -966,9 +990,19 @@ namespace Network
                         // place the array in the correct spot.
                         switch ((NewVirtualCardParent.location)packet[1])
                         {
-                            case (NewVirtualCardParent.location.deck): { playerTwo.Deck = cards; break; }
-                            case (NewVirtualCardParent.location.discard): { playerTwo.Discard = cards; break; }
-                            case (NewVirtualCardParent.location.hand): { playerTwo.Hand = cards; break; }
+                            case (NewVirtualCardParent.location.deck): 
+                                {
+                                    /* Not implemented, create a request for this */
+                                    break;
+                                }
+                            case (NewVirtualCardParent.location.discard): { /* Not implemented, create a request for this */ break; }
+                            case (NewVirtualCardParent.location.hand):
+                                {                                     
+                                    // 1 means this array is for the hand
+                                    cardIndices.Insert(0, 1);
+                                    requestArray = cardIndices;
+                                    break;
+                                }
                             case (NewVirtualCardParent.location.inPlay): 
                                 {
                                     AddToPreviousInplays(cards);
@@ -1047,7 +1081,7 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { /*playerTwo.Hand.Add(card);*/ requestCardInstantiation = -2; break; }
+                        case (NewVirtualCardParent.location.hand): { requestCardInstantiation = -2; break; }
                         case (NewVirtualCardParent.location.inPlay): { requestCardInstantiation = indexOfCard; break; }
                     }
                     break;
@@ -1175,6 +1209,42 @@ namespace Network
                     else CurrentState = state.connected;
                     break;
                 }
+                case ((byte)packetType.request):
+                    {
+#if DEBUG_MODE
+                        Debug.Log("Found request");
+#endif
+                        switch((packetType)packet[1])
+                        {
+                            case (packetType.cardArray):
+                            {
+                                switch(packet[2])
+                                {
+                                    // deck
+                                    case (0):
+                                        {
+                                            SendCardArray(playerOne.Deck, NewVirtualCardParent.location.deck);
+                                            break;
+                                        }
+                                    // hand
+                                    case (1):
+                                        {
+                                            SendCardArray(playerOne.Hand, NewVirtualCardParent.location.hand);
+                                            break;
+                                        }
+                                    }
+                                break;
+                            }
+                            default:
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning("Peer is requesting unknown packet! Ignoring request.");
+#endif
+                                break;
+                            }
+                        }
+                        break;
+                    }
                 default:
                 {
                         // ONLY throw exceptions if there is not an active connection.
@@ -1501,11 +1571,10 @@ namespace Network
                             {
 #if DEBUG_MODE
                                 Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
+#endif
                                 NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
                                 killThisInvalid.UnityObject.SetActive(false);
                                 playerTwo.InPlay.RemoveAt(0);
-
-#endif
                             }
                         }
                         // repopulate the array with the one from the cardArray packet
@@ -1515,10 +1584,59 @@ namespace Network
                         }
                         CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
                         CurrentState = state.connected;
-                        SendPauseUnpause(false);
+                        
+                        // request the peer's hand before unpausing
+                        SendRequest(packetType.cardArray, 1);
                     }
                 }
                 requestInplayCheck = false;
+            }
+            // hand cards.
+            if (requestArray != null && requestArray[0] == 1)
+            {
+                // remove the old hand array
+                while (playerTwo.Hand.Count != 0)
+                {
+                    p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
+                    playerTwo.Hand.RemoveAt(0);
+                }
+                // clear the deck too
+                while (playerTwo.Deck.Count != 0)
+                {
+                    playerTwo.Deck.RemoveAt(0);
+                }
+                // add the new hand cards to deck first
+                for (int i = 1; i < requestArray.Count; i++)
+                {
+                    NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
+                }
+                // play them to the hand
+                while (playerTwo.Deck.Count != 0)
+                {
+                    P2Battleground.DrawCardToHand();
+                }
+                requestArray = null;
+
+                // request the actual deck before unpausing
+                SendRequest(packetType.cardArray, 0);
+            }
+            if (requestArray != null && requestArray[0] == 0)
+            {
+                // clear the deck
+                while (playerTwo.Deck.Count != 0)
+                {
+                    playerTwo.Deck.RemoveAt(0);
+                }
+                // add the new hand cards to deck
+                for (int i = 1; i < requestArray.Count; i++)
+                {
+                    NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
+                }
+                requestArray = null;
+
+                // FINALLY unpause the game
+                CurrentState = state.connected;
+                SendPauseUnpause(false);
             }
         }
 
@@ -1776,6 +1894,29 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to pause/unpause while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Ask the peer for a packet.
+        /// </summary>
+        /// <param name="packetToRequest">type of packet to request</param>
+        /// <param name="overrides">any overrides that might be needed for this packet</param>
+        public static void SendRequest(packetType packetToRequest, int overrides)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode request packet");
+#endif
+            byte[] packet = EncodePacket(packetToRequest, overrides);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send request while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }
