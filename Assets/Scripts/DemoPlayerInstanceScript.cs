@@ -6,22 +6,16 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "No Thoughts, Head Empty",
         "Night Vision Cat",
         "Night Vision Cat",
         "Night Vision Cat",
         "Night Vision Cat",
-        "Single-Celled Cat",
-        "Tank Cat",
-        "Cat Demolition Crew",
-        "Patch Up",
-        "I Hungy!!!",
-        "Smite",
-        "Roughly a Cat",
-        "Orange Cat",
-        "Ice Cream Cat",
-        "Cooler Cat",
-        "Nacho Cat"
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Astro Cat",
+        "The Mad Catter",
+        "Pspspsps!",
+        "Curse"
     };
 
     private Player p;

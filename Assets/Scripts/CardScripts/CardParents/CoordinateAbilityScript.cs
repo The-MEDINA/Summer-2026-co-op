@@ -42,6 +42,11 @@ public class CoordinateAbilityScript
                     numToHit = 5;
                     break;
                 }
+            case "Astro Cat":
+                {
+                    numToHit = 4;
+                    break;
+                }
         }
     }
 
@@ -80,6 +85,12 @@ public class CoordinateAbilityScript
             case "Cat Demolition Crew": 
                 {
                     minion.UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.haste);
+                    break;
+                }
+            case "Astro Cat":
+                {
+                    minion.Damage += 3;
+                    minion.Health += 3;
                     break;
                 }
         }
