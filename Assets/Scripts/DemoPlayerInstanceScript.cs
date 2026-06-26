@@ -6,36 +6,16 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "Chonkmeister",
-        "Scaredy Cat",
-        "Comically Large Spoon Cat",
-        "Dr. House(Cat)",
-        "Heal Bot",
-        "Cat?",
-        "Cat",
-        "M16",
-        "Empower",
-        "Fish Treat",
-        "Cool Cat",
-        "Bobby",
-        "Viking Cat",
-        "Mother Cat",
-        "Shoto Cat",
-        "Cat Demolition Crew",
-        "Witch Cat",
-        "Slasher Cat",
-        "Vampire Cat",
-        "Spontaneous Combustion",
-        "Terrorize",
-        "Catnap",
-        "Curse",
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Night Vision Cat",
+        "Astro Cat",
+        "The Mad Catter",
         "Pspspsps!",
-        "Empower",
-        "Terrorize",
-        "Conscript",
-        "Magic Cat",
-        "Smite",
-        "Ratta-tat-Cat",
+        "Curse"
     };
 
     private Player p;
@@ -63,14 +43,14 @@ NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCard
             //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
         }*/
 
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
+//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
+//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
+//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
+//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         
         for (int i = 0; i < startingDeck.Length; i++)   
         {

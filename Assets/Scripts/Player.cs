@@ -63,14 +63,6 @@ public class Player : MonoBehaviour
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
-        if (isPlayerTwo)
-        {
-
-        }
-        else
-        {
-
-        }
     }
 
     private void GainEnergyOverTime()

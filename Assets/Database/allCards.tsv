@@ -21,12 +21,12 @@ Cat	5	Cat Demolition Crew	Minion	Coordinate 5 - rewards Haste	5	5	Coordinate	"So
 Cat	1	M16	Spell	Adds 0/2 to a minion	0	2	Equipment	"Please do not give to cats. Thank you."	equipment	allies
 Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	2	Damage	"Not normally known to happen to cats."	damage	enemies
 Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	Heal	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
-Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
+Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	equipment	allies
 Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
 Cat	3	Heal Bot	Spell	Heals player for 10 health	0	10	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	owner
 Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
 Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
-Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	enemies
+Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	allenemies
 Cat	6	Smite	Spell	Smite - Deathtouch	0	9999	Damage	"Screw you in particular!"	damage	enemies
 Cat	NA	Major Munchkin	Commander	Spawns 2 token creatures (1H 1D) every 30 seconds	NA	NA	NA	"Figurehead of the Feline Firearms Force."		
 Cat	NA	Kitten	Token	NA	1	1	None	"The smallest, weakest cat we could find."		

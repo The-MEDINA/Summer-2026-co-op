@@ -18,7 +18,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     // network manager needs this to instantiate cards.
     public void Start()
     {
-        if (p.IsPlayerTwo) Networking.P2Battleground = this;
+        if (p.IsPlayerTwo)
+        {
+            Networking.P2Battleground = this;
+            Networking.P2HandUI = handUIManager;
+        }
         p.CommanderCard = commanderCard;
     }
 

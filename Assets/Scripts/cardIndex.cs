@@ -419,6 +419,11 @@ namespace cardIndex
                                 _spellTarget = SpellParent.spellTarget.owner;
                                 break;
                             }
+                        case ("allenemies"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.allEnemies;
+                                break;
+                            }
                         case ("none"):
                             {
                                 _spellTarget = SpellParent.spellTarget.none;
