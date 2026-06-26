@@ -1598,6 +1598,7 @@ namespace Network
                 while (playerTwo.Hand.Count != 0)
                 {
                     p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
+                    playerTwo.Hand[0].UnityObject.SetActive(false);
                     playerTwo.Hand.RemoveAt(0);
                 }
                 // clear the deck too
