@@ -992,7 +992,8 @@ namespace Network
                         {
                             case (NewVirtualCardParent.location.deck): 
                                 {
-                                    /* Not implemented, create a request for this */
+                                    cardIndices.Insert(0, 0);
+                                    requestArray = cardIndices;
                                     break;
                                 }
                             case (NewVirtualCardParent.location.discard): { /* Not implemented, create a request for this */ break; }
@@ -1583,7 +1584,6 @@ namespace Network
                             p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
                         }
                         CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
-                        CurrentState = state.connected;
                         
                         // request the peer's hand before unpausing
                         SendRequest(packetType.cardArray, 1);
@@ -1608,7 +1608,8 @@ namespace Network
                 // add the new hand cards to deck first
                 for (int i = 1; i < requestArray.Count; i++)
                 {
-                    NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
+                    NewVirtualCardParent fixedHandCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
+                    playerTwo.Deck.Add(fixedHandCard);
                 }
                 // play them to the hand
                 while (playerTwo.Deck.Count != 0)
@@ -1631,6 +1632,7 @@ namespace Network
                 for (int i = 1; i < requestArray.Count; i++)
                 {
                     NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
+                    playerTwo.Deck.Add(fixedDeckCard);
                 }
                 requestArray = null;
 
