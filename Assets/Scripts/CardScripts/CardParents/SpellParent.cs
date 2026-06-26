@@ -370,6 +370,14 @@ public class SpellParent : NewVirtualCardParent
                         target.StartingHealth--; 
                         break; 
                     }
+                case MinionParent.equipment.iHungy:
+                    {
+                        if (target.CoordinateAbility != null)
+                        {
+                            target.CoordinateAbility.NumToHit++;
+                        }
+                        break;
+                    }
                 case MinionParent.equipment.curse: { target.Damage += 2; break; }
                 case MinionParent.equipment.catnap: { target.Health -= 3; target.StartingHealth -= 3; break; }
             }
