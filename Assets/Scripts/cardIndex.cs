@@ -192,7 +192,19 @@ namespace cardIndex
         private static void GenerateDictionaryIndex()
         {
             // setup
-            StreamReader reader = new StreamReader("Assets/Database/allCards.tsv");
+            string fileText = "allCards.tsv";
+            string filepath = System.IO.Path.Combine(Application.streamingAssetsPath, fileText);
+            if (System.IO.File.Exists(filepath))
+            {
+                fileText = System.IO.File.ReadAllText(filepath);
+            }
+            else
+            {
+#if WARN_UNDEFINED
+                Debug.LogError($"Could not find the file needed for cardIndex at {filepath}! Cards cannot be spawned. Please return to the editor and find a fix.");
+#endif
+            }
+            string[] reader = fileText.Split("\n");
             string raw;
             int catCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
@@ -200,9 +212,9 @@ namespace cardIndex
 
             // while allCards.tsv has data.
             // for loop is only here because I need an int for the nameIndex.
-            for (int i = 0; (raw = reader.ReadLine()) != null; i++)
+            for (int i = 0; i < reader.Length; i++)
             {
-                string[] rawDetails = raw.Split('\t');
+                string[] rawDetails = reader[i].Split('\t');
 
                 // parse the stuff that's not a string.
                 int _cost = -1;
@@ -470,7 +482,6 @@ namespace cardIndex
                 index.Add(rawDetails[2], cardToAdd);
                 nameIndex.Add(rawDetails[2]);
             }
-            reader.Close();
         }
     }
 }
