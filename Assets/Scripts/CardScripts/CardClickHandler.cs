@@ -12,8 +12,9 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         frozen
     }
 
-    [SerializeField] private float magnifiedScale = 1.3f;
-    [SerializeField] private float selectedScale = 1.15f;
+    [SerializeField] private float magnifiedScale = 1.6f;
+    [SerializeField] private float selectedScale = 1.5f;
+    [SerializeField] private float defaultScale = 0.2f;
 
     private Vector3 originalScale;
     private NewVirtualCardParent cardData;
@@ -22,13 +23,18 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private float timer = 0f;
     private float timeToAttack = 2f;
     private speed currentSpeed = speed.normal;
+    private float freezeTimer = 0f;
+    private float timeToUnfreeze = 10f;
+
+    [SerializeField] private GameObject damagePopUpTextPrefab;
 
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
-
+   
     private void Awake()
     {
-        originalScale = transform.localScale;
+        originalScale = transform.localScale * defaultScale;
+        transform.localScale = originalScale;
     }
 
     private void Start()
@@ -59,6 +65,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             if(timer > timeToAttack)
             {
+                Debug.Log(currentSpeed);
                 minion.CanAttack = true;
                 timer = 0f;
 
@@ -67,15 +74,58 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     FindSpeed(minion.CardEffect);
                 }
             }
+            else if(currentSpeed == speed.frozen)
+            {
+                minion.CanAttack = false;
+                timer = 0f;
+
+                if(freezeTimer >= timeToUnfreeze)
+                {
+                    timer = timeToAttack + 1f;
+                }
+                else if (freezeTimer < timeToUnfreeze && !minion.CanAttack)
+                {
+                    freezeTimer += Time.deltaTime;
+                }
+
+            }
             else if (timer < timeToAttack && !minion.CanAttack)
             {
                 timer += Time.deltaTime;
             }
+
+            float timePercent = timer / timeToAttack;
+
+            if (timePercent >= 1f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(4f);
+            }
+            else if (1f > timePercent && timePercent >= 0.75f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(3f);
+
+            }
+            else if (0.75f > timePercent && timePercent >= 0.5f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(2f);
+            }
+            else if (0.5f > timePercent && timePercent >= 0.25f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(1f);
+            }
         }
+    }
+
+    public void PopUpDamageText(int damage)
+    {
+        Vector2 spawnPos = new Vector2(transform.position.x + 0.1f * damage, transform.position.y + 0.5f);
+        damagePopUpTextPrefab.GetComponent<DamagePUTextScript>().SetNumber(damage);
+        GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
     }
 
     private void FindSpeed(MinionParent.effect speed)
     {
+        Debug.Log(currentSpeed);
         switch(speed)
         {
             case MinionParent.effect.haste:
@@ -99,11 +149,13 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     break;
                 }
         }
+        Debug.Log(currentSpeed);
     }
 
     public void SetSpeed(speed newSpeed)
     {
-        switch(newSpeed)
+        Debug.Log(currentSpeed);
+        switch (newSpeed)
         {
             default:
             case speed.normal:
@@ -127,6 +179,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             case speed.frozen:
                 {
                     timeToAttack = 10f;
+                    currentSpeed = speed.frozen;
                     if (cardData is MinionParent)
                     {
                         MinionParent minion = ( MinionParent)cardData;
@@ -135,6 +188,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     break;
                 }
         }
+        Debug.Log(currentSpeed);
+
     }
     private void SetColor(MinionParent.effect ability)
     {
@@ -227,7 +282,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         {
             case SpellParent.spellEffect.damage:
                 {
-                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.coral;                    break;
+                    CardData.UnityObject.GetComponent<SpriteRenderer>().color = Color.coral;                    
+                    break;
                 }
 
             case SpellParent.spellEffect.heal:
@@ -293,5 +349,10 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     public void SetSelectedVisual(bool selected)
     {
         transform.localScale = selected ? originalScale * selectedScale : originalScale;
+    }
+
+    public void ResetTimer()
+    {
+        timer = 0f;
     }
 }

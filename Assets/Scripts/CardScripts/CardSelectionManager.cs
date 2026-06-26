@@ -68,7 +68,7 @@ public class CardSelectionManager : MonoBehaviour
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
 
-                if (spell.Target != SpellParent.spellTarget.none)
+                if (spell.Target != SpellParent.spellTarget.none && spell.Target != SpellParent.spellTarget.owner)
                 {
                     TrySpellTarget(clickedCard);
                 }
@@ -411,6 +411,10 @@ public class CardSelectionManager : MonoBehaviour
                 if (wasSecondAttack)
                 {
                     twoAttackMinion.CheckAOEAttack(2, target, targetCard.OwnerPlayer.InPlay);
+                    for (int i = 0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+                    {
+                        RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+                    }
                 }
                 else
                 {
@@ -441,6 +445,12 @@ public class CardSelectionManager : MonoBehaviour
         {
             attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
             selectedCardObject.OwnerPlayer.RegisterAction();
+            
+            for(int i =0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
+            {
+                RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
+            }
+
             RefreshCardVisual(selectedCardObject);
             RefreshCardVisual(targetCard);
             ClearSelection();
@@ -542,7 +552,14 @@ public class CardSelectionManager : MonoBehaviour
             Networking.SendCardAttack(attacker, target, false);
         }
 
-        attacker.OnPlay(target);
+        if(attacker.Target == SpellParent.spellTarget.allEnemies)
+        {
+            attacker.OnPlayAOE(target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
+        }
+        else
+        {
+            attacker.OnPlay(target);
+        }
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
@@ -581,7 +598,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
 
-        if (attacker == null || attacker.Target != SpellParent.spellTarget.none)
+        if (attacker == null || (attacker.Target != SpellParent.spellTarget.none && attacker.Target != SpellParent.spellTarget.owner))
         {
             Debug.Log("Only spell cards can be played this way.");
 
@@ -631,7 +648,146 @@ public class CardSelectionManager : MonoBehaviour
 
         ClearSelection();
     }
+    public void TryAttackPlayer(bool wasSecondAttack)
+    {
+        // check that card exists.
+        if (selectedCardObject == null)
+        {
+            if (selectedCardObject != null && selectedCardObject.OwnerPlayer != null && selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                Networking.DesyncWarning("Player two's attacking or target card was null");
+            }
 
+            ClearSelection();
+            return;
+        }
+
+        // grab players
+        Player attackingOwner = selectedCardObject.OwnerPlayer;
+        if (attackingOwner == null)
+        {
+            Debug.Log("Attacking card has no owner.");
+            return;
+        }
+        Player opposingPlayer = null;
+        if (attackingOwner.IsPlayerTwo) opposingPlayer = player1;
+        else opposingPlayer = player2;
+
+        // make sure card is in play.
+        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        {
+            Debug.Log("Card must be in play before it can attack.");
+
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                Networking.DesyncWarning("Player two is attacking with card not in play");
+            }
+
+            ClearSelection();
+            return;
+        }
+
+        // convert card to minion or twoattack
+        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        bool isThisMinionATwoAttackHealer = false;
+
+        if (attacker is TwoAttackParent)
+        {
+            TwoAttackParent thisTestSucksBro = (TwoAttackParent)attacker;
+
+            if (thisTestSucksBro.SecondaryCardEffect == MinionParent.effect.heal)
+            {
+                isThisMinionATwoAttackHealer = true;
+            }
+        }
+
+        // Don't heal player
+        if (attacker.CardEffect == MinionParent.effect.heal)
+        {
+            Debug.Log("You cannot heal the other player.");
+            ClearSelection();
+            return;
+        }
+
+        if (attacker == null)
+        {
+            Debug.Log("Only minion cards can attack right now.");
+
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                Networking.DesyncWarning("Only minion cards can attack right now for player two");
+            }
+
+            ClearSelection();
+            return;
+        }
+
+        // twoattacks specific behavior
+        if (attacker is TwoAttackParent)
+        {
+            TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
+
+            // avoid healing player again
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && wasSecondAttack)
+            {
+                Debug.Log("You cannot heal the other player with your second attack.");
+                ClearSelection();
+                return;
+            }
+
+            /* TwoAttack AoE can be checked here if we want it to still hit cards when attacking player */
+
+            // handle specifically the first or second attack
+            int damage = twoAttackMinion.FirstDamage;
+            if (wasSecondAttack)
+            {
+                damage = twoAttackMinion.SecondDamage;
+            }
+            if (twoAttackMinion.CanAttack)
+            {
+                opposingPlayer.TakeDamage(damage, twoAttackMinion);
+                twoAttackMinion.CanAttack = false;
+                selectedCardObject.OwnerPlayer.RegisterAction();
+            }
+            else
+            {
+                ClearSelection();
+                return;
+            }
+            RefreshCardVisual(selectedCardObject);
+            // ClearSelection();
+            // Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
+            /* AoE check can be done here if we want it to still hit cards when attacking player */
+
+        }
+        // regular minion
+        else
+        {
+            if (attackingOwner != null && attacker.CanAttack)
+            {
+                int minionDamage = attacker.Damage;
+                opposingPlayer.TakeDamage(minionDamage, attacker);
+                attacker.CanAttack = false;
+                attackingOwner.RegisterAction();
+            }
+            else
+            {
+                ClearSelection();
+                return;
+            }
+        }
+
+        RefreshCardVisual(selectedCardObject);
+
+        Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
+
+        // send this attack on player to peer
+        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        {
+            Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
+        }
+        ClearSelection();
+    }
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
         if (selectedCardObject == null || owner == null)
@@ -669,7 +825,6 @@ public class CardSelectionManager : MonoBehaviour
             uiManager.RefreshCardUI();
         }
     }
-
     public void AttackOpposingTeamButton()
     {
         if (selectedCardObject == null || selectedCardObject.CardData == null)
@@ -705,23 +860,14 @@ public class CardSelectionManager : MonoBehaviour
             targetPlayer = player1;
         }
 
-        if (targetPlayer == null || targetPlayer.InPlay.Count <= 0)
+        if (targetPlayer == null)
         {
-            Debug.Log("Opposing team has no cards in play.");
+            Debug.Log("Target player is null.");
             ClearSelection();
             return;
         }
 
-        CardClickHandler targetCard = FindFirstVisibleCardForPlayer(targetPlayer);
-
-        if (targetCard == null)
-        {
-            Debug.Log("Could not find opposing card object.");
-            ClearSelection();
-            return;
-        }
-
-        TryAttackTarget(targetCard, false);
+        TryAttackPlayer(false);
     }
 
     private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)

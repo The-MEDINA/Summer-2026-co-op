@@ -13,7 +13,7 @@ Cat	3	Ratta-tat-Cat	Minion	Overkill	2	5	Overkill	"He's the bee's knees...whateve
 Cat	3	Mad Scientist Cat	Minion	Explode 3	3	4	Explode	"Better at chemistry than the girl you dated in High School."		
 Cat	3	Macho Cat	Minion	NA	4	3	None	"Dave named this one."		
 Cat	3	Beeg Cat	Minion	Coordinate 5 - rewards 0/3	7	0	Coordinate	"Corporate has asked me to note that cats do not usually grow this big. I don't know why they assumed you'd think that."		
-Cat	4	Magic Cat / Septimus Mrreep	Minion	Fireball - 3 damage to target / Thunderwave - 1 damage to all opposing minions	4	3/1	TwoAttacks/AoE	"Real name: Leroy Jenkins."		
+Cat	4	Magic Cat	Minion	Fireball - 3 damage to target / Thunderwave - 1 damage to all opposing minions	4	3/1	TwoAttacks/AoE	"Real name: Leroy Jenkins."		
 Cat	4	Cat Man	Minion	Overkill	3	6	Overkill	"Please note: Catman is a legally distinct character and is not in anyway linked to any copyrighted material anywhere."		
 Cat	4	Single-Celled Cat	Minion	ON PLAY: Mitosis - splits into 2 identical cards	3	3	Duplicate	"Please note: picture is not to scale."		
 Cat	5	Tank Cat	Minion	NA	7	7	None	"I don't want to know who thought this was a good idea (it was me)."		
@@ -23,8 +23,8 @@ Cat	1	Spontaneous Combustion	Spell	Instant damage	NA	2	Damage	"Not normally know
 Cat	1	Patch Up	Spell	Heal creature for 2 health	NA	2	Heal	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
 Cat	2	I Hungy!!!	Spell	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	unique	allies
 Cat	2	Terrorize	Spell	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
-Cat	3	Heal Bot	Spell	Heals player for 10 health	NA	NA	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	player
-Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	unique	allies
+Cat	3	Heal Bot	Spell	Heals player for 10 health	0	10	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	owner
+Cat	3	Fish Treat	Spell	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
 Cat	4	Conscript	Spell	Spawns 3 token creatures (1H 1D)	NA	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
 Cat	5	Blizzard	Spell	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	enemies
 Cat	6	Smite	Spell	Smite - Deathtouch	0	9999	Damage	"Screw you in particular!"	damage	enemies
@@ -40,25 +40,25 @@ Cat	3	Bobby	Minion	AOE 1	3	1	AOE	"Roses are red, irises are indigo, Bobby is wan
 Cat	3	Viking Cat	Minion	Guard	4	2	Guard	"Hey Siri: what rhymes with 'norse'?"		
 Cat	3	Mother Cat	Minion	SpawnTokens 2	3	2	SpawnTokens	"Fun fact: kittens are born both blind and deaf. Despite this, they would probably still be better at this game than you are."		
 Cat	4	Dr. House(Cat)	Minion	Heal 4	3	4	Heal	"CPR certified. You need anything else done, better luck asking a Boy Scout."		
-Cat	4	Witch Cat	Minion	Fireball - 3 damage to target / Witch's Brew - Heal a minion for 2 health	4	3/2	TwoAttacks	"Bubble, bubble, toil and trouble. Bring me a FISH TREAT on the double!"		
+Cat	4	Witch Cat	Minion	Fireball - 3 damage to target / Witch's Brew - Heal a minion for 2 health	4	3/2	TwoAttacks/Heal	"Bubble, bubble, toil and trouble. Bring me a FISH TREAT on the double!"		
 Cat	4	Astro Cat	Minion	Coordinate 4 - rewards 3/3	4	3	Coordinate	"One small step for cat, one slightly bigger step towards world domination."		
 Cat	5	Shoto Cat	Minion	Thorns 3	5	5	Thorns	"Weeb."		
 Cat	5	Vampire Cat	Minion	SpawnTokens 1 ONHIT	4	6	SpawnTokens	"Draculcat? Nosfuratu? Catmilla? These all suck, just name it Vampire Cat and be done with it."		
 Cat	6	The Mad Catter	Minion	AOE 3	4	3	AOE	"Are you playing Blitzburn? I'll tell you a secret: all the best people are."		
-Cat	6	Slasher Cat	Minion	Deathtouch	6	999999	Deathtouch	"Who's your favorite scary kitty?"		
+Cat	6	Slasher Cat	Minion	Deathtouch	6	999	Deathtouch	"Who's your favorite scary kitty?"		
 Cat	7	Chonkmeister	Minion	Guard/Thorns 2	12	3	Guard/Thorns	"The Meow, the Myth, the Legend."		
-Cat	1	Empower	Spell	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty comment machine broke.' 'Understandable, have a good day.'"		
-Cat	1	2 Cats in a Trenchcoat	Spell	The next minion you play will not reset your move timer			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"		
-Cat	1	Pspspsps!	Spell	Spawns 1 token creature (1H 1D)	1	0	SpawnTokens	"Come hither my liege! - translated from weird human noise to cat speak."		
-Cat	2	Curse	Spell	Lower an enemy minion -2/0	0	2	Equipment	"L + ratio + 2 less damage dealt upon attack."		
-Cat	2	Duplicate	Spell	Create a copy of a card in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"		
-Cat	3	I'm Sure That Wasn't Important	Spell	Sends an inPlay minion back to the opponent's hand	0	0	Unique	"Bill me."		
-Cat	3	Distraction	Spell	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"		
-Cat	3	Catnap	Spell	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."		
-Cat	4	Hex	Spell	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"		
-Cat	4	Cat Fusion	Spell	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."		
-Cat	5	No Thoughts, Head Empty	Spell	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."		
-Cat	5	Barbed Wire	Spell	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."		
+Cat	1	Empower	Spell	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty comment machine broke.' 'Understandable, have a good day.'"	equipment	allies
+Cat	1	2 Cats in a Trenchcoat	Spell	The next minion you play will not reset your move timer			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"	unique	allies
+Cat	1	Pspspsps!	Spell	Spawns 1 token creature (1H 1D)	0	1	SpawnTokens	"Come hither my liege! - translated from weird human noise to cat speak."	spawnTokens	none
+Cat	2	Curse	Spell	Lower an enemy minion -2/0	0	2	Equipment	"L + ratio + 2 less damage dealt upon attack."	equipment	enemies
+Cat	2	Duplicate	Spell	Create a copy of a card in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"	spawnTokens	allies
+Cat	3	I'm Sure That Wasn't Important	Spell	Sends an inPlay minion back to the opponent's hand	0	0	Unique	"Bill me."	unique	enemies
+Cat	3	Distraction	Spell	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"	equipment	allies
+Cat	3	Catnap	Spell	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	equipment	allies
+Cat	4	Hex	Spell	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"	equipment	enemies
+Cat	4	Cat Fusion	Spell	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."	unique	allies
+Cat	5	No Thoughts, Head Empty	Spell	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."	unique	allies
+Cat	5	Barbed Wire	Spell	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
 Cat	6	Clone	Spell	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."		
 Cat	NA	Sergeant Zoomie	Commander	Gives 2 energy every 30 seconds				"Eight more laps around the coffee table and you'll have enough energy for a Tank Cat."		
-Cat	NA	Tiger the Cat	Token	NA	X	X	None	"Looking at this thing just makes me uncomfortable."
+Cat	NA	Tiger the Cat	Token	NA	X	X	None	"Looking at this thing just makes me uncomfortable."		
