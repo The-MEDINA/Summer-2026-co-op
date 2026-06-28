@@ -225,6 +225,7 @@ public class CardSelectionManager : MonoBehaviour
             minion.OnPlay();
         }
 
+        cardObject.InPlay = true;
         Debug.Log("Card moved to battleground. Energy left: " + owner.Energy);
     }
 

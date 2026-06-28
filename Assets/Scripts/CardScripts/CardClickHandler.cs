@@ -25,11 +25,13 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private speed currentSpeed = speed.normal;
     private float freezeTimer = 0f;
     private float timeToUnfreeze = 10f;
+    private bool inPlay = false;
 
     [SerializeField] private GameObject damagePopUpTextPrefab;
 
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
+    public bool InPlay { get { return inPlay; } set { inPlay = value; } }
    
     private void Awake()
     {
@@ -54,7 +56,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     private void Update()
     {
-        if (CardData is MinionParent)
+        if (CardData is MinionParent && inPlay)
         {
             MinionParent minion = (MinionParent)CardData;
 
