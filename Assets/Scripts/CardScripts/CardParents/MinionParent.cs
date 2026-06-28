@@ -21,7 +21,8 @@ public class MinionParent : NewVirtualCardParent
         thorns,
         spawnToken,
         spwnTokOnPlay,
-        guard
+        guard,
+        lifelink
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -146,10 +147,16 @@ public class MinionParent : NewVirtualCardParent
                 target.TakeDamage(this, Damage, false);
             }
 
-            if(this.CardEffect == effect.spawnToken)
+            if(CardEffect == effect.spawnToken)
             { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             }
+            if(CardEffect == effect.lifelink)
+            { //lifelink is tied directly to cost. This isn't fantasic implementation, but it doubles as locking the ability balance wise
+                int lLDamage = Cost / 2;
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += lLDamage;
+            }
+
             canAttack = false;
             UnityObject.GetComponent<CardUIManager>().ResetProgress();
         }

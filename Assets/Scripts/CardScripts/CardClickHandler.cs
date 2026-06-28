@@ -193,6 +193,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         Debug.Log(currentSpeed);
 
     }
+
+    /// <summary>
+    /// sets color of a minion card based on its ability
+    /// </summary>
+    /// <param name="ability">minion's ability</param>
     private void SetColor(MinionParent.effect ability)
     {
         switch (ability)
@@ -278,6 +283,10 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         }
     }
 
+    /// <summary>
+    /// sets the color of a spell based on its ability
+    /// </summary>
+    /// <param name="ability">the spell's ability</param>
     private void SetColor(SpellParent.spellEffect ability)
     {
         switch (ability)
@@ -353,8 +362,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         transform.localScale = selected ? originalScale * selectedScale : originalScale;
     }
 
-    public void ResetTimer()
-    {
-        timer = 0f;
-    }
+    /// <summary>
+    /// resets a minion's attack timer
+    /// </summary>
+    public void ResetTimer() { timer = 0f; }
 }
