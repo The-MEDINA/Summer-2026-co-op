@@ -1,5 +1,6 @@
 using UnityEngine;
 using cardIndex;
+using System.Collections.Generic;
 
 public class DemoPlayerInstanceScript : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     private void Start()
     {
         p = GetComponent<Player>();
-        
+
         if (p == null)
         {
             Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
@@ -39,18 +40,26 @@ NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCard
             //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
         }*/
 
-//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
-//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
-//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
-//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-//        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
-//NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-        
-        for (int i = 0; i < startingDeck.Length; i++)   
+        //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
+        //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
+        //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
+        //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
+        //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
+        DeckInstanceDeckbuilderScript deck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+        if (deck != null)
         {
-            p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
+            p.Deck = new List<NewVirtualCardParent>(deck.Deck);
+        }
+        else
+        {
+            for (int i = 0; i < startingDeck.Length; i++)
+            {
+                p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
+            }
         }
 
         Debug.Log(gameObject.name + " deck loaded with " + p.Deck.Count + " cards.");

@@ -6,6 +6,6 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        SceneManager.LoadScene("DBTESTCOPYOFDEMOBUTCHANGED");
+        SceneManager.LoadScene("Demo_LocalTwoPlayer");
     }
 }
