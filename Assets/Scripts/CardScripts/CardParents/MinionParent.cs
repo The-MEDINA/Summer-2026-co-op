@@ -22,7 +22,8 @@ public class MinionParent : NewVirtualCardParent
         spawnToken,
         spwnTokOnPlay,
         guard,
-        lifelink
+        lifelink,
+        frozen
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -122,6 +123,12 @@ public class MinionParent : NewVirtualCardParent
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
+        }
+        if (CardEffect == effect.frozen)
+        {
+            UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+            UnityObject.GetComponent<CardClickHandler>().ResetTimer();
+            UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
         }
     }
 

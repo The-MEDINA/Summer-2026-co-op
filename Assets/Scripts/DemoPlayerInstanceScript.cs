@@ -27,18 +27,10 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        /*
         if (p.IsPlayerTwo)
         {
-            //p.Deck.Add(new MinionParent("Dr. House(Cat)", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Bobby", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent("Slasher Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new TwoAttackParent(3, 2, MinionParent.effect.heal, 4, 4, 0, "Witch Cat",
-NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
-            //p.Deck.Add(new MinionParent("Roughly A Cat", NewVirtualCardParent.location.deck));
-            //p.Deck.Add(new MinionParent("Vampire Cat", NewVirtualCardParent.location.deck));
-            //p.Deck.Add(new MinionParent("Nacho Cat", NewVirtualCardParent.location.deck));
-        }*/
+
+        }
 
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
         //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
@@ -49,13 +41,15 @@ NewVirtualCardParent.type.minion, MinionParent.effect.twoAttacks, NewVirtualCard
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",
         //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
-        DeckInstanceDeckbuilderScript deck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
-        if (deck != null)
+        DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+        if (dBDeck != null)
         {
-            p.Deck = new List<NewVirtualCardParent>(deck.Deck);
+            p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
         }
         else
         {
+            p.Deck.Add(new MinionParent(1, 1, 1, "frozenTest", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.deck));
+
             for (int i = 0; i < startingDeck.Length; i++)
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
