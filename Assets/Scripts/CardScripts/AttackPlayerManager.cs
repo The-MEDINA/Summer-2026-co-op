@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 /* This script is for attacking the player.
  * The way we have the button set up right now means right clicks are impossible.
