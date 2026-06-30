@@ -92,6 +92,11 @@ namespace Network
      *  --- REQUEST: ---
      * byte 1 holds the enum of the packet that's being requested.
      * byte 2 holds any overrides or extra info. For a CardArray, that means 0 = deck, 1 = hand, 2 = inPlay.
+     * 
+     *  --- LOADOUT: ---
+     *  byte 1 holds the length of the player's deck.
+     *  byte 2 - 512 holds the cards. It's currently limited to 255 because the length is 1 byte.
+     *  byte 513 - 514 holds the commander card.
      */
     public enum packetType
     {
@@ -104,7 +109,8 @@ namespace Network
         cardAttack,
         cardDeath,
         pause_unpause,
-        request
+        request,
+        loadout
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -960,7 +966,7 @@ namespace Network
                     // request a scene change.
                     requestSceneChange = sceneName;
                     break;
-                }
+                    }
                 case ((byte) packetType.cardArray):
                 {
 #if DEBUG_MODE
