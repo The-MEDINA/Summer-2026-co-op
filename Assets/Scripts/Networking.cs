@@ -35,6 +35,7 @@ using UnityEngine.SceneManagement;
 
 namespace Network
 {
+    #region PACKETS_AND_ENUMS
     /*
      * Packets are 1024 byte long arrays that are split differently depending on their type.
      * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
@@ -95,8 +96,8 @@ namespace Network
      * 
      *  --- LOADOUT: ---
      *  byte 1 holds the length of the player's deck.
-     *  byte 2 - 512 holds the cards. It's currently limited to 255 because the length is 1 byte.
-     *  byte 513 - 514 holds the commander card.
+     *  bytes 2 - 3 holds the commander card.
+     *  byte 4 - 514 holds the cards. It's currently limited to 255 because the length is 1 byte.
      */
     public enum packetType
     {
@@ -127,6 +128,7 @@ namespace Network
         connected,
         paused
     }
+    #endregion
     public static class Networking
     {
         #region VARIABLES_PROPERTIES
@@ -153,6 +155,8 @@ namespace Network
         private static NetworkStream stream;
         private static List<byte[]> previousPackets = new List<byte[]>();
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
+        private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
+        private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -187,6 +191,8 @@ namespace Network
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
+        public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
+        public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -892,6 +898,51 @@ namespace Network
             packet[0] = (byte)packetType.request;
             packet[1] = (byte)packetToRequest;
             packet[2] = (byte)overrides;
+            return packet;
+        }
+
+        /// <summary>
+        /// Encode a loadout packet to send to a peer.
+        /// </summary>
+        /// <param name="deck">Player's deck to encode.</param>
+        /// <param name="commander">Player's commander card to encode.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(List<NewVirtualCardParent> deck, CommanderCardScript commander)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.loadout;
+            packet[1] = (byte)deck.Count;
+
+            // encode the commander's index.
+            short indexToEncode = (short)cardIndex.Index.GetDetails(commander.name).nameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(indexToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((indexToEncode >> 8) & 255);
+
+            packet[2] = highByte;
+            packet[3] = lowByte;
+
+            for (int i = 0; i < deck.Count; i++)
+            {
+                // encode the card's index.
+                short index = (short)cardIndex.Index.GetDetails(commander.name).nameIndexPosition;
+                byte cardHighByte = 0;
+                byte cardLowByte = 0;
+
+                // mask out the top 8 bits.
+                cardLowByte = (byte)(index & 255);
+
+                // shift right 8 bits and then mask.
+                cardHighByte = (byte)((index >> 8) & 255);
+
+                packet[4 + i] = highByte;
+                packet[5 + i] = lowByte;
+            }
             return packet;
         }
         #endregion
@@ -1628,6 +1679,7 @@ namespace Network
                 // request the actual deck before unpausing
                 SendRequest(packetType.cardArray, 0);
             }
+            // deck cards.
             if (requestArray != null && requestArray[0] == 0)
             {
                 // clear the deck
@@ -1926,6 +1978,29 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to send request while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer your loadout.
+        /// </summary>
+        /// <param name="deck">Your deck of cards</param>
+        /// <param name="commander">Your commander</param>
+        public static void SendLoadout(List<NewVirtualCardParent> deck, CommanderCardScript commander)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode loadout packet");
+#endif
+            byte[] packet = EncodePacket(deck, commander);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send loadout while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }

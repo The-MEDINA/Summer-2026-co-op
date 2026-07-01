@@ -46,6 +46,10 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         {
             p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
         }
+        else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
+        {
+            p.Deck = Network.Networking.P1InitialDeck;
+        }
         else
         {
             p.Deck.Add(new MinionParent(1, 1, 1, "frozenTest", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.deck));
