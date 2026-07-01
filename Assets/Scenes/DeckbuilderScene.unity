@@ -2870,7 +2870,7 @@ GameObject:
   - component: {fileID: 2021158540}
   - component: {fileID: 2021158539}
   - component: {fileID: 2021158538}
-  - component: {fileID: 2021158537}
+  - component: {fileID: 2021158541}
   m_Layer: 5
   m_Name: ToTitlescreen
   m_TagString: Untagged
@@ -2898,18 +2898,6 @@ RectTransform:
   m_AnchoredPosition: {x: 126, y: 15.25}
   m_SizeDelta: {x: 250, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2021158537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2021158535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78c687951c5041545ba65852e881e923, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ToPlayButtonScript
 --- !u!114 &2021158538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2954,9 +2942,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2021158537}
-        m_TargetAssemblyTypeName: ToPlayButtonScript, Assembly-CSharp
-        m_MethodName: ToTitleScreen
+      - m_Target: {fileID: 2021158541}
+        m_TargetAssemblyTypeName: button, Assembly-CSharp
+        m_MethodName: TitleScreen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3004,6 +2992,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021158535}
   m_CullTransparentMesh: 1
+--- !u!114 &2021158541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021158535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be3bbf2a5260d440b86d1182a6649a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::button
+  inputfield: {fileID: 0}
+  modebutton: {fileID: 0}
+  startbutton: {fileID: 0}
+  IPbutton: {fileID: 0}
+  hostname: {fileID: 0}
+  IPtext: {fileID: 0}
+  statusText: {fileID: 0}
 --- !u!1 &2045261234
 GameObject:
   m_ObjectHideFlags: 0
