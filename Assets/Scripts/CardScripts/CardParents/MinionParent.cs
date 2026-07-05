@@ -23,7 +23,8 @@ public class MinionParent : NewVirtualCardParent
         spwnTokOnPlay,
         guard,
         lifelink,
-        frozen
+        frozen,
+        apoptosis
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc

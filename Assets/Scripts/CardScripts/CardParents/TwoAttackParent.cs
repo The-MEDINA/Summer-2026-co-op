@@ -72,6 +72,10 @@ public class TwoAttackParent : MinionParent
                 Attack(target);
                 CardEffect = effect.twoAttacks;
             }
+            else if (secondAttackEffect == effect.apoptosis)
+            {
+                UseApoptosis();
+            }
         }
     }
 
@@ -97,5 +101,11 @@ public class TwoAttackParent : MinionParent
                 AOEAttack(targetList, true);
             }
         }
+    }
+
+    private void UseApoptosis()//needs to have interaction potentially changed
+    {
+        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += secondDamage;
+        this.Death();
     }
 }
