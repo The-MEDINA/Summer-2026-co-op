@@ -17,4 +17,8 @@ public class TitleScreenManager : MonoBehaviour
     {
         SceneManager.LoadScene("DeckbuilderScene");
     }
+    public void LoadTitleScreen()
+    {
+        SceneManager.LoadScene("TitleScreen");
+    }
 }

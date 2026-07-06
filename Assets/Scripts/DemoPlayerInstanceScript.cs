@@ -52,6 +52,8 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         }
         else
         {
+            p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
+                MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent(1, 1, 1, "frozenTest", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.deck));
 
             for (int i = 0; i < startingDeck.Length; i++)
