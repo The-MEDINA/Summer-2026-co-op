@@ -267,7 +267,6 @@ GameObject:
   - component: {fileID: 44404140}
   - component: {fileID: 44404139}
   - component: {fileID: 44404142}
-  - component: {fileID: 44404143}
   m_Layer: 0
   m_Name: CommanderCard1
   m_TagString: Untagged
@@ -395,20 +394,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &44404143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 44404138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d311e0c13dcc3c94b8f7a12ee4756dc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SeargentZoomieScript
-  bg: {fileID: 531251190}
-  timeToEffect: 3
 --- !u!1 &57451178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,7 +1214,6 @@ MonoBehaviour:
   p: {fileID: 427913135}
   cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 502840342}
-  commanderCard: {fileID: 44404143}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1356,7 +1340,6 @@ MonoBehaviour:
   p: {fileID: 143358787}
   cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 1375896096}
-  commanderCard: {fileID: 677338736}
 --- !u!212 &564985595
 SpriteRenderer:
   serializedVersion: 2
@@ -1775,7 +1758,6 @@ GameObject:
   - component: {fileID: 677338739}
   - component: {fileID: 677338738}
   - component: {fileID: 677338737}
-  - component: {fileID: 677338736}
   m_Layer: 0
   m_Name: CommanderCard1 (1)
   m_TagString: Untagged
@@ -1783,21 +1765,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &677338736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 677338735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b0ffa1a746b76640b0e4e8906549a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MajorMunchkinScript
-  bg: {fileID: 564985594}
-  tokenPrefab: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
-  timeToEffect: 3
 --- !u!61 &677338737
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2122,9 +2089,13 @@ MonoBehaviour:
   player1: {fileID: 427913135}
   player1CardField: {fileID: 426793723}
   player1HandUI: {fileID: 502840342}
+  player1CommanderSquare: {fileID: 44404138}
+  player1Battleground: {fileID: 531251190}
   player2: {fileID: 143358787}
   player2CardField: {fileID: 1487410306}
   player2HandUI: {fileID: 1375896096}
+  player2CommanderSquare: {fileID: 677338735}
+  player2Battleground: {fileID: 564985594}
   player1StartX: -5.75
   player2StartX: -5.75
   cardSpacing: 2
