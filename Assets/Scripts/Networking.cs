@@ -158,7 +158,6 @@ namespace Network
         private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
         private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
         private static CommanderCardScript p2Commander = null;
-        private static CommanderCardScript p1Commander = null;
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.

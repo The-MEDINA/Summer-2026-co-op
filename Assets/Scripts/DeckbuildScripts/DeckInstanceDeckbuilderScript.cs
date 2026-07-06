@@ -7,8 +7,10 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     public static DeckInstanceDeckbuilderScript instance;
 
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
+    private CommanderCardScript commander = new CommanderCardScript();
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } } 
+    public CommanderCardScript Commander { get { return commander; } }
 
     private void Awake()
     {

@@ -52,8 +52,19 @@ public class CardSelectionManager : MonoBehaviour
             Player currentPlayer = null;
             GameObject commanderSquare = null;
             Battleground currentBG = null;
-            if (i == 0) { currentPlayer = player1; commanderSquare = player1CommanderSquare; currentBG = player1Battleground; }
-            else if (i == 1) { currentPlayer = player2; commanderSquare = player2CommanderSquare; currentBG = player2Battleground; }
+            if (i == 0) 
+            { 
+                currentPlayer = player1; 
+                commanderSquare = player1CommanderSquare; 
+                currentBG = player1Battleground; 
+            }
+            else if (i == 1) 
+            { 
+                currentPlayer = player2;
+                if (Networking.P2Commander != null) player2.CommanderCard = Networking.P2Commander;
+                commanderSquare = player2CommanderSquare; 
+                currentBG = player2Battleground; 
+            }
 
             // set the commander if it's valid
             if (currentPlayer.CommanderCard != null && currentPlayer.CommanderCard.name != "")

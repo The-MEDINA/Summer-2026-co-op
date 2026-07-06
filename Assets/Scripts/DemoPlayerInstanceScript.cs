@@ -27,11 +27,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        if (p.IsPlayerTwo)
-        {
-
-        }
-
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
         //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Blizzard",
@@ -45,10 +40,15 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         if (dBDeck != null)
         {
             p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
+            p.CommanderCard = dBDeck.Commander;
         }
         else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
         {
             p.Deck = Network.Networking.P1InitialDeck;
+        }
+        else if (Network.Networking.P2InitialDeck.Count > 0 && p.IsPlayerTwo)
+        {
+            p.Deck = Network.Networking.P2InitialDeck;
         }
         else
         {
