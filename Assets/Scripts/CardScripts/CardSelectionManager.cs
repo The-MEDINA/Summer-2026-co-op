@@ -1,5 +1,6 @@
-using UnityEngine;
 using Network;
+using Unity.Multiplayer.PlayMode;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
@@ -10,11 +11,15 @@ public class CardSelectionManager : MonoBehaviour
     [SerializeField] private Player player1;
     [SerializeField] private GameObject player1CardField;
     [SerializeField] private HandUIManager player1HandUI;
+    [SerializeField] private GameObject player1CommanderSquare;
+    [SerializeField] private Battleground player1Battleground;
 
     [Header("Player 2")]
     [SerializeField] private Player player2;
     [SerializeField] private GameObject player2CardField;
     [SerializeField] private HandUIManager player2HandUI;
+    [SerializeField] private GameObject player2CommanderSquare;
+    [SerializeField] private Battleground player2Battleground;
 
     [Header("Field Layout")]
     [SerializeField] private float player1StartX = -5f;
@@ -36,6 +41,68 @@ public class CardSelectionManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        for (int i = 0; i < 2; i ++)
+        {
+            // select the current player
+            // (I'm mainly doing this just so I only have to write the switch statement once)
+            Player currentPlayer = null;
+            GameObject commanderSquare = null;
+            Battleground currentBG = null;
+            if (i == 0) 
+            { 
+                currentPlayer = player1; 
+                commanderSquare = player1CommanderSquare; 
+                currentBG = player1Battleground; 
+            }
+            else if (i == 1) 
+            { 
+                currentPlayer = player2;
+                if (Networking.P2Commander != null) player2.CommanderCard = Networking.P2Commander;
+                commanderSquare = player2CommanderSquare; 
+                currentBG = player2Battleground; 
+            }
+
+            // set the commander if it's valid
+            if (currentPlayer.CommanderCard != null && currentPlayer.CommanderCard.name != "")
+            {
+                switch (currentPlayer.CommanderCard.name)
+                {
+                    case ("Major Munchkin"):
+                    {
+                        commanderSquare.AddComponent<MajorMunchkinScript>();
+                        MajorMunchkinScript playerMajor = (MajorMunchkinScript)currentPlayer.CommanderCard;
+                        commanderSquare.GetComponent<MajorMunchkinScript>().TokenPrefab = playerMajor.TokenPrefab;
+                        commanderSquare.GetComponent<MajorMunchkinScript>().BG = currentBG;
+                        currentPlayer.CommanderCard = commanderSquare.GetComponent<MajorMunchkinScript>();
+                        break;
+                    }
+                    case ("Seargent Zoomie"):
+                    {
+                        commanderSquare.AddComponent<SeargentZoomieScript>();
+                        commanderSquare.GetComponent<SeargentZoomieScript>().BG = currentBG;
+                        currentPlayer.CommanderCard = commanderSquare.GetComponent<SeargentZoomieScript>();
+                        break;
+                    }
+                    // unimplemented commander card
+                    default:
+                        {
+                            Debug.LogWarning($"Could not attach commander card {currentPlayer.CommanderCard.name}! Double check a case is implemented for it in the switch statement?");
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"No valid commander card found for player {i + 1}! Defaulting to Sergeant Zoomie. Double check the player and commander card?");
+                commanderSquare.AddComponent<SeargentZoomieScript>();
+                commanderSquare.GetComponent<SeargentZoomieScript>().BG = currentBG;
+                currentPlayer.CommanderCard = commanderSquare.GetComponent<SeargentZoomieScript>();
+            }
+        }
     }
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)

@@ -205,7 +205,6 @@ namespace cardIndex
 #endif
             }
             string[] reader = fileText.Split("\n");
-            string raw;
             int catCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
             Sprite[] descBackgrounds = Resources.LoadAll<Sprite>($"DescBackgrounds");
