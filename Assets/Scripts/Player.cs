@@ -47,12 +47,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         energy = startingEnergy;
-        if (isPlayerTwo)
-        {
-            Networking.PlayerTwo = this;
-            if (Networking.P2InitialDeck.Count > 0) Deck = Networking.P2InitialDeck;
-        }
+        if (isPlayerTwo) Networking.PlayerTwo = this;
         else Networking.PlayerOne = this;
+
+        // need player two to be able to act whenever on player 1's side.
+        // Easiest way to do this right now is to just make them never run out of energy or have to wait on the timer.
+        // doing this should prevent any situations where player 2 does something on their screen, but it doesn't happen on player 1's screen because they didn't have enough energy.
+        // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
+        //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
+        // if (isPlayerTwo) energy = 999; 
     }
 
     private void Update()
