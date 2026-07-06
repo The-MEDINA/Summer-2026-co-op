@@ -6,6 +6,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
 {
     public static DeckInstanceDeckbuilderScript instance;
 
+    [SerializeField] private GameObject prefab;
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
     private CommanderCardScript commander = new CommanderCardScript();
 
@@ -23,6 +24,11 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         instance = this;
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        ChangeFactionCards("Cat");
     }
 
     public bool AddCard(string cardName)
@@ -51,5 +57,10 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void ChangeFactionCards(string faction)
+    {
+
     }
 }
