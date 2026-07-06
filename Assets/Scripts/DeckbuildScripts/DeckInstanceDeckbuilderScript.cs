@@ -7,10 +7,8 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     public static DeckInstanceDeckbuilderScript instance;
 
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
-    private CommanderCardScript commander = new CommanderCardScript();
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } } 
-    public CommanderCardScript Commander { get { return commander; } }
 
     private void Awake()
     {
@@ -30,9 +28,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         //deck at capacity
         //too many copies of that card
 
-        NewVirtualCardParent cardToAdd = cardIndex.Index.CreateCard(cardName, NewVirtualCardParent.location.deck);
-        Deck.Add(cardToAdd);
-        Network.Networking.P1InitialDeck.Add(cardToAdd);
+        Deck.Add(new MinionParent(cardName, NewVirtualCardParent.location.deck));
         return true;
     }
 
@@ -44,7 +40,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         {
             if (Deck[i].CardName == cardName)
             {
-                Network.Networking.P1InitialDeck.RemoveAt(i);
                 Deck.RemoveAt(i);
                 return true;
             }
