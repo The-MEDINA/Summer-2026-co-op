@@ -157,6 +157,8 @@ namespace Network
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
         private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
         private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
+        private static CommanderCardScript p2Commander = null;
+        private static CommanderCardScript p1Commander = null;
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -193,6 +195,7 @@ namespace Network
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
         public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
         public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
+        public static CommanderCardScript P2Commander { get { return p2Commander; } set { p2Commander = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -1267,7 +1270,7 @@ namespace Network
                     else CurrentState = state.connected;
                     break;
                 }
-                case ((byte)packetType.request):
+                case ((byte) packetType.request):
                     {
 #if DEBUG_MODE
                         Debug.Log("Found request");
@@ -1303,6 +1306,74 @@ namespace Network
                         }
                         break;
                     }
+                case ((byte)packetType.loadout):
+                {
+#if DEBUG_MODE
+                    Debug.Log("found loadout packet");
+#endif
+                    // rebuild the commander card from the info.
+                    short indexOfCard = packet[2];
+                    indexOfCard <<= 8;
+                    indexOfCard += packet[3];
+
+                    CommanderCardScript commander = null;
+                    switch (cardIndex.Index.GetName(indexOfCard))
+                    {
+                        case ("Major Munchkin"):
+                        {
+                            MajorMunchkinScript major = new MajorMunchkinScript();
+                            major.TokenPrefab = p2Battleground.CardProto;
+                            commander = major;
+                            break;
+                        }
+                        case ("Sergeant Zoomie"):
+                        {
+                            commander = new SeargentZoomieScript();
+                            break;
+                        }
+                        default:
+                        {
+#if DEBUG_MODE
+                            Debug.LogWarning("Non-Commander card found when searching for commander! Ignoring.");
+#endif
+                            break;
+                        }
+                    }
+                    
+                    // set the commander if it wasn't null.
+                    if (commander != null)
+                    {
+                        if (p2Battleground != null)
+                        {
+                            commander.BG = p2Battleground;
+                            p2Battleground.CommanderCard = commander;
+                        }
+                        playerTwo.CommanderCard = commander;
+                    }
+
+                    // New array to replace the old one.
+                    List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
+
+                    // For every card in the array.
+                    for (int i = 0; i < packet[1]; i++)
+                    {
+                        NewVirtualCardParent card;
+
+                        // rebuild the card from the info.
+                        short individualCard = packet[4 + (2 * i)];
+                        individualCard <<= 8;
+                        individualCard += packet[5 + (2 * i)];
+
+                        // grab its name and create the card.
+                        string cardName = cardIndex.Index.GetName(individualCard);
+                        card = cardIndex.Index.CreateCard(cardName, (NewVirtualCardParent.location)packet[1]);
+                        deck.Add(card);
+                    }
+
+                    // replace the deck with this new one
+                    p2InitialDeck = deck;
+                    break;
+                }
                 default:
                 {
                         // ONLY throw exceptions if there is not an active connection.

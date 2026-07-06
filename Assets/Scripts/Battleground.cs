@@ -8,10 +8,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
     [SerializeField] private HandUIManager handUIManager;
-    [SerializeField] private CommanderCardScript commanderCard;
+    private CommanderCardScript commanderCard;
 
     public Player P { get { return p; } }
-    public CommanderCardScript CommanderCard { get { return commanderCard; } }
+    public GameObject CardProto { get { return cardProto; } }
+    public CommanderCardScript CommanderCard { get { return commanderCard; } set { commanderCard = value; } }
 
     private List<GameObject> cardList = new List<GameObject>();
 
@@ -23,7 +24,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
             Networking.P2Battleground = this;
             Networking.P2HandUI = handUIManager;
         }
-        p.CommanderCard = commanderCard;
+        // p.CommanderCard = commanderCard;
     }
 
     /// <summary>

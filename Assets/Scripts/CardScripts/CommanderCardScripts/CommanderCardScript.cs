@@ -5,7 +5,7 @@ using UnityEngine;
 public class CommanderCardScript : MonoBehaviour
 {
     [SerializeField] protected Battleground bg; //ALL COMMANDERS NEED THIS NO MATTER WHAT
-    private string name;
+    private string name = "";
 
     public Battleground BG { get { return bg; } set { bg = value; } }
     public string Name { get { return name; } set { name = value; } }
