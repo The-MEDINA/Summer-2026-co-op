@@ -194,6 +194,13 @@ namespace cardIndex
             return cardToCreate;
         }
 
+        /// <summary>
+        /// Attach a commander card to an object.
+        /// </summary>
+        /// <param name="obj">Object to attach a commander card to.</param>
+        /// <param name="name">Name of the commander card.</param>
+        /// <param name="battleground">Battleground of the commander card.</param>
+        /// <returns>Whether the attachment was successful.</returns>
         public static bool AttachCommanderCard(GameObject obj, string name, Battleground battleground)
         {
             if (obj.GetComponent<CommanderCardScript>() != null)
@@ -231,7 +238,7 @@ namespace cardIndex
                 default:
                     {
                         Debug.LogWarning($"Could not attach commander card {name}! Double check a case is implemented for it in the switch statement?");
-                        break;
+                        return false;
                     }
             }
             return true;
@@ -329,6 +336,11 @@ namespace cardIndex
                     case("token"):
                     {
                         _type = NewVirtualCardParent.type.token;
+                        break;
+                    }
+                    case ("commander"):
+                    {
+                        descBackground = descBackgrounds[2];
                         break;
                     }
                     default:

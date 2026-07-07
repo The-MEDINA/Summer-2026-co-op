@@ -125,7 +125,7 @@ public class DeckbuilderCard : MonoBehaviour
 
             // add sprites.
             cardIndex.Sprites updatedArt;
-            updatedArt = cardIndex.Index.GetSprites(commander.name);
+            updatedArt = cardIndex.Index.GetSprites(commanderDetails.name);
             if (updatedArt.cardImage != null) cardArt.sprite = updatedArt.cardImage;
             if (updatedArt.DescBackground != null) DescriptionBackground.sprite = updatedArt.DescBackground;
         }

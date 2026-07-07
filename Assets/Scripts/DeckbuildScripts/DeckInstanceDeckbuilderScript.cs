@@ -72,7 +72,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         for (int i = 0; i < factionCards.Count; i++)
         {
             GameObject deckCard = Instantiate(prefab);
-            deckCard.transform.position = new Vector3(-7.5f + (2.25f * i), 3, 0);
+            deckCard.transform.position = new Vector3(-7.5f  + (2.25f * i), 3, 0);
             deckCard.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
             if (factionCards[i].type != NewVirtualCardParent.type.none)
             {
