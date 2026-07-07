@@ -60,39 +60,6 @@ public class CardSelectionManager : MonoBehaviour
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
             Networking.P2CommanderName = "";
         }
-        /*
-        for (int i = 0; i < 2; i ++)
-        {
-            Player currentPlayer = null;
-            GameObject commanderSquare = null;
-            Battleground currentBG = null;
-            if (i == 0) 
-            { 
-                currentPlayer = player1; 
-                commanderSquare = player1CommanderSquare; 
-                currentBG = player1Battleground; 
-            }
-            else if (i == 1) 
-            { 
-                currentPlayer = player2;
-                if (Networking.P2Commander != null) player2.CommanderCard = Networking.P2Commander;
-                commanderSquare = player2CommanderSquare; 
-                currentBG = player2Battleground; 
-            }
-
-            // set the commander if it's valid
-            if (currentPlayer.CommanderCard != null && currentPlayer.CommanderCard.name != "")
-            {
-                cardIndex.Index.AttachCommanderCard(commanderSquare, currentPlayer.CommanderCard.name, currentBG);
-            }
-            else
-            {
-                Debug.LogWarning($"No valid commander card found for player {i + 1}! Defaulting to Sergeant Zoomie. Double check the player and commander card?");
-                commanderSquare.AddComponent<SeargentZoomieScript>();
-                commanderSquare.GetComponent<SeargentZoomieScript>().BG = currentBG;
-                currentPlayer.CommanderCard = commanderSquare.GetComponent<SeargentZoomieScript>();
-            }
-        }*/
     }
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)

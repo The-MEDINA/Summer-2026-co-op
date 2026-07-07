@@ -1511,6 +1511,12 @@ namespace Network
             if (Networking.requestSceneChange != "")
             {
                 SceneManager.LoadScene(Networking.requestSceneChange);
+                // prevent loading the scene twice
+                if (requestSceneChange == "Demo_LocalTwoPlayer")
+                {
+                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    p2InitialDeck = new List<NewVirtualCardParent>();
+                }
                 Networking.requestSceneChange = "";
             }
 
@@ -1748,6 +1754,8 @@ namespace Network
                 {
                     SendSceneSwitch("Demo_LocalTwoPlayer");
                     SceneManager.LoadScene("Demo_LocalTwoPlayer");
+                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    p2InitialDeck = new List<NewVirtualCardParent>();
                 }
             }
         }
