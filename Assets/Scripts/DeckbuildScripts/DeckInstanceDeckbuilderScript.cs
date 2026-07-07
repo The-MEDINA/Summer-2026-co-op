@@ -40,11 +40,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
-    {
-
-    }
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         string[] name = scene.path.Split("/");
@@ -145,6 +140,19 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         if (commander != outCommander.Name) return false;
         else commander = "";
         return true;
+    }
+
+    public int CardCountInDeck(NewVirtualCardParent cardToFind)
+    {
+        int count = 0;
+        for (int i = 0; i < deck.Count; i++)
+        {
+            if (deck[i].CardName == cardToFind.CardName)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     /// <summary>

@@ -114,6 +114,16 @@ public class DeckbuilderCard : MonoBehaviour
 
             cardDescription.text = cardIndex.Index.GetDetails(cardInstance.CardName).description;
 
+            if (deckInstance != null)
+            {
+                amount = deckInstance.CardCountInDeck(cardInstance);
+                amountText.text = $"Amount: {amount}";
+            }
+            else
+            {
+                amountText.text = "Amount: 0";
+            }
+
             // add sprites.
             cardIndex.Sprites updatedArt;
             updatedArt = cardIndex.Index.GetSprites(cardName.text);
