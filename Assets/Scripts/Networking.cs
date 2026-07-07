@@ -1511,10 +1511,6 @@ namespace Network
             if (Networking.requestSceneChange != "")
             {
                 SceneManager.LoadScene(Networking.requestSceneChange);
-                if (requestSceneChange == "Demo_LocalTwoPlayer")
-                {
-                    cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
-                }
                 Networking.requestSceneChange = "";
             }
 
