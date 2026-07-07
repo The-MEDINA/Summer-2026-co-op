@@ -20,7 +20,6 @@ public class DeckbuilderCard : MonoBehaviour
     #endregion
 
     private NewVirtualCardParent cardInstance = null;
-    private CommanderCardScript commanderInstance = null;
     private DeckInstanceDeckbuilderScript deckInstance;
     private int amount;
     public NewVirtualCardParent CardInstance { get { return cardInstance; } set { cardInstance = value; UpdateUI(); } }

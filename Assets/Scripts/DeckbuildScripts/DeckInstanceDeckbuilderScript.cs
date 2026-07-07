@@ -24,10 +24,16 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private void Awake()
     {
         //singleton instance code
+        // remove existing (if it did exist)
         if (instance != null && instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
+        }
+        else
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         instance = this;
 
@@ -36,7 +42,18 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
 
     private void Start()
     {
-        ChangeFactionCards("Cat");
+
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        string[] name = scene.path.Split("/");
+        if (name[name.Length - 1] == "DeckbuilderScene.unity") 
+        {
+            highYPos = -100;
+            lowYPos = 100;
+            ChangeFactionCards("Cat");
+        }
     }
 
     private void Update()
@@ -153,6 +170,10 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             if (deckCard.transform.position.y < lowYPos) lowYPos = deckCard.transform.position.y;
             deckCard.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
 
+            // setup for next part
+            deckCard.GetComponent<DeckbuilderCard>().DeckInstance = this;
+            cardObjects.Add(deckCard);
+
             // non-commander cards
             if (factionCards[i].type != NewVirtualCardParent.type.none)
             {
@@ -166,8 +187,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                 deckCard.GetComponent<DeckbuilderCard>().UpdateUI();
                 deckCard.GetComponent<CommanderCardScript>().DeckbuilderOverride = true;
             }
-            deckCard.GetComponent<DeckbuilderCard>().DeckInstance = this;
-            cardObjects.Add(deckCard);
         }
     }
 }

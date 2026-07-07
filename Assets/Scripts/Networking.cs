@@ -157,7 +157,6 @@ namespace Network
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
         private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
         private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
-        private static CommanderCardScript p2Commander = null;
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -174,6 +173,7 @@ namespace Network
         private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
+        private static string requestP2Commander = "";
 
         /// <summary>
         /// delegates to set up events.
@@ -194,7 +194,6 @@ namespace Network
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
         public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
         public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
-        public static CommanderCardScript P2Commander { get { return p2Commander; } set { p2Commander = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -1310,45 +1309,12 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log("found loadout packet");
 #endif
-                    // rebuild the commander card from the info.
+                    // rebuild and set the commander card from the info.
                     short indexOfCard = packet[2];
                     indexOfCard <<= 8;
-                    indexOfCard += packet[3];
-
-                    CommanderCardScript commander = null;
-                    switch (cardIndex.Index.GetName(indexOfCard))
-                    {
-                        case ("Major Munchkin"):
-                        {
-                            MajorMunchkinScript major = new MajorMunchkinScript();
-                            major.TokenPrefab = p2Battleground.CardProto;
-                            commander = major;
-                            break;
-                        }
-                        case ("Sergeant Zoomie"):
-                        {
-                            commander = new SeargentZoomieScript();
-                            break;
-                        }
-                        default:
-                        {
-#if DEBUG_MODE
-                            Debug.LogWarning("Non-Commander card found when searching for commander! Ignoring.");
-#endif
-                            break;
-                        }
-                    }
-                    
-                    // set the commander if it wasn't null.
-                    if (commander != null)
-                    {
-                        if (p2Battleground != null)
-                        {
-                            commander.BG = p2Battleground;
-                            p2Battleground.CommanderCard = commander;
-                        }
-                        playerTwo.CommanderCard = commander;
-                    }
+                        indexOfCard += packet[3];
+                    string commanderName = cardIndex.Index.GetName(indexOfCard);
+                    requestP2Commander = commanderName;
 
                     // New array to replace the old one.
                     List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
@@ -1375,11 +1341,11 @@ namespace Network
                 }
                 default:
                 {
-                        // ONLY throw exceptions if there is not an active connection.
-                        if (CurrentState != state.connected) 
-                        { 
-                            throw e; 
-                        }
+                    // ONLY throw exceptions if there is not an active connection.
+                    if (CurrentState != state.connected) 
+                    { 
+                        throw e; 
+                    }
 #if DEBUG_MODE
                     Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
 #endif
@@ -1768,6 +1734,12 @@ namespace Network
                 // FINALLY unpause the game
                 CurrentState = state.connected;
                 SendPauseUnpause(false);
+            }
+            // Player 2's commander.
+            if (requestP2Commander != null)
+            {
+                cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
+                requestP2Commander = "";
             }
         }
 

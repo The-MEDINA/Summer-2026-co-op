@@ -36,6 +36,7 @@ public class CardSelectionManager : MonoBehaviour
         set { selectedCardObject = value; }
     }
 
+    public GameObject Player2CommanderSquare { get { return player2CommanderSquare; } }
     public bool IsLocalTesting { get { return isLocalTesting; } }
 
     private void Awake()
