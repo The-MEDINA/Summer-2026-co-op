@@ -194,6 +194,7 @@ namespace Network
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
         public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
         public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
+        public static string P2CommanderName { get { return requestP2Commander; } set { requestP2Commander = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -1751,7 +1752,6 @@ namespace Network
                 {
                     SendSceneSwitch("Demo_LocalTwoPlayer");
                     SceneManager.LoadScene("Demo_LocalTwoPlayer");
-                    cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
                 }
             }
         }

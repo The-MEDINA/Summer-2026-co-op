@@ -53,8 +53,12 @@ public class CardSelectionManager : MonoBehaviour
             if (dBDeck.Commander != null)
             {
                 cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
-                // player1.CommanderCard = player1CommanderSquare.GetComponent<CommanderCardScript>();
             }
+        }
+        if (Networking.P2CommanderName != "")
+        {
+            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
+            Networking.P2CommanderName = "";
         }
         /*
         for (int i = 0; i < 2; i ++)
