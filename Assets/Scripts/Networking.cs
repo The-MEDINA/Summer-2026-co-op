@@ -1749,9 +1749,9 @@ namespace Network
                 if (DeckInstanceDeckbuilderScript.instance.SentLoadout)
                 {
                     SendSceneSwitch("Demo_LocalTwoPlayer");
+                    SceneManager.LoadScene("Demo_LocalTwoPlayer");
+                    cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
                 }
-                SceneManager.LoadScene("Demo_LocalTwoPlayer");
-                cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
             }
         }
 
