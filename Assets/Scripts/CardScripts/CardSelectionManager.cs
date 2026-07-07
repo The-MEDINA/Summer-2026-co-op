@@ -69,31 +69,7 @@ public class CardSelectionManager : MonoBehaviour
             // set the commander if it's valid
             if (currentPlayer.CommanderCard != null && currentPlayer.CommanderCard.name != "")
             {
-                switch (currentPlayer.CommanderCard.name)
-                {
-                    case ("Major Munchkin"):
-                    {
-                        commanderSquare.AddComponent<MajorMunchkinScript>();
-                        MajorMunchkinScript playerMajor = (MajorMunchkinScript)currentPlayer.CommanderCard;
-                        commanderSquare.GetComponent<MajorMunchkinScript>().TokenPrefab = playerMajor.TokenPrefab;
-                        commanderSquare.GetComponent<MajorMunchkinScript>().BG = currentBG;
-                        currentPlayer.CommanderCard = commanderSquare.GetComponent<MajorMunchkinScript>();
-                        break;
-                    }
-                    case ("Seargent Zoomie"):
-                    {
-                        commanderSquare.AddComponent<SeargentZoomieScript>();
-                        commanderSquare.GetComponent<SeargentZoomieScript>().BG = currentBG;
-                        currentPlayer.CommanderCard = commanderSquare.GetComponent<SeargentZoomieScript>();
-                        break;
-                    }
-                    // unimplemented commander card
-                    default:
-                        {
-                            Debug.LogWarning($"Could not attach commander card {currentPlayer.CommanderCard.name}! Double check a case is implemented for it in the switch statement?");
-                            break;
-                        }
-                }
+                cardIndex.Index.AttachCommanderCard(commanderSquare, currentPlayer.CommanderCard.name, currentBG);
             }
             else
             {

@@ -2022,7 +2022,7 @@ MonoBehaviour:
   cardFlavortext: {fileID: 4845391134643135991}
   cardDescription: {fileID: 3450718347157377413}
   cardExtraDamage: {fileID: 5704632922365540917}
-  amountText: {fileID: 0}
+  amountText: {fileID: 2446733658286178704}
   cardArt: {fileID: 4911193348764579098}
   DescriptionBackground: {fileID: 6998172656107471941}
 --- !u!1 &8375610003554698564

@@ -19,7 +19,8 @@ public class DeckbuilderCard : MonoBehaviour
     [SerializeField] private Image DescriptionBackground;
     #endregion
 
-    private NewVirtualCardParent cardInstance;
+    private NewVirtualCardParent cardInstance = null;
+    private CommanderCardScript commanderInstance = null;
     private DeckInstanceDeckbuilderScript deckInstance;
     private int amount;
     public NewVirtualCardParent CardInstance { get { return cardInstance; } set { cardInstance = value; UpdateUI(); } }
@@ -67,41 +68,65 @@ public class DeckbuilderCard : MonoBehaviour
         }
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
-        // update card text.
-        cardName.text = cardInstance.CardName;
-        cardFlavortext.text = cardInstance.FlavorText;
-        cardCost.text = $"{cardInstance.Cost}";
-
-        if (cardInstance is MinionParent)
+        if (cardInstance != null)
         {
-            MinionParent minionData = (MinionParent)cardInstance;
+            // update card text.
+            cardName.text = cardInstance.CardName;
+            cardFlavortext.text = cardInstance.FlavorText;
+            cardCost.text = $"{cardInstance.Cost}";
 
-            cardHealth.text = $"{minionData.Health}";
-            cardDamage.text = $"{minionData.Damage}";
+            if (cardInstance is MinionParent)
+            {
+                MinionParent minionData = (MinionParent)cardInstance;
+
+                cardHealth.text = $"{minionData.Health}";
+                cardDamage.text = $"{minionData.Damage}";
+                cardEquipment.text = "";
+                for (int i = 0; i < minionData.EquipmentList.Count; i++)
+                {
+                    cardEquipment.text += $"{minionData.EquipmentList[i]}\n";
+                }
+                if (minionData.CardType == NewVirtualCardParent.type.token)
+                {
+                    cardCost.text = "";
+                }
+            }
+            else if (cardInstance is SpellParent)
+            {
+                cardHealth.text = "";
+                cardDamage.text = "";
+            }
+
+            cardDescription.text = cardIndex.Index.GetDetails(cardInstance.CardName).description;
+
+            // add sprites.
+            cardIndex.Sprites updatedArt;
+            updatedArt = cardIndex.Index.GetSprites(cardName.text);
+            if (updatedArt.cardImage != null) cardArt.sprite = updatedArt.cardImage;
+            if (updatedArt.DescBackground != null) DescriptionBackground.sprite = updatedArt.DescBackground;
+        }
+        else if (gameObject.GetComponent<CommanderCardScript>() != null)
+        {
+            // setup
+            CommanderCardScript commander = gameObject.GetComponent<CommanderCardScript>();
+            Details commanderDetails = cardIndex.Index.GetDetails(commander.name);
+
+            // update the text.
+            cardName.text = commanderDetails.name;
+            cardFlavortext.text = commanderDetails.flavorText;
+            cardDescription.text = commanderDetails.description;
+            cardHealth.text = $"";
+            cardDamage.text = $"";
             cardEquipment.text = "";
-            for (int i = 0; i < minionData.EquipmentList.Count; i++)
-            {
-                cardEquipment.text += $"{minionData.EquipmentList[i]}\n";
-            }
-            if (minionData.CardType == NewVirtualCardParent.type.token)
-            {
-                cardCost.text = "";
-            }
-        }
-        else if (cardInstance is SpellParent)
-        {
-            cardHealth.text = "";
-            cardDamage.text = "";
-        }
+            cardCost.text = $"";
 
-        cardDescription.text = cardIndex.Index.GetDetails(cardInstance.CardName).description;
-
-        // add sprites.
-        cardIndex.Sprites updatedArt;
-        updatedArt = cardIndex.Index.GetSprites(cardName.text);
-        if (updatedArt.cardImage != null) cardArt.sprite = updatedArt.cardImage;
-        if (updatedArt.DescBackground != null) DescriptionBackground.sprite = updatedArt.DescBackground;
+            // add sprites.
+            cardIndex.Sprites updatedArt;
+            updatedArt = cardIndex.Index.GetSprites(commander.name);
+            if (updatedArt.cardImage != null) cardArt.sprite = updatedArt.cardImage;
+            if (updatedArt.DescBackground != null) DescriptionBackground.sprite = updatedArt.DescBackground;
+        }
     }
 }
