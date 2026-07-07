@@ -770,6 +770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78c687951c5041545ba65852e881e923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToPlayButtonScript
+  color: {fileID: 465559604}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

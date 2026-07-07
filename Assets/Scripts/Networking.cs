@@ -914,10 +914,14 @@ namespace Network
             packet[0] = (byte)packetType.loadout;
             packet[1] = (byte)deck.Count;
 
-            // encode the commander's index.
-            short indexToEncode = (short)cardIndex.Index.GetDetails(commander.name).nameIndexPosition;
+            short indexToEncode = (short)cardIndex.Index.GetDetails("Sergeant Zoomie").nameIndexPosition;
             byte highByte = 0;
             byte lowByte = 0;
+            if (commander != null)
+            {
+                // encode the commander's index if the commander exists.
+                indexToEncode = (short)cardIndex.Index.GetDetails(commander.Name).nameIndexPosition;
+            }
 
             // mask out the top 8 bits.
             lowByte = (byte)(indexToEncode & 255);
@@ -931,7 +935,7 @@ namespace Network
             for (int i = 0; i < deck.Count; i++)
             {
                 // encode the card's index.
-                short index = (short)cardIndex.Index.GetDetails(commander.name).nameIndexPosition;
+                short index = (short)deck[i].NameIndexPosition;
                 byte cardHighByte = 0;
                 byte cardLowByte = 0;
 
@@ -941,8 +945,8 @@ namespace Network
                 // shift right 8 bits and then mask.
                 cardHighByte = (byte)((index >> 8) & 255);
 
-                packet[4 + i] = highByte;
-                packet[5 + i] = lowByte;
+                packet[4 + (2 * i)] = cardHighByte;
+                packet[5 + (2 * i)] = cardLowByte;
             }
             return packet;
         }
@@ -1506,6 +1510,10 @@ namespace Network
             if (Networking.requestSceneChange != "")
             {
                 SceneManager.LoadScene(Networking.requestSceneChange);
+                if (requestSceneChange == "Demo_LocalTwoPlayer")
+                {
+                    cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
+                }
                 Networking.requestSceneChange = "";
             }
 
@@ -1735,11 +1743,15 @@ namespace Network
                 CurrentState = state.connected;
                 SendPauseUnpause(false);
             }
-            // Player 2's commander.
+            // Loadout. (Tracked by p2's commander)
             if (requestP2Commander != null)
             {
+                if (DeckInstanceDeckbuilderScript.instance.SentLoadout)
+                {
+                    SendSceneSwitch("Demo_LocalTwoPlayer");
+                }
+                SceneManager.LoadScene("Demo_LocalTwoPlayer");
                 cardIndex.Index.AttachCommanderCard(CardSelectionManager.Instance.Player2CommanderSquare, requestP2Commander, p2Battleground);
-                requestP2Commander = "";
             }
         }
 

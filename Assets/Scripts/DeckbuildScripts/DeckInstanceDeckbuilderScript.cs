@@ -15,16 +15,18 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private List<GameObject> cardObjects = new List<GameObject>();
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
     private string commander = "";
+    private bool sentLoadout = false;
     private CommanderCardScript commanderInstance;
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } } 
     public List<GameObject> CardObjects { get { return cardObjects; } set { cardObjects = value; } }
     public string Commander { get { return commander; } }
+    public bool SentLoadout { get { return sentLoadout; } set { sentLoadout = value; } }
+    public CommanderCardScript CommanderInstance { get { return commanderInstance; } set { commanderInstance = value; } }
 
     private void Awake()
     {
         //singleton instance code
-        // remove existing (if it did exist)
         if (instance != null && instance != this)
         {
             Destroy(this);
@@ -42,12 +44,19 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // remove any lingering cards
+        while (cardObjects.Count != 0)
+        {
+            Destroy(cardObjects[0]);
+            cardObjects.RemoveAt(0);
+        }
         string[] name = scene.path.Split("/");
         if (name[name.Length - 1] == "DeckbuilderScene.unity") 
         {
             highYPos = -100;
             lowYPos = 100;
             ChangeFactionCards("Cat");
+            sentLoadout = false;
         }
     }
 
@@ -95,9 +104,15 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         {
             if (commander != "")
             {
-                DeckbuilderCard previousCommanderCard = commanderInstance.gameObject.GetComponent<DeckbuilderCard>();
                 commander = incomingCommander.Name;
-                previousCommanderCard.UpdateUI();
+                for (int i = 0; i < cardObjects.Count; i++)
+                {
+                    if (cardObjects[i].gameObject.GetComponent<DeckbuilderCard>() != null)
+                    {
+                        DeckbuilderCard previousCommanderCard = cardObjects[i].gameObject.GetComponent<DeckbuilderCard>();
+                        previousCommanderCard.UpdateUI();
+                    }
+                }
             }
             else
             {

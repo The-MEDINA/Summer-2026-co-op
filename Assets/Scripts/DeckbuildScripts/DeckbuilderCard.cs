@@ -150,6 +150,7 @@ public class DeckbuilderCard : MonoBehaviour
             {
                 if (deckInstance.Commander == commander.Name)
                 {
+                    deckInstance.CommanderInstance = commander;
                     amountText.text = $"Active";
                 }
                 else
