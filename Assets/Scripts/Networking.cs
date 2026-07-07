@@ -1744,9 +1744,10 @@ namespace Network
                 SendPauseUnpause(false);
             }
             // Loadout. (Tracked by p2's commander)
-            if (requestP2Commander != null)
+            if (requestP2Commander != "")
             {
-                if (DeckInstanceDeckbuilderScript.instance.SentLoadout)
+                // if we both sent or received loadouts
+                if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
                 {
                     SendSceneSwitch("Demo_LocalTwoPlayer");
                     SceneManager.LoadScene("Demo_LocalTwoPlayer");
