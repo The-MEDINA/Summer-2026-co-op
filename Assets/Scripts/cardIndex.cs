@@ -216,13 +216,14 @@ namespace cardIndex
                         obj.GetComponent<MajorMunchkinScript>().Name = "Major Munchkin";
                         if (battleground != null)
                         {
-                            MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
-                            obj.GetComponent<MajorMunchkinScript>().TokenPrefab = playerMajor.TokenPrefab;
+                            // MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
+                            obj.GetComponent<MajorMunchkinScript>().TokenPrefab = battleground.CardProto;
                             obj.GetComponent<MajorMunchkinScript>().BG = battleground;
                             battleground.P.CommanderCard = obj.GetComponent<MajorMunchkinScript>();
                         }
                         break;
                     }
+                case ("Seargent Zoomie"):
                 case ("Sergeant Zoomie"):
                     {
                         obj.AddComponent<SeargentZoomieScript>();
@@ -255,7 +256,12 @@ namespace cardIndex
             spritesIndex.TryGetValue(name, out spritesDetails);
             return spritesDetails;
         }
-
+        
+        /// <summary>
+        /// Returns the details of every card in a faction.
+        /// </summary>
+        /// <param name="faction">Faction of cards to get</param>
+        /// <returns>A list of details with every relevant card.</returns>
         public static List<Details> GetAllFactionCards(string faction)
         {
             if (nameIndex.Count == 0) GenerateDictionaryIndex();

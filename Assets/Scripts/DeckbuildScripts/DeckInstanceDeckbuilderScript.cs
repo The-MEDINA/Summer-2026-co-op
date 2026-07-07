@@ -14,10 +14,12 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private float lowYPos = 100;
     private List<GameObject> cardObjects = new List<GameObject>();
     private List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
-    private CommanderCardScript commander = new CommanderCardScript();
+    private string commander = "";
+    private CommanderCardScript commanderInstance;
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } } 
-    public CommanderCardScript Commander { get { return commander; } }
+    public List<GameObject> CardObjects { get { return cardObjects; } set { cardObjects = value; } }
+    public string Commander { get { return commander; } }
 
     private void Awake()
     {
@@ -40,14 +42,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private void Update()
     {
         float move = Input.mouseScrollDelta.y;
-        if (move > 0) 
-        {
-            
-        }
-        if (move < 0)
-        {
-
-        }
         if (move < 0 && highYPos > 3 || move > 0 && lowYPos < -3)
         {
             for (int i = 0; i < cardObjects.Count; i++)
@@ -61,6 +55,11 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add a card to the loadout.
+    /// </summary>
+    /// <param name="cardName">Card to add via its name</param>
+    /// <returns>whether the addition was successful</returns>
     public bool AddCard(string cardName)
     {
         //deck at capacity
@@ -72,6 +71,36 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Add a commander to the loadout.
+    /// </summary>
+    /// <param name="incomingCommander">Commander to add</param>
+    /// <returns>Whether the addition was successful</returns>
+    public bool AddCard(CommanderCardScript incomingCommander)
+    {
+        if (commander == incomingCommander.Name) return false;
+        else
+        {
+            if (commander != "")
+            {
+                DeckbuilderCard previousCommanderCard = commanderInstance.gameObject.GetComponent<DeckbuilderCard>();
+                commander = incomingCommander.Name;
+                previousCommanderCard.UpdateUI();
+            }
+            else
+            {
+                commander = incomingCommander.Name;
+            }
+            commanderInstance = incomingCommander;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Remove a card from the loadout.
+    /// </summary>
+    /// <param name="cardName">Card to remove via its name</param>
+    /// <returns>Whether the removal was successful</returns>
     public bool RemoveCard(string cardName)
     {
         if(Deck.Count <= 0) { return false; }
@@ -89,30 +118,53 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Remove a commander from the loadout
+    /// </summary>
+    /// <param name="outCommander">Commander to remove</param>
+    /// <returns>Whether the removal was successful</returns>
+    public bool RemoveCard(CommanderCardScript outCommander)
+    {
+        if (commander != outCommander.Name) return false;
+        else commander = "";
+        return true;
+    }
+
+    /// <summary>
+    /// Change the cards to select by faction.
+    /// </summary>
+    /// <param name="faction">Faction of cards to select</param>
     private void ChangeFactionCards(string faction)
     {
+        // remove existing cards
         while (cardObjects.Count != 0)
         {
             Destroy(cardObjects[0]);
             cardObjects.RemoveAt(0);
         }
         List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
+        // Add and position all relevant cards
         for (int i = 0; i < factionCards.Count; i++)
         {
             GameObject deckCard = Instantiate(prefab);
+            // funky math shifts the cards right and down
             deckCard.transform.position = new Vector3(-7.5f  + ((cardSpacing * i) % (cardSpacing * cardsInRow)), 3 - (2 * (i / cardsInRow)), 0);
             if (deckCard.transform.position.y > highYPos) highYPos = deckCard.transform.position.y;
             if (deckCard.transform.position.y < lowYPos) lowYPos = deckCard.transform.position.y;
             deckCard.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+
+            // non-commander cards
             if (factionCards[i].type != NewVirtualCardParent.type.none)
             {
                 NewVirtualCardParent cardData = cardIndex.Index.CreateCard(factionCards[i].name, NewVirtualCardParent.location.deck);
                 deckCard.GetComponent<DeckbuilderCard>().CardInstance = cardData;
             }
+            // commanders
             else
             {
                 cardIndex.Index.AttachCommanderCard(deckCard, factionCards[i].name, null);
                 deckCard.GetComponent<DeckbuilderCard>().UpdateUI();
+                deckCard.GetComponent<CommanderCardScript>().DeckbuilderOverride = true;
             }
             deckCard.GetComponent<DeckbuilderCard>().DeckInstance = this;
             cardObjects.Add(deckCard);

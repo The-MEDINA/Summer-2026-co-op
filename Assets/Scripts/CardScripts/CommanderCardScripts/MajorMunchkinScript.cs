@@ -36,12 +36,15 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     /// <param name="eventData">data for mouse pointer click</param>
     public void OnPointerClick(PointerEventData eventData) 
     {
-        //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
-        if (!bg.P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
+        if (!DeckbuilderOverride) // need this to prevent this method from activating in the deck builder
         {
-            if (canAttack) { PerformAbility(); }
+            //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
+            if (!bg.P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
+            {
+                if (canAttack) { PerformAbility(); }
+            }
+            else { Debug.LogWarning("Cannot interact with Player 2's commander."); }
         }
-        else { Debug.LogWarning("Cannot interact with Player 2's commander."); }
     }
 
     /// <summary>

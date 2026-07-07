@@ -45,10 +45,19 @@ public class CardSelectionManager : MonoBehaviour
 
     private void Start()
     {
+        DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+
+        if (dBDeck != null)
+        {
+            if (dBDeck.Commander != null)
+            {
+                cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
+                // player1.CommanderCard = player1CommanderSquare.GetComponent<CommanderCardScript>();
+            }
+        }
+        /*
         for (int i = 0; i < 2; i ++)
         {
-            // select the current player
-            // (I'm mainly doing this just so I only have to write the switch statement once)
             Player currentPlayer = null;
             GameObject commanderSquare = null;
             Battleground currentBG = null;
@@ -78,7 +87,7 @@ public class CardSelectionManager : MonoBehaviour
                 commanderSquare.GetComponent<SeargentZoomieScript>().BG = currentBG;
                 currentPlayer.CommanderCard = commanderSquare.GetComponent<SeargentZoomieScript>();
             }
-        }
+        }*/
     }
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)

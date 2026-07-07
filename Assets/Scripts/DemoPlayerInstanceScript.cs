@@ -40,7 +40,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         if (dBDeck != null)
         {
             p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
-            p.CommanderCard = dBDeck.Commander;
         }
         else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
         {

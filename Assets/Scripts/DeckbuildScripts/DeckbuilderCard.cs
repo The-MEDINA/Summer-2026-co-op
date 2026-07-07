@@ -43,12 +43,19 @@ public class DeckbuilderCard : MonoBehaviour
     /// </summary>
     public void TryAddCard()
     {
-        if (deckInstance != null)
+        if (deckInstance != null && cardInstance != null)
         {
             if (deckInstance.AddCard(cardInstance.CardName))
             {
                 amount++;
                 amountText.text = $"Amount: {amount}";
+            }
+        }
+        else if (deckInstance != null)
+        {
+            if (deckInstance.AddCard(gameObject.GetComponent<CommanderCardScript>()))
+            {
+                amountText.text = $"Active";
             }
         }
     }
@@ -58,12 +65,19 @@ public class DeckbuilderCard : MonoBehaviour
     /// </summary>
     public void TryRemoveCard()
     {
-        if (deckInstance != null)
+        if (deckInstance != null && cardInstance != null)
         {
             if (deckInstance.RemoveCard(cardInstance.CardName))
             {
                 amount--;
                 amountText.text = $"Amount: {amount}";
+            }
+        }
+        else if (deckInstance != null)
+        {
+            if (deckInstance.RemoveCard(gameObject.GetComponent<CommanderCardScript>()))
+            {
+                amountText.text = $"Inactive";
             }
         }
     }
@@ -122,6 +136,22 @@ public class DeckbuilderCard : MonoBehaviour
             cardDamage.text = $"";
             cardEquipment.text = "";
             cardCost.text = $"";
+
+            if (deckInstance != null)
+            {
+                if (deckInstance.Commander == commander.Name)
+                {
+                    amountText.text = $"Active";
+                }
+                else
+                {
+                    amountText.text = $"Inactive";
+                }
+            }
+            else
+            {
+                amountText.text = $"Inactive";
+            }
 
             // add sprites.
             cardIndex.Sprites updatedArt;
