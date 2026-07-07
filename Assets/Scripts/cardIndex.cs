@@ -206,6 +206,7 @@ namespace cardIndex
                 case ("Major Munchkin"):
                     {
                         obj.AddComponent<MajorMunchkinScript>();
+                        obj.GetComponent<MajorMunchkinScript>().Name = "Major Munchkin";
                         if (battleground != null)
                         {
                             MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
@@ -218,6 +219,7 @@ namespace cardIndex
                 case ("Sergeant Zoomie"):
                     {
                         obj.AddComponent<SeargentZoomieScript>();
+                        obj.GetComponent<SeargentZoomieScript>().Name = "Seargent Zoomie";
                         if (battleground != null)
                         {
                             obj.GetComponent<SeargentZoomieScript>().BG = battleground;

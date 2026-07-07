@@ -111,7 +111,8 @@ public class DeckbuilderCard : MonoBehaviour
         {
             // setup
             CommanderCardScript commander = gameObject.GetComponent<CommanderCardScript>();
-            Details commanderDetails = cardIndex.Index.GetDetails(commander.name);
+            Details commanderDetails = cardIndex.Index.GetDetails(commander.Name);
+            if (commander.Name == "Seargent Zoomie") commanderDetails = cardIndex.Index.GetDetails("Sergeant Zoomie"); // minor spelling mistake
 
             // update the text.
             cardName.text = commanderDetails.name;
