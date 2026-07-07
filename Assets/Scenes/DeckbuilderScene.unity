@@ -1778,6 +1778,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckInstanceDeckbuilderScript
   prefab: {fileID: 7725140749666673323, guid: 493981792d8273247aa87fc423d4e661, type: 3}
+  cardsInRow: 7
+  cardSpacing: 2.4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
