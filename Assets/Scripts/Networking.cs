@@ -920,8 +920,9 @@ namespace Network
             byte lowByte = 0;
             if (commander != null)
             {
+                string commanderName = commander.Name == "Seargent Zoomie" ? "Sergeant Zoomie" : commander.Name;
                 // encode the commander's index if the commander exists.
-                indexToEncode = (short)cardIndex.Index.GetDetails(commander.Name).nameIndexPosition;
+                indexToEncode = (short)cardIndex.Index.GetDetails(commanderName).nameIndexPosition;
             }
 
             // mask out the top 8 bits.
@@ -1515,7 +1516,6 @@ namespace Network
                 if (requestSceneChange == "Demo_LocalTwoPlayer")
                 {
                     DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                    p2InitialDeck = new List<NewVirtualCardParent>();
                 }
                 Networking.requestSceneChange = "";
             }
@@ -1755,7 +1755,6 @@ namespace Network
                     SendSceneSwitch("Demo_LocalTwoPlayer");
                     SceneManager.LoadScene("Demo_LocalTwoPlayer");
                     DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                    p2InitialDeck = new List<NewVirtualCardParent>();
                 }
             }
         }
