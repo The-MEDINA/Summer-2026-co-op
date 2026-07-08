@@ -17,6 +17,10 @@ public class DamagePUTextScript : MonoBehaviour
             text.alpha -= 2.5f * Time.deltaTime;
             text.color = Color.black;
         }
+        else
+        {
+            text.color = Color.red;
+        }
     }
 
     public void SetNumber(int damage) { text.text = damage.ToString(); }

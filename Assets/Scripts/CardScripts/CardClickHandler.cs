@@ -120,7 +120,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
     public void PopUpDamageText(int damage)
     {
-        Vector2 spawnPos = new Vector2(transform.position.x + 0.1f * damage, transform.position.y + 0.5f);
+        Vector2 spawnPos = new Vector2(transform.position.x + 0.1f * damage, transform.position.y + 1.0f);
         damagePopUpTextPrefab.GetComponent<DamagePUTextScript>().SetNumber(damage);
         GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
     }

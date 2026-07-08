@@ -101,6 +101,25 @@ public class SpellParent : NewVirtualCardParent
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.PlayerGainThorns();
                                 break;
                             }
+
+                        case "Cat Fusion":
+                            {
+                                int total = 0;
+                                for (int i = 0; i < UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
+                                {
+                                    if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i].CardName == "Kitten")
+                                    {
+                                        total++;
+                                    }
+                                    else if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i].CardName == "Grey")
+                                    {
+                                        total += 2;
+                                    }
+                                }
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(
+                                    0, total, total, "Tiger the Cat", type.minion, MinionParent.effect.none, location.inPlay));
+                                break;
+                            }
                     }
                     break;
                 }
