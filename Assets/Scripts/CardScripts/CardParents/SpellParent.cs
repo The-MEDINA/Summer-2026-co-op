@@ -102,7 +102,7 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
-                        case "Cat Fusion":
+                        case "Cat Fusion"://doesn't delete tokens yet and also glitched placement
                             {
                                 int total = 0;
                                 for (int i = 0; i < UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
