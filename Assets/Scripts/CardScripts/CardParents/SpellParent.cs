@@ -1,6 +1,7 @@
-using UnityEngine;
 using cardIndex;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using UnityEngine;
 
 public class SpellParent : NewVirtualCardParent
 {
@@ -257,14 +258,14 @@ public class SpellParent : NewVirtualCardParent
 
                         case "No Thoughts, Head Empty":
                             {
-                                RevertEquipment(target);
-                                target.Damage = target.StartingDamage;
-                                if (target.Health > target.StartingHealth) target.Health = target.StartingHealth;
+                                Details cardDetails = cardIndex.Index.GetDetails(target.CardName);
+                                target.Damage = cardDetails.damage;
+                                target.Health = cardDetails.health;
                                 if (target is TwoAttackParent)
                                 {
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
-                                    twoAttackTarget.FirstDamage = twoAttackTarget.StartingDamage;
-                                    twoAttackTarget.SecondDamage = twoAttackTarget.StartingSecondDamage;
+                                    twoAttackTarget.FirstDamage = cardDetails.damage;
+                                    twoAttackTarget.SecondDamage = cardDetails.secondDamage;
                                 }
                                 break;
                             }
@@ -316,74 +317,6 @@ public class SpellParent : NewVirtualCardParent
                     }
                     break;
                 }
-        }
-    }
-
-    private void RevertEquipment(MinionParent target)
-    {
-        if (target.EquipmentList.Count <= 0) { return; }
-
-        TwoAttackParent target2Atk = target as TwoAttackParent;
-
-        for (int i = 0; i < target.EquipmentList.Count; i++)
-        {
-            switch(target.EquipmentList[i])//errors occur when health taken below 1 and then tried to revert it
-            {
-                case MinionParent.equipment.m16: 
-                    { 
-                        target.Damage -= 2; 
-                        if (target2Atk != null) 
-                        { 
-                            target2Atk.FirstDamage -= 2; 
-                            target2Atk.SecondDamage -= 2; 
-                        } 
-                        break; 
-                    }
-                case MinionParent.equipment.terrorize: 
-                    { 
-                        target.Damage++; 
-                        target.Health++; 
-                        target.StartingHealth++;
-                        if (target2Atk != null)
-                        {
-                            target2Atk.FirstDamage ++;
-                            target2Atk.SecondDamage ++;
-                        }
-                        break; 
-                    }
-                case MinionParent.equipment.fishTreat: 
-                    { 
-                        target.Damage -= 2; 
-                        target.Health -= 2; 
-                        target.StartingHealth -= 2;
-                        if (target2Atk != null)
-                        {
-                            target2Atk.FirstDamage -= 2;
-                            target2Atk.SecondDamage -= 2;
-                        }
-                        break; 
-                    }
-                case MinionParent.equipment.empower: 
-                    { 
-                        target.Damage--; 
-                        target.Health--; 
-                        target.StartingHealth--; 
-                        break; 
-                    }
-                case MinionParent.equipment.iHungy:
-                    {
-                        if (target.CoordinateAbility != null)
-                        {
-                            target.CoordinateAbility.NumToHit++;
-                        }
-                        break;
-                    }
-                case MinionParent.equipment.curse: { target.Damage += 2; break; }
-                case MinionParent.equipment.catnap: { target.Health -= 3; target.StartingHealth -= 3; break; }
-            }
-            // after reverting equipment stats, remove the equipment from the list until they're all gone.
-            target.EquipmentList.RemoveAt(0);
-            i--;
         }
     }
 }
