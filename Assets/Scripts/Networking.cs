@@ -920,7 +920,7 @@ namespace Network
             byte lowByte = 0;
             if (commander != null)
             {
-                string commanderName = commander.Name == "Seargent Zoomie" ? "Sergeant Zoomie" : commander.Name;
+                string commanderName = commander.Name == "Seargent Zoomie" ? "Sergeant Zoomie" : commander.Name; // I hate this
                 // encode the commander's index if the commander exists.
                 indexToEncode = (short)cardIndex.Index.GetDetails(commanderName).nameIndexPosition;
             }

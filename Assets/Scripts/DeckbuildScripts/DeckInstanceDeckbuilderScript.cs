@@ -183,32 +183,38 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             cardObjects.RemoveAt(0);
         }
         List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
+        int index = 0;
         // Add and position all relevant cards
         for (int i = 0; i < factionCards.Count; i++)
         {
-            GameObject deckCard = Instantiate(prefab);
-            // funky math shifts the cards right and down
-            deckCard.transform.position = new Vector3(-7.5f  + ((cardSpacing * i) % (cardSpacing * cardsInRow)), 3 - (2 * (i / cardsInRow)), 0);
-            if (deckCard.transform.position.y > highYPos) highYPos = deckCard.transform.position.y;
-            if (deckCard.transform.position.y < lowYPos) lowYPos = deckCard.transform.position.y;
-            deckCard.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-
-            // setup for next part
-            deckCard.GetComponent<DeckbuilderCard>().DeckInstance = this;
-            cardObjects.Add(deckCard);
-
-            // non-commander cards
-            if (factionCards[i].type != NewVirtualCardParent.type.none)
+            // exclude tokens
+            if (factionCards[i].type != NewVirtualCardParent.type.token)
             {
-                NewVirtualCardParent cardData = cardIndex.Index.CreateCard(factionCards[i].name, NewVirtualCardParent.location.deck);
-                deckCard.GetComponent<DeckbuilderCard>().CardInstance = cardData;
-            }
-            // commanders
-            else
-            {
-                cardIndex.Index.AttachCommanderCard(deckCard, factionCards[i].name, null);
-                deckCard.GetComponent<DeckbuilderCard>().UpdateUI();
-                deckCard.GetComponent<CommanderCardScript>().DeckbuilderOverride = true;
+                GameObject deckCard = Instantiate(prefab);
+                // funky math shifts the cards right and down
+                deckCard.transform.position = new Vector3(-7.5f + ((cardSpacing * index) % (cardSpacing * cardsInRow)), 3 - (2 * (index / cardsInRow)), 0);
+                if (deckCard.transform.position.y > highYPos) highYPos = deckCard.transform.position.y;
+                if (deckCard.transform.position.y < lowYPos) lowYPos = deckCard.transform.position.y;
+                deckCard.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+
+                // setup for next part
+                deckCard.GetComponent<DeckbuilderCard>().DeckInstance = this;
+                cardObjects.Add(deckCard);
+
+                // non-commander cards
+                if (factionCards[i].type != NewVirtualCardParent.type.none)
+                {
+                    NewVirtualCardParent cardData = cardIndex.Index.CreateCard(factionCards[i].name, NewVirtualCardParent.location.deck);
+                    deckCard.GetComponent<DeckbuilderCard>().CardInstance = cardData;
+                }
+                // commanders
+                else
+                {
+                    cardIndex.Index.AttachCommanderCard(deckCard, factionCards[i].name, null);
+                    deckCard.GetComponent<DeckbuilderCard>().UpdateUI();
+                    deckCard.GetComponent<CommanderCardScript>().DeckbuilderOverride = true;
+                }
+                index++;
             }
         }
     }

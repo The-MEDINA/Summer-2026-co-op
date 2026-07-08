@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 9055262701922919272}
   - component: {fileID: 6205692878229621490}
   - component: {fileID: 6069337079145656303}
+  - component: {fileID: 9101939458237346617}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -251,6 +252,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &9101939458237346617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267456415810443580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d220621763b99064c8bef39ff9ad8382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckCardClickHandler
+  maxRotationDegrees: 20
+  boxCollider: {fileID: 6069337079145656303}
 --- !u!1 &1742615577279863138
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Right || Networking.CurrentState == state.disconnected)
         {
             SceneManager.LoadScene("Demo_LocalTwoPlayer");
             return;
@@ -18,6 +18,11 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
         DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
         if (dBDeck != null)
         {
+            if (dBDeck.Commander == "" || dBDeck.Deck.Count == 0)
+            {
+                Debug.Log("You need at least 1 minion and a commander!");
+                return;
+            }
             if (!dBDeck.SentLoadout)
             {
                 Networking.SendLoadout(dBDeck.Deck, dBDeck.CommanderInstance);
