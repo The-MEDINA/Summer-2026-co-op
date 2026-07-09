@@ -128,6 +128,12 @@ public class CardUIManager : MonoBehaviour
     {
         switch(fillProgress)
         {
+            case 0:
+                {
+                    attackTimerFill.fillAmount = 0.0f;
+                    break;
+                }
+
             case 1:
                 {
                     attackTimerFill.fillAmount = 0.25f;

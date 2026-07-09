@@ -291,10 +291,12 @@ public class SpellParent : NewVirtualCardParent
 
                         case "2 Cats in a Trenchcoat"://steals card if frozen
                             {
-                                if (target.UnityObject.GetComponent<CardClickHandler>().CurrentSpeed != CardClickHandler.speed.frozen)
+                                if (target.UnityObject.GetComponent<CardClickHandler>().CurrentSpeed == CardClickHandler.speed.frozen)
                                 {
-                                    target.UnityObject.GetComponent<CardClickHandler>().SetSpeedToFull();
+                                    target.UnityObject.GetComponent<CardClickHandler>().FindSpeed(target.CardEffect);
+                                    break;
                                 }
+                                target.UnityObject.GetComponent<CardClickHandler>().SetSpeedToFull();
                                 break;
                             }
                     }
