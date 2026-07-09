@@ -32,6 +32,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
     public bool InPlay { get { return inPlay; } set { inPlay = value; } }
+    public speed CurrentSpeed { get { return currentSpeed; } }
    
     private void Awake()
     {
@@ -193,6 +194,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         Debug.Log(currentSpeed);
 
     }
+
+    public void SetSpeedToFull() { timer = timeToAttack; }
 
     /// <summary>
     /// sets color of a minion card based on its ability

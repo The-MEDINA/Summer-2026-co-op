@@ -7,11 +7,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "Barbed Wire",
-        "No Thoughts, Head Empty",
-        "Empower",
-        "Terrorize",
-        "Fish Treat",
         "Gold Miner Cat",
         "Cave Cat",
         "The Mad Catter",
@@ -56,6 +51,15 @@ public class DemoPlayerInstanceScript : MonoBehaviour
                 MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new MinionParent(1, 1, 1, "froz", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.hand));
+
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
             for (int i = 0; i < startingDeck.Length; i++)
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
