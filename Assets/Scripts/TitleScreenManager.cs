@@ -13,10 +13,6 @@ public class TitleScreenManager : MonoBehaviour
         SceneManager.LoadScene("DirectConnectTest");
     }
 
-    public void LoadDeckbuilder()
-    {
-        SceneManager.LoadScene("DeckbuilderScene");
-    }
     public void LoadTitleScreen()
     {
         SceneManager.LoadScene("TitleScreen");

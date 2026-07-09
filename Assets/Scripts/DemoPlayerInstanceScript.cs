@@ -7,9 +7,9 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
+        "Blizzard",
         "Gold Miner Cat",
         "Cave Cat",
-        "Astro Cat",
         "The Mad Catter",
         "Pspspsps!",
         "Curse"
@@ -25,6 +25,11 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         {
             Debug.LogWarning("DemoPlayerInstanceScript needs a Player component.");
             return;
+        }
+
+        if (p.IsPlayerTwo)
+        {
+
         }
 
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 0, "Barbed Wire",
@@ -53,7 +58,16 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         {
             p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
                 MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 1, 1, "frozenTest", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
+                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new MinionParent(1, 1, 1, "froz", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.hand));
+
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
             for (int i = 0; i < startingDeck.Length; i++)
             {

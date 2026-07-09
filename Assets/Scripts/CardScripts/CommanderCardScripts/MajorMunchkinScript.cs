@@ -9,8 +9,6 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     [SerializeField] private float timeToEffect = 3f;
     private bool canAttack = false;
 
-    public GameObject TokenPrefab { get { return tokenPrefab; } set { tokenPrefab = value; } }
-
     private void Start()
     {
         Name = "Major Munchkin";//assigns name

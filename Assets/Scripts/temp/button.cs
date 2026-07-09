@@ -122,9 +122,4 @@ public class button : MonoBehaviour
             statusText.text += $"{error}\n";
         }
     }
-
-    public void TitleScreen()
-    {
-        SceneManager.LoadScene("TitleScreen");
-    }
 }

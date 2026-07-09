@@ -86,9 +86,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         //deck at capacity
         //too many copies of that card
 
-        NewVirtualCardParent cardToAdd = cardIndex.Index.CreateCard(cardName, NewVirtualCardParent.location.deck);
-        Deck.Add(cardToAdd);
-        Network.Networking.P1InitialDeck.Add(cardToAdd);
+        Deck.Add(new MinionParent(cardName, NewVirtualCardParent.location.deck));
         return true;
     }
 
@@ -136,7 +134,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         {
             if (Deck[i].CardName == cardName)
             {
-                Network.Networking.P1InitialDeck.RemoveAt(i);
                 Deck.RemoveAt(i);
                 return true;
             }

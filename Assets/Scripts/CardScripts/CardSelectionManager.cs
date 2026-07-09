@@ -1,6 +1,5 @@
-using Network;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
+using Network;
 using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
@@ -11,15 +10,11 @@ public class CardSelectionManager : MonoBehaviour
     [SerializeField] private Player player1;
     [SerializeField] private GameObject player1CardField;
     [SerializeField] private HandUIManager player1HandUI;
-    [SerializeField] private GameObject player1CommanderSquare;
-    [SerializeField] private Battleground player1Battleground;
 
     [Header("Player 2")]
     [SerializeField] private Player player2;
     [SerializeField] private GameObject player2CardField;
     [SerializeField] private HandUIManager player2HandUI;
-    [SerializeField] private GameObject player2CommanderSquare;
-    [SerializeField] private Battleground player2Battleground;
 
     [Header("Field Layout")]
     [SerializeField] private float player1StartX = -5f;

@@ -35,7 +35,6 @@ using UnityEngine.SceneManagement;
 
 namespace Network
 {
-    #region PACKETS_AND_ENUMS
     /*
      * Packets are 1024 byte long arrays that are split differently depending on their type.
      * the first byte of every packet will always contain its type. The type is determined by the packetType enum.
@@ -93,11 +92,6 @@ namespace Network
      *  --- REQUEST: ---
      * byte 1 holds the enum of the packet that's being requested.
      * byte 2 holds any overrides or extra info. For a CardArray, that means 0 = deck, 1 = hand, 2 = inPlay.
-     * 
-     *  --- LOADOUT: ---
-     *  byte 1 holds the length of the player's deck.
-     *  bytes 2 - 3 holds the commander card.
-     *  byte 4 - 514 holds the cards. It's currently limited to 255 because the length is 1 byte.
      */
     public enum packetType
     {
@@ -110,8 +104,7 @@ namespace Network
         cardAttack,
         cardDeath,
         pause_unpause,
-        request,
-        loadout
+        request
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -128,7 +121,6 @@ namespace Network
         connected,
         paused
     }
-    #endregion
     public static class Networking
     {
         #region VARIABLES_PROPERTIES
@@ -1024,7 +1016,7 @@ namespace Network
                     // request a scene change.
                     requestSceneChange = sceneName;
                     break;
-                    }
+                }
                 case ((byte) packetType.cardArray):
                 {
 #if DEBUG_MODE
@@ -1274,7 +1266,7 @@ namespace Network
                     else CurrentState = state.connected;
                     break;
                 }
-                case ((byte) packetType.request):
+                case ((byte)packetType.request):
                     {
 #if DEBUG_MODE
                         Debug.Log("Found request");
@@ -1726,7 +1718,6 @@ namespace Network
                 // request the actual deck before unpausing
                 SendRequest(packetType.cardArray, 0);
             }
-            // deck cards.
             if (requestArray != null && requestArray[0] == 0)
             {
                 // clear the deck
@@ -2036,29 +2027,6 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to send request while disconnected! Double check that network manager is connected to a peer.");
-            }
-#endif
-        }
-
-        /// <summary>
-        /// Tell the peer your loadout.
-        /// </summary>
-        /// <param name="deck">Your deck of cards</param>
-        /// <param name="commander">Your commander</param>
-        public static void SendLoadout(List<NewVirtualCardParent> deck, CommanderCardScript commander)
-        {
-#if DEBUG_MODE
-            Debug.Log("Encode loadout packet");
-#endif
-            byte[] packet = EncodePacket(deck, commander);
-            if (CurrentState != state.disconnected)
-            {
-                stream.WriteAsync(packet);
-            }
-#if DEBUG_MODE
-            else
-            {
-                Debug.LogWarning("Tried to send loadout while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }

@@ -32,6 +32,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     public NewVirtualCardParent CardData { get { return cardData; } set { cardData = value; } }
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
     public bool InPlay { get { return inPlay; } set { inPlay = value; } }
+    public speed CurrentSpeed { get { return currentSpeed; } }
    
     private void Awake()
     {
@@ -70,11 +71,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                 Debug.Log(currentSpeed);
                 minion.CanAttack = true;
                 timer = 0f;
-
-                if(currentSpeed == speed.frozen) //won't be frozen if froze ready, timeToAttack, lots of fix needed
-                {
-                    FindSpeed(minion.CardEffect);
-                }
             }
             else if(currentSpeed == speed.frozen)
             {
@@ -83,7 +79,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
                 if(freezeTimer >= timeToUnfreeze)
                 {
-                    timer = timeToAttack + 1f;
+                    FindSpeed(minion.CardEffect);
                 }
                 else if (freezeTimer < timeToUnfreeze && !minion.CanAttack)
                 {
@@ -115,17 +111,21 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(1f);
             }
+            else if (timePercent > 0f)
+            {
+                CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(0f);
+            }
         }
     }
 
     public void PopUpDamageText(int damage)
     {
-        Vector2 spawnPos = new Vector2(transform.position.x + 0.1f * damage, transform.position.y + 0.5f);
+        Vector2 spawnPos = new Vector2(transform.position.x + 0.1f * damage, transform.position.y + 1.0f);
         damagePopUpTextPrefab.GetComponent<DamagePUTextScript>().SetNumber(damage);
         GameObject instanceOfPopUpText = Instantiate(damagePopUpTextPrefab, spawnPos, Quaternion.identity);
     }
 
-    private void FindSpeed(MinionParent.effect speed)
+    public void FindSpeed(MinionParent.effect speed)
     {
         Debug.Log(currentSpeed);
         switch(speed)
@@ -193,6 +193,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         Debug.Log(currentSpeed);
 
     }
+
+    public void SetSpeedToFull() { timer = timeToAttack; }
 
     /// <summary>
     /// sets color of a minion card based on its ability
