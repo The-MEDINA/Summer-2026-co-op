@@ -147,6 +147,8 @@ namespace Network
         private static NetworkStream stream;
         private static List<byte[]> previousPackets = new List<byte[]>();
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
+        private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
+        private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -163,6 +165,7 @@ namespace Network
         private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
+        private static string requestP2Commander = "";
 
         /// <summary>
         /// delegates to set up events.
@@ -181,6 +184,9 @@ namespace Network
         public static Player PlayerTwo { get { return playerTwo; } set { playerTwo = value; } }
         public static Battleground P2Battleground { get { return p2Battleground; } set { p2Battleground = value; } }
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
+        public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
+        public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
+        public static string P2CommanderName { get { return requestP2Commander; } set { requestP2Commander = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -888,6 +894,56 @@ namespace Network
             packet[2] = (byte)overrides;
             return packet;
         }
+
+        /// <summary>
+        /// Encode a loadout packet to send to a peer.
+        /// </summary>
+        /// <param name="deck">Player's deck to encode.</param>
+        /// <param name="commander">Player's commander card to encode.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(List<NewVirtualCardParent> deck, CommanderCardScript commander)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.loadout;
+            packet[1] = (byte)deck.Count;
+
+            short indexToEncode = (short)cardIndex.Index.GetDetails("Sergeant Zoomie").nameIndexPosition;
+            byte highByte = 0;
+            byte lowByte = 0;
+            if (commander != null)
+            {
+                string commanderName = commander.Name == "Seargent Zoomie" ? "Sergeant Zoomie" : commander.Name; // I hate this
+                // encode the commander's index if the commander exists.
+                indexToEncode = (short)cardIndex.Index.GetDetails(commanderName).nameIndexPosition;
+            }
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(indexToEncode & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((indexToEncode >> 8) & 255);
+
+            packet[2] = highByte;
+            packet[3] = lowByte;
+
+            for (int i = 0; i < deck.Count; i++)
+            {
+                // encode the card's index.
+                short index = (short)deck[i].NameIndexPosition;
+                byte cardHighByte = 0;
+                byte cardLowByte = 0;
+
+                // mask out the top 8 bits.
+                cardLowByte = (byte)(index & 255);
+
+                // shift right 8 bits and then mask.
+                cardHighByte = (byte)((index >> 8) & 255);
+
+                packet[4 + (2 * i)] = cardHighByte;
+                packet[5 + (2 * i)] = cardLowByte;
+            }
+            return packet;
+        }
         #endregion
 
         /// <summary>
@@ -1246,13 +1302,48 @@ namespace Network
                         }
                         break;
                     }
+                case ((byte)packetType.loadout):
+                {
+#if DEBUG_MODE
+                    Debug.Log("found loadout packet");
+#endif
+                    // rebuild and set the commander card from the info.
+                    short indexOfCard = packet[2];
+                    indexOfCard <<= 8;
+                        indexOfCard += packet[3];
+                    string commanderName = cardIndex.Index.GetName(indexOfCard);
+                    requestP2Commander = commanderName;
+
+                    // New array to replace the old one.
+                    List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
+
+                    // For every card in the array.
+                    for (int i = 0; i < packet[1]; i++)
+                    {
+                        NewVirtualCardParent card;
+
+                        // rebuild the card from the info.
+                        short individualCard = packet[4 + (2 * i)];
+                        individualCard <<= 8;
+                        individualCard += packet[5 + (2 * i)];
+
+                        // grab its name and create the card.
+                        string cardName = cardIndex.Index.GetName(individualCard);
+                        card = cardIndex.Index.CreateCard(cardName, (NewVirtualCardParent.location)packet[1]);
+                        deck.Add(card);
+                    }
+
+                    // replace the deck with this new one
+                    p2InitialDeck = deck;
+                    break;
+                }
                 default:
                 {
-                        // ONLY throw exceptions if there is not an active connection.
-                        if (CurrentState != state.connected) 
-                        { 
-                            throw e; 
-                        }
+                    // ONLY throw exceptions if there is not an active connection.
+                    if (CurrentState != state.connected) 
+                    { 
+                        throw e; 
+                    }
 #if DEBUG_MODE
                     Debug.LogWarning("Unidentified, corrupted or otherwise invalid packet received. Ignoring packet to keep connection alive.");
 #endif
@@ -1413,6 +1504,11 @@ namespace Network
             if (Networking.requestSceneChange != "")
             {
                 SceneManager.LoadScene(Networking.requestSceneChange);
+                // prevent loading the scene twice
+                if (requestSceneChange == "Demo_LocalTwoPlayer")
+                {
+                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                }
                 Networking.requestSceneChange = "";
             }
 
@@ -1640,6 +1736,17 @@ namespace Network
                 // FINALLY unpause the game
                 CurrentState = state.connected;
                 SendPauseUnpause(false);
+            }
+            // Loadout. (Tracked by p2's commander)
+            if (requestP2Commander != "")
+            {
+                // if we both sent or received loadouts
+                if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
+                {
+                    SendSceneSwitch("Demo_LocalTwoPlayer");
+                    SceneManager.LoadScene("Demo_LocalTwoPlayer");
+                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                }
             }
         }
 

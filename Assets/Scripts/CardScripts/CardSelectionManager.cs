@@ -31,11 +31,30 @@ public class CardSelectionManager : MonoBehaviour
         set { selectedCardObject = value; }
     }
 
+    public GameObject Player2CommanderSquare { get { return player2CommanderSquare; } }
     public bool IsLocalTesting { get { return isLocalTesting; } }
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+
+        if (dBDeck != null)
+        {
+            if (dBDeck.Commander != null)
+            {
+                cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
+            }
+        }
+        if (Networking.P2CommanderName != "")
+        {
+            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
+            Networking.P2CommanderName = "";
+        }
     }
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)

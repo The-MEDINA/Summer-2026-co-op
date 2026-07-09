@@ -17,9 +17,10 @@
 // Comment it out to remove any undefined warnings.
 #define WARN_UNDEFINED
 
-using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Multiplayer.PlayMode;
+using UnityEngine;
 
 namespace cardIndex
 {
@@ -73,6 +74,21 @@ namespace cardIndex
         public Sprite cardImage;
         public Sprite DescBackground;
     }
+
+    public struct CommanderDetails
+    {
+        public CommanderDetails(string _faction, string _name, string _description, string _flavorText)
+        {
+            faction = _faction;
+            name = _name;
+            description = _description;
+            flavorText = _flavorText;
+        }
+        public string faction;
+        public string name;
+        public string description;
+        public string flavorText;
+    }
     #endregion
     // The only point of this class is to have a dictionary of all cards.
     // In theory this should speed up retrieving the card when making one by ONLY name.
@@ -81,6 +97,7 @@ namespace cardIndex
     {
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
+        private static Dictionary<string, CommanderDetails> commanderIndex = new Dictionary<string, CommanderDetails>();
         private static Dictionary<string, Sprites> spritesIndex = new Dictionary<string, Sprites>();
         private static List<string> nameIndex = new List<string>();
         private static List<Sprite> cardSprites = new List<Sprite>();
@@ -126,7 +143,7 @@ namespace cardIndex
         /// Creates the requested card.
         /// </summary>
         /// <param name="name">Name of the card to create</param>
-        /// <param name="location">location of the card.</param>
+        /// <param name="location">Location of the card.</param>
         /// <returns>The requested card.</returns>
         public static NewVirtualCardParent CreateCard(string name, NewVirtualCardParent.location location)
         {
@@ -177,11 +194,87 @@ namespace cardIndex
             return cardToCreate;
         }
 
+        /// <summary>
+        /// Attach a commander card to an object.
+        /// </summary>
+        /// <param name="obj">Object to attach a commander card to.</param>
+        /// <param name="name">Name of the commander card.</param>
+        /// <param name="battleground">Battleground of the commander card.</param>
+        /// <returns>Whether the attachment was successful.</returns>
+        public static bool AttachCommanderCard(GameObject obj, string name, Battleground battleground)
+        {
+            if (obj.GetComponent<CommanderCardScript>() != null)
+            {
+                // object already has component, exit
+                return false;
+            }
+            switch (name)
+            {
+                case ("Major Munchkin"):
+                    {
+                        obj.AddComponent<MajorMunchkinScript>();
+                        obj.GetComponent<MajorMunchkinScript>().Name = "Major Munchkin";
+                        if (battleground != null)
+                        {
+                            // MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
+                            obj.GetComponent<MajorMunchkinScript>().TokenPrefab = battleground.CardProto;
+                            obj.GetComponent<MajorMunchkinScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<MajorMunchkinScript>();
+                        }
+                        break;
+                    }
+                case ("Seargent Zoomie"):
+                case ("Sergeant Zoomie"):
+                    {
+                        obj.AddComponent<SeargentZoomieScript>();
+                        obj.GetComponent<SeargentZoomieScript>().Name = "Seargent Zoomie";
+                        if (battleground != null)
+                        {
+                            obj.GetComponent<SeargentZoomieScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<SeargentZoomieScript>();
+                        }
+                        break;
+                    }
+                // unimplemented commander card
+                default:
+                    {
+                        Debug.LogWarning($"Could not attach commander card {name}! Double check a case is implemented for it in the switch statement?");
+                        return false;
+                    }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Creates the sprites for the requested card.
+        /// </summary>
+        /// <param name="name">Name of the card to grab sprites</param>
+        /// <returns>A sprites struct for the requested card.</returns>
         public static Sprites GetSprites(string name)
         {
             Sprites spritesDetails;
             spritesIndex.TryGetValue(name, out spritesDetails);
             return spritesDetails;
+        }
+        
+        /// <summary>
+        /// Returns the details of every card in a faction.
+        /// </summary>
+        /// <param name="faction">Faction of cards to get</param>
+        /// <returns>A list of details with every relevant card.</returns>
+        public static List<Details> GetAllFactionCards(string faction)
+        {
+            if (nameIndex.Count == 0) GenerateDictionaryIndex();
+            List<Details> factionCards = new List<Details>();
+            for (int i = 0; i < nameIndex.Count; i++)
+            {
+                Details cardDetails = GetDetails(nameIndex[i]);
+                if (cardDetails.faction == faction)
+                {
+                    factionCards.Add(cardDetails);
+                }
+            }
+            return factionCards;
         }
 
         /// <summary>
@@ -221,7 +314,7 @@ namespace cardIndex
                 int _health = -1;
                 int _damage = -1;
                 int _secondDamage = -1;
-                NewVirtualCardParent.type _type = NewVirtualCardParent.type.minion;
+                NewVirtualCardParent.type _type = NewVirtualCardParent.type.none;
                 MinionParent.effect _ability = MinionParent.effect.none;
                 MinionParent.effect _secondAbility = MinionParent.effect.none;
                 SpellParent.spellEffect _spellEffect = (SpellParent.spellEffect) 0;
@@ -250,6 +343,11 @@ namespace cardIndex
                     case("token"):
                     {
                         _type = NewVirtualCardParent.type.token;
+                        break;
+                    }
+                    case ("commander"):
+                    {
+                        descBackground = descBackgrounds[2];
                         break;
                     }
                     default:

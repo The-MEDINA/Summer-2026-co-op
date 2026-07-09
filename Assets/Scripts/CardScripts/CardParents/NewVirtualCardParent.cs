@@ -7,7 +7,9 @@ public abstract class NewVirtualCardParent
     {
         minion,
         spell,
-        token
+        token,
+        none // gonna use this to separate commander cards from regular cards in cardIndex
+            // shouldn't affect anything that already exists - Dave
     }
 
     public enum location //where the card is
