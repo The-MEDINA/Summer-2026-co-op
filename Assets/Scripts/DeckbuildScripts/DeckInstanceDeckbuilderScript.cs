@@ -18,7 +18,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private bool sentLoadout = false;
     private CommanderCardScript commanderInstance;
 
-    public List<NewVirtualCardParent> Deck { get { return this.deck; } } 
+    public List<NewVirtualCardParent> Deck { get { return this.deck; } }
     public List<GameObject> CardObjects { get { return cardObjects; } set { cardObjects = value; } }
     public string Commander { get { return commander; } }
     public bool SentLoadout { get { return sentLoadout; } set { sentLoadout = value; } }
@@ -51,7 +51,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             cardObjects.RemoveAt(0);
         }
         string[] name = scene.path.Split("/");
-        if (name[name.Length - 1] == "DeckbuilderScene.unity") 
+        if (name[name.Length - 1] == "DeckbuilderScene.unity")
         {
             highYPos = -100;
             lowYPos = 100;
@@ -86,7 +86,8 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         //deck at capacity
         //too many copies of that card
 
-        Deck.Add(new MinionParent(cardName, NewVirtualCardParent.location.deck));
+        Deck.Add(cardToAdd);
+        Network.Networking.P1InitialDeck.Add(cardToAdd);
         return true;
     }
 
@@ -128,12 +129,13 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     /// <returns>Whether the removal was successful</returns>
     public bool RemoveCard(string cardName)
     {
-        if(Deck.Count <= 0) { return false; }
+        if (Deck.Count <= 0) { return false; }
 
         for (int i = 0; i < Deck.Count; i++)
         {
             if (Deck[i].CardName == cardName)
             {
+                Network.Networking.P1InitialDeck.RemoveAt(i);
                 Deck.RemoveAt(i);
                 return true;
             }

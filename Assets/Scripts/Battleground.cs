@@ -11,6 +11,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private CommanderCardScript commanderCard;
 
     public Player P { get { return p; } }
+    public GameObject CardProto { get { return cardProto; } }
     public CommanderCardScript CommanderCard { get { return commanderCard; } }
 
     private List<GameObject> cardList = new List<GameObject>();

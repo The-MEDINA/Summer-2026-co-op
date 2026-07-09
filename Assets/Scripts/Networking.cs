@@ -104,7 +104,8 @@ namespace Network
         cardAttack,
         cardDeath,
         pause_unpause,
-        request
+        request,
+        loadout
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -2027,6 +2028,29 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to send request while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer your loadout.
+        /// </summary>
+        /// <param name="deck">Your deck of cards</param>
+        /// <param name="commander">Your commander</param>
+        public static void SendLoadout(List<NewVirtualCardParent> deck, CommanderCardScript commander)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode loadout packet");
+#endif
+            byte[] packet = EncodePacket(deck, commander);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send loadout while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }
