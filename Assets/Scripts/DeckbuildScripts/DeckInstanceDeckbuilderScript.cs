@@ -86,6 +86,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         //deck at capacity
         //too many copies of that card
 
+        NewVirtualCardParent cardToAdd = cardIndex.Index.CreateCard(cardName, NewVirtualCardParent.location.deck);
         Deck.Add(cardToAdd);
         Network.Networking.P1InitialDeck.Add(cardToAdd);
         return true;
