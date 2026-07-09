@@ -34,8 +34,8 @@ public class button : MonoBehaviour
     }
     public void switchScene()
     {
-        Networking.SendSceneSwitch("Demo_LocalTwoPlayer");
-        SceneManager.LoadScene("Demo_LocalTwoPlayer");
+        Networking.SendSceneSwitch("DeckbuilderScene");
+        SceneManager.LoadScene("DeckbuilderScene");
     }
 
     public void showIPs()

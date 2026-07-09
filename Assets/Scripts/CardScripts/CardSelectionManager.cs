@@ -10,11 +10,15 @@ public class CardSelectionManager : MonoBehaviour
     [SerializeField] private Player player1;
     [SerializeField] private GameObject player1CardField;
     [SerializeField] private HandUIManager player1HandUI;
+    [SerializeField] private GameObject player1CommanderSquare;
+    [SerializeField] private Battleground player1Battleground;
 
     [Header("Player 2")]
     [SerializeField] private Player player2;
     [SerializeField] private GameObject player2CardField;
     [SerializeField] private HandUIManager player2HandUI;
+    [SerializeField] private GameObject player2CommanderSquare;
+    [SerializeField] private Battleground player2Battleground;
 
     [Header("Field Layout")]
     [SerializeField] private float player1StartX = -5f;
@@ -31,11 +35,30 @@ public class CardSelectionManager : MonoBehaviour
         set { selectedCardObject = value; }
     }
 
+    public GameObject Player2CommanderSquare { get { return player2CommanderSquare; } }
     public bool IsLocalTesting { get { return isLocalTesting; } }
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+
+        if (dBDeck != null)
+        {
+            if (dBDeck.Commander != null)
+            {
+                cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
+            }
+        }
+        if (Networking.P2CommanderName != "")
+        {
+            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
+            Networking.P2CommanderName = "";
+        }
     }
 
     public void SelectCard(CardClickHandler clickedCard, PointerEventData eventData)
