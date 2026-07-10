@@ -12,7 +12,7 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
     {
         if (DeckInstanceDeckbuilderScript.instance != null)
         {
-            if (DeckInstanceDeckbuilderScript.instance.PreviousScene == "TitleScreen.unity")
+            if (DeckInstanceDeckbuilderScript.instance.TitleScreenButtonPressed == "Deck Builder")
             {
                 gameObject.SetActive(false);
             }
