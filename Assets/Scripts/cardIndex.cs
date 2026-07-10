@@ -448,6 +448,12 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.duplicate;
                                 break;
                             }
+                        case ("hidden"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.hidden;
+                                else _secondAbility = MinionParent.effect.hidden;
+                                break;
+                            }
                         case ("twoattacks"):
                             {
                                 if (j == 0)
