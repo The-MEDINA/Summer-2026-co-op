@@ -289,7 +289,7 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
-                        case "2 Cats in a Trenchcoat"://steals card if frozen
+                        case "2 Cats in a Trenchcoat":
                             {
                                 if (target.UnityObject.GetComponent<CardClickHandler>().CurrentSpeed == CardClickHandler.speed.frozen)
                                 {
@@ -297,6 +297,12 @@ public class SpellParent : NewVirtualCardParent
                                     break;
                                 }
                                 target.UnityObject.GetComponent<CardClickHandler>().SetSpeedToFull();
+                                break;
+                            }
+
+                        case "Distraction":
+                            {
+                                target.HasGuard = true;
                                 break;
                             }
                     }
