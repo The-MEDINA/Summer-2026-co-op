@@ -377,6 +377,20 @@ public class CardSelectionManager : MonoBehaviour
 
         bool isThisMinionATwoAttackHealer = false;
 
+        if (target.IsHidden)
+        {
+            Debug.Log("Target card must not be hidden.");
+
+            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            {
+                //Networking.DesyncWarning("Player two is attacking a card that's not in play");
+                //I don't know if you need this, Dave - Jake
+            }
+
+            ClearSelection();
+            return;
+        }
+
         if (attacker is TwoAttackParent)
         {
             TwoAttackParent thisTestSucksBro = (TwoAttackParent)attacker;

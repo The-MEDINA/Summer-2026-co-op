@@ -24,7 +24,8 @@ public class MinionParent : NewVirtualCardParent
         guard,
         lifelink,
         frozen,
-        apoptosis
+        apoptosis,
+        hidden
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -49,6 +50,7 @@ public class MinionParent : NewVirtualCardParent
     [SerializeField] private bool canAttack = false;
     private CoordinateAbilityScript coordinateAbility;
     private List<equipment> equipmentList;
+    private bool isHidden;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -60,6 +62,7 @@ public class MinionParent : NewVirtualCardParent
     public int StartingHealth { get { return startingHealth; } set { startingHealth = value; } }
     public int StartingDamage { get { return startingDamage; } set { startingDamage = value; } }
     public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
+    public bool IsHidden { get { return isHidden; } set { isHidden = value; } }
 
     /// <summary>
     /// hard codes a minion
@@ -82,6 +85,7 @@ public class MinionParent : NewVirtualCardParent
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         equipmentList = new List<equipment>();
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
+        if (cardEffect == effect.hidden) { IsHidden = true; }
     }
 
     /// <summary>
@@ -108,6 +112,7 @@ public class MinionParent : NewVirtualCardParent
         equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
+        if (cardEffect == effect.hidden) { IsHidden = true; }
     }
 
     /// <summary>
@@ -165,6 +170,7 @@ public class MinionParent : NewVirtualCardParent
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += lLDamage;
             }
 
+            if (IsHidden) { IsHidden = false; }
             canAttack = false;
             UnityObject.GetComponent<CardUIManager>().ResetProgress();
         }
