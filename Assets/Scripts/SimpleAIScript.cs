@@ -25,6 +25,10 @@ public class SimpleAIScript : MonoBehaviour
     
     void Update()
     {
+        if (player.Health <= 0)
+        {
+            return;
+        }
         //timer to make multiple moves after set amounts of time
         if (timer >= moveTime)
         {
@@ -119,6 +123,10 @@ public class SimpleAIScript : MonoBehaviour
         }
         else if (player.Hand[moveNum] is SpellParent)
         {
+            // save the last selected card
+            CardClickHandler previousSelection = null;
+            if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
             SpellParent aiSpell = (SpellParent)player.Hand[moveNum];
             CardSelectionManager.Instance.SelectedCardObject = player.Hand[moveNum].UnityObject.GetComponent<CardClickHandler>();
 
@@ -152,6 +160,8 @@ public class SimpleAIScript : MonoBehaviour
                         break; 
                     }
             }
+            // restore the previous selection if needed
+            if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
 
             Debug.Log("Spent " + aiSpell.Cost + " energy from " + aiSpell.CardName);
             player.SpendEnergy(aiSpell.Cost);
@@ -166,6 +176,10 @@ public class SimpleAIScript : MonoBehaviour
         if(opponent.InPlay.Count == 0) { return; }
         int attackNum = rng.Next(0, player.InPlay.Count);
         int targetNum = rng.Next(0, opponent.InPlay.Count);
+
+        // save the last selected card
+        CardClickHandler previousSelection = null;
+        if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
 
         if (player.InPlay[attackNum] is TwoAttackParent)
         {
@@ -186,6 +200,9 @@ public class SimpleAIScript : MonoBehaviour
             CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
             CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
         }
+
+        // restore the previous selection if needed
+        if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
     }
 
     /// <summary>
@@ -218,7 +235,7 @@ public class SimpleAIScript : MonoBehaviour
         "Conscript",
         "Cat Demolition Crew",
         "Cat",
-        "Magic Cat / Septimus Mrreep",
+        "Magic Cat",
         "Smite",
         "Scaredy Cat",
         "Comically Large Spoon Cat",

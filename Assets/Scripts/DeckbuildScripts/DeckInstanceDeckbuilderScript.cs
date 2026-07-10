@@ -18,6 +18,8 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private bool sentLoadout = false;
     private CommanderCardScript commanderInstance;
     private string currentFaction = "Cat";
+    private string previousScene = "";
+    private string currentScene = "TitleScreen.unity";
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } }
     public List<GameObject> CardObjects { get { return cardObjects; } set { cardObjects = value; } }
@@ -25,6 +27,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     public bool SentLoadout { get { return sentLoadout; } set { sentLoadout = value; } }
     public CommanderCardScript CommanderInstance { get { return commanderInstance; } set { commanderInstance = value; } }
     public string CurrentFaction { get { return currentFaction; } set { currentFaction = value; } }
+    public string PreviousScene { get { return previousScene; } set { previousScene = value; } }
 
     private void Awake()
     {
@@ -60,6 +63,8 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             ChangeFactionCards("Cat");
             sentLoadout = false;
         }
+        previousScene = currentScene;
+        currentScene = name[name.Length - 1];
     }
 
     private void Update()
@@ -178,15 +183,20 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     /// <param name="faction">Faction of cards to select</param>
     public void ChangeFactionCards(string faction)
     {
+        // setup
         currentFaction = faction;
+        List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
+        highYPos = -100;
+        lowYPos = 100;
+        int index = 0;
+
         // remove existing cards
         while (cardObjects.Count != 0)
         {
             Destroy(cardObjects[0]);
             cardObjects.RemoveAt(0);
         }
-        List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
-        int index = 0;
+
         // Add and position all relevant cards
         for (int i = 0; i < factionCards.Count; i++)
         {
