@@ -42,9 +42,17 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
         DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
-        if (dBDeck != null)
+        if (dBDeck != null && !p.IsPlayerTwo)
         {
             p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
+        }
+        else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
+        {
+            p.Deck = Network.Networking.P1InitialDeck;
+        }
+        else if (Network.Networking.P2InitialDeck.Count > 0 && p.IsPlayerTwo)
+        {
+            p.Deck = Network.Networking.P2InitialDeck;
         }
         else
         {

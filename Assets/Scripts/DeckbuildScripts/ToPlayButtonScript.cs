@@ -1,11 +1,34 @@
 using UnityEngine;
+using Network;
+using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
 {
+    [SerializeField] private SpriteRenderer color;
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        SceneManager.LoadScene("Demo_LocalTwoPlayer");
+        if (eventData.button == PointerEventData.InputButton.Right || Networking.CurrentState == state.disconnected)
+        {
+            SceneManager.LoadScene("Demo_LocalTwoPlayer");
+            return;
+        }
+        DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
+        if (dBDeck != null)
+        {
+            if (dBDeck.Commander == "" || dBDeck.Deck.Count == 0)
+            {
+                Debug.Log("You need at least 1 minion and a commander!");
+                return;
+            }
+            if (!dBDeck.SentLoadout)
+            {
+                Networking.SendLoadout(dBDeck.Deck, dBDeck.CommanderInstance);
+                dBDeck.SentLoadout = true;
+                color.color = Color.green;
+            }
+        }
     }
 }
