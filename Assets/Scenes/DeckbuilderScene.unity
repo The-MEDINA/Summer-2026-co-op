@@ -1544,6 +1544,7 @@ MonoBehaviour:
   hostname: {fileID: 0}
   IPtext: {fileID: 0}
   statusText: {fileID: 0}
+  factionText: {fileID: 0}
 --- !u!1 &2033323088
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,6 +1557,7 @@ GameObject:
   - component: {fileID: 2033323092}
   - component: {fileID: 2033323091}
   - component: {fileID: 2033323090}
+  - component: {fileID: 2033323093}
   m_Layer: 5
   m_Name: ChangeFaction
   m_TagString: Untagged
@@ -1626,7 +1628,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2033323091}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2033323093}
+        m_TargetAssemblyTypeName: button, Assembly-CSharp
+        m_MethodName: FactionChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2033323091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1665,6 +1679,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2033323088}
   m_CullTransparentMesh: 1
+--- !u!114 &2033323093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033323088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be3bbf2a5260d440b86d1182a6649a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::button
+  inputfield: {fileID: 0}
+  modebutton: {fileID: 0}
+  startbutton: {fileID: 0}
+  IPbutton: {fileID: 0}
+  hostname: {fileID: 0}
+  IPtext: {fileID: 0}
+  statusText: {fileID: 0}
+  factionText: {fileID: 381165049}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

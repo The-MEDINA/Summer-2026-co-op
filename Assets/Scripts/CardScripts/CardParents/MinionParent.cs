@@ -256,7 +256,11 @@ public class MinionParent : NewVirtualCardParent
                             explodeDamage = 3;
                             break;
                         }
-
+                    case "Spectral Beings":
+                        {
+                            explodeDamage = 5;
+                            break;
+                        }
                     case "Exploding Cat":
                     default:
                         {

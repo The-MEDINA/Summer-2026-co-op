@@ -216,7 +216,6 @@ namespace cardIndex
                         obj.GetComponent<MajorMunchkinScript>().Name = "Major Munchkin";
                         if (battleground != null)
                         {
-                            // MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
                             obj.GetComponent<MajorMunchkinScript>().TokenPrefab = battleground.CardProto;
                             obj.GetComponent<MajorMunchkinScript>().BG = battleground;
                             battleground.P.CommanderCard = obj.GetComponent<MajorMunchkinScript>();
@@ -238,7 +237,14 @@ namespace cardIndex
                 // unimplemented commander card
                 default:
                     {
-                        Debug.LogWarning($"Could not attach commander card {name}! Double check a case is implemented for it in the switch statement?");
+                        Debug.LogWarning($"Could not find commander card {name}! Attempting to attach generic commander.");
+                        obj.AddComponent<CommanderCardScript>();
+                        obj.GetComponent<CommanderCardScript>().Name = name;
+                        if (battleground != null)
+                        {
+                            obj.GetComponent<CommanderCardScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<CommanderCardScript>();
+                        }
                         return false;
                     }
             }
@@ -300,7 +306,9 @@ namespace cardIndex
             string[] reader = fileText.Split("\n");
             string raw;
             int catCardsOffset = 0;
+            int alienCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
+            Sprite[] alienSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Alien");
             Sprite[] descBackgrounds = Resources.LoadAll<Sprite>($"DescBackgrounds");
 
             // while allCards.tsv has data.
@@ -322,11 +330,11 @@ namespace cardIndex
                 Sprite cardImage = null;
                 Sprite descBackground = null;
 
-                int.TryParse(rawDetails[1], out _cost);
+                int.TryParse(rawDetails[2], out _cost);
                 int.TryParse(rawDetails[5], out _health);
                 int.TryParse(rawDetails[6], out _damage);
                 // type of card
-                switch (rawDetails[3].Trim().ToLower())
+                switch (rawDetails[1].Trim().ToLower())
                 {
                     case("minion"):
                     {
@@ -446,6 +454,12 @@ namespace cardIndex
                             {
                                 if (j == 0) _ability = MinionParent.effect.duplicate;
                                 else _secondAbility = MinionParent.effect.duplicate;
+                                break;
+                            }
+                        case ("hidden"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.hidden;
+                                else _secondAbility = MinionParent.effect.hidden;
                                 break;
                             }
                         case ("twoattacks"):
@@ -572,13 +586,33 @@ namespace cardIndex
                             catCardsOffset++;
                             break;
                         }
+                    case ("alien"):
+                        {
+                            if (alienCardsOffset < alienSpritesheet.Length)
+                            {
+                                cardImage = alienSpritesheet[alienCardsOffset];
+                            }
+#if WARN_UNDEFINED
+                            else
+                            {
+                                Debug.LogWarning($"More alien cards than sprites found! Double check the size of both the spritesheet and allCards.tsv?");
+                            }
+                            if (cardImage == null)
+                            {
+                                Debug.LogWarning($"Could not find sprite at spritesheet Cat_{alienCardsOffset}! card will have fallback sprite.");
+                            }
+#endif
+                            cardSprites.Add(cardImage);
+                            alienCardsOffset++;
+                            break;
+                        }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[3], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
                 Sprites spritesToAdd = new Sprites(cardImage, descBackground);
-                spritesIndex.Add(rawDetails[2], spritesToAdd);
-                index.Add(rawDetails[2], cardToAdd);
-                nameIndex.Add(rawDetails[2]);
+                spritesIndex.Add(rawDetails[3], spritesToAdd);
+                index.Add(rawDetails[3], cardToAdd);
+                nameIndex.Add(rawDetails[3]);
             }
         }
     }

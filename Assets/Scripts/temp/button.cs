@@ -15,6 +15,7 @@ public class button : MonoBehaviour
     public TextMeshProUGUI hostname;
     public TextMeshProUGUI IPtext;
     public TextMeshProUGUI statusText;
+    public TextMeshProUGUI factionText;
     private bool showIP = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -126,5 +127,13 @@ public class button : MonoBehaviour
     public void TitleScreen()
     {
         SceneManager.LoadScene("TitleScreen");
+    }
+
+    public void FactionChange()
+    {
+        if (DeckInstanceDeckbuilderScript.instance.CurrentFaction == "Cat") DeckInstanceDeckbuilderScript.instance.CurrentFaction = "Alien";
+        else DeckInstanceDeckbuilderScript.instance.CurrentFaction = "Cat";
+        DeckInstanceDeckbuilderScript.instance.ChangeFactionCards(DeckInstanceDeckbuilderScript.instance.CurrentFaction);
+        factionText.text = $"Current faction: {DeckInstanceDeckbuilderScript.instance.CurrentFaction}";
     }
 }
