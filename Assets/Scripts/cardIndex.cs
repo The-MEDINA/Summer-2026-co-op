@@ -322,11 +322,11 @@ namespace cardIndex
                 Sprite cardImage = null;
                 Sprite descBackground = null;
 
-                int.TryParse(rawDetails[1], out _cost);
+                int.TryParse(rawDetails[2], out _cost);
                 int.TryParse(rawDetails[5], out _health);
                 int.TryParse(rawDetails[6], out _damage);
                 // type of card
-                switch (rawDetails[3].Trim().ToLower())
+                switch (rawDetails[1].Trim().ToLower())
                 {
                     case("minion"):
                     {
@@ -574,11 +574,11 @@ namespace cardIndex
                         }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[2], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[3], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
                 Sprites spritesToAdd = new Sprites(cardImage, descBackground);
-                spritesIndex.Add(rawDetails[2], spritesToAdd);
-                index.Add(rawDetails[2], cardToAdd);
-                nameIndex.Add(rawDetails[2]);
+                spritesIndex.Add(rawDetails[3], spritesToAdd);
+                index.Add(rawDetails[3], cardToAdd);
+                nameIndex.Add(rawDetails[3]);
             }
         }
     }
