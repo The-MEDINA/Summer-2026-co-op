@@ -606,9 +606,13 @@ public class CardSelectionManager : MonoBehaviour
             Networking.SendCardAttack(attacker, target, false);
         }
 
-        if(attacker.Target == SpellParent.spellTarget.allEnemies)
+        if (attacker.Target == SpellParent.spellTarget.allEnemies)
         {
             attacker.OnPlayAOE(target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
+        }
+        else if (attacker.Target == SpellParent.spellTarget.allAllies)
+        {
+            attacker.OnPlayAOE(attacker.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
         }
         else
         {
