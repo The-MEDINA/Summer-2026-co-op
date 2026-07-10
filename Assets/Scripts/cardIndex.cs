@@ -306,7 +306,9 @@ namespace cardIndex
             string[] reader = fileText.Split("\n");
             string raw;
             int catCardsOffset = 0;
+            int alienCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
+            Sprite[] alienSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Alien");
             Sprite[] descBackgrounds = Resources.LoadAll<Sprite>($"DescBackgrounds");
 
             // while allCards.tsv has data.
@@ -582,6 +584,26 @@ namespace cardIndex
 #endif
                             cardSprites.Add(cardImage);
                             catCardsOffset++;
+                            break;
+                        }
+                    case ("alien"):
+                        {
+                            if (alienCardsOffset < alienSpritesheet.Length)
+                            {
+                                cardImage = alienSpritesheet[alienCardsOffset];
+                            }
+#if WARN_UNDEFINED
+                            else
+                            {
+                                Debug.LogWarning($"More alien cards than sprites found! Double check the size of both the spritesheet and allCards.tsv?");
+                            }
+                            if (cardImage == null)
+                            {
+                                Debug.LogWarning($"Could not find sprite at spritesheet Cat_{alienCardsOffset}! card will have fallback sprite.");
+                            }
+#endif
+                            cardSprites.Add(cardImage);
+                            alienCardsOffset++;
                             break;
                         }
                 }

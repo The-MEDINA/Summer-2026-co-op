@@ -55,7 +55,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         }
         else
         {
-            /*
             p.Deck.Add(new MinionParent(1, 5, 1, "hiddenTest", NewVirtualCardParent.type.minion, MinionParent.effect.hidden, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 2, "Decipher",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
@@ -72,7 +71,6 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent(1, 1, 1, "froz", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-            */
 
             for (int i = 0; i < startingDeck.Length; i++)
             {
