@@ -45,19 +45,28 @@ public class CardSelectionManager : MonoBehaviour
 
     private void Start()
     {
+        // check for a commander in deck builder if it exists, else default to zoomie
         DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
-
-        if (dBDeck != null)
+        if (dBDeck != null && dBDeck.Commander != "")
         {
-            if (dBDeck.Commander != null)
-            {
-                cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
-            }
+            cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
         }
+        else
+        {
+            Debug.LogWarning("No commander found for player 1, defaulting to Zoomie.");
+            cardIndex.Index.AttachCommanderCard(player1CommanderSquare, "Sergeant Zoomie", player1Battleground);
+        }
+
+        // check for a commander in networking
         if (Networking.P2CommanderName != "")
         {
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
             Networking.P2CommanderName = "";
+        }
+        else
+        {
+            Debug.LogWarning("No commander found for player 2, defaulting to Zoomie.");
+            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, "Sergeant Zoomie", player2Battleground);
         }
     }
 
