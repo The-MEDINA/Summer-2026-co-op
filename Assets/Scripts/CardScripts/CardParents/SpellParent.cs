@@ -21,6 +21,7 @@ public class SpellParent : NewVirtualCardParent
         opponent,
         owner,
         allEnemies,
+        allAllies,
         none
     }
 
@@ -305,6 +306,18 @@ public class SpellParent : NewVirtualCardParent
                                 target.HasGuard = true;
                                 break;
                             }
+
+                        case "Decipher":
+                            {
+                                target.IsHidden = false;
+                                break;
+                            }
+
+                        case "Hide":
+                            {
+                                target.IsHidden = true;
+                                break;
+                            }
                     }
                     break;
                 }
@@ -350,6 +363,32 @@ public class SpellParent : NewVirtualCardParent
                         cards[i].UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
                         cards[i].UnityObject.GetComponent<CardClickHandler>().ResetTimer();
                         cards[i].UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
+                    }
+                    break;
+                }
+
+            case "Undeniable Proof":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        if (cards[i] is MinionParent)
+                        {
+                            MinionParent target = (MinionParent)cards[i];
+                            target.IsHidden = false;
+                        }
+                    }
+                    break;
+                }
+
+            case "Cover-Up":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        if (cards[i] is MinionParent)
+                        {
+                            MinionParent target = (MinionParent)cards[i];
+                            target.IsHidden = true;
+                        }
                     }
                     break;
                 }
