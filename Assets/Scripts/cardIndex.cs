@@ -216,7 +216,6 @@ namespace cardIndex
                         obj.GetComponent<MajorMunchkinScript>().Name = "Major Munchkin";
                         if (battleground != null)
                         {
-                            // MajorMunchkinScript playerMajor = (MajorMunchkinScript)battleground.CommanderCard;
                             obj.GetComponent<MajorMunchkinScript>().TokenPrefab = battleground.CardProto;
                             obj.GetComponent<MajorMunchkinScript>().BG = battleground;
                             battleground.P.CommanderCard = obj.GetComponent<MajorMunchkinScript>();
@@ -238,7 +237,14 @@ namespace cardIndex
                 // unimplemented commander card
                 default:
                     {
-                        Debug.LogWarning($"Could not attach commander card {name}! Double check a case is implemented for it in the switch statement?");
+                        Debug.LogWarning($"Could not find commander card {name}! Attempting to attach generic commander.");
+                        obj.AddComponent<CommanderCardScript>();
+                        obj.GetComponent<CommanderCardScript>().Name = name;
+                        if (battleground != null)
+                        {
+                            obj.GetComponent<CommanderCardScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<CommanderCardScript>();
+                        }
                         return false;
                     }
             }

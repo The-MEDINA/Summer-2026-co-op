@@ -17,12 +17,14 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private string commander = "";
     private bool sentLoadout = false;
     private CommanderCardScript commanderInstance;
+    private string currentFaction = "Cat";
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } }
     public List<GameObject> CardObjects { get { return cardObjects; } set { cardObjects = value; } }
     public string Commander { get { return commander; } }
     public bool SentLoadout { get { return sentLoadout; } set { sentLoadout = value; } }
     public CommanderCardScript CommanderInstance { get { return commanderInstance; } set { commanderInstance = value; } }
+    public string CurrentFaction { get { return currentFaction; } set { currentFaction = value; } }
 
     private void Awake()
     {
@@ -174,8 +176,9 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     /// Change the cards to select by faction.
     /// </summary>
     /// <param name="faction">Faction of cards to select</param>
-    private void ChangeFactionCards(string faction)
+    public void ChangeFactionCards(string faction)
     {
+        currentFaction = faction;
         // remove existing cards
         while (cardObjects.Count != 0)
         {
