@@ -106,19 +106,22 @@ public class SpellParent : NewVirtualCardParent
                         case "Cat Fusion"://doesn't delete tokens yet and also glitched placement
                             {
                                 int total = 0;
-                                for (int i = 0; i < UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count; i++)
+                                for (int i = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count - 1; i >= 0; i--)
                                 {
-                                    if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i].CardName == "Kitten")
+                                    MinionParent target = (MinionParent)UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i];
+                                    if (target.CardName == "Kitten")
                                     {
                                         total++;
+                                        target.Death();
                                     }
-                                    else if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i].CardName == "Grey")
+                                    else if (target.CardName == "Grey")
                                     {
                                         total += 2;
+                                        target.Death();
                                     }
                                 }
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(
-                                    0, total, total, "Tiger the Cat", type.minion, MinionParent.effect.none, location.inPlay));
+                                    0, total, total, "Tiger the Cat", type.token, MinionParent.effect.none, location.inPlay));
                                 break;
                             }
                     }
