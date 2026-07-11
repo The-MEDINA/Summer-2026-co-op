@@ -150,7 +150,7 @@ public class Player : MonoBehaviour
         Hand.Remove(card);
         InPlay.Remove(card);
 
-        if (!Discard.Contains(card))
+        if (!Discard.Contains(card)  && card.CardType != NewVirtualCardParent.type.token)
         {
             Discard.Add(card);
         }

@@ -11,7 +11,8 @@ public class SpellParent : NewVirtualCardParent
         heal,
         unique,
         equipment,
-        spawnTokens
+        spawnTokens,
+        copy
     }
 
     public enum spellTarget //what the target type of the spell is
@@ -22,7 +23,8 @@ public class SpellParent : NewVirtualCardParent
         owner,
         allEnemies,
         allAllies,
-        none
+        none,
+        any
     }
 
     private spellEffect effect;
@@ -322,6 +324,18 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
                     }
+                    break;
+                }
+        }
+    }
+
+    public void OnPlayAny(NewVirtualCardParent target)
+    {
+        switch(effect)
+        {
+            case spellEffect.copy:
+                {
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Add(target);
                     break;
                 }
         }
