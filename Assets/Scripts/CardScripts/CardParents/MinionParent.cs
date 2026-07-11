@@ -26,7 +26,8 @@ public class MinionParent : NewVirtualCardParent
         frozen,
         apoptosis,
         hidden,
-        split
+        split,
+        healOnPlay
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -136,6 +137,10 @@ public class MinionParent : NewVirtualCardParent
             UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
             UnityObject.GetComponent<CardClickHandler>().ResetTimer();
             UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
+        }
+        if (CardEffect == effect.healOnPlay)
+        {
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += Damage;
         }
     }
 
