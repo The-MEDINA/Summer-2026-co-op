@@ -55,7 +55,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         }
         else
         {
-            p.Deck.Add(new MinionParent(1, 5, 1, "hiddenTest", NewVirtualCardParent.type.minion, MinionParent.effect.hidden, NewVirtualCardParent.location.hand));
+            /*p.Deck.Add(new MinionParent(1, 5, 1, "hiddenTest", NewVirtualCardParent.type.minion, MinionParent.effect.hidden, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 2, "Decipher",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 2, "Hide",
@@ -63,9 +63,11 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allAllies, 0, 0, 2, "Cover-Up",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 2, "Undeniable Proof",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
+
+            p.Deck.Add(new MinionParent(5, 4, 4, "splitTest", NewVirtualCardParent.type.minion, MinionParent.effect.split, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent(1, 1, 1, "froz", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.hand));

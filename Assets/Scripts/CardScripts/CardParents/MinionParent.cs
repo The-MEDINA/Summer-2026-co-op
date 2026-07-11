@@ -25,7 +25,8 @@ public class MinionParent : NewVirtualCardParent
         lifelink,
         frozen,
         apoptosis,
-        hidden
+        hidden,
+        split
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -284,6 +285,16 @@ public class MinionParent : NewVirtualCardParent
         {
             Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
         }
+
+        Debug.Log(StartingHealth);
+        if (CardEffect == effect.split && StartingHealth / 2 > 0)
+        {
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, StartingHealth / 2,
+                Damage / 2, CardName, NewVirtualCardParent.type.token, MinionParent.effect.split, NewVirtualCardParent.location.inPlay));
+            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, StartingHealth / 2,
+                Damage / 2, CardName, NewVirtualCardParent.type.token, MinionParent.effect.split, NewVirtualCardParent.location.inPlay));
+        }
+
         if (CardType == NewVirtualCardParent.type.token) 
         {
             //if this card is a token it should not enter discard
