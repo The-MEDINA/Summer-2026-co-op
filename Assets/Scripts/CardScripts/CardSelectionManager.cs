@@ -1,5 +1,6 @@
-using UnityEngine;
 using Network;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
@@ -545,7 +546,11 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        SpellParent attacker = selectedCardObject.CardData as SpellParent;
+        Player owner = selectedCardObject.OwnerPlayer;
+        MinionParent target = targetCard.CardData as MinionParent;
+
+        if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay && attacker.Effect != SpellParent.spellEffect.copy)
         {
             Debug.Log("Target card must be in play.");
 
@@ -557,10 +562,6 @@ public class CardSelectionManager : MonoBehaviour
             ClearSelection();
             return;
         }
-
-        SpellParent attacker = selectedCardObject.CardData as SpellParent;
-        Player owner = selectedCardObject.OwnerPlayer;
-        MinionParent target = targetCard.CardData as MinionParent;
 
         if (attacker == null || target == null)
         {
@@ -613,6 +614,10 @@ public class CardSelectionManager : MonoBehaviour
         else if (attacker.Target == SpellParent.spellTarget.allAllies)
         {
             attacker.OnPlayAOE(attacker.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay);
+        }
+        else if (attacker.Target == SpellParent.spellTarget.any)
+        {
+            attacker.OnPlayAny(target);
         }
         else
         {

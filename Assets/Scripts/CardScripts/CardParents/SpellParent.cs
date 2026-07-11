@@ -1,6 +1,5 @@
 using cardIndex;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using UnityEngine;
 
 public class SpellParent : NewVirtualCardParent
@@ -334,8 +333,8 @@ public class SpellParent : NewVirtualCardParent
         switch(effect)
         {
             case spellEffect.copy:
-                {
-                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Add(target);
+                {//does not function
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, target);
                     break;
                 }
         }

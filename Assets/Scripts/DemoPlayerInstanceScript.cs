@@ -68,7 +68,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
-            p.Deck.Add(new MinionParent(1, 1, 1, "hOPTest", NewVirtualCardParent.type.minion, MinionParent.effect.healOnPlay, NewVirtualCardParent.location.hand));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.copy, SpellParent.spellTarget.any, 0, 0, 1, "copyTest",
+                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
             p.Deck.Add(new MinionParent(5, 4, 4, "splitTest", NewVirtualCardParent.type.minion, MinionParent.effect.split, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
