@@ -208,6 +208,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             case "Frozen Horror":
                 {
                     SetSpeed(speed.frozen);
+                    ResetTimer();
+                    CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
                     break;
                 }
         }

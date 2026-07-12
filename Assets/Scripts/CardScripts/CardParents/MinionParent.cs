@@ -28,7 +28,8 @@ public class MinionParent : NewVirtualCardParent
         hidden,
         split,
         healOnPlay,
-        statsUp
+        statsUp,
+        gainEnergy
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -40,7 +41,8 @@ public class MinionParent : NewVirtualCardParent
         empower,
         curse,
         hex,
-        catnap
+        catnap,
+        distraction
     }
 
     private int startingHealth;

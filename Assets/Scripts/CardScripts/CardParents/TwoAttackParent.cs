@@ -74,7 +74,13 @@ public class TwoAttackParent : MinionParent
             }
             else if (secondAttackEffect == effect.apoptosis)
             {
+                Damage = firstDamage;
+                Attack(target);
                 UseApoptosis();
+            }
+            else if (secondAttackEffect == effect.gainEnergy)
+            {
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Energy += secondDamage;
             }
         }
     }

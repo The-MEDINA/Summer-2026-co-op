@@ -104,7 +104,7 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
-                        case "Cat Fusion"://doesn't delete tokens yet and also glitched placement
+                        case "Cat Fusion":
                             {
                                 int total = 0;
                                 for (int i = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count - 1; i >= 0; i--)
@@ -194,17 +194,34 @@ public class SpellParent : NewVirtualCardParent
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage -= amount;
                                     twoAttackTarget.SecondDamage -= amount;
-                                    if(twoAttackTarget.FirstDamage < 1) { twoAttackTarget.FirstDamage = 1; }
+                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    {
+                                        twoAttackTarget.FirstDamage -= amount;
+                                        twoAttackTarget.SecondDamage -= amount;
+                                    }
+
+                                    if (twoAttackTarget.FirstDamage < 1) { twoAttackTarget.FirstDamage = 1; }
                                     if(twoAttackTarget.SecondDamage < 1) { twoAttackTarget.SecondDamage = 1; }
                                 }
                                 else
                                 {
                                     target.Damage -= amount;
-                                    if(target.Damage < 0) { target.Damage = 0; }
+                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    {
+                                        target.Damage -= amount;
+                                    }
+
+                                    if (target.Damage < 0) { target.Damage = 0; }
                                 }
 
                                 target.StartingHealth -= secondEquipmentAmount;
                                 target.Health -= secondEquipmentAmount;
+                                if (target.CardEffect == MinionParent.effect.statsUp)
+                                {
+                                    target.StartingHealth -= secondEquipmentAmount;
+                                    target.Health -= secondEquipmentAmount;
+                                }
+
                                 if (target.StartingHealth < 1) { target.StartingHealth = 1; }
                                 if (target.Health < 1) { target.Health = 1; }
 
@@ -221,15 +238,30 @@ public class SpellParent : NewVirtualCardParent
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage += amount;
                                     twoAttackTarget.SecondDamage += amount;
+                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    {
+                                        twoAttackTarget.FirstDamage += amount;
+                                        twoAttackTarget.SecondDamage += amount;
+                                    }
                                 }
                                 else
                                 {
                                     target.Damage += amount;
+                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    {
+                                        target.Damage += amount;
+                                    }
                                 }
+
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
+                                if (target.CardEffect == MinionParent.effect.statsUp)
+                                {
+                                    target.StartingHealth += secondEquipmentAmount;
+                                    target.Health += secondEquipmentAmount;
+                                }
 
-                                if(CardName == "Empower") { target.AddEquipment(MinionParent.equipment.empower); }
+                                if (CardName == "Empower") { target.AddEquipment(MinionParent.equipment.empower); }
                                 if (CardName == "Fish Treat") { target.AddEquipment(MinionParent.equipment.fishTreat); }
                                 break;
                             }
@@ -238,6 +270,11 @@ public class SpellParent : NewVirtualCardParent
                             {
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
+                                if(target.CardEffect == MinionParent.effect.statsUp)
+                                {
+                                    target.StartingHealth += secondEquipmentAmount;
+                                    target.Health += secondEquipmentAmount;
+                                }
                                 target.AddEquipment(MinionParent.equipment.catnap);
 
                                 break;
@@ -261,6 +298,7 @@ public class SpellParent : NewVirtualCardParent
                         case "Distraction":
                             {
                                 target.HasGuard = true;
+                                target.AddEquipment(MinionParent.equipment.distraction);
                                 break;
                             }
 
