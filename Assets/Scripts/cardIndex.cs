@@ -477,6 +477,17 @@ namespace cardIndex
                                 }
                                 break;
                             }
+                        case ("onplay"):
+                            {
+                                if (rawDetails[3] == "Chef Cat") { _ability = MinionParent.effect.healOnPlay; }
+                                else
+                                {
+#if WARN_UNDEFINED
+                                    Debug.LogWarning($"Found no OnPlay implementation for {rawDetails[3]}! Check if it was correctly implemented?");
+#endif
+                                }
+                                break;
+                            }
                         default:
                             {
 #if WARN_UNDEFINED
