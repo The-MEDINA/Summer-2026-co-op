@@ -563,7 +563,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (attacker == null || target == null)
+        if (attacker == null || targetCard.CardData == null)
         {
             Debug.Log("Only minion cards can attack right now.");
 
@@ -617,7 +617,7 @@ public class CardSelectionManager : MonoBehaviour
         }
         else if (attacker.Target == SpellParent.spellTarget.any)
         {
-            attacker.OnPlayAny(target);
+            attacker.OnPlayAny(targetCard.CardData);
         }
         else
         {
