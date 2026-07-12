@@ -68,6 +68,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
+            p.Deck.Add(new MinionParent(3, 5, 2, "Brain Invaders", NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.hand));
+          //  p.Deck.Add(new MinionParent(7, 7, 7, "Frozen Horror", NewVirtualCardParent.type.minion, MinionParent.effect.statsUp, NewVirtualCardParent.location.hand));
+
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.copy, SpellParent.spellTarget.any, 0, 0, 1, "copyTest",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent("Cool Cat", NewVirtualCardParent.location.deck));

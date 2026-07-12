@@ -46,6 +46,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         {
             MinionParent minion = (MinionParent)CardData;
             FindSpeed(minion.CardEffect);
+            ExtraChecks();
             SetColor(minion.CardEffect);
         }
         else if (CardData is SpellParent) 
@@ -192,6 +193,24 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         }
         Debug.Log(currentSpeed);
 
+    }
+
+    public void ExtraChecks()
+    {
+        switch(CardData.CardName)
+        {
+            case "Brain Invaders":
+                {
+                    SetSpeed(speed.sloth);
+                    break;
+                }
+
+            case "Frozen Horror":
+                {
+                    SetSpeed(speed.frozen);
+                    break;
+                }
+        }
     }
 
     public void SetSpeedToFull() { timer = timeToAttack; }
