@@ -462,6 +462,12 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.hidden;
                                 break;
                             }
+                        case ("split"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.split;
+                                else _secondAbility = MinionParent.effect.split;
+                                break;
+                            }
                         case ("twoattacks"):
                             {
                                 if (j == 0)
@@ -474,6 +480,17 @@ namespace cardIndex
                                 else
                                 {
                                     Debug.LogWarning($"Minion {rawDetails[2]} has TwoAttacks set twice! Please double check this minion.");
+                                }
+                                break;
+                            }
+                        case ("onplay"):
+                            {
+                                if (rawDetails[3] == "Chef Cat") { _ability = MinionParent.effect.healOnPlay; }
+                                else
+                                {
+#if WARN_UNDEFINED
+                                    Debug.LogWarning($"Found no OnPlay implementation for {rawDetails[3]}! Check if it was correctly implemented?");
+#endif
                                 }
                                 break;
                             }

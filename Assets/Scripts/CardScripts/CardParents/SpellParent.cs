@@ -258,6 +258,11 @@ public class SpellParent : NewVirtualCardParent
                                 target.AddEquipment(MinionParent.equipment.hex);
                                 break;
                             }
+                        case "Distraction":
+                            {
+                                target.HasGuard = true;
+                                break;
+                            }
 
                         default:
                             {
@@ -302,12 +307,6 @@ public class SpellParent : NewVirtualCardParent
                                     break;
                                 }
                                 target.UnityObject.GetComponent<CardClickHandler>().SetSpeedToFull();
-                                break;
-                            }
-
-                        case "Distraction":
-                            {
-                                target.HasGuard = true;
                                 break;
                             }
 
