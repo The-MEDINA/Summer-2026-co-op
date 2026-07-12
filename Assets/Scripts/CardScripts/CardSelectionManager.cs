@@ -90,10 +90,12 @@ public class CardSelectionManager : MonoBehaviour
 
                 if (minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
                 {
+                    Debug.Log("AAAAAAAAAAAA");
                     TryAttackTarget(clickedCard, true);
                 }
                 else
                 {
+                    Debug.Log("BBBBBBBBBBBB");
                     TryAttackTarget(clickedCard, false);
                 }
             }

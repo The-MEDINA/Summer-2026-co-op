@@ -57,6 +57,7 @@ public class TwoAttackParent : MinionParent
     /// <param name="target">target of the attack</param>
     public void CheckAttack(int numAttack, MinionParent target)
     {
+        Debug.Log(numAttack);
         if(numAttack == 1)
         {
             Damage = firstDamage;
@@ -79,7 +80,9 @@ public class TwoAttackParent : MinionParent
                 UseApoptosis();
             }
             else if (secondAttackEffect == effect.gainEnergy)
-            {
+            {//FIX THIS
+                Damage = 0;
+                Attack(target);
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Energy += secondDamage;
             }
         }

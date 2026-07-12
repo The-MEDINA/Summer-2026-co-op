@@ -106,7 +106,7 @@ public class SpellParent : NewVirtualCardParent
 
                         case "Cat Fusion":
                             {
-                                int total = 0;
+                                int total = 1;
                                 for (int i = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count - 1; i >= 0; i--)
                                 {
                                     MinionParent target = (MinionParent)UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[i];

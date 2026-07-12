@@ -135,7 +135,7 @@ public class MinionParent : NewVirtualCardParent
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
         }
-        if (CardEffect == effect.frozen)
+        if (CardEffect == effect.frozen || CardName == "Frozen Horror")
         {
             UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
             UnityObject.GetComponent<CardClickHandler>().ResetTimer();
