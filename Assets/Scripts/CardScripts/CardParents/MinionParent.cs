@@ -141,6 +141,7 @@ public class MinionParent : NewVirtualCardParent
         if (CardEffect == effect.healOnPlay)
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += Damage;
+            Debug.Log($"Healed player for {Damage} health. (now {UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health})");
         }
     }
 
