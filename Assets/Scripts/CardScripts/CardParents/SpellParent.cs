@@ -322,6 +322,14 @@ public class SpellParent : NewVirtualCardParent
                                 target.IsHidden = true;
                                 break;
                             }
+
+                        case "I'm Sure That Wasn't Important":
+                            {
+                                target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
+                                target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
+                                target.TakeDamage(9999);
+                                break;
+                            }
                     }
                     break;
                 }

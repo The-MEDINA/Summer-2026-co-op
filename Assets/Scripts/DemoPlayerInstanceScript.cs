@@ -71,6 +71,8 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.copy, SpellParent.spellTarget.any, 0, 0, 1, "copyTest",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 1,
+                "I'm Sure That Wasn't Important", NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
             p.Deck.Add(new MinionParent(5, 4, 4, "splitTest", NewVirtualCardParent.type.minion, MinionParent.effect.split, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
