@@ -70,6 +70,8 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.allEnemies, 2, 0, 3, "Nuclear Waste",
+                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new TwoAttackParent(4, 2, MinionParent.effect.gainEnergy, 6, 7, 0, "Star Child", NewVirtualCardParent.type.minion,
                 MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent(3, 5, 2, "Brain Invaders", NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.hand));

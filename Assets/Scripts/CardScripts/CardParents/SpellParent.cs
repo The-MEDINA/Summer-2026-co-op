@@ -474,6 +474,26 @@ public class SpellParent : NewVirtualCardParent
                     }
                     break;
                 }
+
+            default:
+                {
+                    switch(Effect)
+                    {
+                        case spellEffect.damage:
+                            {
+                                for (int i = cards.Count - 1; i >= 0; i--)
+                                {
+                                    if (cards[i] is MinionParent)
+                                    {
+                                        MinionParent target = (MinionParent)cards[i];
+                                        target.TakeDamage(amount);
+                                    }
+                                 }
+                                    break;
+                            }
+                    }
+                    break;
+                }
         }
     }
 }
