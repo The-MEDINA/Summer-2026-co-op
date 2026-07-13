@@ -56,6 +56,7 @@ public class MinionParent : NewVirtualCardParent
     private CoordinateAbilityScript coordinateAbility;
     private List<equipment> equipmentList;
     private bool isHidden;
+    private bool hasStatsUp;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -68,6 +69,7 @@ public class MinionParent : NewVirtualCardParent
     public int StartingDamage { get { return startingDamage; } set { startingDamage = value; } }
     public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
     public bool IsHidden { get { return isHidden; } set { isHidden = value; } }
+    public bool HasStatsUp { get { return hasStatsUp; } set { hasStatsUp = value; }  }
 
     /// <summary>
     /// hard codes a minion
@@ -91,6 +93,7 @@ public class MinionParent : NewVirtualCardParent
         equipmentList = new List<equipment>();
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
+        if (cardEffect == effect.statsUp) { HasStatsUp = true; }
     }
 
     /// <summary>
@@ -118,6 +121,7 @@ public class MinionParent : NewVirtualCardParent
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
+        if (cardEffect == effect.statsUp) { HasStatsUp = true; }
     }
 
     /// <summary>

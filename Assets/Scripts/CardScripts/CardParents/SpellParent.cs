@@ -78,8 +78,6 @@ public class SpellParent : NewVirtualCardParent
         {
             case spellEffect.spawnTokens:
                 {
-                    Debug.Log("e");
-
                     for (int i = 0; i < amount; i++)
                     {
                         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
@@ -160,16 +158,25 @@ public class SpellParent : NewVirtualCardParent
                     switch(CardName)
                     {
                         case "M16":
-                            { 
+                            {
                                 if (target is TwoAttackParent)
                                 {
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage += amount;
                                     twoAttackTarget.SecondDamage += amount;
+                                    if (target.HasStatsUp)
+                                    {
+                                        twoAttackTarget.FirstDamage += amount;
+                                        twoAttackTarget.SecondDamage += amount;
+                                    }
                                 }
                                 else
                                 {
                                     target.Damage += amount;
+                                    if (target.HasStatsUp)
+                                    {
+                                        target.Damage += amount;
+                                    }
                                 }
 
                                 target.AddEquipment(MinionParent.equipment.m16);
@@ -194,7 +201,7 @@ public class SpellParent : NewVirtualCardParent
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage -= amount;
                                     twoAttackTarget.SecondDamage -= amount;
-                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    if (target.HasStatsUp)
                                     {
                                         twoAttackTarget.FirstDamage -= amount;
                                         twoAttackTarget.SecondDamage -= amount;
@@ -206,7 +213,7 @@ public class SpellParent : NewVirtualCardParent
                                 else
                                 {
                                     target.Damage -= amount;
-                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    if (target.HasStatsUp)
                                     {
                                         target.Damage -= amount;
                                     }
@@ -216,7 +223,7 @@ public class SpellParent : NewVirtualCardParent
 
                                 target.StartingHealth -= secondEquipmentAmount;
                                 target.Health -= secondEquipmentAmount;
-                                if (target.CardEffect == MinionParent.effect.statsUp)
+                                if (target.HasStatsUp)
                                 {
                                     target.StartingHealth -= secondEquipmentAmount;
                                     target.Health -= secondEquipmentAmount;
@@ -238,7 +245,7 @@ public class SpellParent : NewVirtualCardParent
                                     TwoAttackParent twoAttackTarget = (TwoAttackParent)target;
                                     twoAttackTarget.FirstDamage += amount;
                                     twoAttackTarget.SecondDamage += amount;
-                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    if (target.HasStatsUp)
                                     {
                                         twoAttackTarget.FirstDamage += amount;
                                         twoAttackTarget.SecondDamage += amount;
@@ -247,7 +254,7 @@ public class SpellParent : NewVirtualCardParent
                                 else
                                 {
                                     target.Damage += amount;
-                                    if (target.CardEffect == MinionParent.effect.statsUp)
+                                    if (target.HasStatsUp)
                                     {
                                         target.Damage += amount;
                                     }
@@ -255,7 +262,7 @@ public class SpellParent : NewVirtualCardParent
 
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
-                                if (target.CardEffect == MinionParent.effect.statsUp)
+                                if (target.HasStatsUp)
                                 {
                                     target.StartingHealth += secondEquipmentAmount;
                                     target.Health += secondEquipmentAmount;
@@ -270,7 +277,7 @@ public class SpellParent : NewVirtualCardParent
                             {
                                 target.StartingHealth += secondEquipmentAmount;
                                 target.Health += secondEquipmentAmount;
-                                if(target.CardEffect == MinionParent.effect.statsUp)
+                                if (target.HasStatsUp)
                                 {
                                     target.StartingHealth += secondEquipmentAmount;
                                     target.Health += secondEquipmentAmount;
