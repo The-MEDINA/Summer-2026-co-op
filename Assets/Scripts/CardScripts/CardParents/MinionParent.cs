@@ -167,7 +167,7 @@ public class MinionParent : NewVirtualCardParent
             }
             else
             {
-                target.TakeDamage(this, Damage, false);
+                if (Damage != 0) { target.TakeDamage(this, Damage, false); }
             }
 
             if(CardEffect == effect.spawnToken)
