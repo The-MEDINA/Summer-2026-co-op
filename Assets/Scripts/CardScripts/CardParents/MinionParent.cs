@@ -199,6 +199,7 @@ public class MinionParent : NewVirtualCardParent
     {
         Health -= damage;
         UnityObject.GetComponent<CardClickHandler>().PopUpDamageText(damage);
+        UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
 
         if (Health <= 0)
         {
@@ -249,6 +250,8 @@ public class MinionParent : NewVirtualCardParent
             }
             attacker.TakeDamage(this, thornsDamage, true);
         }
+
+        UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
 
         if (Health <= 0) //if this minion has died
         {
