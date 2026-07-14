@@ -572,6 +572,45 @@ namespace Network
                         packet[5] = 1;
                     }
                 }
+
+                // check if we can target any card.
+                else if (spell.Target == SpellParent.spellTarget.any)
+                {
+                    // set which player whose cards are being targetted
+                    Player targetOwnerPlayer = null;
+                    if (target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+                    {
+                        targetOwnerPlayer = playerTwo;
+                    }
+                    else
+                    {
+                        targetOwnerPlayer = playerOne;
+                        packet[5] = 1;
+                    }
+                    // check each relevant array individually and set overrides
+                    int indexInplay = targetOwnerPlayer.InPlay.IndexOf(target);
+                    int indexHand = targetOwnerPlayer.Hand.IndexOf(target);
+                    if (indexInplay != -1)
+                    {
+                        packet[2] = (byte)indexInplay;
+                        if (!targetOwnerPlayer.IsPlayerTwo)
+                        {
+                            packet[5] = 1;
+                        }
+                    }
+                    if (indexHand != -1)
+                    {
+                        packet[2] = (byte)indexHand;
+                        if (!targetOwnerPlayer.IsPlayerTwo)
+                        {
+                            packet[5] = 3;
+                        }
+                        else
+                        {
+                            packet[5] = 4;
+                        }
+                    }
+                }
                 else
                 {
                     packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
@@ -594,7 +633,9 @@ namespace Network
                     packet[5] = 1;
                 }
                 else
+                {
                     packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                }
 
                 packet[4] = 0;
             }
@@ -610,7 +651,9 @@ namespace Network
                         packet[5] = 1;
                     }
                     else
+                    {
                         packet[2] = (byte)playerTwo.InPlay.IndexOf(target);
+                    }
                 }
                 packet[3] = 1;
             }
@@ -1049,7 +1092,14 @@ namespace Network
                         {
                             case (NewVirtualCardParent.location.deck): 
                                 {
-                                    cardIndices.Insert(0, 0);
+                                    if (CurrentState == state.paused)
+                                    {
+                                        cardIndices.Insert(0, 0);
+                                    }
+                                    else
+                                    {
+                                        cardIndices.Insert(0, 2);
+                                    }
                                     requestArray = cardIndices;
                                     break;
                                 }
@@ -1225,11 +1275,19 @@ namespace Network
                         {
                             requestPlayer = playerOne;
                         }
+                        else if (packet[5] == 3)
+                        {
+                            target = playerTwo.Hand[packet[2]];
+                        }
+                        else if (packet[5] == 4)
+                        {
+                            target = playerOne.Hand[packet[2]];
+                        }
 #if DEBUG_MODE
                         else
-                        {
-                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
-                        }
+                            {
+                                DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                            }
 #endif
                     }
                     requestAttack[0] = attacker;
@@ -1578,7 +1636,16 @@ namespace Network
                 CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
                 if (!requestSecondAttack)
                 {
-                    CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                    if (requestAttack[1] != null)
+                    {
+                        CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                    }
+                    else
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning($"Target ended up as null! Ignoring spell.");
+#endif
+                    }
                 }
                 else CardSelectionManager.Instance.TrySpellNoTarget();
                 requestAttack[0] = null;
@@ -1689,7 +1756,7 @@ namespace Network
                 requestInplayCheck = false;
             }
             // hand cards.
-            if (requestArray != null && requestArray[0] == 1)
+            if (requestArray != null && (requestArray[0] == 1 || requestArray[0] == 2))
             {
                 // remove the old hand array
                 while (playerTwo.Hand.Count != 0)
@@ -1714,10 +1781,14 @@ namespace Network
                 {
                     P2Battleground.DrawCardToHand();
                 }
+                int request0 = requestArray[0];
                 requestArray = null;
 
-                // request the actual deck before unpausing
-                SendRequest(packetType.cardArray, 0);
+                // request the actual deck before unpausing if we're paused
+                if (request0 == 0)
+                {
+                    SendRequest(packetType.cardArray, 0);
+                }
             }
             if (requestArray != null && requestArray[0] == 0)
             {
