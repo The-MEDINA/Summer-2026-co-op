@@ -1257,8 +1257,18 @@ namespace Network
                         // target of index 255 implies this spell has no target.
                         else if (packet[2] != 255)
                         {
-                            // target player 1's cards like normal if the index is valid.
-                            target = playerOne.InPlay[packet[2]];
+                            if (packet[5] == 3)
+                            {
+                                target = playerTwo.Hand[packet[2]];
+                            }
+                            else if (packet[5] == 4)
+                            {
+                                target = playerOne.Hand[packet[2]];
+                            }
+                            else
+                            {
+                                target = playerOne.InPlay[packet[2]];
+                            }
                         }
                     }
                     else
@@ -1274,14 +1284,6 @@ namespace Network
                         else if (packet[5] == 2)
                         {
                             requestPlayer = playerOne;
-                        }
-                        else if (packet[5] == 3)
-                        {
-                            target = playerTwo.Hand[packet[2]];
-                        }
-                        else if (packet[5] == 4)
-                        {
-                            target = playerOne.Hand[packet[2]];
                         }
 #if DEBUG_MODE
                         else
