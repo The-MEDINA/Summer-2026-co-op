@@ -1092,14 +1092,7 @@ namespace Network
                         {
                             case (NewVirtualCardParent.location.deck): 
                                 {
-                                    if (CurrentState == state.paused)
-                                    {
-                                        cardIndices.Insert(0, 0);
-                                    }
-                                    else
-                                    {
-                                        cardIndices.Insert(0, 2);
-                                    }
+                                    cardIndices.Insert(0, 0);
                                     requestArray = cardIndices;
                                     break;
                                 }
@@ -1107,7 +1100,14 @@ namespace Network
                             case (NewVirtualCardParent.location.hand):
                                 {                                     
                                     // 1 means this array is for the hand
-                                    cardIndices.Insert(0, 1);
+                                    if (CurrentState == state.paused)
+                                    {
+                                        cardIndices.Insert(0, 1);
+                                    }
+                                    else
+                                    {
+                                        cardIndices.Insert(0, 2);
+                                    }
                                     requestArray = cardIndices;
                                     break;
                                 }
@@ -1787,7 +1787,7 @@ namespace Network
                 requestArray = null;
 
                 // request the actual deck before unpausing if we're paused
-                if (request0 == 0)
+                if (request0 == 1)
                 {
                     SendRequest(packetType.cardArray, 0);
                 }
