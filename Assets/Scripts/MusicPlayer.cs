@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MusicPlayer : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public class MusicPlayer : MonoBehaviour
         transition2to1,
         noLoop
     }
-
+    [SerializeField] private bool persistBetweenScenes = false;
+    [SerializeField] private string[] excludeScenes;
+    [SerializeField] private string SourceScene = "TitleScreen";
+    private string lastScene = "";
     /// <summary>
     /// Beginning is optional.
     /// </summary>
@@ -40,27 +44,24 @@ public class MusicPlayer : MonoBehaviour
 
     private state current = state.player2lead;
     private float deltaVolume = 0;
+
+    public bool PersistBetweenScenes { get { return persistBetweenScenes; } }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        deltaVolume = volume / transitionTime;
-        musicPlayer1.volume = volume;
-        musicPlayer2.volume = volume;
-        if (loopx2 != null) musicPlayer2.clip = loopx2;
-        else current = state.noLoop;
-
-        // play the beginning first if there is one.
-        if (beginning != null)
+        if (persistBetweenScenes)
         {
-            musicPlayer1.clip = beginning;
-            musicPlayer1.Play();
-            musicPlayer2.PlayDelayed(beginning.length + offset);
+            MusicPlayer other = FindAnyObjectByType<MusicPlayer>();
+            if (other != null && other.persistBetweenScenes && other.gameObject != this.gameObject)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            DontDestroyOnLoad(gameObject);
         }
-        else
-        {
-            musicPlayer1.clip = loopx2;
-            musicPlayer2.Play();
-        }
+        StartMusic();
     }
 
     // Update is called once per frame
@@ -110,6 +111,58 @@ public class MusicPlayer : MonoBehaviour
                     musicPlayer1.volume = 0;
                 }
             }
+        }
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // setup
+        string[] scenePath = scene.path.Split("/");
+
+        for (int i = 0; i < excludeScenes.Length; i++)
+        {
+            string excludeScene = $"{excludeScenes[i]}.unity";
+
+            // stop if the scene is in the exclude scenes list
+            if (scenePath[scenePath.Length - 1] == excludeScene)
+            {
+                musicPlayer1.Stop();
+                musicPlayer2.Stop();
+                lastScene = scenePath[scenePath.Length - 1];
+                return;
+            }
+        }
+        // Restart music if the last scene was on the exclude list but the current one isn't
+        for (int i = 0; i < excludeScenes.Length;i++)
+        {
+            if (lastScene == $"{excludeScenes[i]}.unity")
+            {
+                StartMusic();
+                lastScene = scenePath[scenePath.Length - 1];
+                return;
+            }
+        }
+        lastScene = scenePath[scenePath.Length - 1];
+    }
+
+    private void StartMusic()
+    {
+        deltaVolume = volume / transitionTime;
+        musicPlayer1.volume = volume;
+        musicPlayer2.volume = volume;
+        if (loopx2 != null) musicPlayer2.clip = loopx2;
+        else current = state.noLoop;
+
+        // play the beginning first if there is one.
+        if (beginning != null)
+        {
+            musicPlayer1.clip = beginning;
+            musicPlayer1.Play();
+            musicPlayer2.PlayDelayed(beginning.length + offset);
+        }
+        else
+        {
+            musicPlayer1.clip = loopx2;
+            musicPlayer2.Play();
         }
     }
 }
