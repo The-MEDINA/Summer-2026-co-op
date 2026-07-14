@@ -208,7 +208,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
+        if (owner == player1)
         {
             // tell the peer you moved a card to Inplay.
             Networking.SendCardMove(

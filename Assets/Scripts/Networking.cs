@@ -1732,6 +1732,7 @@ namespace Network
                             {
                                 MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
                                 killThis.Death();
+                                killThis.UnityObject.SetActive(false);
                             }
                             // on the offchance a spell ends up in InPlay somehow remove it manually
                             else
