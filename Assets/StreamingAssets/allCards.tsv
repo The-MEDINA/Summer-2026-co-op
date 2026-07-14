@@ -85,12 +85,12 @@ Alien	Spell	2	Hide	Give a minion Hidden	0	0		"Whatever you do, don't lose track 
 Alien	Spell	2	Repair Drone	Heal player for 5 health	0	5	Heal	"Built to fix. Live to serve."		owner
 Alien	Spell	3	Nuclear Waste	Deal 2 damage to all opposing minions	0	2	Damage	"Top tier advice: 'DO NOT TOUCH!'"		allenemies
 Alien	Spell	3	Undeniable Proof	Remove Hidden from all enemy minions	0	0				allenemies
-Alien	Spell	4	Alien Eggs	spawns 2 alien tokens (2/2)	2	2	SpawnTokens	"I don't want to stick around long enough to meet whatever's laying these."		none
+Alien	Spell	4	Alien Eggs	spawns 2 alien tokens (2/2)	2	2	SpawnTokens	"I don't want to stick around long enough to meet whatever's laying these."	spawnTokens	none
 Alien	Spell	4	Abduction	Take a minion off your opponent's InPlay and place it in your hand (no stat changes)	0	0	Unique	"Goshdarnit! That's ma favorite cow!"		enemy
 Alien	Spell	5	Parasite	Steal 3 energy from your opponent	0	0				
 Alien	Spell	5	Solar Panels	Your next five energy is gained in half the time	0	5	Unique	"Heat means energy... and life..."		none
 Alien	Spell	6	Unknown Virus	Remove Guard from all enemy minions	0	0				allenemies
-Alien	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment			allies
+Alien	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment		equipment	allies
 Alien	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	GiveAbility	"Nothing to see here."		allies
 Alien	Commander	NA	Hivemind	Give one of your minions +2/+1	NA	NA	NA	"One voice, one will, one goal."		
 Alien	Token	NA	Grey	NA	2	2	None	"What number kind are we on at this point?"		

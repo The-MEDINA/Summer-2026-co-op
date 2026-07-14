@@ -42,7 +42,8 @@ public class MinionParent : NewVirtualCardParent
         curse,
         hex,
         catnap,
-        distraction
+        distraction,
+        geneticEngineering
     }
 
     private int startingHealth;
