@@ -386,21 +386,8 @@ public class SpellParent : NewVirtualCardParent
         {
             case spellEffect.copy:
                 {//does not function
-                    if(target is TwoAttackParent)
-                    { 
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new TwoAttackParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is SpellParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new SpellParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is MinionParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, cardIndex.Index.CreateCard(target.CardName, location.deck));
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                     break;
                 }
         }

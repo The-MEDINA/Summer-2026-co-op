@@ -51,7 +51,7 @@ Cat	Spell	1	Empower	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty 
 Cat	Spell	1	2 Cats in a Trenchcoat	Refresh a card's attack timer (unless Frozen, in which case remove Frozen)			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"	unique	allies
 Cat	Spell	1	Pspspsps!	Spawns 1 token creature (1H 1D)	1	1	SpawnTokens	"Come hither my liege! - translated from weird human noise to cat speak."	spawnTokens	none
 Cat	Spell	2	Curse	Lower an enemy minion -2/0	0	2	Equipment	"L + ratio + 2 less damage dealt upon attack."	equipment	enemies
-Cat	Spell	2	Duplicate	Create a copy of a card in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"	spawnTokens	allies
+Cat	Spell	2	Duplicate	Create a copy of a card and place it in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"	copy	any
 Cat	Spell	3	I'm Sure That Wasn't Important	Sends an inPlay minion back to the opponent's hand	0	0	Unique	"Bill me."	unique	enemies
 Cat	Spell	3	Distraction	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"	equipment	allies
 Cat	Spell	3	Catnap	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	equipment	allies
