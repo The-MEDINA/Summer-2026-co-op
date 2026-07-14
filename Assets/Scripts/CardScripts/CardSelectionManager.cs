@@ -634,6 +634,11 @@ public class CardSelectionManager : MonoBehaviour
         Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
         selectedCardObject.OwnerPlayer.RegisterAction();
 
+        if (!owner.IsPlayerTwo && attacker.Target == SpellParent.spellTarget.any)
+        {
+            Network.Networking.SendCardArray(owner.Hand, NewVirtualCardParent.location.hand);
+        }
+
         ClearSelection();
     }
 

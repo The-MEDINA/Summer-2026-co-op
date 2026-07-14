@@ -388,11 +388,6 @@ public class SpellParent : NewVirtualCardParent
                 {//does not function
                     UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, cardIndex.Index.CreateCard(target.CardName, location.deck));
                     UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-
-                    if (!UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
-                    {
-                        Network.Networking.SendCardArray(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Hand, location.hand);
-                    }
                     break;
                 }
         }
