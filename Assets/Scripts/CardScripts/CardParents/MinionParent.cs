@@ -72,6 +72,10 @@ public class MinionParent : NewVirtualCardParent
     public bool IsHidden { get { return isHidden; } set { isHidden = value; } }
     public bool HasStatsUp { get { return hasStatsUp; } set { hasStatsUp = value; }  }
 
+    #region SFX_EVENTS
+    public delegate void Action(effect cardEffect);
+    public event Action cardAction;
+    #endregion
     /// <summary>
     /// hard codes a minion
     /// </summary>
@@ -172,7 +176,11 @@ public class MinionParent : NewVirtualCardParent
             }
             else
             {
-                if (Damage != 0) { target.TakeDamage(this, Damage, false); }
+                if (Damage != 0) 
+                { 
+                    target.TakeDamage(this, Damage, false);
+                    cardAction.Invoke(cardEffect);
+                }
             }
 
             if(CardEffect == effect.spawnToken)

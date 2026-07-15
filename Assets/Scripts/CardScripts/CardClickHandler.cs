@@ -33,7 +33,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     public Player OwnerPlayer { get { return ownerPlayer; } set { ownerPlayer = value; } }
     public bool InPlay { get { return inPlay; } set { inPlay = value; } }
     public speed CurrentSpeed { get { return currentSpeed; } }
-   
+
     private void Awake()
     {
         originalScale = transform.localScale * defaultScale;
@@ -65,10 +65,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         if (CardData is MinionParent && inPlay)
         {
             MinionParent minion = (MinionParent)CardData;
-            if (minion.CardName == "Frozen Horror" && !ownerPlayer.IsPlayerTwo)
-            {
-                Debug.Log("CLONED CARD UPATE");
-            }
 
             if (minion.IsDead)
             {
