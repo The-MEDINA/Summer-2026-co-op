@@ -636,11 +636,6 @@ public class CardSelectionManager : MonoBehaviour
 
         selectedCardObject.OwnerPlayer.RegisterAction();
 
-        if (!owner.IsPlayerTwo && attacker.Target == SpellParent.spellTarget.any)
-        {
-            Network.Networking.SendCardArray(owner.Hand, NewVirtualCardParent.location.hand);
-        }
-
         ClearSelection();
     }
 
