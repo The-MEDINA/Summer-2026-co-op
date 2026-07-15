@@ -23,7 +23,8 @@ public class SpellParent : NewVirtualCardParent
         allEnemies,
         allAllies,
         none,
-        any
+        any,
+        inplay
     }
 
     private spellEffect effect;
@@ -324,9 +325,8 @@ public class SpellParent : NewVirtualCardParent
                     {
                         case "Clone":
                             {
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 
-                                target.Health, target.Damage, target.CardName, NewVirtualCardParent.type.token, target.CardEffect, 
-                                NewVirtualCardParent.location.inPlay));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard(target.CardName, location.inPlay));
+                                CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
                                 break;
                             }
 

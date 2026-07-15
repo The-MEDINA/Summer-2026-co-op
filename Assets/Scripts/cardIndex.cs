@@ -18,8 +18,6 @@
 #define WARN_UNDEFINED
 
 using System.Collections.Generic;
-using System.IO;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
 namespace cardIndex
@@ -603,6 +601,11 @@ namespace cardIndex
                         case ("any"):
                             {
                                 _spellTarget = SpellParent.spellTarget.any;
+                                break;
+                            }
+                        case ("inplay"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.inplay;
                                 break;
                             }
                         case ("none"):

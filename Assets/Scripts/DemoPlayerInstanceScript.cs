@@ -80,7 +80,7 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(new TwoAttackParent(4, 2, MinionParent.effect.gainEnergy, 6, 7, 0, "Star Child", NewVirtualCardParent.type.minion,
                 MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
             p.Deck.Add(new MinionParent(3, 5, 2, "Brain Invaders", NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.hand));
-            p.Deck.Add(new MinionParent(7, 7, 7, "Frozen Horror", NewVirtualCardParent.type.minion, MinionParent.effect.statsUp, NewVirtualCardParent.location.hand));
+            p.Deck.Add(cardIndex.Index.CreateCard("Frozen Horror", NewVirtualCardParent.location.deck));
 
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.copy, SpellParent.spellTarget.any, 0, 0, 1, "copyTest",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
