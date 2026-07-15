@@ -81,8 +81,16 @@ public class SpellParent : NewVirtualCardParent
                 {
                     for (int i = 0; i < amount; i++)
                     {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
-                            cardIndex.Index.CreateCard("Kitten", location.inPlay));
+                        if (amount == 2)
+                        {
+                            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                                cardIndex.Index.CreateCard("Grey", location.inPlay));
+                        }
+                        else
+                        {
+                            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                                cardIndex.Index.CreateCard("Kitten", location.inPlay));
+                        }
                     }
                     break;
                 }
@@ -303,10 +311,18 @@ public class SpellParent : NewVirtualCardParent
                                 target.AddEquipment(MinionParent.equipment.hex);
                                 break;
                             }
+
                         case "Distraction":
                             {
                                 target.HasGuard = true;
                                 target.AddEquipment(MinionParent.equipment.distraction);
+                                break;
+                            }
+
+                        case "Genetic Engineering":
+                            {
+                                target.HasStatsUp = true;
+                                target.AddEquipment(MinionParent.equipment.geneticEngineering);
                                 break;
                             }
 
