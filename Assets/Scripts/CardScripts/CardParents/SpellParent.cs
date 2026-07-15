@@ -110,6 +110,12 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
+                        case "Solar Panels":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy / 2;
+                                break;
+                            }
+
                         case "Cat Fusion":
                             {
                                 int total = 1;
@@ -387,6 +393,14 @@ public class SpellParent : NewVirtualCardParent
                             {
                                 target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
                                 target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
+                                target.TakeDamage(9999);
+                                break;
+                            }
+
+                        case "Abduction":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                                 target.TakeDamage(9999);
                                 break;
                             }

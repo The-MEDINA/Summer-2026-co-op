@@ -71,8 +71,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
             p.Deck.Add(cardIndex.Index.CreateCard("Genetic Engineering", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 0, 0, 6, "Genetic Engineering",
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.owner, 0, 0, 4, "Solar Panels",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Barbed Wire", NewVirtualCardParent.location.deck));
 
             p.Deck.Add(cardIndex.Index.CreateCard("Alien Eggs", NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.allEnemies, 2, 0, 3, "Nuclear Waste",
@@ -82,6 +83,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 1,
                 "I'm Sure That Wasn't Important", NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 1,
+    "Abduction", NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
