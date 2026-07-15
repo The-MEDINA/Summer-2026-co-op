@@ -1265,6 +1265,10 @@ namespace Network
                             {
                                 target = playerOne.Hand[packet[2]];
                             }
+                            else if (packet[5] == 1)
+                            {
+                                target = playerTwo.InPlay[packet[2]];
+                            }
                             else
                             {
                                 target = playerOne.InPlay[packet[2]];
