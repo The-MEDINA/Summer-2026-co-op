@@ -7,6 +7,11 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
+        "Duplicate",
+        "Clone",
+        "Reptoid",
+        "Nuclear Waste",
+        "I'm Sure That Wasn't Important", 
         "Fish Treat",
         "Slime",
         "Conscript",
@@ -68,11 +73,15 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 2, "Undeniable Proof",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
-            //   MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
+            //MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
             p.Deck.Add(cardIndex.Index.CreateCard("Genetic Engineering", NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 0, 0, 6, "Genetic Engineering",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new TwoAttackParent(4, 2, MinionParent.effect.gainEnergy, 6, 7, 0, "Star Child", NewVirtualCardParent.type.minion,
+                MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new MinionParent(3, 5, 2, "Brain Invaders", NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.hand));
+            p.Deck.Add(cardIndex.Index.CreateCard("Frozen Horror", NewVirtualCardParent.location.deck));
 
             p.Deck.Add(cardIndex.Index.CreateCard("Alien Eggs", NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.allEnemies, 2, 0, 3, "Nuclear Waste",

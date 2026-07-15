@@ -208,7 +208,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
+        if (owner == player1)
         {
             // tell the peer you moved a card to Inplay.
             Networking.SendCardMove(
@@ -549,6 +549,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
         MinionParent target = targetCard.CardData as MinionParent;
+        // SpellParent targetSpell = targetCard.CardData as SpellParent;
 
         if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay && attacker.Effect != SpellParent.spellEffect.copy)
         {
@@ -604,7 +605,7 @@ public class CardSelectionManager : MonoBehaviour
 
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
-            Networking.SendCardAttack(attacker, target, false);
+            Networking.SendCardAttack(attacker, targetCard.CardData, false);
         }
 
         if (attacker.Target == SpellParent.spellTarget.allEnemies)
@@ -624,6 +625,8 @@ public class CardSelectionManager : MonoBehaviour
             attacker.OnPlay(target);
         }
 
+        Debug.Log(attacker.CardName + " played on " + targetCard.CardData.CardName);
+
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
         selectedCardObject.gameObject.SetActive(false);
@@ -631,7 +634,6 @@ public class CardSelectionManager : MonoBehaviour
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);
 
-        Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
         selectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();

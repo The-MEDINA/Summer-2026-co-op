@@ -45,7 +45,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         if (CardData is MinionParent)
         {
             MinionParent minion = (MinionParent)CardData;
-            FindSpeed(minion.CardEffect);
+            // skip setting the speed if the card is frozen and spawned directly to inplay.
+            // For some reason, this is the only way I can get these cards to start frozen when played like that.
+            // this should NOT affect any cards that aren't frozen, or any frozen cards spawned normally.
+            // If that does happen, let me know and I will find some alternate way to do this (at the cost of my soul). - Dave
+            if (!InPlay && currentSpeed != speed.frozen) FindSpeed(minion.CardEffect);
             ExtraChecks();
             SetColor(minion.CardEffect);
         }
@@ -61,6 +65,10 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
         if (CardData is MinionParent && inPlay)
         {
             MinionParent minion = (MinionParent)CardData;
+            if (minion.CardName == "Frozen Horror" && !ownerPlayer.IsPlayerTwo)
+            {
+                Debug.Log("CLONED CARD UPATE");
+            }
 
             if (minion.IsDead)
             {
