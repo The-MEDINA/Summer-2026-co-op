@@ -574,7 +574,7 @@ namespace Network
                 }
 
                 // check if we can target any card.
-                else if (spell.Target == SpellParent.spellTarget.any)
+                else if (spell.Target == SpellParent.spellTarget.any || spell.Target == SpellParent.spellTarget.inplay)
                 {
                     // set which player whose cards are being targetted
                     Player targetOwnerPlayer = null;
@@ -585,7 +585,6 @@ namespace Network
                     else
                     {
                         targetOwnerPlayer = playerOne;
-                        packet[5] = 1;
                     }
                     // check each relevant array individually and set overrides
                     int indexInplay = targetOwnerPlayer.InPlay.IndexOf(target);
