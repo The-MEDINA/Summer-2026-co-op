@@ -7,6 +7,8 @@ public class SFXManager : MonoBehaviour
     [Header("Generics")]
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip death;
+    [Header("Specifics")]
+    [SerializeField] private AudioClip deathtouch;
     #endregion
 
     public static SFXManager Instance;
@@ -28,6 +30,10 @@ public class SFXManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Make the SFX Manager listen to a card's events.
+    /// </summary>
+    /// <param name="card">Card to listen to.</param>
     public void RegisterCard(NewVirtualCardParent card)
     {
         // register a minion.
@@ -37,8 +43,18 @@ public class SFXManager : MonoBehaviour
             minion.cardAction += MinionAction;
             minion.cardDeath += CardDeath;
         }
+        // register a spell.
+        else if (card as SpellParent != null)
+        {
+            SpellParent spell = (SpellParent)card;
+            spell.cardAction += SpellAction;
+        }
     }
 
+    /// <summary>
+    /// Make the SFX Manager no longer listen to a card's events.
+    /// </summary>
+    /// <param name="card">Card to stop listening to.</param>
     public void UnregisterCard(NewVirtualCardParent card)
     {
         // unregister a minion.
@@ -48,19 +64,59 @@ public class SFXManager : MonoBehaviour
             minion.cardAction -= MinionAction;
             minion.cardDeath -= CardDeath;
         }
+        // unregister a spell.
+        else if (card as SpellParent != null)
+        {
+            SpellParent spell = (SpellParent)card;
+            spell.cardAction -= SpellAction; 
+        }
     }
 
+    /// <summary>
+    /// Play a sound on a minion's action.
+    /// </summary>
+    /// <param name="cardEffect">Effect of the minion.</param>
     private void MinionAction(MinionParent.effect cardEffect)
     {
         switch(cardEffect)
         {
+            case MinionParent.effect.deathtouch:
+            {
+                SetChannel(deathtouch, 0.25f);
+                break;
+            }
             default:
             {
-                SetChannel(hit, 0.5f);
+                SetChannel(hit, 0.25f);
                 break;
             }
         }
     }
+
+    /// <summary>
+    /// Play a sound on a spell's action.
+    /// </summary>
+    /// <param name="cardEffect">Effect of the spell.</param>
+    private void SpellAction(SpellParent.spellEffect cardEffect)
+    {
+        switch (cardEffect)
+        {
+            case SpellParent.spellEffect.damage:
+            {
+                SetChannel(deathtouch, 0.25f);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Play a sound on a card's death.
+    /// </summary>
+    /// <param name="faction">Faction of the card that died</param>
     private void CardDeath(string faction)
     {
         switch (faction)
@@ -73,6 +129,11 @@ public class SFXManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Select an AudioSource to play a sound, or create a new one if all are currently being used.
+    /// </summary>
+    /// <param name="sound">Sound to play.</param>
+    /// <param name="volume">Volume to play the sound at.</param>
     private void SetChannel(AudioClip sound, float volume)
     {
         AudioSource[] existingChannels = GetComponents<AudioSource>();

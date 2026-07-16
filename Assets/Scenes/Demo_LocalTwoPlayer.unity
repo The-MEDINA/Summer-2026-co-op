@@ -809,52 +809,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99716814021304d4fa967ca454aa6aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoPlayerInstanceScript
---- !u!1 &355147910
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 355147911}
-  - component: {fileID: 355147913}
-  m_Layer: 0
-  m_Name: SFX Emitter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &355147911
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355147910}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.27706, y: -0.37044, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &355147913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355147910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3de5a7932ab3af847acfbd73b1352738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SFXManager
-  hit: {fileID: 8300000, guid: 29f15ade088ad95419a1f6bc33b928c1, type: 3}
-  death: {fileID: 8300000, guid: 4dd8b77d26cf4044d839dba2d2052cb1, type: 3}
 --- !u!1 &412324660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3968,6 +3922,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54f6b740ac7166243bb6d16e6d209328, type: 3}
+--- !u!1001 &8816554660379747903
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.27706
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.37044
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1776742655221023036, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5933017462983569811, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+      propertyPath: m_Name
+      value: SFX Emitter
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3987,4 +3998,4 @@ SceneRoots:
   - {fileID: 1123964114}
   - {fileID: 133478254}
   - {fileID: 1664853335}
-  - {fileID: 355147911}
+  - {fileID: 8816554660379747903}
