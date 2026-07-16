@@ -9,6 +9,7 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip death;
     [Header("Specifics")]
     [SerializeField] private AudioClip deathtouch;
+    [SerializeField] private AudioClip heal;
     #endregion
 
     public static SFXManager Instance;
@@ -85,9 +86,14 @@ public class SFXManager : MonoBehaviour
                 SetChannel(deathtouch, 0.25f);
                 break;
             }
+            case MinionParent.effect.heal:
+            {
+                SetChannel(heal, 1);
+                break;
+            }
             default:
             {
-                SetChannel(hit, 0.25f);
+                SetChannel(hit, 0.1f);
                 break;
             }
         }
@@ -104,6 +110,11 @@ public class SFXManager : MonoBehaviour
             case SpellParent.spellEffect.damage:
             {
                 SetChannel(deathtouch, 0.25f);
+                break;
+            }
+            case SpellParent.spellEffect.heal:
+            {
+                SetChannel(heal, 1);
                 break;
             }
             default:

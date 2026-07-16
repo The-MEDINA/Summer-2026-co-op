@@ -181,11 +181,12 @@ public class MinionParent : NewVirtualCardParent
                 if (Damage != 0) 
                 { 
                     target.TakeDamage(this, Damage, false);
-                    cardAction.Invoke(cardEffect);
                 }
             }
 
-            if(CardEffect == effect.spawnToken)
+            cardAction.Invoke(cardEffect);
+
+            if (CardEffect == effect.spawnToken)
             { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             }
