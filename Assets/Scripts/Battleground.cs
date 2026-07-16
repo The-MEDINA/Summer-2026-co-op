@@ -143,6 +143,15 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         {
             CardSelectionManager.Instance.PlayCardToBattleground(clickHandler);
         }
+        if (!clickHandler.InPlay) clickHandler.InPlay = true;
+
+        MinionParent frozenCheck = (MinionParent)spawnCard;
+        if (frozenCheck != null && frozenCheck.CardEffect == MinionParent.effect.frozen)
+        {
+            newCard.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+            newCard.GetComponent<CardClickHandler>().ResetTimer();
+            newCard.GetComponent<CardUIManager>().AddProgress(5f);
+        }
         Debug.Log(p.gameObject.name + " played card: " + spawnCard.CardName);
     }
 

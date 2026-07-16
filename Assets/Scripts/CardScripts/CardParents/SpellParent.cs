@@ -23,7 +23,8 @@ public class SpellParent : NewVirtualCardParent
         allEnemies,
         allAllies,
         none,
-        any
+        any,
+        inplay
     }
 
     private spellEffect effect;
@@ -346,9 +347,8 @@ public class SpellParent : NewVirtualCardParent
                     {
                         case "Clone":
                             {
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 
-                                target.Health, target.Damage, target.CardName, NewVirtualCardParent.type.token, target.CardEffect, 
-                                NewVirtualCardParent.location.inPlay));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard(target.CardName, location.inPlay));
+                                CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
                                 break;
                             }
 
@@ -416,21 +416,8 @@ public class SpellParent : NewVirtualCardParent
         {
             case spellEffect.copy:
                 {//does not function
-                    if(target is TwoAttackParent)
-                    { 
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new TwoAttackParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is SpellParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new SpellParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is MinionParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, cardIndex.Index.CreateCard(target.CardName, location.deck));
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                     break;
                 }
         }
