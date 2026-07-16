@@ -74,7 +74,6 @@ public class Player : MonoBehaviour
             GainEnergy(1);
             // if (!isPlayerTwo) 
                 timer = 0f;
-            Debug.Log(timeForEnergy);
 
             if(TimeForEnergy != startingTimeForEnergy)
             {

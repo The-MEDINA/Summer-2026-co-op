@@ -73,6 +73,8 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(cardIndex.Index.CreateCard("Genetic Engineering", NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.owner, 0, 0, 4, "Solar Panels",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.owner, 0, 0, 4, "Solar Panels",
+    NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Barbed Wire", NewVirtualCardParent.location.deck));
 
             p.Deck.Add(cardIndex.Index.CreateCard("Alien Eggs", NewVirtualCardParent.location.deck));
