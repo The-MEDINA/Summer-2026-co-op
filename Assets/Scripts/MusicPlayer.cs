@@ -44,29 +44,66 @@ public class MusicPlayer : MonoBehaviour
 
     private state current = state.player2lead;
     private float deltaVolume = 0;
+    private float aliveTime = 0;
 
     public bool PersistBetweenScenes { get { return persistBetweenScenes; } }
+    public float AliveTime { get { return aliveTime; } }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         if (persistBetweenScenes)
         {
-            MusicPlayer other = FindAnyObjectByType<MusicPlayer>();
-            if (other != null && other.persistBetweenScenes && other.gameObject != this.gameObject)
+            // Setup
+            MusicPlayer[] others = FindObjectsByType<MusicPlayer>();
+            float oldest = 0;
+            MusicPlayer oldestOther = this;
+            bool destroySelf = false;
+
+            // Mark the oldest persistent music player to stay out of others AND self
+            for (int i = 0; i < others.Length; i++)
+            {
+                if (others[i].persistBetweenScenes && others[i].AliveTime > oldest)
+                {
+                    oldestOther = others[i];
+                }
+            }
+            if (aliveTime < oldest)
+            {
+                destroySelf = true;
+            }
+
+            // Destroy all that are not the oldest including self 
+            for (int i = 0; i < others.Length; i++)
+            {
+                if (others[i] != oldestOther)
+                {
+                    Destroy(others[i].gameObject);
+                }
+            }
+            if (destroySelf)
             {
                 Destroy(this.gameObject);
                 return;
             }
+            //if (other != null && other.persistBetweenScenes && other != this)
+            //{
+            //    Destroy(this.gameObject);
+            //    return;
+            //}
             SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(gameObject);
         }
+    }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
         StartMusic();
     }
 
     // Update is called once per frame
     void Update()
     {
+        aliveTime += Time.deltaTime;
         if (current != state.noLoop)
         {
             // start fading at the halfway point.
@@ -125,8 +162,8 @@ public class MusicPlayer : MonoBehaviour
             // stop if the scene is in the exclude scenes list
             if (scenePath[scenePath.Length - 1] == excludeScene)
             {
-                musicPlayer1.Stop();
-                musicPlayer2.Stop();
+                if (musicPlayer1 != null) musicPlayer1.Stop();
+                if (musicPlayer2 != null) musicPlayer2.Stop();
                 lastScene = scenePath[scenePath.Length - 1];
                 return;
             }

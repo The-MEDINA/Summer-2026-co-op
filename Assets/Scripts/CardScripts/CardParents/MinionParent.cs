@@ -75,6 +75,8 @@ public class MinionParent : NewVirtualCardParent
     #region SFX_EVENTS
     public delegate void Action(effect cardEffect);
     public event Action cardAction;
+    public delegate void Dies(string faction);
+    public event Dies cardDeath;
     #endregion
     /// <summary>
     /// hard codes a minion
@@ -305,6 +307,7 @@ public class MinionParent : NewVirtualCardParent
     /// </summary>
     public void Death()
     {
+        cardDeath.Invoke(Faction);
         isDead = true;
         if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo && Networking.CurrentState != state.paused)
         {
@@ -328,6 +331,7 @@ public class MinionParent : NewVirtualCardParent
         }
         CardLocation = location.discard;
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
+        SFXManager.Instance.UnregisterCard(this);
     }
 
     /// <summary>
@@ -344,7 +348,7 @@ public class MinionParent : NewVirtualCardParent
             {
                 return;
             }
-
+            cardAction.Invoke(cardEffect);
             //hits every minion inPlay
             for (int i = targetList.Count - 1; i >= 0; i--)
             {
