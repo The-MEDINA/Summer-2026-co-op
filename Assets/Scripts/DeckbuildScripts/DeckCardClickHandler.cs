@@ -7,6 +7,7 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
     [SerializeField] private float hoverSizeIncrease = 1.25f;
     [SerializeField] private float examineSizeIncrease = 2f;
     [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private bool overrideExamine = false;
 
     private bool applyRotation = false;
     private Vector3 originalScale;
@@ -27,6 +28,10 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
     // Update is called once per frame
     void Update()
     {
+        if (overrideExamine)
+        {
+            examining = false;
+        }
         if (examining)
         {
             transform.rotation = Quaternion.identity;

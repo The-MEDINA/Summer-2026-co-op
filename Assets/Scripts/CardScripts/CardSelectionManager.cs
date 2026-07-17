@@ -51,11 +51,19 @@ public class CardSelectionManager : MonoBehaviour
         if (dBDeck != null && dBDeck.Commander != "")
         {
             cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
+            if (player1CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player1CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
         else
         {
             Debug.LogWarning("No commander found for player 1, defaulting to Zoomie.");
             cardIndex.Index.AttachCommanderCard(player1CommanderSquare, "Sergeant Zoomie", player1Battleground);
+            if (player1CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player1CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
 
         // check for a commander in networking
@@ -63,11 +71,19 @@ public class CardSelectionManager : MonoBehaviour
         {
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
             Networking.P2CommanderName = "";
+            if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
         else
         {
             Debug.LogWarning("No commander found for player 2, defaulting to Zoomie.");
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, "Sergeant Zoomie", player2Battleground);
+            if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
     }
 
