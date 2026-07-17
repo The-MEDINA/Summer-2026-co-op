@@ -813,11 +813,14 @@ public class CardSelectionManager : MonoBehaviour
             if (wasSecondAttack)
             {
                 damage = twoAttackMinion.SecondDamage;
+                twoAttackMinion.CardEffect = twoAttackMinion.SecondaryCardEffect;
             }
             if (twoAttackMinion.CanAttack)
             {
                 opposingPlayer.TakeDamage(damage, twoAttackMinion);
                 twoAttackMinion.CanAttack = false;
+                twoAttackMinion.ForceActionSFX();
+                twoAttackMinion.CardEffect = MinionParent.effect.twoAttacks;
                 selectedCardObject.OwnerPlayer.RegisterAction();
             }
             else
@@ -845,6 +848,7 @@ public class CardSelectionManager : MonoBehaviour
                 int minionDamage = attacker.Damage;
                 opposingPlayer.TakeDamage(minionDamage, attacker);
                 attacker.CanAttack = false;
+                attacker.ForceActionSFX();
                 attackingOwner.RegisterAction();
             }
             else

@@ -141,6 +141,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -413,6 +414,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -441,6 +443,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     public void OnPlayAOE(List<NewVirtualCardParent> cards)
@@ -504,5 +507,6 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 }

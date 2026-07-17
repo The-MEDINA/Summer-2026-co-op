@@ -10,6 +10,7 @@ public class SFXManager : MonoBehaviour
     [Header("Specifics")]
     [SerializeField] private AudioClip deathtouch;
     [SerializeField] private AudioClip heal;
+    [SerializeField] private AudioClip equipment;
     #endregion
 
     public static SFXManager Instance;
@@ -115,6 +116,11 @@ public class SFXManager : MonoBehaviour
             case SpellParent.spellEffect.heal:
             {
                 SetChannel(heal, 1);
+                break;
+            }
+            case SpellParent.spellEffect.equipment:
+            {
+                SetChannel(equipment, 0.25f);
                 break;
             }
             default:

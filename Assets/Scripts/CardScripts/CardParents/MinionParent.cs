@@ -395,4 +395,9 @@ public class MinionParent : NewVirtualCardParent
 
         return false;
     }
+
+    public void ForceActionSFX()
+    {
+        cardAction.Invoke(cardEffect);
+    }
 }
