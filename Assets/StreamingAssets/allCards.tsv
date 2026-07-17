@@ -18,16 +18,16 @@ Cat	Minion	4	Cat Man	Overkill	3	6	Overkill	"Please note: Catman is a legally dis
 Cat	Minion	4	Single-Celled Cat	ON PLAY: Mitosis - splits into 2 identical cards	3	3	Duplicate	"Please note: picture is not to scale."		
 Cat	Minion	5	Tank Cat	NA	7	7	None	"I don't want to know who thought this was a good idea (it was me)."		
 Cat	Minion	5	Cat Demolition Crew	Coordinate 5 - rewards Haste	5	5	Coordinate	"So this is your place, huh? Yeah, I could demolish this."		
-Cat	Spell	1	M16	Adds 0/2 to a minion	0	2	Equipment	"Please do not give to cats. Thank you."	equipment	allies
-Cat	Spell	1	Spontaneous Combustion	Instant damage	NA	2	Damage	"Not normally known to happen to cats."	damage	enemies
-Cat	Spell	1	Patch Up	Heal creature for 2 health	NA	2	Heal	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
-Cat	Spell	2	I Hungy!!!	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	equipment	allies
-Cat	Spell	2	Terrorize	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
-Cat	Spell	3	Heal Bot	Heals player for 10 health	0	10	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	owner
-Cat	Spell	3	Fish Treat	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
-Cat	Spell	4	Conscript	Spawns 3 token creatures (1H 1D)	1	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
-Cat	Spell	5	Blizzard	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	allenemies
-Cat	Spell	6	Smite	Smite - Deathtouch	0	9999	Damage	"Screw you in particular!"	damage	enemies
+All	Spell	1	M16	Adds 0/2 to a minion	0	2	Equipment	"Please do not give to cats. Thank you."	equipment	allies
+All	Spell	1	Spontaneous Combustion	Instant damage	NA	2	Damage	"Not normally known to happen to cats."	damage	enemies
+All	Spell	1	Patch Up	Heal creature for 2 health	NA	2	Heal	"I don't have any idea what I'm doing, but its probably close enough."	heal	allies
+All	Spell	2	I Hungy!!!	Adds one point to minion coordinate	NA	NA	Equipment	"Mother I hunger! Feed dinner plz!"	equipment	allies
+All	Spell	2	Terrorize	Lower an enemy minion -1/-1	1	1	Equipment	"Behold! You now speak only in French!"	equipment	enemies
+All	Spell	3	Heal Bot	Heals player for 10 health	0	10	Heal	"Runs on Python. Terrifying (0 . 0)"	heal	owner
+All	Spell	3	Fish Treat	Adds 2/2 to a minion	2	2	Equipment	"FISH TREAT FISH TREAT FISH TREAT!!!"	equipment	allies
+All	Spell	4	Conscript	Spawns 3 token creatures (1H 1D)	1	3	SpawnTokens	"AND YOU GO TO WAR! AND YOU GO TO WAR! AND YOU-"	spawnTokens	none
+All	Spell	5	Blizzard	Freeze all minions for 10 seconds	NA	NA	ON PLAY	"Chance of snow 100%."	spawnTokens	allenemies
+All	Spell	6	Smite	Smite - Deathtouch	0	9999	Damage	"Screw you in particular!"	damage	enemies
 Cat	Commander	NA	Major Munchkin	Spawns 2 token creatures (1H 1D) every 30 seconds	NA	NA	NA	"Figurehead of the Feline Firearms Force."		
 Cat	Token	NA	Kitten	NA	1	1	None	"The smallest, weakest cat we could find."		
 Cat	Minion	1	Roughly a Cat	Guard	1	1	Guard	"Typical feline, more or less."		
@@ -47,25 +47,25 @@ Cat	Minion	5	Vampire Cat	SpawnTokens 1 ONHIT	4	6	SpawnTokens	"Draculcat? Nosfura
 Cat	Minion	6	The Mad Catter	AOE 3	4	3	AOE	"Are you playing Blitzburn? I'll tell you a secret: all the best people are."		
 Cat	Minion	6	Slasher Cat	Deathtouch	6	999	Deathtouch	"Who's your favorite scary kitty?"		
 Cat	Minion	7	Chonkmeister	Guard/Thorns 2	12	3	Guard/Thorns	"The Meow, the Myth, the Legend."		
-Cat	Spell	1	Empower	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty comment machine broke.' 'Understandable, have a good day.'"	equipment	allies
-Cat	Spell	1	2 Cats in a Trenchcoat	Refresh a card's attack timer (unless Frozen, in which case remove Frozen)			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"	unique	allies
-Cat	Spell	1	Pspspsps!	Spawns 1 token creature (1H 1D)	1	1	SpawnTokens	"Come hither my liege! - translated from weird human noise to cat speak."	spawnTokens	none
-Cat	Spell	2	Curse	Lower an enemy minion -2/0	0	2	Equipment	"L + ratio + 2 less damage dealt upon attack."	equipment	enemies
-Cat	Spell	2	Duplicate	Create a copy of a card and place it in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"	copy	any
-Cat	Spell	3	I'm Sure That Wasn't Important	Sends an inPlay minion back to the opponent's hand	0	0	Unique	"Bill me."	unique	enemies
-Cat	Spell	3	Distraction	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"	equipment	allies
-Cat	Spell	3	Catnap	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	equipment	allies
-Cat	Spell	4	Hex	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"	equipment	enemies
+All	Spell	1	Empower	Adds 1/1 to a minion	1	1	Equipment	"'Witty Comment?' 'Witty comment machine broke.' 'Understandable, have a good day.'"	equipment	allies
+All	Spell	1	2 Cats in a Trenchcoat	Refresh a card's attack timer (unless Frozen, in which case remove Frozen)			Unique	"Two- I mean one ticket to A Nightmare on Elm Street please!"	unique	allies
+All	Spell	1	Pspspsps!	Spawns 1 token creature (1H 1D)	1	1	SpawnTokens	"Come hither my liege! - translated from weird human noise to cat speak."	spawnTokens	none
+All	Spell	2	Curse	Lower an enemy minion -2/0	0	2	Equipment	"L + ratio + 2 less damage dealt upon attack."	equipment	enemies
+All	Spell	2	Duplicate	Create a copy of a card and place it in your hand	0	0	Unique	"This is getting out of hand! Now there are two of them!"	copy	any
+All	Spell	3	I'm Sure That Wasn't Important	Sends an inPlay minion back to the opponent's hand	0	0	Unique	"Bill me."	unique	enemies
+All	Spell	3	Distraction	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"	equipment	allies
+All	Spell	3	Catnap	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	equipment	allies
+All	Spell	4	Hex	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"	equipment	enemies
 Cat	Spell	4	Cat Fusion	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."	unique	allies
-Cat	Spell	5	No Thoughts, Head Empty	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."	unique	allies
-Cat	Spell	5	Barbed Wire	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
-Cat	Spell	6	Clone	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."	unique	inplay
+All	Spell	5	No Thoughts, Head Empty	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."	unique	allies
+All	Spell	5	Barbed Wire	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
+All	Spell	6	Clone	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."	unique	inplay
 Cat	Commander	NA	Sergeant Zoomie	Gives 2 energy every 30 seconds				"Eight more laps around the coffee table and you'll have enough energy for a Tank Cat."		
-Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."												
+Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."		
 Alien	Minion	1	Digger	Hidden	1	1	Hidden	"[Diggers] are highly territorial, and despite their herbivore ways, are surprisingly aggressive, to a seemingly unnatural degree."		
 Alien	Minion	1	Reptoid	Apoptosis	1	1	Apoptosis	"Pretty sure the lizard people invented, like, sliced bread or something."		
 Alien	Minion	2	Slate Skate	Lifelink 1	1	1	Lifelink	"Slate Skates strike a careful balance; they must fly high enough that their prey is unable to notice them yet low enough that their predators do not either."		
-Alien	Minion	2	some adorable alien thing	Apoptosis	5	0	Apoptosis			
+Alien	Minion	2	Uncanny Valley	Apoptosis	5	0	Apoptosis	"Is...is this someone's idea of a cat?"		
 Alien	Minion	2	Muck Crab	Apoptosis	3	1	Apoptosis	"Mid-sized scavengers that live in mudpools and swamps; they consume the remains of other lifeforms that got lost beneath the sludge."		
 Alien	Minion	3	Brain Invaders	SpawnTokens 1 ONHIT / Sloth	5	2	SpawnTokens/Sloth	"Y'know what really gets under my skin?"		
 Alien	Minion	3	Frostback	Frozen	5	3	Frozen	"Frostbacks have evolved to live along frozen beaches and seas. Their cold-blooded innards are extremly fatty to keep them warm."		
@@ -78,19 +78,19 @@ Alien	Minion	5	Spectral Beings	Explode 5	6	4	Explode	"Invisible, intangible, unk
 Alien	Minion	6	Star Child	- 4 damage to target / - create 2 energy	7	4/2	TwoAttacks	"When you wish upon a star: if your wish is strong enough, if you want it bad enough, sometimes the stars will hear you - and answer..."		
 Alien	Minion	6	Extraterrestrial Invader	NA	10	8	None	"Where there's one, there's thousands to come..."		
 Alien	Minion	7	Frozen Horror	Frozen / StatsUp: stat changes to this card are doubled - positive or negative	7	7	Frozen/StatsUp	"Some discoveries should remain undiscovered..."		
-Alien	Spell	1	Lost in Space	Freeze a single minion	0	0	ONPLAY	"Patience is a virtue. Sometimes all you can do is wait..."	unique	enemies
-Alien	Spell	1	Decipher	Remove Hidden from target minion	0	0	Unique		unique	enemies
-Alien	Spell	2	Sabotage	Freeze a commander card	0	0	ONPLAY	"Moooooooom I need a new PC!"	unique	
-Alien	Spell	2	Hide	Give a minion Hidden	0	0	Equipment	"Whatever you do, don't lose track of it..."	equipment	none
-Alien	Spell	2	Repair Drone	Heal player for 5 health	0	5	Heal	"Built to fix. Live to serve."	heal	owner
-Alien	Spell	3	Nuclear Waste	Deal 2 damage to all opposing minions	0	2	Damage	"Top tier advice: 'DO NOT TOUCH!'"	damage	allenemies
-Alien	Spell	3	Undeniable Proof	Remove Hidden from all enemy minions	0	0	Unique	"It's all so clear now... IT WAS ALIENS THAT CAUSED THE FALL OF THE ROMAN EMPIRE! OF COURSE!"	unique	allenemies
-Alien	Spell	4	Alien Eggs	spawns 2 alien tokens (2/2)	2	2	SpawnTokens	"I don't want to stick around long enough to meet whatever's laying these."	spawnTokens	none
-Alien	Spell	4	Abduction	Take a minion off your opponent's InPlay and place it in your hand (no stat changes)	0	0	Unique	"Goshdarnit! That's ma favorite cow!"	unique	enemy
-Alien	Spell	5	Parasite	Steal 3 energy from your opponent	0	0	Unique		unique	opponent
-Alien	Spell	5	Solar Panels	Your next five energy is gained in half the time	0	5	Unique	"Heat means energy... and life..."	unique	none
-Alien	Spell	6	Unknown Virus	Remove Guard from all enemy minions	0	0	Unique	"No vaccine, no cure, no hope..."	unique	allenemies
-Alien	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment	"The future is now, old man!"	equipment	allies
-Alien	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	GiveAbility	"Nothing to see here."	equipment	allies
+All	Spell	1	Lost in Space	Freeze a single minion	0	0	ONPLAY	"Patience is a virtue. Sometimes all you can do is wait..."	unique	enemies
+All	Spell	1	Decipher	Remove Hidden from target minion	0	0	Unique	"You ask the teacher when you're ever gonna use any of this and BOOM! Strange alien hieroglyphics, what now Bryce???"	unique	enemies
+All	Spell	2	Sabotage	Freeze a commander card	0	0	ONPLAY	"Moooooooom I need a new PC!"	unique	
+All	Spell	2	Hide	Give a minion Hidden	0	0	Equipment	"Whatever you do, don't lose track of it..."	equipment	none
+All	Spell	2	Repair Drone	Heal player for 5 health	0	5	Heal	"Built to fix. Live to serve."	heal	owner
+All	Spell	3	Nuclear Waste	Deal 2 damage to all opposing minions	0	2	Damage	"Top tier advice: 'DO NOT TOUCH!'"	damage	allenemies
+All	Spell	3	Undeniable Proof	Remove Hidden from all enemy minions	0	0	Unique	"It's all so clear now... IT WAS ALIENS THAT CAUSED THE FALL OF THE ROMAN EMPIRE! OF COURSE!"	unique	allenemies
+All	Spell	4	Alien Eggs	spawns 2 alien tokens (2/2)	2	2	SpawnTokens	"I don't want to stick around long enough to meet whatever's laying these."	spawnTokens	none
+All	Spell	4	Abduction	Take a minion off your opponent's InPlay and place it in your hand (no stat changes)	0	0	Unique	"Goshdarnit! That's ma favorite cow!"	unique	enemy
+All	Spell	5	Parasite	Steal 3 energy from your opponent	0	0	Unique	"'7.8/10: Too Many Teeth' - Intergalactic Gremlin Network"	unique	opponent
+All	Spell	5	Solar Panels	Your next five energy is gained in half the time	0	5	Unique	"Heat means energy... and life..."	unique	none
+All	Spell	6	Unknown Virus	Remove Guard from all enemy minions	0	0	Unique	"No vaccine, no cure, no hope..."	unique	allenemies
+All	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment	"The future is now, old man!"	equipment	allies
+All	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	GiveAbility	"Nothing to see here."	equipment	allies
 Alien	Commander	NA	Hivemind	Give one of your minions +2/+1	NA	NA	NA	"One voice, one will, one goal."		
 Alien	Token	NA	Grey	NA	2	2	None	"What number kind are we on at this point?"		

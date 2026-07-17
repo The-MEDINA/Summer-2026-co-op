@@ -183,6 +183,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         // setup
         currentFaction = faction;
         List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
+        factionCards.AddRange(cardIndex.Index.GetAllFactionCards("All"));
         highYPos = -100;
         lowYPos = 100;
         int index = 0;
