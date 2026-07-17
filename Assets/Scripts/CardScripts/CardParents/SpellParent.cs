@@ -37,6 +37,11 @@ public class SpellParent : NewVirtualCardParent
     public int Amount { get { return amount; } }//amount of damage done, health healed, etc
     public int SecondEquipmentAmountAmount { get { return secondEquipmentAmount; } }//startingHealth change in an equipment card
 
+    #region SFX_EVENTS
+    public delegate void Action(spellEffect cardEffect);
+    public event Action cardAction;
+    #endregion
+
     /// <summary>
     /// creates a new Spell card object
     /// </summary>
@@ -142,6 +147,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -408,6 +414,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     public void OnPlayAny(NewVirtualCardParent target)
@@ -421,6 +428,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -449,6 +457,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     public void OnPlayAOE(List<NewVirtualCardParent> cards)
@@ -512,5 +521,6 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 }

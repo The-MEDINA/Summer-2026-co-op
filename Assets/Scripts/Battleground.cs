@@ -99,6 +99,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         p.Deck.RemoveAt(0);
 
         handUIManager.AddCardToHand(newCard);
+        SFXManager.Instance.RegisterCard(drawnCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
 
@@ -126,7 +127,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
-
+        SFXManager.Instance.RegisterCard(spawnCard);
         CardClickHandler clickHandler = newCard.GetComponent<CardClickHandler>();
 
         if (clickHandler != null)
