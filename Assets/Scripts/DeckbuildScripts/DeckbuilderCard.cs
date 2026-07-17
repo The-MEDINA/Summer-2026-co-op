@@ -160,7 +160,7 @@ public class DeckbuilderCard : MonoBehaviour
             }
             else
             {
-                amountText.text = $"Inactive";
+                if (amountText != null) amountText.text = $"Inactive";
             }
 
             // add sprites.
