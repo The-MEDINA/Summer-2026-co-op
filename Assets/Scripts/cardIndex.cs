@@ -474,6 +474,12 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.frozen;
                                 break;
                             }
+                        case ("lifelink"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.lifelink;
+                                else _secondAbility = MinionParent.effect.lifelink;
+                                break;
+                            }
                         case ("apoptosis"):
                             {
                                 if (j == 0)
