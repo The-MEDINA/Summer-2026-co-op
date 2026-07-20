@@ -75,6 +75,8 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
+            p.Deck.Add(new MinionParent(1, 1, 1, "Mimic", NewVirtualCardParent.type.minion, MinionParent.effect.mimic, NewVirtualCardParent.location.deck));
+
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Unknown Virus",
                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 

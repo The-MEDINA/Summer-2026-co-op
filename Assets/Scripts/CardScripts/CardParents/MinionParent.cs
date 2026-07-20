@@ -29,7 +29,8 @@ public class MinionParent : NewVirtualCardParent
         split,
         healOnPlay,
         statsUp,
-        gainEnergy
+        gainEnergy,
+        mimic
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -156,6 +157,18 @@ public class MinionParent : NewVirtualCardParent
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health += Damage;
             Debug.Log($"Healed player for {Damage} health. (now {UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Health})");
+        }
+        if (CardEffect == effect.mimic)//does not work with tap
+        {
+            if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay.Count < 2) { }
+            else
+            {
+                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard(
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay[UnityObject.GetComponent<CardClickHandler>().
+                    OwnerPlayer.InPlay.Count - 2].CardName, location.inPlay));
+            }
+            TakeDamage(999);
+            CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
         }
     }
 
