@@ -37,4 +37,9 @@ public class TitleScreenManager : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void LoadTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
 }
