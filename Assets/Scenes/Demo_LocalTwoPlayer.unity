@@ -1752,6 +1752,8 @@ MonoBehaviour:
   cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 502840342}
   commanderCard: {fileID: 0}
+  mainSprite: {fileID: 1211172914782611410, guid: 258b69b12ce097845b02873f4f6d418d, type: 3}
+  onClickSprite: {fileID: 1503519367465480720, guid: d0fd0c4ebf01ef84aa9cd469b51d0010, type: 3}
 --- !u!61 &531251191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2029,6 +2031,8 @@ MonoBehaviour:
   cardProto: {fileID: 7087468605010202404, guid: 19f7177df414f6f459e987e5734ff4f9, type: 3}
   handUIManager: {fileID: 1375896096}
   commanderCard: {fileID: 0}
+  mainSprite: {fileID: 1211172914782611410, guid: 258b69b12ce097845b02873f4f6d418d, type: 3}
+  onClickSprite: {fileID: 1503519367465480720, guid: d0fd0c4ebf01ef84aa9cd469b51d0010, type: 3}
 --- !u!212 &564985595
 SpriteRenderer:
   serializedVersion: 2

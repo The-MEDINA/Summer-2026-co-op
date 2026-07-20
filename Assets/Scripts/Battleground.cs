@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Network;
 
@@ -9,6 +10,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject cardProto;
     [SerializeField] private HandUIManager handUIManager;
     [SerializeField] private CommanderCardScript commanderCard;
+
+    [SerializeField] private Sprite mainSprite;
+    [SerializeField] private Sprite onClickSprite;
+    private float timer = 0f;
+    private bool changed = false;
 
     public Player P { get { return p; } }
     public GameObject CardProto { get { return cardProto; } }
@@ -27,6 +33,20 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         p.CommanderCard = commanderCard;
     }
 
+    private void Update()
+    {
+       if (timer >= 0.1f && changed)
+        {
+            GetComponent<SpriteRenderer>().sprite = mainSprite;
+            timer = 0;
+            changed = false;
+        }
+       else if (changed)
+        {
+            timer += Time.deltaTime;
+        }
+    }
+
     /// <summary>
     /// handles clicking a button to draw cards
     /// </summary>
@@ -41,6 +61,8 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         {
             Debug.Log("Clicked deck: " + gameObject.name);
             if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
+            GetComponent<SpriteRenderer>().sprite = onClickSprite;
+            changed = true;
             DrawCardToHand();
         } 
         else 
