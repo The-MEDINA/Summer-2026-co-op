@@ -75,6 +75,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
+            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Unknown Virus",
+               NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+
             p.Deck.Add(cardIndex.Index.CreateCard("Genetic Engineering", NewVirtualCardParent.location.deck));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.owner, 0, 0, 4, "Solar Panels",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
@@ -101,7 +104,6 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
 
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
                 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(1, 1, 1, "froz", NewVirtualCardParent.type.minion, MinionParent.effect.frozen, NewVirtualCardParent.location.hand));
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
 NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 

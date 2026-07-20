@@ -501,6 +501,19 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
 
+            case "Unknown Virus":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        if (cards[i] is MinionParent)
+                        {
+                            MinionParent target = (MinionParent)cards[i];
+                            target.HasGuard = false;
+                        }
+                    }
+                    break;
+                }
+
             default:
                 {
                     switch(Effect)
