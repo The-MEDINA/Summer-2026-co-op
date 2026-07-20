@@ -26,11 +26,13 @@ public abstract class NewVirtualCardParent
     private GameObject unityObject;
     [SerializeField] private string cardName;
     private string flavorText;
+    private string faction;
 
     public int NameIndexPosition { get { return nameIndexPosition; } }
     public int Cost { get { return cost; } }
     public string CardName { get { return cardName; } }
     public string FlavorText { get { return flavorText; } }
+    public string Faction { get { return faction; } }
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public GameObject UnityObject { get { return unityObject; } set { unityObject = value; } }
@@ -49,6 +51,7 @@ public abstract class NewVirtualCardParent
         this.cardType = cardType;
         this.cardLocation = cardLocation;
         nameIndexPosition = cardIndex.Index.GetDetails(name).nameIndexPosition;
+        faction = cardIndex.Index.GetDetails(name).faction;
     }
     /// <summary>
     /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
@@ -64,5 +67,6 @@ public abstract class NewVirtualCardParent
         nameIndexPosition = cardDetails.nameIndexPosition;
         cardType = cardDetails.type;
         this.cardLocation = cardLocation;
+        faction = cardDetails.faction;
     }
 }

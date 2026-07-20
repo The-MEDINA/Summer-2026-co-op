@@ -104,7 +104,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -126,7 +126,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 480
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -148,7 +148,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 960
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -170,7 +170,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1440
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -192,7 +192,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1920
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -214,7 +214,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 2400
-        y: 3360
+        y: 2880
         width: 480
         height: 480
       alignment: 0
@@ -235,8 +235,8 @@ TextureImporter:
       name: spritesheet Cat_6
       rect:
         serializedVersion: 2
-        x: 2880
-        y: 3360
+        x: 0
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -257,8 +257,8 @@ TextureImporter:
       name: spritesheet Cat_7
       rect:
         serializedVersion: 2
-        x: 3360
-        y: 3360
+        x: 480
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -279,8 +279,8 @@ TextureImporter:
       name: spritesheet Cat_8
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2880
+        x: 960
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -301,8 +301,8 @@ TextureImporter:
       name: spritesheet Cat_9
       rect:
         serializedVersion: 2
-        x: 480
-        y: 2880
+        x: 1440
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -323,8 +323,8 @@ TextureImporter:
       name: spritesheet Cat_10
       rect:
         serializedVersion: 2
-        x: 960
-        y: 2880
+        x: 1920
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -345,8 +345,8 @@ TextureImporter:
       name: spritesheet Cat_11
       rect:
         serializedVersion: 2
-        x: 1440
-        y: 2880
+        x: 2400
+        y: 2400
         width: 480
         height: 480
       alignment: 0
@@ -367,8 +367,8 @@ TextureImporter:
       name: spritesheet Cat_12
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 2880
+        x: 0
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -389,8 +389,8 @@ TextureImporter:
       name: spritesheet Cat_13
       rect:
         serializedVersion: 2
-        x: 2400
-        y: 2880
+        x: 480
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -411,8 +411,8 @@ TextureImporter:
       name: spritesheet Cat_14
       rect:
         serializedVersion: 2
-        x: 2880
-        y: 2880
+        x: 960
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -433,8 +433,8 @@ TextureImporter:
       name: spritesheet Cat_15
       rect:
         serializedVersion: 2
-        x: 3360
-        y: 2880
+        x: 1440
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -455,8 +455,8 @@ TextureImporter:
       name: spritesheet Cat_16
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2400
+        x: 1920
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -477,8 +477,8 @@ TextureImporter:
       name: spritesheet Cat_17
       rect:
         serializedVersion: 2
-        x: 480
-        y: 2400
+        x: 2400
+        y: 1920
         width: 480
         height: 480
       alignment: 0
@@ -499,8 +499,8 @@ TextureImporter:
       name: spritesheet Cat_18
       rect:
         serializedVersion: 2
-        x: 960
-        y: 2400
+        x: 0
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -521,8 +521,8 @@ TextureImporter:
       name: spritesheet Cat_19
       rect:
         serializedVersion: 2
-        x: 1440
-        y: 2400
+        x: 480
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -543,8 +543,8 @@ TextureImporter:
       name: spritesheet Cat_20
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 2400
+        x: 960
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -565,8 +565,8 @@ TextureImporter:
       name: spritesheet Cat_21
       rect:
         serializedVersion: 2
-        x: 2400
-        y: 2400
+        x: 1440
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -587,8 +587,8 @@ TextureImporter:
       name: spritesheet Cat_22
       rect:
         serializedVersion: 2
-        x: 2880
-        y: 2400
+        x: 1920
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -609,8 +609,8 @@ TextureImporter:
       name: spritesheet Cat_23
       rect:
         serializedVersion: 2
-        x: 3360
-        y: 2400
+        x: 2400
+        y: 1440
         width: 480
         height: 480
       alignment: 0
@@ -632,7 +632,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -654,7 +654,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 480
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -676,7 +676,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 960
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -698,7 +698,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1440
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -720,7 +720,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1920
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -742,7 +742,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 2400
-        y: 1920
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -763,8 +763,8 @@ TextureImporter:
       name: spritesheet Cat_30
       rect:
         serializedVersion: 2
-        x: 2880
-        y: 1920
+        x: 0
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -785,8 +785,8 @@ TextureImporter:
       name: spritesheet Cat_31
       rect:
         serializedVersion: 2
-        x: 3360
-        y: 1920
+        x: 480
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -807,8 +807,8 @@ TextureImporter:
       name: spritesheet Cat_32
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1440
+        x: 960
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -829,8 +829,8 @@ TextureImporter:
       name: spritesheet Cat_33
       rect:
         serializedVersion: 2
-        x: 480
-        y: 1440
+        x: 1440
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -851,8 +851,8 @@ TextureImporter:
       name: spritesheet Cat_34
       rect:
         serializedVersion: 2
-        x: 960
-        y: 1440
+        x: 1920
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -873,8 +873,8 @@ TextureImporter:
       name: spritesheet Cat_35
       rect:
         serializedVersion: 2
-        x: 1440
-        y: 1440
+        x: 2400
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -895,8 +895,8 @@ TextureImporter:
       name: spritesheet Cat_36
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 1440
+        x: 0
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -917,8 +917,8 @@ TextureImporter:
       name: spritesheet Cat_37
       rect:
         serializedVersion: 2
-        x: 2400
-        y: 1440
+        x: 480
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -939,8 +939,8 @@ TextureImporter:
       name: spritesheet Cat_38
       rect:
         serializedVersion: 2
-        x: 2880
-        y: 1440
+        x: 960
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -961,8 +961,8 @@ TextureImporter:
       name: spritesheet Cat_39
       rect:
         serializedVersion: 2
-        x: 3360
-        y: 1440
+        x: 1440
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -983,8 +983,8 @@ TextureImporter:
       name: spritesheet Cat_40
       rect:
         serializedVersion: 2
-        x: 0
-        y: 960
+        x: 1920
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -1005,8 +1005,8 @@ TextureImporter:
       name: spritesheet Cat_41
       rect:
         serializedVersion: 2
-        x: 480
-        y: 960
+        x: 2400
+        y: 0
         width: 480
         height: 480
       alignment: 0
@@ -1019,490 +1019,6 @@ TextureImporter:
       bones: []
       spriteID: 5589b13feb575b84a9563c5b5fb8df9a
       internalID: 1012675088
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_42
-      rect:
-        serializedVersion: 2
-        x: 960
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bd6aa0259decfc3428e374f1de7361a0
-      internalID: -2011441039
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_43
-      rect:
-        serializedVersion: 2
-        x: 1440
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f0ab10f922373d348befcc47cf96a52a
-      internalID: -1202462291
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_44
-      rect:
-        serializedVersion: 2
-        x: 1920
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2846b8c29d7dac24d84f1dbd03ce904b
-      internalID: -1797623470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_45
-      rect:
-        serializedVersion: 2
-        x: 2400
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0952b47464419b0428585f9280bb93a0
-      internalID: 704791524
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_46
-      rect:
-        serializedVersion: 2
-        x: 2880
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3cda40890682d2d4980f89ec6f6a69ed
-      internalID: 698445532
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_47
-      rect:
-        serializedVersion: 2
-        x: 3360
-        y: 960
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 815d02def80fe44439e8dd602ba61813
-      internalID: 1464084938
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_48
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c7bfe06204e64ee44aec6d1d2d1a5576
-      internalID: -746511862
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_49
-      rect:
-        serializedVersion: 2
-        x: 480
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6f3288d5cf1f8224581b29d21521aa32
-      internalID: 1713204546
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_50
-      rect:
-        serializedVersion: 2
-        x: 960
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5a2ead714c8e34440a76e3ba1f01b8c2
-      internalID: 1594521788
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_51
-      rect:
-        serializedVersion: 2
-        x: 1440
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5b1f92b3d23f9bc4bafebfbfe62f6cab
-      internalID: 1328950389
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_52
-      rect:
-        serializedVersion: 2
-        x: 1920
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 835381ba9fad8e440a977faa184c12d6
-      internalID: -153374936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_53
-      rect:
-        serializedVersion: 2
-        x: 2400
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 48dd6200f5dc93341b3db7be0c74272a
-      internalID: 238138502
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_54
-      rect:
-        serializedVersion: 2
-        x: 2880
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8cd56d92563eb664386f7a839a56fd60
-      internalID: -56660405
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_55
-      rect:
-        serializedVersion: 2
-        x: 3360
-        y: 480
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f323790ad6386a74b8278ce11f5c9518
-      internalID: -2067848680
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_56
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2ab132fe8453dd84abe47e14f027d7d6
-      internalID: -752298817
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_57
-      rect:
-        serializedVersion: 2
-        x: 480
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 22fe39c29782dfa42aefd4595bb3511f
-      internalID: -2032615628
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_58
-      rect:
-        serializedVersion: 2
-        x: 960
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 82ac80997d241284099d0248c2b1c8be
-      internalID: -1121103157
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_59
-      rect:
-        serializedVersion: 2
-        x: 1440
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bd337d65b18dcce40b5f120d24e5ca2b
-      internalID: 443552630
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_60
-      rect:
-        serializedVersion: 2
-        x: 1920
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7c0c33f563bf4674b80cbe4469e51ed5
-      internalID: 95007052
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_61
-      rect:
-        serializedVersion: 2
-        x: 2400
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 183b17d7072a121418a0eda2d50759ba
-      internalID: -1588123611
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_62
-      rect:
-        serializedVersion: 2
-        x: 2880
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b546cc1422f9b934bb56bddac13ce657
-      internalID: 1968628390
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet Cat_63
-      rect:
-        serializedVersion: 2
-        x: 3360
-        y: 0
-        width: 480
-        height: 480
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 844b55133751d564b9e7ebe329f854cb
-      internalID: -472197466
       vertices: []
       indices: 
       edges: []
@@ -1521,7 +1037,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":8.0},"gridSpriteSize":{"x":480.0,"y":480.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":7.0},"gridSpriteSize":{"x":480.0,"y":480.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       spritesheet Cat_0: 2011981884071885019
       spritesheet Cat_1: 1708751447
@@ -1560,30 +1076,8 @@ TextureImporter:
       spritesheet Cat_4: 377970214
       spritesheet Cat_40: 1338140505
       spritesheet Cat_41: 1012675088
-      spritesheet Cat_42: -2011441039
-      spritesheet Cat_43: -1202462291
-      spritesheet Cat_44: -1797623470
-      spritesheet Cat_45: 704791524
-      spritesheet Cat_46: 698445532
-      spritesheet Cat_47: 1464084938
-      spritesheet Cat_48: -746511862
-      spritesheet Cat_49: 1713204546
       spritesheet Cat_5: 1299057453
-      spritesheet Cat_50: 1594521788
-      spritesheet Cat_51: 1328950389
-      spritesheet Cat_52: -153374936
-      spritesheet Cat_53: 238138502
-      spritesheet Cat_54: -56660405
-      spritesheet Cat_55: -2067848680
-      spritesheet Cat_56: -752298817
-      spritesheet Cat_57: -2032615628
-      spritesheet Cat_58: -1121103157
-      spritesheet Cat_59: 443552630
       spritesheet Cat_6: -1582165950
-      spritesheet Cat_60: 95007052
-      spritesheet Cat_61: -1588123611
-      spritesheet Cat_62: 1968628390
-      spritesheet Cat_63: -472197466
       spritesheet Cat_7: 869535027
       spritesheet Cat_8: -1079671310
       spritesheet Cat_9: 146392666

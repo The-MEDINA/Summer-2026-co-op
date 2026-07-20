@@ -99,6 +99,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         p.Deck.RemoveAt(0);
 
         handUIManager.AddCardToHand(newCard);
+        SFXManager.Instance.RegisterCard(drawnCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
 
@@ -126,7 +127,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
 
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
-
+        SFXManager.Instance.RegisterCard(spawnCard);
         CardClickHandler clickHandler = newCard.GetComponent<CardClickHandler>();
 
         if (clickHandler != null)
@@ -142,6 +143,15 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         if (spawnCard.CardType == NewVirtualCardParent.type.token)
         {
             CardSelectionManager.Instance.PlayCardToBattleground(clickHandler);
+        }
+        if (!clickHandler.InPlay) clickHandler.InPlay = true;
+
+        MinionParent frozenCheck = (MinionParent)spawnCard;
+        if (frozenCheck != null && frozenCheck.CardEffect == MinionParent.effect.frozen)
+        {
+            newCard.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+            newCard.GetComponent<CardClickHandler>().ResetTimer();
+            newCard.GetComponent<CardUIManager>().AddProgress(5f);
         }
         Debug.Log(p.gameObject.name + " played card: " + spawnCard.CardName);
     }

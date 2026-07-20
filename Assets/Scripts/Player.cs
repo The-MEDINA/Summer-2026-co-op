@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int maxEnergy = 10;
     [SerializeField] private int startingEnergy = 10;
     [SerializeField] private float timeForEnergy = 5f;
+    [SerializeField] private float startingTimeForEnergy = 5f;
     [SerializeField] private bool isPlayerTwo = false;
     [SerializeField] private float moveCooldownTime = 1.5f;
 
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour
     private float timer = 0f;
 
     private bool hasThorns = false;
+    private int timesWhereEnergyWasNotNormal = 0;
 
     public int Health { get { return health; } set { health = value; } }
     public int Energy { get { return energy; } set { 
@@ -32,7 +34,7 @@ public class Player : MonoBehaviour
     public int MaxEnergy { get { return maxEnergy; } }
 
     public float EnergyTimer { get { return timer; } }
-    public float TimeForEnergy { get { return timeForEnergy; } }
+    public float TimeForEnergy { get { return timeForEnergy; } set { timeForEnergy = value; } }
     public float EnergyTimerRemaining { get { return Mathf.Max(0f, timeForEnergy - timer); } }
 
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
@@ -63,6 +65,14 @@ public class Player : MonoBehaviour
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
+        if (isPlayerTwo)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     private void GainEnergyOverTime()
@@ -72,6 +82,16 @@ public class Player : MonoBehaviour
             GainEnergy(1);
             // if (!isPlayerTwo) 
                 timer = 0f;
+
+            if(TimeForEnergy != startingTimeForEnergy)
+            {
+                timesWhereEnergyWasNotNormal++;
+                if(timesWhereEnergyWasNotNormal >= 5)
+                {
+                    TimeForEnergy = startingTimeForEnergy;
+                    timesWhereEnergyWasNotNormal = 0;
+                }
+            }
         }
         else
         {

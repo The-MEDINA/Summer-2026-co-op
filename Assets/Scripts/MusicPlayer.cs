@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MusicPlayer : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public class MusicPlayer : MonoBehaviour
         transition2to1,
         noLoop
     }
-
+    [SerializeField] private bool persistBetweenScenes = false;
+    [SerializeField] private string[] excludeScenes;
+    [SerializeField] private string SourceScene = "TitleScreen";
+    private string lastScene = "";
     /// <summary>
     /// Beginning is optional.
     /// </summary>
@@ -40,32 +44,66 @@ public class MusicPlayer : MonoBehaviour
 
     private state current = state.player2lead;
     private float deltaVolume = 0;
+    private float aliveTime = 0;
+
+    public bool PersistBetweenScenes { get { return persistBetweenScenes; } }
+    public float AliveTime { get { return aliveTime; } }
+
+    private void Awake()
+    {
+        if (persistBetweenScenes)
+        {
+            // Setup
+            MusicPlayer[] others = FindObjectsByType<MusicPlayer>();
+            float oldest = 0;
+            MusicPlayer oldestOther = this;
+            bool destroySelf = false;
+
+            // Mark the oldest persistent music player to stay out of others AND self
+            for (int i = 0; i < others.Length; i++)
+            {
+                if (others[i].persistBetweenScenes && others[i].AliveTime > oldest)
+                {
+                    oldestOther = others[i];
+                }
+            }
+            if (aliveTime < oldest)
+            {
+                destroySelf = true;
+            }
+
+            // Destroy all that are not the oldest including self 
+            for (int i = 0; i < others.Length; i++)
+            {
+                if (others[i] != oldestOther)
+                {
+                    Destroy(others[i].gameObject);
+                }
+            }
+            if (destroySelf)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            //if (other != null && other.persistBetweenScenes && other != this)
+            //{
+            //    Destroy(this.gameObject);
+            //    return;
+            //}
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        deltaVolume = volume / transitionTime;
-        musicPlayer1.volume = volume;
-        musicPlayer2.volume = volume;
-        if (loopx2 != null) musicPlayer2.clip = loopx2;
-        else current = state.noLoop;
-
-        // play the beginning first if there is one.
-        if (beginning != null)
-        {
-            musicPlayer1.clip = beginning;
-            musicPlayer1.Play();
-            musicPlayer2.PlayDelayed(beginning.length + offset);
-        }
-        else
-        {
-            musicPlayer1.clip = loopx2;
-            musicPlayer2.Play();
-        }
+        StartMusic();
     }
 
     // Update is called once per frame
     void Update()
     {
+        aliveTime += Time.deltaTime;
         if (current != state.noLoop)
         {
             // start fading at the halfway point.
@@ -110,6 +148,58 @@ public class MusicPlayer : MonoBehaviour
                     musicPlayer1.volume = 0;
                 }
             }
+        }
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // setup
+        string[] scenePath = scene.path.Split("/");
+
+        for (int i = 0; i < excludeScenes.Length; i++)
+        {
+            string excludeScene = $"{excludeScenes[i]}.unity";
+
+            // stop if the scene is in the exclude scenes list
+            if (scenePath[scenePath.Length - 1] == excludeScene)
+            {
+                if (musicPlayer1 != null) musicPlayer1.Stop();
+                if (musicPlayer2 != null) musicPlayer2.Stop();
+                lastScene = scenePath[scenePath.Length - 1];
+                return;
+            }
+        }
+        // Restart music if the last scene was on the exclude list but the current one isn't
+        for (int i = 0; i < excludeScenes.Length;i++)
+        {
+            if (lastScene == $"{excludeScenes[i]}.unity")
+            {
+                StartMusic();
+                lastScene = scenePath[scenePath.Length - 1];
+                return;
+            }
+        }
+        lastScene = scenePath[scenePath.Length - 1];
+    }
+
+    private void StartMusic()
+    {
+        deltaVolume = volume / transitionTime;
+        musicPlayer1.volume = volume;
+        musicPlayer2.volume = volume;
+        if (loopx2 != null) musicPlayer2.clip = loopx2;
+        else current = state.noLoop;
+
+        // play the beginning first if there is one.
+        if (beginning != null)
+        {
+            musicPlayer1.clip = beginning;
+            musicPlayer1.Play();
+            musicPlayer2.PlayDelayed(beginning.length + offset);
+        }
+        else
+        {
+            musicPlayer1.clip = loopx2;
+            musicPlayer2.Play();
         }
     }
 }
