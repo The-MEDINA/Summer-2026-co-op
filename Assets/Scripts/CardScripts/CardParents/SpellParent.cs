@@ -23,7 +23,8 @@ public class SpellParent : NewVirtualCardParent
         allEnemies,
         allAllies,
         none,
-        any
+        any,
+        inplay
     }
 
     private spellEffect effect;
@@ -35,6 +36,11 @@ public class SpellParent : NewVirtualCardParent
     public spellTarget Target { get { return target; } }
     public int Amount { get { return amount; } }//amount of damage done, health healed, etc
     public int SecondEquipmentAmountAmount { get { return secondEquipmentAmount; } }//startingHealth change in an equipment card
+
+    #region SFX_EVENTS
+    public delegate void Action(spellEffect cardEffect);
+    public event Action cardAction;
+    #endregion
 
     /// <summary>
     /// creates a new Spell card object
@@ -80,8 +86,16 @@ public class SpellParent : NewVirtualCardParent
                 {
                     for (int i = 0; i < amount; i++)
                     {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
-                            cardIndex.Index.CreateCard("Kitten", location.inPlay));
+                        if (amount == 2)
+                        {
+                            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                                cardIndex.Index.CreateCard("Grey", location.inPlay));
+                        }
+                        else
+                        {
+                            UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(
+                                cardIndex.Index.CreateCard("Kitten", location.inPlay));
+                        }
                     }
                     break;
                 }
@@ -99,6 +113,12 @@ public class SpellParent : NewVirtualCardParent
                         case "Barbed Wire":
                             {
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.PlayerGainThorns();
+                                break;
+                            }
+
+                        case "Solar Panels"://refresh bug when stacking multiple
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy / 2;
                                 break;
                             }
 
@@ -127,6 +147,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -302,10 +323,18 @@ public class SpellParent : NewVirtualCardParent
                                 target.AddEquipment(MinionParent.equipment.hex);
                                 break;
                             }
+
                         case "Distraction":
                             {
                                 target.HasGuard = true;
                                 target.AddEquipment(MinionParent.equipment.distraction);
+                                break;
+                            }
+
+                        case "Genetic Engineering":
+                            {
+                                target.HasStatsUp = true;
+                                target.AddEquipment(MinionParent.equipment.geneticEngineering);
                                 break;
                             }
 
@@ -324,9 +353,8 @@ public class SpellParent : NewVirtualCardParent
                     {
                         case "Clone":
                             {
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, 
-                                target.Health, target.Damage, target.CardName, NewVirtualCardParent.type.token, target.CardEffect, 
-                                NewVirtualCardParent.location.inPlay));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard(target.CardName, location.inPlay));
+                                CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
                                 break;
                             }
 
@@ -374,10 +402,19 @@ public class SpellParent : NewVirtualCardParent
                                 target.TakeDamage(9999);
                                 break;
                             }
+
+                        case "Abduction":
+                            {
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
+                                target.TakeDamage(9999);
+                                break;
+                            }
                     }
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     public void OnPlayAny(NewVirtualCardParent target)
@@ -386,24 +423,12 @@ public class SpellParent : NewVirtualCardParent
         {
             case spellEffect.copy:
                 {//does not function
-                    if(target is TwoAttackParent)
-                    { 
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new TwoAttackParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is SpellParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new SpellParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
-                    else if (target is MinionParent)
-                    {
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
-                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
-                    }
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, cardIndex.Index.CreateCard(target.CardName, location.deck));
+                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     /// <summary>
@@ -432,6 +457,7 @@ public class SpellParent : NewVirtualCardParent
                     break;
                 }
         }
+        cardAction.Invoke(effect);
     }
 
     public void OnPlayAOE(List<NewVirtualCardParent> cards)
@@ -474,6 +500,40 @@ public class SpellParent : NewVirtualCardParent
                     }
                     break;
                 }
+
+            case "Unknown Virus":
+                {
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        if (cards[i] is MinionParent)
+                        {
+                            MinionParent target = (MinionParent)cards[i];
+                            target.HasGuard = false;
+                        }
+                    }
+                    break;
+                }
+
+            default:
+                {
+                    switch(Effect)
+                    {
+                        case spellEffect.damage:
+                            {
+                                for (int i = cards.Count - 1; i >= 0; i--)
+                                {
+                                    if (cards[i] is MinionParent)
+                                    {
+                                        MinionParent target = (MinionParent)cards[i];
+                                        target.TakeDamage(amount);
+                                    }
+                                 }
+                                    break;
+                            }
+                    }
+                    break;
+                }
         }
+        cardAction.Invoke(effect);
     }
 }

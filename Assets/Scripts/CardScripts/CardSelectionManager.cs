@@ -51,11 +51,19 @@ public class CardSelectionManager : MonoBehaviour
         if (dBDeck != null && dBDeck.Commander != "")
         {
             cardIndex.Index.AttachCommanderCard(player1CommanderSquare, dBDeck.Commander, player1Battleground);
+            if (player1CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player1CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
         else
         {
             Debug.LogWarning("No commander found for player 1, defaulting to Zoomie.");
             cardIndex.Index.AttachCommanderCard(player1CommanderSquare, "Sergeant Zoomie", player1Battleground);
+            if (player1CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player1CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
 
         // check for a commander in networking
@@ -63,11 +71,19 @@ public class CardSelectionManager : MonoBehaviour
         {
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
             Networking.P2CommanderName = "";
+            if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
         else
         {
             Debug.LogWarning("No commander found for player 2, defaulting to Zoomie.");
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, "Sergeant Zoomie", player2Battleground);
+            if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
+            { 
+                player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
+            }
         }
     }
 
@@ -90,12 +106,10 @@ public class CardSelectionManager : MonoBehaviour
 
                 if (minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
                 {
-                    Debug.Log("AAAAAAAAAAAA");
                     TryAttackTarget(clickedCard, true);
                 }
                 else
                 {
-                    Debug.Log("BBBBBBBBBBBB");
                     TryAttackTarget(clickedCard, false);
                 }
             }
@@ -210,7 +224,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (owner == player1 && cardObject.CardData.CardType != NewVirtualCardParent.type.token)
+        if (owner == player1)
         {
             // tell the peer you moved a card to Inplay.
             Networking.SendCardMove(
@@ -551,6 +565,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
         MinionParent target = targetCard.CardData as MinionParent;
+        // SpellParent targetSpell = targetCard.CardData as SpellParent;
 
         if (targetCard.CardData.CardLocation != NewVirtualCardParent.location.inPlay && attacker.Effect != SpellParent.spellEffect.copy)
         {
@@ -606,7 +621,7 @@ public class CardSelectionManager : MonoBehaviour
 
         if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
-            Networking.SendCardAttack(attacker, target, false);
+            Networking.SendCardAttack(attacker, targetCard.CardData, false);
         }
 
         if (attacker.Target == SpellParent.spellTarget.allEnemies)
@@ -626,6 +641,8 @@ public class CardSelectionManager : MonoBehaviour
             attacker.OnPlay(target);
         }
 
+        Debug.Log(attacker.CardName + " played on " + targetCard.CardData.CardName);
+
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
         selectedCardObject.gameObject.SetActive(false);
@@ -633,7 +650,6 @@ public class CardSelectionManager : MonoBehaviour
         RefreshCardVisual(selectedCardObject);
         RefreshCardVisual(targetCard);
 
-        Debug.Log(attacker.CardName + " played on " + target.CardName + ". Target health: " + target.Health);
         selectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();
@@ -813,11 +829,14 @@ public class CardSelectionManager : MonoBehaviour
             if (wasSecondAttack)
             {
                 damage = twoAttackMinion.SecondDamage;
+                twoAttackMinion.CardEffect = twoAttackMinion.SecondaryCardEffect;
             }
             if (twoAttackMinion.CanAttack)
             {
                 opposingPlayer.TakeDamage(damage, twoAttackMinion);
                 twoAttackMinion.CanAttack = false;
+                twoAttackMinion.ForceActionSFX();
+                twoAttackMinion.CardEffect = MinionParent.effect.twoAttacks;
                 selectedCardObject.OwnerPlayer.RegisterAction();
             }
             else
@@ -845,6 +864,7 @@ public class CardSelectionManager : MonoBehaviour
                 int minionDamage = attacker.Damage;
                 opposingPlayer.TakeDamage(minionDamage, attacker);
                 attacker.CanAttack = false;
+                attacker.ForceActionSFX();
                 attackingOwner.RegisterAction();
             }
             else

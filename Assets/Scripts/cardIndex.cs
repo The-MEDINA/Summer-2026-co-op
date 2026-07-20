@@ -18,8 +18,6 @@
 #define WARN_UNDEFINED
 
 using System.Collections.Generic;
-using System.IO;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
 namespace cardIndex
@@ -307,7 +305,9 @@ namespace cardIndex
             string raw;
             int catCardsOffset = 0;
             int alienCardsOffset = 0;
+            int allCardsOffset = 0;
             Sprite[] catSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Cat");
+            Sprite[] allSpritesheet = Resources.LoadAll<Sprite>($"spritesheet All");
             Sprite[] alienSpritesheet = Resources.LoadAll<Sprite>($"spritesheet Alien");
             Sprite[] descBackgrounds = Resources.LoadAll<Sprite>($"DescBackgrounds");
 
@@ -468,6 +468,27 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.split;
                                 break;
                             }
+                        case ("frozen"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.frozen;
+                                else _secondAbility = MinionParent.effect.frozen;
+                                break;
+                            }
+                        case ("apoptosis"):
+                            {
+                                if (j == 0)
+                                {
+                                    _ability = MinionParent.effect.twoAttacks;
+                                    _secondAbility = MinionParent.effect.apoptosis;
+                                    _secondDamage = int.Parse(rawDetails[6]);
+                                }
+                                else
+                                {
+                                    _secondAbility = MinionParent.effect.apoptosis;
+                                    _secondDamage = int.Parse(rawDetails[6]);
+                                }
+                                break;
+                            }
                         case ("twoattacks"):
                             {
                                 if (j == 0)
@@ -475,7 +496,16 @@ namespace cardIndex
                                     _ability = MinionParent.effect.twoAttacks;
                                     string[] twoAttackDamages = rawDetails[6].Split("/");
                                     _damage = int.Parse(twoAttackDamages[0]);
-                                    _secondDamage = int.Parse(twoAttackDamages[1]);
+                                    // in case only 1 damage value was given
+                                    // usually will happen for cards with apoptosis
+                                    if (twoAttackDamages.Length < 2)
+                                    {
+                                        _secondDamage = int.Parse(twoAttackDamages[0]);
+                                    }
+                                    else
+                                    {
+                                        _secondDamage = int.Parse(twoAttackDamages[1]);
+                                    }
                                 }
                                 else
                                 {
@@ -534,6 +564,11 @@ namespace cardIndex
                             _spellEffect = SpellParent.spellEffect.spawnTokens;
                             break;
                         }
+                        case ("copy"):
+                        {
+                            _spellEffect = SpellParent.spellEffect.copy;
+                            break;
+                        }
                         default:
                         {
 #if WARN_UNDEFINED
@@ -563,6 +598,16 @@ namespace cardIndex
                         case ("allenemies"):
                             {
                                 _spellTarget = SpellParent.spellTarget.allEnemies;
+                                break;
+                            }
+                        case ("any"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.any;
+                                break;
+                            }
+                        case ("inplay"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.inplay;
                                 break;
                             }
                         case ("none"):
@@ -621,6 +666,26 @@ namespace cardIndex
 #endif
                             cardSprites.Add(cardImage);
                             alienCardsOffset++;
+                            break;
+                        }
+                    case ("all"):
+                        {
+                            if (allCardsOffset < allSpritesheet.Length)
+                            {
+                                cardImage = allSpritesheet[allCardsOffset];
+                            }
+#if WARN_UNDEFINED
+                            else
+                            {
+                                Debug.LogWarning($"More multi-faction cards than sprites found! Double check the size of both the spritesheet and allCards.tsv?");
+                            }
+                            if (cardImage == null)
+                            {
+                                Debug.LogWarning($"Could not find sprite at spritesheet Cat_{allCardsOffset}! card will have fallback sprite.");
+                            }
+#endif
+                            cardSprites.Add(cardImage);
+                            allCardsOffset++;
                             break;
                         }
                 }

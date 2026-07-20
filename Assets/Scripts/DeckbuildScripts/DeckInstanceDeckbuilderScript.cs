@@ -183,9 +183,24 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         // setup
         currentFaction = faction;
         List<Details> factionCards = cardIndex.Index.GetAllFactionCards(faction);
+        factionCards.AddRange(cardIndex.Index.GetAllFactionCards("All"));
         highYPos = -100;
         lowYPos = 100;
         int index = 0;
+
+        // remove any now invalid cards from deck
+        for (int i = 0; i < deck.Count; i++)
+        {
+            if (deck[i].Faction != faction && deck[i].Faction != "All")
+            {
+                deck.RemoveAt(i);
+                i--;
+            }
+        }
+        if (cardIndex.Index.GetDetails(commander).faction != faction || cardIndex.Index.GetDetails(commander).faction != "All")
+        {
+            commander = "";
+        }
 
         // remove existing cards
         while (cardObjects.Count != 0)

@@ -42,7 +42,8 @@ public class MinionParent : NewVirtualCardParent
         curse,
         hex,
         catnap,
-        distraction
+        distraction,
+        geneticEngineering
     }
 
     private int startingHealth;
@@ -71,6 +72,12 @@ public class MinionParent : NewVirtualCardParent
     public bool IsHidden { get { return isHidden; } set { isHidden = value; } }
     public bool HasStatsUp { get { return hasStatsUp; } set { hasStatsUp = value; }  }
 
+    #region SFX_EVENTS
+    public delegate void Action(effect cardEffect);
+    public event Action cardAction;
+    public delegate void Dies(string faction);
+    public event Dies cardDeath;
+    #endregion
     /// <summary>
     /// hard codes a minion
     /// </summary>
@@ -171,10 +178,15 @@ public class MinionParent : NewVirtualCardParent
             }
             else
             {
-                if (Damage != 0) { target.TakeDamage(this, Damage, false); }
+                if (Damage != 0) 
+                { 
+                    target.TakeDamage(this, Damage, false);
+                }
             }
 
-            if(CardEffect == effect.spawnToken)
+            cardAction.Invoke(cardEffect);
+
+            if (CardEffect == effect.spawnToken)
             { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard("Kitten", location.inPlay));
             }
@@ -199,6 +211,7 @@ public class MinionParent : NewVirtualCardParent
     {
         Health -= damage;
         UnityObject.GetComponent<CardClickHandler>().PopUpDamageText(damage);
+        UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
 
         if (Health <= 0)
         {
@@ -250,6 +263,8 @@ public class MinionParent : NewVirtualCardParent
             attacker.TakeDamage(this, thornsDamage, true);
         }
 
+        UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
+
         if (Health <= 0) //if this minion has died
         {
             if (attacker.CardEffect == effect.overkill)
@@ -293,6 +308,7 @@ public class MinionParent : NewVirtualCardParent
     /// </summary>
     public void Death()
     {
+        cardDeath.Invoke(Faction);
         isDead = true;
         if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo && Networking.CurrentState != state.paused)
         {
@@ -316,6 +332,7 @@ public class MinionParent : NewVirtualCardParent
         }
         CardLocation = location.discard;
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
+        SFXManager.Instance.UnregisterCard(this);
     }
 
     /// <summary>
@@ -332,7 +349,7 @@ public class MinionParent : NewVirtualCardParent
             {
                 return;
             }
-
+            cardAction.Invoke(cardEffect);
             //hits every minion inPlay
             for (int i = targetList.Count - 1; i >= 0; i--)
             {
@@ -377,5 +394,10 @@ public class MinionParent : NewVirtualCardParent
         }
 
         return false;
+    }
+
+    public void ForceActionSFX()
+    {
+        cardAction.Invoke(cardEffect);
     }
 }
