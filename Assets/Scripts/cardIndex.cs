@@ -534,6 +534,7 @@ namespace cardIndex
                         case ("onplay"):
                             {
                                 if (rawDetails[3] == "Chef Cat") { _ability = MinionParent.effect.healOnPlay; }
+                                if (rawDetails[3] == "Mimic") { _ability = MinionParent.effect.mimic; }
                                 else
                                 {
 #if WARN_UNDEFINED
