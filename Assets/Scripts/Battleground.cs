@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Network;
 
-public class Battleground : MonoBehaviour, IPointerClickHandler
+public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Player p;
     [SerializeField] private GameObject cardProto;
@@ -33,25 +33,11 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         p.CommanderCard = commanderCard;
     }
 
-    private void Update()
-    {
-       if (timer >= 0.1f && changed)
-        {
-            GetComponent<SpriteRenderer>().sprite = mainSprite;
-            timer = 0;
-            changed = false;
-        }
-       else if (changed)
-        {
-            timer += Time.deltaTime;
-        }
-    }
-
     /// <summary>
     /// handles clicking a button to draw cards
     /// </summary>
     /// <param name="eventData">mouse click on button</param>
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
@@ -61,7 +47,7 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         {
             Debug.Log("Clicked deck: " + gameObject.name);
             if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
-            GetComponent<SpriteRenderer>().sprite = onClickSprite;
+            GetComponent<SpriteRenderer>().sprite = mainSprite;
             changed = true;
             DrawCardToHand();
         } 
@@ -69,6 +55,23 @@ public class Battleground : MonoBehaviour, IPointerClickHandler
         { 
             Debug.LogWarning("Drawing player 2's cards are not allowed.");
         }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        GetComponent<SpriteRenderer>().sprite = onClickSprite;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        Debug.Log("AAAAAAAA");
+        GetComponent<SpriteRenderer>().sprite = onClickSprite;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("BBBBBBBBBB");
+        GetComponent<SpriteRenderer>().sprite = mainSprite;
     }
 
     // network manager needs this, so i'm making it public for now.
