@@ -73,7 +73,7 @@ Alien	Minion	4	Body Snatchers	Lifelink 2	4	3	Lifelink	"They're the man in your m
 Alien	Minion	4	Mimic	Become a copy of the LAST minion played that is STILL ALIVE	X	X	ONPLAY	"Out here, you can't trust anyone. You don't know what lies beneath their skin..."		
 Alien	Minion	4	Living Planet	Hidden	3	6	Hidden	"For every world marked 'Do Not Land', there's at least one starship crew foolish enough to try..."		
 Alien	Minion	5	Slime	Split: ONDEATH spawn a pair minions with half health/damage and Split until 1/1	4	4	Split	"Best to cut this one into tiny little pieces..."		
-Alien	Minion	5	Collector	Lifelink 2	5	5	Lifelink			
+Alien	Minion	5	Blood Eater	Lifelink 2	5	5	Lifelink			
 Alien	Minion	5	Spectral Beings	Explode 5	6	4	Explode	"Invisible, intangible, unknown..."		
 Alien	Minion	6	Star Child	- 4 damage to target / - create 2 energy	7	4/2	TwoAttacks/energy	"When you wish upon a star: if your wish is strong enough, if you want it bad enough, sometimes the stars will hear you - and answer..."		
 Alien	Minion	6	Extraterrestrial Invader	NA	10	8	None	"Where there's one, there's thousands to come..."		
