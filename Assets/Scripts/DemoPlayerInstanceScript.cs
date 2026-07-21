@@ -7,6 +7,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
+        "Magic Cat",
         "Duplicate",
         "Clone",
         "Reptoid",
@@ -86,28 +87,7 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.owner, 0, 0, 4, "Solar Panels",
     NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
-            p.Deck.Add(cardIndex.Index.CreateCard("Barbed Wire", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new TwoAttackParent(4, 2, MinionParent.effect.gainEnergy, 6, 7, 0, "Star Child", NewVirtualCardParent.type.minion,
-                MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new MinionParent(3, 5, 2, "Brain Invaders", NewVirtualCardParent.type.minion, MinionParent.effect.spawnToken, NewVirtualCardParent.location.hand));
             p.Deck.Add(cardIndex.Index.CreateCard("Frozen Horror", NewVirtualCardParent.location.deck));
-
-            p.Deck.Add(cardIndex.Index.CreateCard("Alien Eggs", NewVirtualCardParent.location.deck));
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.damage, SpellParent.spellTarget.allEnemies, 2, 0, 3, "Nuclear Waste",
-                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-            
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.copy, SpellParent.spellTarget.any, 0, 0, 1, "copyTest",
-                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 1,
-                "I'm Sure That Wasn't Important", NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.enemyCards, 0, 0, 1,
-    "Abduction", NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.none, 0, 0, 5, "Cat Fusion",
-                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
-            p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 1, "2 Cats in a Trenchcoat",
-NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
 
             for (int i = 0; i < startingDeck.Length; i++)
             {
