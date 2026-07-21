@@ -480,6 +480,18 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.lifelink;
                                 break;
                             }
+                        case ("energy"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.gainEnergy;
+                                else _secondAbility = MinionParent.effect.gainEnergy;
+                                break;
+                            }
+                        case ("statsup"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.statsUp;
+                                else _secondAbility = MinionParent.effect.statsUp;
+                                break;
+                            }
                         case ("apoptosis"):
                             {
                                 if (j == 0)

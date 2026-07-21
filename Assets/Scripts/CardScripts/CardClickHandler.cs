@@ -85,6 +85,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                 if(freezeTimer >= timeToUnfreeze)
                 {
                     FindSpeed(minion.CardEffect);
+                    freezeTimer = 0;
                 }
                 else if (freezeTimer < timeToUnfreeze && !minion.CanAttack)
                 {
@@ -189,7 +190,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     currentSpeed = speed.frozen;
                     if (cardData is MinionParent)
                     {
-                        MinionParent minion = ( MinionParent)cardData;
+                        MinionParent minion = (MinionParent)cardData;
                         minion.CanAttack = false;
                     }
                     break;

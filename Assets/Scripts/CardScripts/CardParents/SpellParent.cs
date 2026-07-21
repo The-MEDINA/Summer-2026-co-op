@@ -337,6 +337,11 @@ public class SpellParent : NewVirtualCardParent
                                 target.AddEquipment(MinionParent.equipment.geneticEngineering);
                                 break;
                             }
+                        case "Hide":
+                            {
+                                target.IsHidden = true;
+                                break;
+                            }
 
                         default:
                             {
@@ -408,6 +413,13 @@ public class SpellParent : NewVirtualCardParent
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                                 target.TakeDamage(9999);
+                                break;
+                            }
+
+                        case "Lost in Space":
+                            {
+                                target.UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+                                target.UnityObject.GetComponent<CardUIManager>().AddProgress(5);
                                 break;
                             }
                     }

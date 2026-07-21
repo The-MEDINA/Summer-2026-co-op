@@ -61,11 +61,11 @@ All	Spell	5	No Thoughts, Head Empty	Revert all stat changes to a minion			Unique
 All	Spell	5	Barbed Wire	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
 All	Spell	6	Clone	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."	unique	inplay
 Cat	Commander	NA	Sergeant Zoomie	Gives 2 energy every 30 seconds				"Eight more laps around the coffee table and you'll have enough energy for a Tank Cat."		
-Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."		
+Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."												
 Alien	Minion	1	Digger	Hidden	1	1	Hidden	"[Diggers] are highly territorial, and despite their herbivore ways, are surprisingly aggressive, to a seemingly unnatural degree."		
 Alien	Minion	1	Reptoid	Apoptosis	1	1	Apoptosis	"Pretty sure the lizard people invented, like, sliced bread or something."		
 Alien	Minion	2	Slate Skate	Lifelink 1	1	1	Lifelink	"Slate Skates strike a careful balance; they must fly high enough that their prey is unable to notice them yet low enough that their predators do not either."		
-Alien	Minion	2	Uncanny Valley	Apoptosis	5	0	Apoptosis	"Is...is this someone's idea of a cat?"		
+Alien	Minion	2	Uncanny Valley	Apoptosis	5	1	Apoptosis	"Is...is this someone's idea of a cat?"		
 Alien	Minion	2	Muck Crab	Apoptosis	3	1	Apoptosis	"Mid-sized scavengers that live in mudpools and swamps; they consume the remains of other lifeforms that got lost beneath the sludge."		
 Alien	Minion	3	Brain Invaders	SpawnTokens 1 ONHIT / Sloth	5	2	SpawnTokens/Sloth	"Y'know what really gets under my skin?"		
 Alien	Minion	3	Frostback	Frozen	5	3	Frozen	"Frostbacks have evolved to live along frozen beaches and seas. Their cold-blooded innards are extremly fatty to keep them warm."		
@@ -75,13 +75,13 @@ Alien	Minion	4	Living Planet	Hidden	3	6	Hidden	"For every world marked 'Do Not L
 Alien	Minion	5	Slime	Split: ONDEATH spawn a pair minions with half health/damage and Split until 1/1	4	4	Split	"Best to cut this one into tiny little pieces..."		
 Alien	Minion	5	Collector	Lifelink 2	5	5	Lifelink			
 Alien	Minion	5	Spectral Beings	Explode 5	6	4	Explode	"Invisible, intangible, unknown..."		
-Alien	Minion	6	Star Child	- 4 damage to target / - create 2 energy	7	4/2	TwoAttacks	"When you wish upon a star: if your wish is strong enough, if you want it bad enough, sometimes the stars will hear you - and answer..."		
+Alien	Minion	6	Star Child	- 4 damage to target / - create 2 energy	7	4/2	TwoAttacks/energy	"When you wish upon a star: if your wish is strong enough, if you want it bad enough, sometimes the stars will hear you - and answer..."		
 Alien	Minion	6	Extraterrestrial Invader	NA	10	8	None	"Where there's one, there's thousands to come..."		
 Alien	Minion	7	Frozen Horror	Frozen / StatsUp: stat changes to this card are doubled - positive or negative	7	7	Frozen/StatsUp	"Some discoveries should remain undiscovered..."		
-All	Spell	1	Lost in Space	Freeze a single minion	0	0	ONPLAY	"Patience is a virtue. Sometimes all you can do is wait..."	unique	enemies
+All	Spell	1	Lost in Space	Freeze a single minion	0	0	Unique	"Patience is a virtue. Sometimes all you can do is wait..."	unique	enemies
 All	Spell	1	Decipher	Remove Hidden from target minion	0	0	Unique	"You ask the teacher when you're ever gonna use any of this and BOOM! Strange alien hieroglyphics, what now Bryce???"	unique	enemies
 All	Spell	2	Sabotage	Freeze a commander card	0	0	ONPLAY	"Moooooooom I need a new PC!"	unique	
-All	Spell	2	Hide	Give a minion Hidden	0	0	Equipment	"Whatever you do, don't lose track of it..."	equipment	none
+All	Spell	2	Hide	Give a minion Hidden	0	0	Equipment	"Whatever you do, don't lose track of it..."	equipment	allies
 All	Spell	2	Repair Drone	Heal player for 5 health	0	5	Heal	"Built to fix. Live to serve."	heal	owner
 All	Spell	3	Nuclear Waste	Deal 2 damage to all opposing minions	0	2	Damage	"Top tier advice: 'DO NOT TOUCH!'"	damage	allenemies
 All	Spell	3	Undeniable Proof	Remove Hidden from all enemy minions	0	0	Unique	"It's all so clear now... IT WAS ALIENS THAT CAUSED THE FALL OF THE ROMAN EMPIRE! OF COURSE!"	unique	allenemies
