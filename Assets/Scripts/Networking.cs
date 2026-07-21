@@ -374,12 +374,46 @@ namespace Network
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
+            bool foundPeer = false;
             CurrentState = state.searching;
-#if DEBUG_MODE
-            Debug.Log("Server started, waiting to accept client.");
-#endif
+
             // wait for a client
-            client = await server.AcceptTcpClientAsync();
+            List<Task> peerTask = new List<Task>();
+            peerTask.Add(Task.Run(async () =>
+            {
+#if DEBUG_MODE
+                Debug.Log("Server started, waiting to accept client.");
+#endif
+                // Search for client for 60 seconds
+                Task<TcpClient> peerFound = server.AcceptTcpClientAsync();
+
+                await Task.WhenAny(peerFound, Task.Delay(TimeSpan.FromSeconds(15)));
+
+                // exit if no peer was found.
+                if (!peerFound.IsCompleted)
+                {
+#if DEBUG_MODE
+                    Debug.LogWarning($"No peer found in 60 seconds.");
+#endif
+                }
+                else if (peerFound.IsCompleted)
+                {
+                    foundPeer = true;
+                    client = peerFound.Result;
+                }
+            }));
+
+            // wait for the task to finish.
+            await Task.WhenAll(peerTask);
+
+            if (!foundPeer)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"No successful connection, closing connection.");
+#endif
+                CloseConnection();
+                return;
+            }
 
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
