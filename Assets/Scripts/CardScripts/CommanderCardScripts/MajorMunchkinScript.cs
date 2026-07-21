@@ -62,7 +62,7 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
         {
             // this should really be its own packet and not sendCardAdd.
             // this should work for now though. - Dave
-            Networking.SendCardAdd(cardIndex.Index.CreateCard("Kitten", NewVirtualCardParent.location.inPlay), NewVirtualCardParent.location.inPlay);
+            Networking.SendCommanderAbility(0);
             Networking.SendCardArray(bg.P.InPlay, NewVirtualCardParent.location.inPlay);
         }
         canAttack = false;

@@ -92,6 +92,10 @@ namespace Network
      *  --- REQUEST: ---
      * byte 1 holds the enum of the packet that's being requested.
      * byte 2 holds any overrides or extra info. For a CardArray, that means 0 = deck, 1 = hand, 2 = inPlay.
+     * 
+     * --- COMMANDERABILITY: ---
+     * byte 1 holds the number of arguments to follow for this commander's ability. (Currently there are none)
+     * bytes 2 - 1023 are empty so we can use it later to store more info.
      */
     public enum packetType
     {
@@ -105,7 +109,8 @@ namespace Network
         cardDeath,
         pause_unpause,
         request,
-        loadout
+        loadout,
+        commanderAbility
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -167,6 +172,7 @@ namespace Network
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
         private static string requestP2Commander = "";
+        private static bool requestCommanderAbility = false;
 
         /// <summary>
         /// delegates to set up events.
@@ -987,6 +993,18 @@ namespace Network
             }
             return packet;
         }
+
+        /// <summary>
+        /// Encode a commander ability packet to send to a peer.
+        /// </summary>
+        /// <param name="argCount">number of extra arguments needed.</param>
+        /// <returns>a byte[1024] packet</returns>
+        private static byte[] EncodePacket(int argCount)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.commanderAbility;
+            return packet;
+        }
         #endregion
 
         /// <summary>
@@ -1330,7 +1348,7 @@ namespace Network
                     else CurrentState = state.connected;
                     break;
                 }
-                case ((byte)packetType.request):
+                case ((byte) packetType.request):
                     {
 #if DEBUG_MODE
                         Debug.Log("Found request");
@@ -1366,7 +1384,7 @@ namespace Network
                         }
                         break;
                     }
-                case ((byte)packetType.loadout):
+                case ((byte) packetType.loadout):
                 {
 #if DEBUG_MODE
                     Debug.Log("found loadout packet");
@@ -1401,6 +1419,11 @@ namespace Network
                     p2InitialDeck = deck;
                     break;
                 }
+                case ((byte)packetType.commanderAbility):
+                    {
+                        requestCommanderAbility = true;
+                        break;
+                    }
                 default:
                 {
                     // ONLY throw exceptions if there is not an active connection.
@@ -1582,11 +1605,12 @@ namespace Network
                 p2Battleground.DrawCardToHand();
                 Networking.requestCardInstantiation = -1;
             }
-            // create token creatures.
-            else if (Networking.requestCardInstantiation == cardIndex.Index.GetDetails("Kitten").nameIndexPosition)
+
+            // commander card ability.
+            if (requestCommanderAbility)
             {
                 playerTwo.CommanderCard.PerformAbility();
-                Networking.requestCardInstantiation = -1;
+                requestCommanderAbility = false;
             }
 
             // move to battleground.
@@ -1613,6 +1637,7 @@ namespace Network
                 // restore player 1's selection if needed.
                 if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
+
             // minion attacks player.
             else if (requestAttack[0] as MinionParent != null && requestPlayer != null)
             {                
@@ -1630,6 +1655,7 @@ namespace Network
                 // restore player 1's selection if needed.
                 if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
             }
+
             // spell action.
             else if (requestAttack[0] as SpellParent != null)
             {
@@ -1689,6 +1715,7 @@ namespace Network
                     requestKill[i] = -1;
                 }
             }
+
             // inPlay cards.
             if (requestInplayCheck)
             {
@@ -1761,6 +1788,7 @@ namespace Network
                 }
                 requestInplayCheck = false;
             }
+
             // hand cards.
             if (requestArray != null && (requestArray[0] == 1 || requestArray[0] == 2))
             {
@@ -1815,6 +1843,7 @@ namespace Network
                 CurrentState = state.connected;
                 SendPauseUnpause(false);
             }
+
             // Loadout. (Tracked by p2's commander)
             if (requestP2Commander != "")
             {
@@ -2128,6 +2157,28 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to send loadout while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer your commander activated their ability.
+        /// </summary>
+        /// <param name="argCount">Any extra args for this commander's ability.</param>
+        public static void SendCommanderAbility(int argCount)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode commander ability packet");
+#endif
+            byte[] packet = EncodePacket(argCount);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send commander ability while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }
