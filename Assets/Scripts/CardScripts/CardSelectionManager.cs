@@ -615,7 +615,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
 
-        if (targetCard.OwnerPlayer.IsPlayerTwo && attacker.Target == SpellParent.spellTarget.allyCards)
+        if (targetCard.OwnerPlayer != owner && attacker.Target == SpellParent.spellTarget.allyCards)
         {
             Debug.Log("You cannot play spell targetting allies on enemies.");
             ClearSelection();
