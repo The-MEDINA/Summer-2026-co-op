@@ -422,6 +422,21 @@ public class SpellParent : NewVirtualCardParent
                                 target.UnityObject.GetComponent<CardUIManager>().AddProgress(5);
                                 break;
                             }
+
+                        case "Unknown Virus":
+                            {
+                                List<NewVirtualCardParent> inPlay = target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay;
+                                for (int i = 0; i < inPlay.Count; i++)
+                                {
+                                    MinionParent minion = (MinionParent)inPlay[i];
+                                    if (minion.CardEffect == MinionParent.effect.guard)
+                                    {
+                                        minion.CardEffect = MinionParent.effect.none;
+                                    }
+                                    minion.HasGuard = false;
+                                }
+                                break;
+                            }
                     }
                     break;
                 }
