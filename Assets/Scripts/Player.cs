@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 
     public float EnergyTimer { get { return timer; } }
     public float TimeForEnergy { get { return timeForEnergy; } set { timeForEnergy = value; } }
+    public int TimesWhereEnergyWasNotNormal { get { return timesWhereEnergyWasNotNormal; } set { timesWhereEnergyWasNotNormal = value; } }
     public float EnergyTimerRemaining { get { return Mathf.Max(0f, timeForEnergy - timer); } }
 
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
@@ -83,12 +84,13 @@ public class Player : MonoBehaviour
             // if (!isPlayerTwo) 
                 timer = 0f;
 
-            if(TimeForEnergy != startingTimeForEnergy)
+            Debug.Log(timesWhereEnergyWasNotNormal);
+            if(TimeForEnergy != 5f)
             {
                 timesWhereEnergyWasNotNormal++;
                 if(timesWhereEnergyWasNotNormal >= 5)
                 {
-                    TimeForEnergy = startingTimeForEnergy;
+                    TimeForEnergy = 5f;
                     timesWhereEnergyWasNotNormal = 0;
                 }
             }

@@ -116,9 +116,13 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
-                        case "Solar Panels"://refresh bug when stacking multiple
+                        case "Solar Panels":
                             {
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy = 2.5f;
+                                if(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimesWhereEnergyWasNotNormal > 0)
+                                {
+                                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimesWhereEnergyWasNotNormal -= 5;
+                                }
                                 break;
                             }
 
