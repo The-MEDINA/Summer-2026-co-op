@@ -31,6 +31,7 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
         if (overrideExamine)
         {
             examining = false;
+            applyRotation = false;
         }
         if (examining)
         {

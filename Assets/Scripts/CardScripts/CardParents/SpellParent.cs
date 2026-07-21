@@ -147,6 +147,24 @@ public class SpellParent : NewVirtualCardParent
                                     0, total, total, "Tiger the Cat", type.token, MinionParent.effect.none, location.inPlay));
                                 break;
                             }
+
+                        case "Parasite":
+                            {
+                                Player player = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer;
+                                Player opponent = null;
+                                if (player.IsPlayerTwo)
+                                {
+                                    opponent = CardSelectionManager.Instance.Player1;
+                                }
+                                else
+                                {
+                                    opponent = CardSelectionManager.Instance.Player2;
+                                }
+                                int energyStolen = (opponent.Energy > 3)? 3 : opponent.Energy;
+                                player.Energy += energyStolen;
+                                opponent.Energy -= energyStolen;
+                                break;
+                            }
                     }
                     break;
                 }
@@ -342,6 +360,26 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
+                        case "Hide":
+                            {
+                                target.IsHidden = true;
+                                target.AddEquipment(MinionParent.equipment.hide);
+                                break;
+                            }
+
+                        case "Cover-Up":
+                            {
+                                List<NewVirtualCardParent> inPlay = target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay;
+                                for (int i = 0; i < inPlay.Count; i++)
+                                {
+                                    MinionParent minion = (MinionParent)inPlay[i];
+                                    minion.IsHidden = true;
+                                    minion.AddEquipment(MinionParent.equipment.coverup);
+                                    minion.UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
+                                }
+                                break;
+                            }
+
                         default:
                             {
                                 break;
@@ -393,12 +431,6 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
-                        case "Hide":
-                            {
-                                target.IsHidden = true;
-                                break;
-                            }
-
                         case "I'm Sure That Wasn't Important":
                             {
                                 target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
@@ -412,6 +444,28 @@ public class SpellParent : NewVirtualCardParent
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(target.CardName, location.deck));
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                                 target.TakeDamage(9999);
+                                break;
+                            }
+
+                        case "Lost in Space":
+                            {
+                                target.UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
+                                target.UnityObject.GetComponent<CardUIManager>().AddProgress(5);
+                                break;
+                            }
+
+                        case "Unknown Virus":
+                            {
+                                List<NewVirtualCardParent> inPlay = target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay;
+                                for (int i = 0; i < inPlay.Count; i++)
+                                {
+                                    MinionParent minion = (MinionParent)inPlay[i];
+                                    if (minion.CardEffect == MinionParent.effect.guard)
+                                    {
+                                        minion.CardEffect = MinionParent.effect.none;
+                                    }
+                                    minion.HasGuard = false;
+                                }
                                 break;
                             }
                     }

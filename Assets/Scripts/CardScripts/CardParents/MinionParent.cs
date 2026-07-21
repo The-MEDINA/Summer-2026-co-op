@@ -44,7 +44,9 @@ public class MinionParent : NewVirtualCardParent
         hex,
         catnap,
         distraction,
-        geneticEngineering
+        geneticEngineering,
+        hide,
+        coverup
     }
 
     private int startingHealth;
@@ -129,7 +131,7 @@ public class MinionParent : NewVirtualCardParent
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
-        if (cardEffect == effect.statsUp) { HasStatsUp = true; }
+        if (cardEffect == effect.statsUp || cardDetails.secondAbility == effect.statsUp) { HasStatsUp = true; }
     }
 
     /// <summary>

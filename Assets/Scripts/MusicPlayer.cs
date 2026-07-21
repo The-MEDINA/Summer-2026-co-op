@@ -184,8 +184,8 @@ public class MusicPlayer : MonoBehaviour
     private void StartMusic()
     {
         deltaVolume = volume / transitionTime;
-        musicPlayer1.volume = volume;
-        musicPlayer2.volume = volume;
+        if (musicPlayer1 != null) musicPlayer1.volume = volume;
+        if (musicPlayer2 != null) musicPlayer2.volume = volume;
         if (loopx2 != null) musicPlayer2.clip = loopx2;
         else current = state.noLoop;
 

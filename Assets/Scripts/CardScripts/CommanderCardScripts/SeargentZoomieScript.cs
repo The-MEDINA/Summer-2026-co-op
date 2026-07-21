@@ -54,7 +54,12 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
 
         //implement energy
         bg.P.Energy += 2;
-       
+
+        if (!bg.P.IsPlayerTwo)
+        {
+            Networking.SendCommanderAbility(0);
+        }
+
         canAttack = false;
     }
 }

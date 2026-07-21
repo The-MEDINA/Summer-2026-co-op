@@ -474,6 +474,24 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.frozen;
                                 break;
                             }
+                        case ("lifelink"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.lifelink;
+                                else _secondAbility = MinionParent.effect.lifelink;
+                                break;
+                            }
+                        case ("energy"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.gainEnergy;
+                                else _secondAbility = MinionParent.effect.gainEnergy;
+                                break;
+                            }
+                        case ("statsup"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.statsUp;
+                                else _secondAbility = MinionParent.effect.statsUp;
+                                break;
+                            }
                         case ("apoptosis"):
                             {
                                 if (j == 0)
@@ -613,6 +631,11 @@ namespace cardIndex
                         case ("none"):
                             {
                                 _spellTarget = SpellParent.spellTarget.none;
+                                break;
+                            }
+                        case ("opponent"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.opponent;
                                 break;
                             }
                         default:

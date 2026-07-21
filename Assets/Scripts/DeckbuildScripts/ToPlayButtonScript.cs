@@ -1,12 +1,14 @@
 using UnityEngine;
 using Network;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private SpriteRenderer color;
+    [SerializeField] private Image buttonColor;
 
     private void Start()
     {
@@ -42,7 +44,8 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
             {
                 Networking.SendLoadout(DeckInstanceDeckbuilderScript.instance.Deck, DeckInstanceDeckbuilderScript.instance.CommanderInstance);
                 DeckInstanceDeckbuilderScript.instance.SentLoadout = true;
-                color.color = Color.green;
+                if (color != null) color.color = Color.green;
+                if (buttonColor != null) buttonColor.color = Color.green;
             }
         }
     }
