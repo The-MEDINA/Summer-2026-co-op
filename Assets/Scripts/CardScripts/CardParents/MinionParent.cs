@@ -43,7 +43,8 @@ public class MinionParent : NewVirtualCardParent
         hex,
         catnap,
         distraction,
-        geneticEngineering
+        geneticEngineering,
+        hide
     }
 
     private int startingHealth;

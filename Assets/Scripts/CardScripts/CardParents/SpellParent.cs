@@ -143,6 +143,24 @@ public class SpellParent : NewVirtualCardParent
                                     0, total, total, "Tiger the Cat", type.token, MinionParent.effect.none, location.inPlay));
                                 break;
                             }
+
+                        case "Parasite":
+                            {
+                                Player player = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer;
+                                Player opponent = null;
+                                if (player.IsPlayerTwo)
+                                {
+                                    opponent = CardSelectionManager.Instance.Player1;
+                                }
+                                else
+                                {
+                                    opponent = CardSelectionManager.Instance.Player2;
+                                }
+                                int energyStolen = (opponent.Energy > 3)? 3 : opponent.Energy;
+                                player.Energy += energyStolen;
+                                opponent.Energy -= energyStolen;
+                                break;
+                            }
                     }
                     break;
                 }
@@ -337,9 +355,11 @@ public class SpellParent : NewVirtualCardParent
                                 target.AddEquipment(MinionParent.equipment.geneticEngineering);
                                 break;
                             }
+
                         case "Hide":
                             {
                                 target.IsHidden = true;
+                                target.AddEquipment(MinionParent.equipment.hide);
                                 break;
                             }
 
@@ -391,12 +411,6 @@ public class SpellParent : NewVirtualCardParent
                         case "Decipher":
                             {
                                 target.IsHidden = false;
-                                break;
-                            }
-
-                        case "Hide":
-                            {
-                                target.IsHidden = true;
                                 break;
                             }
 

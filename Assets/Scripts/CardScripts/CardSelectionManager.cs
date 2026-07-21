@@ -36,6 +36,9 @@ public class CardSelectionManager : MonoBehaviour
         set { selectedCardObject = value; }
     }
 
+    public Player Player1 { get { return player1; } }
+    public Player Player2 { get { return player2; } }
+
     public GameObject Player2CommanderSquare { get { return player2CommanderSquare; } }
     public bool IsLocalTesting { get { return isLocalTesting; } }
 
@@ -117,7 +120,7 @@ public class CardSelectionManager : MonoBehaviour
             {
                 SpellParent spell = (SpellParent)selectedCardObject.CardData;
 
-                if (spell.Target != SpellParent.spellTarget.none && spell.Target != SpellParent.spellTarget.owner)
+                if (spell.Target != SpellParent.spellTarget.none && (spell.Target != SpellParent.spellTarget.owner && spell.Target != SpellParent.spellTarget.opponent))
                 {
                     TrySpellTarget(clickedCard);
                 }
@@ -687,7 +690,7 @@ public class CardSelectionManager : MonoBehaviour
         SpellParent attacker = selectedCardObject.CardData as SpellParent;
         Player owner = selectedCardObject.OwnerPlayer;
 
-        if (attacker == null || (attacker.Target != SpellParent.spellTarget.none && attacker.Target != SpellParent.spellTarget.owner))
+        if (attacker == null || (attacker.Target != SpellParent.spellTarget.none && (attacker.Target != SpellParent.spellTarget.owner && attacker.Target != SpellParent.spellTarget.opponent)))
         {
             Debug.Log("Only spell cards can be played this way.");
 
@@ -737,6 +740,7 @@ public class CardSelectionManager : MonoBehaviour
 
         ClearSelection();
     }
+
     public void TryAttackPlayer(bool wasSecondAttack)
     {
         // check that card exists.
@@ -888,6 +892,7 @@ public class CardSelectionManager : MonoBehaviour
 
         ClearSelection();
     }
+
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
         if (selectedCardObject == null || owner == null)
@@ -925,6 +930,7 @@ public class CardSelectionManager : MonoBehaviour
             uiManager.RefreshCardUI();
         }
     }
+
     public void AttackOpposingTeamButton()
     {
         if (selectedCardObject == null || selectedCardObject.CardData == null)
@@ -968,24 +974,6 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         TryAttackPlayer(false);
-    }
-
-    private CardClickHandler FindFirstVisibleCardForPlayer(Player targetPlayer)
-    {
-        CardClickHandler[] allCards = FindObjectsByType<CardClickHandler>(FindObjectsSortMode.None);
-
-        for (int i = 0; i < allCards.Length; i++)
-        {
-            if (allCards[i].OwnerPlayer == targetPlayer &&
-                allCards[i].CardData != null &&
-                allCards[i].CardData.CardLocation == NewVirtualCardParent.location.inPlay &&
-                allCards[i].gameObject.activeInHierarchy)
-            {
-                return allCards[i];
-            }
-        }
-
-        return null;
     }
 
     public void ClearSelection()

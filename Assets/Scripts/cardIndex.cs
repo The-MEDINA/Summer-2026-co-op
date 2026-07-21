@@ -633,6 +633,11 @@ namespace cardIndex
                                 _spellTarget = SpellParent.spellTarget.none;
                                 break;
                             }
+                        case ("opponent"):
+                            {
+                                _spellTarget = SpellParent.spellTarget.opponent;
+                                break;
+                            }
                         default:
                             {
 #if WARN_UNDEFINED
