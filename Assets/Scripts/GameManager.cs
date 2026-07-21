@@ -1,3 +1,4 @@
+using Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -86,6 +87,10 @@ public class GameManager : MonoBehaviour
 
     public void ReturnToTitleScreen()
     {
+        if (Networking.CurrentState == state.connected)
+        {
+            Networking.CloseConnection();
+        }
         Time.timeScale = 1f;
         SceneManager.LoadScene(titleSceneName);
     }
