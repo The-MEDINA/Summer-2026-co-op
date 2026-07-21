@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour
     {
         if (Networking.CurrentState == state.connected)
         {
+            Networking.SendSceneSwitch("Titlescreen");
             Networking.CloseConnection();
         }
         Time.timeScale = 1f;
