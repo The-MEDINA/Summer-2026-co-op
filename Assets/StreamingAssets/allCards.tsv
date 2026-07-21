@@ -91,6 +91,6 @@ All	Spell	5	Parasite	Steal 3 energy from your opponent	0	0	Unique	"'7.8/10: Too 
 All	Spell	5	Solar Panels	Your next five energy is gained in half the time	0	5	Unique	"Heat means energy... and life..."	unique	none
 All	Spell	6	Unknown Virus	Remove Guard from all enemy minions	0	0	Unique	"No vaccine, no cure, no hope..."	unique	allenemies
 All	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment	"The future is now, old man!"	equipment	allies
-All	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	GiveAbility	"Nothing to see here."	equipment	allies
+All	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	Equipment	"Nothing to see here."	equipment	allies
 Alien	Commander	NA	Hivemind	Give one of your minions +2/+1	NA	NA	NA	"One voice, one will, one goal."		
 Alien	Token	NA	Grey	NA	2	2	None	"What number kind are we on at this point?"		

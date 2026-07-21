@@ -363,6 +363,19 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
+                        case "Cover-Up":
+                            {
+                                List<NewVirtualCardParent> inPlay = target.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.InPlay;
+                                for (int i = 0; i < inPlay.Count; i++)
+                                {
+                                    MinionParent minion = (MinionParent)inPlay[i];
+                                    minion.IsHidden = true;
+                                    minion.AddEquipment(MinionParent.equipment.coverup);
+                                    minion.UnityObject.GetComponent<CardUIManager>().RefreshCardUI();
+                                }
+                                break;
+                            }
+
                         default:
                             {
                                 break;
