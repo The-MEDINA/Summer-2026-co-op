@@ -1775,6 +1775,7 @@ namespace Network
                                 killThis.IsDead = true;
                                 killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
                                 CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
+                                killThis.UnityObject.SetActive(false);
                             }
                             for (int j = 0; j < previousInplay[i].Count; j++)
                             {

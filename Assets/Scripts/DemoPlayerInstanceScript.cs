@@ -52,7 +52,13 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         DeckInstanceDeckbuilderScript dBDeck = FindAnyObjectByType<DeckInstanceDeckbuilderScript>();
         if (dBDeck != null && !p.IsPlayerTwo)
         {
-            p.Deck = new List<NewVirtualCardParent>(dBDeck.Deck);
+            // DON'T COPY THE CARDS DIRECTLY, USE THEIR NAMES TO MAKE NEW ONES
+            // This should avoid any cases where the cards from the deck are modified (for some reason), and those modifications are brought into the next game.
+            p.Deck = new List<NewVirtualCardParent>();
+            for (int i = 0; i < dBDeck.Deck.Count; i++)
+            {
+                p.Deck.Add(cardIndex.Index.CreateCard(dBDeck.Deck[i].CardName, NewVirtualCardParent.location.deck));
+            }
         }
         else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
         {
@@ -60,7 +66,12 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         }
         else if (Network.Networking.P2InitialDeck.Count > 0 && p.IsPlayerTwo)
         {
-            p.Deck = new List<NewVirtualCardParent>(Network.Networking.P2InitialDeck);
+            // (Same here as in those two comments above)
+            p.Deck = new List<NewVirtualCardParent>();
+            for (int i = 0; i < dBDeck.Deck.Count; i++)
+            {
+                p.Deck.Add(cardIndex.Index.CreateCard(Network.Networking.P2InitialDeck[i].CardName, NewVirtualCardParent.location.deck));
+            }
         }
         else
         {
