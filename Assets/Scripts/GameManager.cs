@@ -83,6 +83,10 @@ public class GameManager : MonoBehaviour
 
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
+        if (Networking.CurrentState == state.connected)
+        {
+            Networking.SendSceneSwitch(currentScene.name);
+        }
     }
 
     public void ReturnToTitleScreen()
