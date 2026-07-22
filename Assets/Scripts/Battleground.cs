@@ -124,7 +124,7 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         p.Deck.RemoveAt(0);
 
         handUIManager.AddCardToHand(newCard);
-        SFXManager.Instance.RegisterCard(drawnCard);
+        CardSelectionManager.Instance.SfxManager.RegisterCard(drawnCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
     }
 
@@ -152,7 +152,7 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
         GameObject newCard = Instantiate(cardProto);
         cardList.Add(newCard);
-        SFXManager.Instance.RegisterCard(spawnCard);
+        CardSelectionManager.Instance.SfxManager.RegisterCard(spawnCard);
         CardClickHandler clickHandler = newCard.GetComponent<CardClickHandler>();
 
         if (clickHandler != null)

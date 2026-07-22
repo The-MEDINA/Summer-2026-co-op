@@ -1938,16 +1938,7 @@ namespace Network
         {
             try
             {
-                server.Stop();
-            }
-            catch (Exception e)
-            {
-#if DEBUG_MODE
-                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
-#endif
-            }
-            try
-            {
+                client.Client.Shutdown(SocketShutdown.Both);
                 client.Dispose();
             }
             catch (Exception e)
@@ -1958,8 +1949,21 @@ namespace Network
             }
             try
             {
-                stream.Flush();
-                stream.Close();
+                server.Stop();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
+#endif
+            }
+            try
+            {
+                if (stream != null)
+                {
+                    stream.Flush();
+                    stream.Close();
+                }
             }
             catch (Exception e)
             {

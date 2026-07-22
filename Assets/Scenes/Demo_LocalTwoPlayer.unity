@@ -3906,6 +3906,7 @@ MonoBehaviour:
   player2StartX: -5.75
   cardSpacing: 2
   isLocalTesting: 1
+  sfxManager: {fileID: 8816554660379747904}
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
@@ -8915,6 +8916,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+--- !u!114 &8816554660379747904 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7309966334694219058, guid: 793be114b668d5c45b66ace2d9fb8c54, type: 3}
+  m_PrefabInstance: {fileID: 8816554660379747903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de5a7932ab3af847acfbd73b1352738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SFXManager
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

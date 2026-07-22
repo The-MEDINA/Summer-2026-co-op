@@ -347,7 +347,7 @@ public class MinionParent : NewVirtualCardParent
         }
         CardLocation = location.discard;
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
-        SFXManager.Instance.UnregisterCard(this);
+        CardSelectionManager.Instance.SfxManager.UnregisterCard(this);
     }
 
     /// <summary>
