@@ -13,8 +13,6 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     [SerializeField] private Sprite mainSprite;
     [SerializeField] private Sprite onClickSprite;
-    private float timer = 0f;
-    private bool changed = false;
 
     public Player P { get { return p; } }
     public GameObject CardProto { get { return cardProto; } }
@@ -48,7 +46,6 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
             Debug.Log("Clicked deck: " + gameObject.name);
             if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
             GetComponent<SpriteRenderer>().sprite = mainSprite;
-            changed = true;
             DrawCardToHand();
         } 
         else 
@@ -64,13 +61,11 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("AAAAAAAA");
         GetComponent<SpriteRenderer>().sprite = onClickSprite;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("BBBBBBBBBB");
         GetComponent<SpriteRenderer>().sprite = mainSprite;
     }
 
