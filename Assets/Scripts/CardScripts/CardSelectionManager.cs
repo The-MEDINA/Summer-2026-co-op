@@ -76,7 +76,7 @@ public class CardSelectionManager : MonoBehaviour
         if (Networking.P2CommanderName != "")
         {
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
-            Networking.P2CommanderName = "";
+            // Networking.P2CommanderName = "";
             if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
             { 
                 player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
