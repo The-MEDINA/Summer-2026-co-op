@@ -387,7 +387,7 @@ namespace Network
                 // Search for client for 60 seconds
                 Task<TcpClient> peerFound = server.AcceptTcpClientAsync();
 
-                await Task.WhenAny(peerFound, Task.Delay(TimeSpan.FromSeconds(15)));
+                await Task.WhenAny(peerFound, Task.Delay(TimeSpan.FromSeconds(60)));
 
                 // exit if no peer was found.
                 if (!peerFound.IsCompleted)

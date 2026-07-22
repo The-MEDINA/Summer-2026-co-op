@@ -199,7 +199,7 @@ public class MinionParent : NewVirtualCardParent
                 }
             }
 
-            cardAction.Invoke(cardEffect);
+            if (cardAction != null) { cardAction.Invoke(cardEffect); }
 
             if (CardEffect == effect.spawnToken)
             { //if this card has the ability to spawn tokens upon attack (i.e. Vampire Cat) it's resolved here
@@ -323,7 +323,7 @@ public class MinionParent : NewVirtualCardParent
     /// </summary>
     public void Death()
     {
-        cardDeath.Invoke(Faction);
+        if (cardDeath != null) { cardDeath.Invoke(Faction); }
         isDead = true;
         if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo && Networking.CurrentState != state.paused)
         {
@@ -364,7 +364,7 @@ public class MinionParent : NewVirtualCardParent
             {
                 return;
             }
-            cardAction.Invoke(cardEffect);
+            if (cardAction != null) { cardAction.Invoke(cardEffect); }
             //hits every minion inPlay
             for (int i = targetList.Count - 1; i >= 0; i--)
             {
@@ -413,6 +413,6 @@ public class MinionParent : NewVirtualCardParent
 
     public void ForceActionSFX()
     {
-        cardAction.Invoke(cardEffect);
+        if (cardAction != null) { cardAction.Invoke(cardEffect); }
     }
 }
