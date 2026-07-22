@@ -65,7 +65,7 @@ public class MinionParent : NewVirtualCardParent
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
     public bool HasGuard { get { return hasGuard; } set { hasGuard = value; } }
-    public bool IsDead { get { return isDead; } }
+    public bool IsDead { get { return isDead; } set { isDead = value; } }
     public effect CardEffect { get { return cardEffect; } set { cardEffect = value; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }

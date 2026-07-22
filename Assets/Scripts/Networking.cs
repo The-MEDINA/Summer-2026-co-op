@@ -1772,12 +1772,15 @@ namespace Network
                             while (playerTwo.InPlay.Count != 0)
                             {
                                 MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.Death();
+                                killThis.IsDead = true;
+                                killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
+                                CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
                             }
                             for (int j = 0; j < previousInplay[i].Count; j++)
                             {
                                 p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
                             }
+                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
                             foundSolution = true;
                             break;
                         }

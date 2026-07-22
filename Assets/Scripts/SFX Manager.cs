@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class SFXManager : MonoBehaviour
@@ -153,7 +154,24 @@ public class SFXManager : MonoBehaviour
     /// <param name="volume">Volume to play the sound at.</param>
     private void SetChannel(AudioClip sound, float volume)
     {
-        AudioSource[] existingChannels = GetComponents<AudioSource>();
+        AudioSource[] existingChannels = null;
+        try
+        {
+            if (this.gameObject != null)
+            {
+                existingChannels = this.gameObject.GetComponents<AudioSource>();
+            }
+            else
+            {
+                Debug.LogWarning("The game object for this script is null! Sound effect will not play.");
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Unhandled exception when trying to set channel for sound effect! {e.Message}");
+            return;
+        }
         for (int i = 0; i < existingChannels.Length; i++)
         {
             if (!existingChannels[i].isPlaying)

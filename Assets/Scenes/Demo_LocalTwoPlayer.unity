@@ -3905,7 +3905,7 @@ MonoBehaviour:
   player1StartX: -5.75
   player2StartX: -5.75
   cardSpacing: 2
-  isLocalTesting: 0
+  isLocalTesting: 1
   sfxManager: {fileID: 8816554660379747904}
 --- !u!4 &900427426
 Transform:
