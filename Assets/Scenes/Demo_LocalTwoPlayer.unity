@@ -851,11 +851,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79e41cb2c8fd94658b020024baa190ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  health: 50
+  health: 100
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 5
-  startingTimeForEnergy: 5
+  timeForEnergy: 3
+  startingTimeForEnergy: 3
   isPlayerTwo: 1
   moveCooldownTime: 1.5
 --- !u!4 &143358788
@@ -1408,11 +1408,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79e41cb2c8fd94658b020024baa190ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  health: 50
+  health: 100
   maxEnergy: 10
   startingEnergy: 0
-  timeForEnergy: 5
-  startingTimeForEnergy: 5
+  timeForEnergy: 3
+  startingTimeForEnergy: 3
   isPlayerTwo: 0
   moveCooldownTime: 1.5
 --- !u!4 &427913136

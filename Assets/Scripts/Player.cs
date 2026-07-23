@@ -4,11 +4,11 @@ using Network;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int health = 50;
+    [SerializeField] private int health = 100;
     [SerializeField] private int maxEnergy = 10;
-    [SerializeField] private int startingEnergy = 10;
-    [SerializeField] private float timeForEnergy = 5f;
-    [SerializeField] private float startingTimeForEnergy = 5f;
+    [SerializeField] private int startingEnergy = 0;
+    [SerializeField] private float timeForEnergy = 3f;
+    [SerializeField] private float startingTimeForEnergy = 3f;
     [SerializeField] private bool isPlayerTwo = false;
     [SerializeField] private float moveCooldownTime = 1.5f;
 

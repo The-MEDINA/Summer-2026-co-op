@@ -118,7 +118,7 @@ public class SpellParent : NewVirtualCardParent
 
                         case "Solar Panels":
                             {
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy = 2.5f;
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimeForEnergy = 1.5f;
                                 if(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimesWhereEnergyWasNotNormal > 0)
                                 {
                                     UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.TimesWhereEnergyWasNotNormal -= 5;
