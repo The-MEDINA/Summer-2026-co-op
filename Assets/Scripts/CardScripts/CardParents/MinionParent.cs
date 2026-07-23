@@ -78,7 +78,7 @@ public class MinionParent : NewVirtualCardParent
     #region SFX_EVENTS
     public delegate void Action(effect cardEffect);
     public event Action cardAction;
-    public delegate void Dies(string faction);
+    public delegate void Dies(string faction, effect cardEffect);
     public event Dies cardDeath;
     #endregion
     /// <summary>
@@ -323,7 +323,7 @@ public class MinionParent : NewVirtualCardParent
     /// </summary>
     public void Death()
     {
-        if (cardDeath != null) { cardDeath.Invoke(Faction); }
+        if (cardDeath != null) { cardDeath.Invoke(Faction, cardEffect); }
         isDead = true;
         if (UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo && Networking.CurrentState != state.paused)
         {

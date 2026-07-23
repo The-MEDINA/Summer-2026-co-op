@@ -10,8 +10,10 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip death;
     [Header("Specifics")]
     [SerializeField] private AudioClip deathtouch;
+    [SerializeField] private AudioClip explode;
     [SerializeField] private AudioClip heal;
     [SerializeField] private AudioClip equipment;
+    [SerializeField] private AudioClip spawnTokens;
     #endregion
 
     public static SFXManager Instance;
@@ -109,11 +111,6 @@ public class SFXManager : MonoBehaviour
     {
         switch (cardEffect)
         {
-            case SpellParent.spellEffect.damage:
-            {
-                SetChannel(deathtouch, 0.25f);
-                break;
-            }
             case SpellParent.spellEffect.heal:
             {
                 SetChannel(heal, 1);
@@ -122,6 +119,11 @@ public class SFXManager : MonoBehaviour
             case SpellParent.spellEffect.equipment:
             {
                 SetChannel(equipment, 0.25f);
+                break;
+            }
+            case SpellParent.spellEffect.spawnTokens:
+            {
+                SetChannel(spawnTokens, 0.25f);
                 break;
             }
             default:
@@ -135,14 +137,33 @@ public class SFXManager : MonoBehaviour
     /// Play a sound on a card's death.
     /// </summary>
     /// <param name="faction">Faction of the card that died</param>
-    private void CardDeath(string faction)
+    private void CardDeath(string faction, MinionParent.effect cardEffect)
     {
-        switch (faction)
+        if (cardEffect != MinionParent.effect.none)
         {
-        default:
+            switch (cardEffect)
             {
-                SetChannel(death, 1f);
-                break;
+                case MinionParent.effect.explode:
+                    {
+                        SetChannel(explode, 0.25f);
+                        break;
+                    }
+                default:
+                    {
+                        SetChannel(death, 1f);
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            switch (faction)
+            {
+                default:
+                    {
+                        SetChannel(death, 1f);
+                        break;
+                    }
             }
         }
     }

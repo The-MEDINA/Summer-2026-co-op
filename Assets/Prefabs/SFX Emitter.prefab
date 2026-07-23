@@ -47,5 +47,7 @@ MonoBehaviour:
   hit: {fileID: 8300000, guid: 29f15ade088ad95419a1f6bc33b928c1, type: 3}
   death: {fileID: 8300000, guid: 4dd8b77d26cf4044d839dba2d2052cb1, type: 3}
   deathtouch: {fileID: 8300000, guid: f8a905eb6a0d6a649927ccbde759619b, type: 3}
+  explode: {fileID: 8300000, guid: 79d4e150453d1d44eae55a7cb6e84423, type: 3}
   heal: {fileID: 8300000, guid: 9955b54856cdd4145910cceb8daa4dd2, type: 3}
   equipment: {fileID: 8300000, guid: d4b9cf0ee6f151148b1bbd9840a6f9a4, type: 3}
+  spawnTokens: {fileID: 8300000, guid: 7ca996b32eb42ca4aaaa5de04b8635ce, type: 3}
