@@ -121,6 +121,12 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         handUIManager.AddCardToHand(newCard);
         SFXManager.Instance.RegisterCard(drawnCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
+
+        if (drawnCard is MinionParent)
+        {
+            MinionParent mp = (MinionParent)drawnCard;
+            mp.IsDead = false;
+        }
     }
 
     public void SpawnCardToInPlay(NewVirtualCardParent spawnCard)

@@ -94,12 +94,9 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
                 p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
             }*/
 
+            p.Deck.Add(cardIndex.Index.CreateCard("Frozen Horror", NewVirtualCardParent.location.deck));
+
             p.Deck.Add(cardIndex.Index.CreateCard("Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));

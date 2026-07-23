@@ -73,7 +73,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
             if(timer > timeToAttack)
             {
-                Debug.Log(currentSpeed);
                 minion.CanAttack = true;
                 timer = 0f;
             }

@@ -76,7 +76,6 @@ public class Player : MonoBehaviour
             // if (!isPlayerTwo) 
                 timer = 0f;
 
-            Debug.Log(timesWhereEnergyWasNotNormal);
             if(TimeForEnergy != 5f)
             {
                 timesWhereEnergyWasNotNormal++;

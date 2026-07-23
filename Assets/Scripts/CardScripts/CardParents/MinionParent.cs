@@ -65,7 +65,7 @@ public class MinionParent : NewVirtualCardParent
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
     public bool HasGuard { get { return hasGuard; } set { hasGuard = value; } }
-    public bool IsDead { get { return isDead; } }
+    public bool IsDead { get { return isDead; } set { isDead = value; } }
     public effect CardEffect { get { return cardEffect; } set { cardEffect = value; } }
     public bool CanAttack { get { return canAttack; } set { canAttack = value; } }
     public CoordinateAbilityScript CoordinateAbility { get { return coordinateAbility; } set { coordinateAbility = value; }  }
@@ -154,6 +154,7 @@ public class MinionParent : NewVirtualCardParent
             UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
             UnityObject.GetComponent<CardClickHandler>().ResetTimer();
             UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
+            return;
         }
         if (CardEffect == effect.healOnPlay)
         {
@@ -172,6 +173,7 @@ public class MinionParent : NewVirtualCardParent
             TakeDamage(999);
             CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
         }
+        UnityObject.GetComponent<CardClickHandler>().ResetTimer();
     }
 
     /// <summary>
@@ -345,9 +347,10 @@ public class MinionParent : NewVirtualCardParent
             return; 
         }
         CardLocation = location.discard;
-        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
+        CanAttack = false;
         Health = cardIndex.Index.GetDetails(CardName).health;
-        SFXManager.Instance.UnregisterCard(this);
+        SFXManager.Instance.UnregisterCard(this);        
+        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
     }
 
     /// <summary>
