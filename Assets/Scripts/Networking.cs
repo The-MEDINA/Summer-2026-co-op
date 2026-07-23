@@ -1523,9 +1523,9 @@ namespace Network
                             health += packet[4];
                             requestPlayerStatus[1] = health;
                         }
-                        if (packet[4] != 255)
+                        if (packet[5] != 255)
                         {
-                            requestPlayerStatus[2] = packet[4];
+                            requestPlayerStatus[2] = packet[5];
                         }
                         break;
                     }

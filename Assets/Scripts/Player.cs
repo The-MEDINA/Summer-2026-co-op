@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
 
         if (!isPlayerTwo)
         {
-            Networking.SendPlayerStatus(this, true, true);
+            Networking.SendPlayerStatus(this, false, true);
         }
     }
 
