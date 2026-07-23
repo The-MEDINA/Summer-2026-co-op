@@ -121,8 +121,6 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         handUIManager.AddCardToHand(newCard);
         SFXManager.Instance.RegisterCard(drawnCard);
         Debug.Log(p.gameObject.name + " drew card: " + drawnCard.CardName);
-
-        if(p.Deck.Count == 0) { p.RefreshCardDeck(); }
     }
 
     public void SpawnCardToInPlay(NewVirtualCardParent spawnCard)

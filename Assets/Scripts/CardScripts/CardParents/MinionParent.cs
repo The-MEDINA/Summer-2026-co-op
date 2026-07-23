@@ -330,7 +330,6 @@ public class MinionParent : NewVirtualCardParent
             Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
         }
 
-        Debug.Log(StartingHealth);
         if (CardEffect == effect.split && StartingHealth / 2 > 0)
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, StartingHealth / 2,
@@ -347,6 +346,7 @@ public class MinionParent : NewVirtualCardParent
         }
         CardLocation = location.discard;
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
+        Health = cardIndex.Index.GetDetails(CardName).health;
         SFXManager.Instance.UnregisterCard(this);
     }
 

@@ -170,6 +170,7 @@ public class Player : MonoBehaviour
         }
 
         card.CardLocation = NewVirtualCardParent.location.discard;
+        RefreshCardDeck();
     }
 
     public void TakeDamage(int damage)
@@ -247,6 +248,7 @@ public class Player : MonoBehaviour
         for(int i = 0; i < Discard.Count; i++)
         {
             Deck.Add(Discard[i]);
+            Discard[i].CardLocation = NewVirtualCardParent.location.deck;
         }
         Discard.Clear();
     }
