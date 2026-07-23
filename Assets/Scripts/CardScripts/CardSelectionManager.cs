@@ -140,20 +140,28 @@ public class CardSelectionManager : MonoBehaviour
 
         if (selectedCardObject == clickedCard)
         {
-            if (clickedCard.CardData is MinionParent)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                ActivateCard(clickedCard);
-                return;
-            }
-
-            if (clickedCard.CardData is SpellParent)
-            {
-                TrySpellNoTarget();
-
-                if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+                if (clickedCard.CardData is MinionParent)
                 {
-                    Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                    ActivateCard(clickedCard);
+                    return;
                 }
+
+                if (clickedCard.CardData is SpellParent)
+                {
+                    TrySpellNoTarget();
+
+                    if (!clickedCard.OwnerPlayer.IsPlayerTwo)
+                    {
+                        Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
+                    }
+                }
+            }
+            else
+            {
+                ClearSelection();
+                return;
             }
         }
 
