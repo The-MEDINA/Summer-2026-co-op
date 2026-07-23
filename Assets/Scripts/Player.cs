@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
     public float TimeForEnergy { get { return timeForEnergy; } set { timeForEnergy = value; } }
     public int TimesWhereEnergyWasNotNormal { get { return timesWhereEnergyWasNotNormal; } set { timesWhereEnergyWasNotNormal = value; } }
     public float EnergyTimerRemaining { get { return Mathf.Max(0f, timeForEnergy - timer); } }
-
+    public float Timer { set { timer = value; } }
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
     public List<NewVirtualCardParent> InPlay { get { return inPlay; } set { inPlay = value; } }

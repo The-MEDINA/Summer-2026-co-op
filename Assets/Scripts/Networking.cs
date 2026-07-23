@@ -1990,6 +1990,7 @@ namespace Network
                 if (requestPlayerStatus[2] != -1)
                 {
                     targetPlayer.Energy = requestPlayerStatus[2];
+                    targetPlayer.Timer = 0f;
                 }
                 requestPlayerStatus[0] = -1;
                 requestPlayerStatus[1] = -1;
