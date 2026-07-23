@@ -39,11 +39,6 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             return;
         }
 
-        if (p.IsPlayerTwo)
-        {
-
-        }
-
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allyCards, 0, 0, 4, "No Thoughts, Head Empty",
         //NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
         //        p.Deck.Add(new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.enemyCards, 1, 0, 4, "Hex",

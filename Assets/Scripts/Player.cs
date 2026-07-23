@@ -66,6 +66,17 @@ public class Player : MonoBehaviour
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
+
+        // guys if you ever see these empty if statements in main yall can remove them
+        // They serve no purpose other than to make debugging easier - Dave
+        if (isPlayerTwo)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     private void GainEnergyOverTime()
@@ -133,6 +144,11 @@ public class Player : MonoBehaviour
         {
             Energy = maxEnergy;
         }
+
+        if (!isPlayerTwo)
+        {
+            Networking.SendPlayerStatus(this, true, true);
+        }
     }
 
     public void MoveCardToInPlay(NewVirtualCardParent card)
@@ -193,10 +209,14 @@ public class Player : MonoBehaviour
             Death();
         }
 
-        if (Health > 0 && hasThorns)//needs tested
+        if (Health > 0 && hasThorns)
         {
             minionAttacker.TakeDamage(1);
         }
+
+        // BOTH players should send their health when hit.
+        // This should avoid any desyncs where someone attacks the other player on their end, but the peer didn't see the attack.
+        Networking.SendPlayerStatus(this, true, false);
     }
 
     public void Death()
