@@ -7,7 +7,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        "Magic Cat",
+        /*"Magic Cat",
         "Duplicate",
         "Clone",
         "Reptoid",
@@ -24,7 +24,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Cave Cat",
         "The Mad Catter",
         "Pspspsps!",
-        "Curse"
+        "Curse"*/
     };
 
     private Player p;
@@ -76,7 +76,7 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             //p.Deck.Add(new TwoAttackParent(1, 1, MinionParent.effect.apoptosis, 1, 1, 1, "ApopTest", NewVirtualCardParent.type.minion,
             //MinionParent.effect.twoAttacks, NewVirtualCardParent.location.deck));
 
-            p.Deck.Add(new MinionParent(1, 1, 1, "Mimic", NewVirtualCardParent.type.minion, MinionParent.effect.mimic, NewVirtualCardParent.location.deck));
+            /*p.Deck.Add(new MinionParent(1, 1, 1, "Mimic", NewVirtualCardParent.type.minion, MinionParent.effect.mimic, NewVirtualCardParent.location.deck));
 
             p.Deck.Add(new SpellParent(SpellParent.spellEffect.unique, SpellParent.spellTarget.allEnemies, 0, 0, 4, "Unknown Virus",
                NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
@@ -92,7 +92,18 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             for (int i = 0; i < startingDeck.Length; i++)
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
-            }
+            }*/
+
+            p.Deck.Add(cardIndex.Index.CreateCard("Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
         }
 
         Debug.Log(gameObject.name + " deck loaded with " + p.Deck.Count + " cards.");

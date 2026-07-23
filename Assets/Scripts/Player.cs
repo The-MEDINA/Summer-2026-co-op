@@ -240,4 +240,14 @@ public class Player : MonoBehaviour
     }
 
     public void PlayerGainThorns() { hasThorns = true; }
+
+    public void RefreshCardDeck()
+    {
+        if (Discard.Count == 0) { return; }
+        for(int i = 0; i < Discard.Count; i++)
+        {
+            Deck.Add(Discard[i]);
+        }
+        Discard.Clear();
+    }
 }
