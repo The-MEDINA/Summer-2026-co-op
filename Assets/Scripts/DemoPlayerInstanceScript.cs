@@ -63,7 +63,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         {
             // (Same here as in those two comments above)
             p.Deck = new List<NewVirtualCardParent>();
-            for (int i = 0; i < dBDeck.Deck.Count; i++)
+            for (int i = 0; i < Network.Networking.P2InitialDeck.Count; i++)
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(Network.Networking.P2InitialDeck[i].CardName, NewVirtualCardParent.location.deck));
             }
