@@ -232,6 +232,18 @@ namespace cardIndex
                         }
                         break;
                     }
+
+                case ("Hivemind"):
+                    {
+                        obj.AddComponent<HivemindScript>();
+                        obj.GetComponent<HivemindScript>().Name = "Hivemind";
+                        if (battleground != null)
+                        {
+                            obj.GetComponent<HivemindScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<HivemindScript>();
+                        }
+                        break;
+                    }
                 // unimplemented commander card
                 default:
                     {
