@@ -34,6 +34,13 @@ public class GameManager : MonoBehaviour
                 "GameManager does not have a WinPanel assigned."
             );
         }
+
+        // listen for network changes when we're not in the 1 player scene
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "Demo_LocalTwoPlayer")
+        {
+            Networking.stateChange += CheckNetworkChange;
+        }
     }
 
     private void Update()
@@ -98,5 +105,18 @@ public class GameManager : MonoBehaviour
         }
         Time.timeScale = 1f;
         SceneManager.LoadScene(titleSceneName);
+    }
+
+    /// <summary>
+    /// Change to the titlescreen if a disconnect was detected midgame.
+    /// </summary>
+    /// <param name="state">State of the network manager.</param>
+    private void CheckNetworkChange(Network.state state)
+    {
+        if (state == state.disconnected)
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(titleSceneName);
+        }
     }
 }

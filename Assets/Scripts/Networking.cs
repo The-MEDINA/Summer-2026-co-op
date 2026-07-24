@@ -1573,8 +1573,8 @@ namespace Network
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
                     // wait for either the task to finish or for timeout.
-                    // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 1 minute.
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
+                    // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 10 seconds.
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
 
                     // close the connection on timeout.
                     if (!result.IsCompleted)
@@ -1625,7 +1625,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -1667,7 +1667,12 @@ namespace Network
                             if (!receivedPacket.IsCancellationRequested)
                             {
                                 byte[] keepalive = EncodePacket(packetType.keepAlive);
-                                await stream.WriteAsync(keepalive, 0, keepalive.Length);
+
+                                // Don't send the packet when resolving a desync.
+                                if (CurrentState != state.paused)
+                                {
+                                    await stream.WriteAsync(keepalive, 0, keepalive.Length);
+                                }
                             }
                         }
                         catch
