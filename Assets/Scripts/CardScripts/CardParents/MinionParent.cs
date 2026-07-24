@@ -46,7 +46,8 @@ public class MinionParent : NewVirtualCardParent
         distraction,
         geneticEngineering,
         hide,
-        coverup
+        coverup,
+        worms
     }
 
     private int startingHealth;
@@ -154,6 +155,7 @@ public class MinionParent : NewVirtualCardParent
             UnityObject.GetComponent<CardClickHandler>().SetSpeed(CardClickHandler.speed.frozen);
             UnityObject.GetComponent<CardClickHandler>().ResetTimer();
             UnityObject.GetComponent<CardUIManager>().AddProgress(5f);
+            return;
         }
         if (CardEffect == effect.healOnPlay)
         {
@@ -172,6 +174,7 @@ public class MinionParent : NewVirtualCardParent
             TakeDamage(999);
             CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
         }
+        UnityObject.GetComponent<CardClickHandler>().ResetTimer();
     }
 
     /// <summary>
@@ -330,7 +333,6 @@ public class MinionParent : NewVirtualCardParent
             Networking.SendCardDeath(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo, this);
         }
 
-        Debug.Log(StartingHealth);
         if (CardEffect == effect.split && StartingHealth / 2 > 0)
         {
             UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(0, StartingHealth / 2,
@@ -346,6 +348,8 @@ public class MinionParent : NewVirtualCardParent
             return; 
         }
         CardLocation = location.discard;
+        CanAttack = false;
+        Health = cardIndex.Index.GetDetails(CardName).health;     
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
         CardSelectionManager.Instance.SfxManager.UnregisterCard(this);
     }

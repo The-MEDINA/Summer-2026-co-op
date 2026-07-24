@@ -4,11 +4,11 @@ using Network;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int health = 50;
+    [SerializeField] private int health = 100;
     [SerializeField] private int maxEnergy = 10;
-    [SerializeField] private int startingEnergy = 10;
-    [SerializeField] private float timeForEnergy = 5f;
-    [SerializeField] private float startingTimeForEnergy = 5f;
+    [SerializeField] private int startingEnergy = 0;
+    [SerializeField] private float timeForEnergy = 3f;
+    [SerializeField] private float startingTimeForEnergy = 3f;
     [SerializeField] private bool isPlayerTwo = false;
     [SerializeField] private float moveCooldownTime = 1.5f;
 
@@ -98,7 +98,6 @@ public class Player : MonoBehaviour
             // if (!isPlayerTwo) 
                 timer = 0f;
 
-            Debug.Log(timesWhereEnergyWasNotNormal);
             if(TimeForEnergy != 5f)
             {
                 timesWhereEnergyWasNotNormal++;
@@ -201,6 +200,7 @@ public class Player : MonoBehaviour
         }
 
         card.CardLocation = NewVirtualCardParent.location.discard;
+        RefreshCardDeck();
     }
 
     public void TakeDamage(int damage)
@@ -275,4 +275,15 @@ public class Player : MonoBehaviour
     }
 
     public void PlayerGainThorns() { hasThorns = true; }
+
+    public void RefreshCardDeck()
+    {
+        if (Discard.Count == 0) { return; }
+        for(int i = 0; i < Discard.Count; i++)
+        {
+            Deck.Add(Discard[i]);
+            Discard[i].CardLocation = NewVirtualCardParent.location.deck;
+        }
+        Discard.Clear();
+    }
 }

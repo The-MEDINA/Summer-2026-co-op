@@ -2,7 +2,7 @@ using Network;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
+public class HivemindScript : CommanderCardScript, IPointerClickHandler
 {
     private float timer = 0f;
     [SerializeField] private float timeToEffect = 3f;
@@ -10,10 +10,10 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
 
     private void Start()
     {
-        Name = "Seargent Zoomie";//assigns name
+        Name = "Hivemind";//assigns name
     }
 
-    private void Update()
+    void Update()
     {
         //controls effect timer
         if (timer > timeToEffect)
@@ -44,21 +44,14 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
         }
     }
 
-    /// <summary>
-    /// gives owner player +2 energy upon use
-    /// </summary>
     public override void PerformAbility()
     {
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
 
-        //implement energy
-        bg.P.Energy += 2;
-
-        if(bg.P.Energy > 10)
-        {
-            bg.P.Energy = 10;
-        }
+        bg.P.Deck.Insert(0, new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 1, 1, 0, "Worms",
+            NewVirtualCardParent.type.token, NewVirtualCardParent.location.deck));
+        bg.DrawCardToHand();
 
         if (!bg.P.IsPlayerTwo)
         {
