@@ -10,7 +10,7 @@ public class HivemindScript : CommanderCardScript, IPointerClickHandler
 
     private void Start()
     {
-        Name = "Seargent Zoomie";//assigns name
+        Name = "Hivemind";//assigns name
     }
 
     void Update()
@@ -44,16 +44,14 @@ public class HivemindScript : CommanderCardScript, IPointerClickHandler
         }
     }
 
-    /// <summary>
-    /// gives owner player +2 energy upon use
-    /// </summary>
     public override void PerformAbility()
     {
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
 
-        //implement energy
-        //bg.P.Energy += 2;
+        bg.P.Deck.Insert(0, new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 1, 1, 0, "Worms",
+            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+        bg.DrawCardToHand();
 
         if (!bg.P.IsPlayerTwo)
         {

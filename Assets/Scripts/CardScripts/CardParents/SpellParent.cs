@@ -280,6 +280,7 @@ public class SpellParent : NewVirtualCardParent
                                 break;
                             }
 
+                        case "Worms":
                         case "Empower":
                         case "Fish Treat":
                             {
