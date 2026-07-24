@@ -24,7 +24,11 @@ public class Player : MonoBehaviour
     private bool hasThorns = false;
     private int timesWhereEnergyWasNotNormal = 0;
 
-    public int Health { get { return health; } set { health = value; } }
+    public int Health { get { return health; } set { 
+            health = value;
+            if (healthChange != null)
+                healthChange.Invoke(health);
+        } }
     public int Energy { get { return energy; } set { 
             energy = value; 
             if (energyChange != null) 
@@ -44,8 +48,14 @@ public class Player : MonoBehaviour
     public List<NewVirtualCardParent> Discard { get { return discard; } set { discard = value; } }
     public CommanderCardScript CommanderCard { get { return commanderCard; } set { commanderCard = value; } }
 
+    #region SFXEVENTS
     public delegate void EnergyChange();
     public event EnergyChange energyChange;
+    public delegate void EnergyIncrease(int energy);
+    public event EnergyIncrease energyIncrease;
+    public delegate void HealthChange(int health);
+    public event HealthChange healthChange;
+    #endregion
 
     private void Start()
     {
@@ -59,6 +69,7 @@ public class Player : MonoBehaviour
         // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
         //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
         // if (isPlayerTwo) energy = 999; 
+        SFXManager.Instance.RegisterPlayer(this);
     }
 
     private void Update()
@@ -143,6 +154,10 @@ public class Player : MonoBehaviour
         if (Energy > maxEnergy)
         {
             Energy = maxEnergy;
+        }
+        else if (energyIncrease != null)
+        {
+            energyIncrease.Invoke(energy);
         }
 
         if (!isPlayerTwo)

@@ -8,7 +8,10 @@ public class SFXManager : MonoBehaviour
     [Header("Generics")]
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip death;
+    [SerializeField] private AudioClip energyGain;
+    [SerializeField] private AudioClip end;
     [Header("Specifics")]
+    [SerializeField] private AudioClip energyMax;
     [SerializeField] private AudioClip deathtouch;
     [SerializeField] private AudioClip explode;
     [SerializeField] private AudioClip heal;
@@ -33,6 +36,12 @@ public class SFXManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void RegisterPlayer(Player player)
+    {
+        player.healthChange += HealthChange;
+        player.energyIncrease += EnergyChange;
     }
 
     /// <summary>
@@ -166,6 +175,23 @@ public class SFXManager : MonoBehaviour
                     }
             }
         }
+    }
+
+    private void EnergyChange(int energy)
+    {
+        if (energy >= 10)
+        {
+            SetChannel(energyMax, 0.25f);
+        }
+        else
+        {
+            SetChannel(energyGain, 0.15f);
+        }
+    }
+
+    private void HealthChange(int health)
+    {
+
     }
 
     /// <summary>

@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SFXManager
   hit: {fileID: 8300000, guid: 29f15ade088ad95419a1f6bc33b928c1, type: 3}
   death: {fileID: 8300000, guid: 4dd8b77d26cf4044d839dba2d2052cb1, type: 3}
+  energy: {fileID: 8300000, guid: ef346aff1d1a81b468d263d48a2146f6, type: 3}
+  end: {fileID: 0}
   deathtouch: {fileID: 8300000, guid: f8a905eb6a0d6a649927ccbde759619b, type: 3}
   explode: {fileID: 8300000, guid: 79d4e150453d1d44eae55a7cb6e84423, type: 3}
   heal: {fileID: 8300000, guid: 9955b54856cdd4145910cceb8daa4dd2, type: 3}

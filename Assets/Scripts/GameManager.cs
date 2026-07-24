@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     [Header("Scene Names")]
     [SerializeField] private string titleSceneName = "TitleScreen";
 
+    [Header("Other Managers")]
+    [SerializeField] private MusicPlayer BGMManager;
+
     private bool gameEnded;
 
     private void Start()
@@ -82,6 +85,8 @@ public class GameManager : MonoBehaviour
 
         //Pauses gameplay while still allowing UI buttons to work.
         Time.timeScale = 0f;
+
+        BGMManager.StopMusic();
     }
 
     public void PlayAgain()

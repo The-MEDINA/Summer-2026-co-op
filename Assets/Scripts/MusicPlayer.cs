@@ -11,6 +11,7 @@ public class MusicPlayer : MonoBehaviour
         transition2to1,
         noLoop
     }
+
     [SerializeField] private bool persistBetweenScenes = false;
     [SerializeField] private string[] excludeScenes;
     [SerializeField] private string SourceScene = "TitleScreen";
@@ -198,5 +199,14 @@ public class MusicPlayer : MonoBehaviour
             musicPlayer1.clip = loopx2;
             musicPlayer2.Play();
         }
+    }
+
+    /// <summary>
+    /// Stops the music being played.
+    /// </summary>
+    public void StopMusic()
+    {
+        if (musicPlayer1 != null) musicPlayer1.Stop();
+        if (musicPlayer2 != null) musicPlayer2.Stop();
     }
 }
