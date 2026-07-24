@@ -108,8 +108,8 @@ public class MusicPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        aliveTime += Time.deltaTime;
-        if (current != state.noLoop)
+        aliveTime += Time.unscaledDeltaTime;
+        if (current != state.noLoop && current != state.off)
         {
             // start fading at the halfway point.
             if (musicPlayer2.time >= (loopx2.length / 2) && current == state.player2lead)
@@ -123,8 +123,8 @@ public class MusicPlayer : MonoBehaviour
             // fade here
             else if (current == state.transition2to1)
             {
-                musicPlayer1.volume += Time.deltaTime * deltaVolume;
-                musicPlayer2.volume -= Time.deltaTime * deltaVolume;
+                musicPlayer1.volume += Time.unscaledDeltaTime * deltaVolume;
+                musicPlayer2.volume -= Time.unscaledDeltaTime * deltaVolume;
                 if (musicPlayer2.volume <= 0 || musicPlayer1.volume >= volume)
                 {
                     current = state.player1lead;
@@ -144,8 +144,8 @@ public class MusicPlayer : MonoBehaviour
             // more fading here
             else if (current == state.transition1to2)
             {
-                musicPlayer2.volume += Time.deltaTime * deltaVolume;
-                musicPlayer1.volume -= Time.deltaTime * deltaVolume;
+                musicPlayer2.volume += Time.unscaledDeltaTime * deltaVolume;
+                musicPlayer1.volume -= Time.unscaledDeltaTime * deltaVolume;
                 if (musicPlayer1.volume <= 0 || musicPlayer2.volume >= volume)
                 {
                     current = state.player2lead;
