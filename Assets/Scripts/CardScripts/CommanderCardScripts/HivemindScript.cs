@@ -50,7 +50,7 @@ public class HivemindScript : CommanderCardScript, IPointerClickHandler
         if (Networking.CurrentState == state.paused) return;
 
         bg.P.Deck.Insert(0, new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 1, 1, 0, "Worms",
-            NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));
+            NewVirtualCardParent.type.token, NewVirtualCardParent.location.deck));
         bg.DrawCardToHand();
 
         if (!bg.P.IsPlayerTwo)
