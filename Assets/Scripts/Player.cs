@@ -24,7 +24,11 @@ public class Player : MonoBehaviour
     private bool hasThorns = false;
     private int timesWhereEnergyWasNotNormal = 0;
 
-    public int Health { get { return health; } set { health = value; } }
+    public int Health { get { return health; } set { 
+            health = value;
+            if (healthChange != null)
+                healthChange.Invoke(health);
+        } }
     public int Energy { get { return energy; } set { 
             energy = value; 
             if (energyChange != null) 
@@ -37,15 +41,21 @@ public class Player : MonoBehaviour
     public float TimeForEnergy { get { return timeForEnergy; } set { timeForEnergy = value; } }
     public int TimesWhereEnergyWasNotNormal { get { return timesWhereEnergyWasNotNormal; } set { timesWhereEnergyWasNotNormal = value; } }
     public float EnergyTimerRemaining { get { return Mathf.Max(0f, timeForEnergy - timer); } }
-
+    public float Timer { set { timer = value; } }
     public List<NewVirtualCardParent> Deck { get { return deck; } set { deck = value; } }
     public List<NewVirtualCardParent> Hand { get { return hand; } set { hand = value; } }
     public List<NewVirtualCardParent> InPlay { get { return inPlay; } set { inPlay = value; } }
     public List<NewVirtualCardParent> Discard { get { return discard; } set { discard = value; } }
     public CommanderCardScript CommanderCard { get { return commanderCard; } set { commanderCard = value; } }
 
+    #region SFXEVENTS
     public delegate void EnergyChange();
     public event EnergyChange energyChange;
+    public delegate void EnergyIncrease(int energy);
+    public event EnergyIncrease energyIncrease;
+    public delegate void HealthChange(int health);
+    public event HealthChange healthChange;
+    #endregion
 
     private void Start()
     {
@@ -59,6 +69,7 @@ public class Player : MonoBehaviour
         // Ideally both games would be perfectly in sync somehow so this situation would never happen, but this is an easy workaround just to get it done.
         //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
         // if (isPlayerTwo) energy = 999; 
+        SFXManager.Instance.RegisterPlayer(this);
     }
 
     private void Update()
@@ -66,6 +77,17 @@ public class Player : MonoBehaviour
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
         GainEnergyOverTime();
+
+        // guys if you ever see these empty if statements in main yall can remove them
+        // They serve no purpose other than to make debugging easier - Dave
+        if (isPlayerTwo)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     private void GainEnergyOverTime()
@@ -132,6 +154,15 @@ public class Player : MonoBehaviour
         {
             Energy = maxEnergy;
         }
+        else if (energyIncrease != null)
+        {
+            energyIncrease.Invoke(energy);
+        }
+
+        if (!isPlayerTwo)
+        {
+            Networking.SendPlayerStatus(this, false, true);
+        }
     }
 
     public void MoveCardToInPlay(NewVirtualCardParent card)
@@ -193,10 +224,14 @@ public class Player : MonoBehaviour
             Death();
         }
 
-        if (Health > 0 && hasThorns)//needs tested
+        if (Health > 0 && hasThorns)
         {
             minionAttacker.TakeDamage(1);
         }
+
+        // BOTH players should send their health when hit.
+        // This should avoid any desyncs where someone attacks the other player on their end, but the peer didn't see the attack.
+        Networking.SendPlayerStatus(this, true, false);
     }
 
     public void Death()

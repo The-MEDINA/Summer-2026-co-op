@@ -96,6 +96,12 @@ namespace Network
      * --- COMMANDERABILITY: ---
      * byte 1 holds the number of arguments to follow for this commander's ability. (Currently there are none)
      * bytes 2 - 1023 are empty so we can use it later to store more info.
+     * 
+     * --- PLAYERSTATUS: ---
+     * byte 1 holds whether this is for player 1 or player 2. 
+     * byte 2 holds whether to decode the player's health value. 1 means yes, 0 means no.
+     * bytes 3 - 4 holds the player's health value.
+     * byte 5 holds the player's energy. Ignore if it's 255.
      */
     public enum packetType
     {
@@ -110,7 +116,8 @@ namespace Network
         pause_unpause,
         request,
         loadout,
-        commanderAbility
+        commanderAbility,
+        playerStatus
     }
     // the mode the machine's set to for networking.
     public enum mode
@@ -173,6 +180,7 @@ namespace Network
         private static List<short> requestArray = null;
         private static string requestP2Commander = "";
         private static bool requestCommanderAbility = false;
+        private static int[] requestPlayerStatus = { -1, -1, -1 };
 
         /// <summary>
         /// delegates to set up events.
@@ -374,12 +382,46 @@ namespace Network
             server = new TcpListener(IPAddress.Any, port);
             client = new TcpClient();
             server.Start();
+            bool foundPeer = false;
             CurrentState = state.searching;
-#if DEBUG_MODE
-            Debug.Log("Server started, waiting to accept client.");
-#endif
+
             // wait for a client
-            client = await server.AcceptTcpClientAsync();
+            List<Task> peerTask = new List<Task>();
+            peerTask.Add(Task.Run(async () =>
+            {
+#if DEBUG_MODE
+                Debug.Log("Server started, waiting to accept client.");
+#endif
+                // Search for client for 60 seconds
+                Task<TcpClient> peerFound = server.AcceptTcpClientAsync();
+
+                await Task.WhenAny(peerFound, Task.Delay(TimeSpan.FromSeconds(60)));
+
+                // exit if no peer was found.
+                if (!peerFound.IsCompleted)
+                {
+#if DEBUG_MODE
+                    Debug.LogWarning($"No peer found in 60 seconds.");
+#endif
+                }
+                else if (peerFound.IsCompleted)
+                {
+                    foundPeer = true;
+                    client = peerFound.Result;
+                }
+            }));
+
+            // wait for the task to finish.
+            await Task.WhenAll(peerTask);
+
+            if (!foundPeer)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"No successful connection, closing connection.");
+#endif
+                CloseConnection();
+                return;
+            }
 
 #if DEBUG_MODE
             Debug.Log("Client found. Verifying...");
@@ -1005,6 +1047,46 @@ namespace Network
             packet[0] = (byte)packetType.commanderAbility;
             return packet;
         }
+
+        /// <summary>
+        /// Encode a player status packet to send to a peer.
+        /// </summary>
+        /// <param name="player2">whether or not this is for player 2.</param>
+        /// <param name="encodeHealth">Whether to encode health.</param>
+        /// <param name="health">Health for this player.</param>
+        /// <param name="energy">Energy for this player. Set to 255 if this should be ignored.</param>
+        /// <returns>a byte[1024] packet.</returns>
+        private static byte[] EncodePacket(bool player2, bool encodeHealth, int health, int energy)
+        {
+            byte[] packet = new byte[1024];
+            packet[0] = (byte)packetType.playerStatus;
+
+            // player 1 or 2
+            if (player2) { packet[1] = 1; }
+            else { packet[1] = 0; }
+
+            // encode health bool
+            if (encodeHealth) { packet[2] = 1; }
+            else { packet[2] = 0; }
+
+            // health value
+            short playerHealth = (short)health;
+            byte highByte = 0;
+            byte lowByte = 0;
+
+            // mask out the top 8 bits.
+            lowByte = (byte)(health & 255);
+
+            // shift right 8 bits and then mask.
+            highByte = (byte)((health >> 8) & 255);
+
+            packet[3] = highByte;
+            packet[4] = lowByte;
+
+            //energy
+            packet[5] = (byte)energy;
+            return packet;
+        }
         #endregion
 
         /// <summary>
@@ -1419,9 +1501,32 @@ namespace Network
                     p2InitialDeck = deck;
                     break;
                 }
-                case ((byte)packetType.commanderAbility):
+                case ((byte) packetType.commanderAbility):
                     {
                         requestCommanderAbility = true;
+                        break;
+                    }
+                case ((byte) packetType.playerStatus):
+                    {
+                        if (packet[1] == 1)
+                        {
+                            requestPlayerStatus[0] = 1;
+                        }
+                        else
+                        {
+                            requestPlayerStatus[0] = 2;
+                        }
+                        if (packet[2] == 1)
+                        {
+                            short health = packet[3];
+                            health <<= 8;
+                            health += packet[4];
+                            requestPlayerStatus[1] = health;
+                        }
+                        if (packet[5] != 255)
+                        {
+                            requestPlayerStatus[2] = packet[5];
+                        }
                         break;
                     }
                 default:
@@ -1468,8 +1573,8 @@ namespace Network
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
 
                     // wait for either the task to finish or for timeout.
-                    // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 1 minute.
-                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
+                    // because of how keepalive packets work right now, this essentially means the host will automatically disconnect if the client doesn't do anything for 10 seconds.
+                    await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
 
                     // close the connection on timeout.
                     if (!result.IsCompleted)
@@ -1520,7 +1625,7 @@ namespace Network
 #endif
                         // wait 10 seconds or until read
                         Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
-                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(600)));
+                        await Task.WhenAny(result, Task.Delay(TimeSpan.FromSeconds(10)));
 
                         // close if nothing was received.
                         if (!result.IsCompleted)
@@ -1562,7 +1667,12 @@ namespace Network
                             if (!receivedPacket.IsCancellationRequested)
                             {
                                 byte[] keepalive = EncodePacket(packetType.keepAlive);
-                                await stream.WriteAsync(keepalive, 0, keepalive.Length);
+
+                                // Don't send the packet when resolving a desync.
+                                if (CurrentState != state.paused)
+                                {
+                                    await stream.WriteAsync(keepalive, 0, keepalive.Length);
+                                }
                             }
                         }
                         catch
@@ -1738,12 +1848,16 @@ namespace Network
                             while (playerTwo.InPlay.Count != 0)
                             {
                                 MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.Death();
+                                killThis.IsDead = true;
+                                killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
+                                CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
+                                killThis.UnityObject.SetActive(false);
                             }
                             for (int j = 0; j < previousInplay[i].Count; j++)
                             {
                                 p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
                             }
+                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
                             foundSolution = true;
                             break;
                         }
@@ -1855,6 +1969,38 @@ namespace Network
                     DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
                 }
             }
+
+            // player status.
+            if (requestPlayerStatus[0] != -1)
+            {
+                Player targetPlayer = null;
+                if (requestPlayerStatus[0] == 1)
+                {
+                    targetPlayer = playerOne;
+                }
+                else
+                {
+                    targetPlayer = playerTwo;
+                }
+                if (requestPlayerStatus[1] != -1)
+                {
+                    if (targetPlayer.Health != requestPlayerStatus[1])
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning($"player health ({targetPlayer.Health}) and incoming health ({requestPlayerStatus[1]}) don't match! Setting health to incoming health.");
+#endif
+                        targetPlayer.Health = requestPlayerStatus[1];
+                    }
+                }
+                if (requestPlayerStatus[2] != -1)
+                {
+                    targetPlayer.Energy = requestPlayerStatus[2];
+                    targetPlayer.Timer = 0f;
+                }
+                requestPlayerStatus[0] = -1;
+                requestPlayerStatus[1] = -1;
+                requestPlayerStatus[2] = -1;
+            }
         }
 
         /// <summary>
@@ -1904,16 +2050,7 @@ namespace Network
         {
             try
             {
-                server.Stop();
-            }
-            catch (Exception e)
-            {
-#if DEBUG_MODE
-                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
-#endif
-            }
-            try
-            {
+                client.Client.Shutdown(SocketShutdown.Both);
                 client.Dispose();
             }
             catch (Exception e)
@@ -1924,8 +2061,21 @@ namespace Network
             }
             try
             {
-                stream.Flush();
-                stream.Close();
+                server.Stop();
+            }
+            catch (Exception e)
+            {
+#if DEBUG_MODE
+                Debug.LogWarning($"Exception raised when stopping server: {e.Message}");
+#endif
+            }
+            try
+            {
+                if (stream != null)
+                {
+                    stream.Flush();
+                    stream.Close();
+                }
             }
             catch (Exception e)
             {
@@ -2179,6 +2329,30 @@ namespace Network
             else
             {
                 Debug.LogWarning("Tried to send commander ability while disconnected! Double check that network manager is connected to a peer.");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Tell the peer the status for a player.
+        /// </summary>
+        /// <param name="player">Player to tell the status of.</param>
+        /// <param name="encodeHealth">whether to encode the health.</param>
+        /// <param name="encodeEnergy">Whether to encode the energy.</param>
+        public static void SendPlayerStatus(Player player, bool encodeHealth, bool encodeEnergy)
+        {
+#if DEBUG_MODE
+            Debug.Log("Encode player status packet");
+#endif
+            byte[] packet = EncodePacket(player.IsPlayerTwo, encodeHealth, player.Health, (encodeEnergy)? player.Energy : 255);
+            if (CurrentState != state.disconnected)
+            {
+                stream.WriteAsync(packet);
+            }
+#if DEBUG_MODE
+            else
+            {
+                Debug.LogWarning("Tried to send player status while disconnected! Double check that network manager is connected to a peer.");
             }
 #endif
         }

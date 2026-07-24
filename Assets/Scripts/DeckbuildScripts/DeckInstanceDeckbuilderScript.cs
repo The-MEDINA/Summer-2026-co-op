@@ -54,6 +54,15 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             Destroy(cardObjects[0]);
             cardObjects.RemoveAt(0);
         }
+        // reset the cards in the deck
+        List<NewVirtualCardParent> resetDeck = new List<NewVirtualCardParent>();
+        while (deck.Count != 0)
+        {
+            resetDeck.Add(cardIndex.Index.CreateCard(deck[0].CardName, NewVirtualCardParent.location.deck));
+            deck.RemoveAt(0);
+        }
+        deck = resetDeck;
+
         string[] name = scene.path.Split("/");
         if (name[name.Length - 1] == "DeckbuilderScene.unity")
         {

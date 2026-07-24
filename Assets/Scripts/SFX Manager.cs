@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class SFXManager : MonoBehaviour
@@ -7,10 +8,15 @@ public class SFXManager : MonoBehaviour
     [Header("Generics")]
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip death;
+    [SerializeField] private AudioClip energyGain;
+    [SerializeField] private AudioClip end;
     [Header("Specifics")]
+    [SerializeField] private AudioClip energyMax;
     [SerializeField] private AudioClip deathtouch;
+    [SerializeField] private AudioClip explode;
     [SerializeField] private AudioClip heal;
     [SerializeField] private AudioClip equipment;
+    [SerializeField] private AudioClip spawnTokens;
     #endregion
 
     public static SFXManager Instance;
@@ -30,6 +36,12 @@ public class SFXManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void RegisterPlayer(Player player)
+    {
+        player.healthChange += HealthChange;
+        player.energyIncrease += EnergyChange;
     }
 
     /// <summary>
@@ -108,11 +120,6 @@ public class SFXManager : MonoBehaviour
     {
         switch (cardEffect)
         {
-            case SpellParent.spellEffect.damage:
-            {
-                SetChannel(deathtouch, 0.25f);
-                break;
-            }
             case SpellParent.spellEffect.heal:
             {
                 SetChannel(heal, 1);
@@ -121,6 +128,11 @@ public class SFXManager : MonoBehaviour
             case SpellParent.spellEffect.equipment:
             {
                 SetChannel(equipment, 0.25f);
+                break;
+            }
+            case SpellParent.spellEffect.spawnTokens:
+            {
+                SetChannel(spawnTokens, 0.25f);
                 break;
             }
             default:
@@ -134,15 +146,62 @@ public class SFXManager : MonoBehaviour
     /// Play a sound on a card's death.
     /// </summary>
     /// <param name="faction">Faction of the card that died</param>
-    private void CardDeath(string faction)
+    private void CardDeath(string faction, MinionParent.effect cardEffect)
     {
-        switch (faction)
+        if (cardEffect != MinionParent.effect.none)
         {
-        default:
+            switch (cardEffect)
             {
-                SetChannel(death, 1f);
-                break;
+                case MinionParent.effect.explode:
+                    {
+                        SetChannel(explode, 0.25f);
+                        break;
+                    }
+                default:
+                    {
+                        SetChannel(death, 1f);
+                        break;
+                    }
             }
+        }
+        else
+        {
+            switch (faction)
+            {
+                default:
+                    {
+                        SetChannel(death, 1f);
+                        break;
+                    }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Play a sound on energy INCREASE.
+    /// </summary>
+    /// <param name="energy">New energy value.</param>
+    private void EnergyChange(int energy)
+    {
+        if (energy >= 10)
+        {
+            SetChannel(energyMax, 0.25f);
+        }
+        else
+        {
+            SetChannel(energyGain, 0.15f);
+        }
+    }
+
+    /// <summary>
+    /// Play a sound on health change.
+    /// </summary>
+    /// <param name="health">New health value.</param>
+    private void HealthChange(int health)
+    {
+        if (health <= 0)
+        {
+            SetChannel(end, 0.25f);
         }
     }
 
@@ -153,7 +212,24 @@ public class SFXManager : MonoBehaviour
     /// <param name="volume">Volume to play the sound at.</param>
     private void SetChannel(AudioClip sound, float volume)
     {
-        AudioSource[] existingChannels = GetComponents<AudioSource>();
+        AudioSource[] existingChannels = null;
+        try
+        {
+            if (this.gameObject != null)
+            {
+                existingChannels = this.gameObject.GetComponents<AudioSource>();
+            }
+            else
+            {
+                Debug.LogWarning("The game object for this script is null! Sound effect will not play.");
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Unhandled exception when trying to set channel for sound effect! {e.Message}");
+            return;
+        }
         for (int i = 0; i < existingChannels.Length; i++)
         {
             if (!existingChannels[i].isPlaying)

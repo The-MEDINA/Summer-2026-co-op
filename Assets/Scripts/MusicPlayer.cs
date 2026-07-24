@@ -5,13 +5,17 @@ public class MusicPlayer : MonoBehaviour
 {
     enum state
     {
+        off,
         player1lead,
         transition1to2,
         player2lead,
         transition2to1,
         noLoop
     }
+
     [SerializeField] private bool persistBetweenScenes = false;
+    [SerializeField] private bool playOnStart = true;
+    [SerializeField] private float delay = 0;
     [SerializeField] private string[] excludeScenes;
     [SerializeField] private string SourceScene = "TitleScreen";
     private string lastScene = "";
@@ -49,7 +53,8 @@ public class MusicPlayer : MonoBehaviour
     public bool PersistBetweenScenes { get { return persistBetweenScenes; } }
     public float AliveTime { get { return aliveTime; } }
 
-    private void Awake()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
         if (persistBetweenScenes)
         {
@@ -64,6 +69,7 @@ public class MusicPlayer : MonoBehaviour
             {
                 if (others[i].persistBetweenScenes && others[i].AliveTime > oldest)
                 {
+                    oldest = others[i].AliveTime;
                     oldestOther = others[i];
                 }
             }
@@ -80,31 +86,30 @@ public class MusicPlayer : MonoBehaviour
                     Destroy(others[i].gameObject);
                 }
             }
+
             if (destroySelf)
             {
                 Destroy(this.gameObject);
                 return;
             }
-            //if (other != null && other.persistBetweenScenes && other != this)
-            //{
-            //    Destroy(this.gameObject);
-            //    return;
-            //}
             SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(gameObject);
         }
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        StartMusic();
+        if (playOnStart && delay == 0)
+        {
+            StartMusic();
+        }
+        else
+        {
+            current = state.off;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        aliveTime += Time.deltaTime;
-        if (current != state.noLoop)
+        aliveTime += Time.unscaledDeltaTime;
+        if (current != state.noLoop && current != state.off)
         {
             // start fading at the halfway point.
             if (musicPlayer2.time >= (loopx2.length / 2) && current == state.player2lead)
@@ -118,8 +123,8 @@ public class MusicPlayer : MonoBehaviour
             // fade here
             else if (current == state.transition2to1)
             {
-                musicPlayer1.volume += Time.deltaTime * deltaVolume;
-                musicPlayer2.volume -= Time.deltaTime * deltaVolume;
+                musicPlayer1.volume += Time.unscaledDeltaTime * deltaVolume;
+                musicPlayer2.volume -= Time.unscaledDeltaTime * deltaVolume;
                 if (musicPlayer2.volume <= 0 || musicPlayer1.volume >= volume)
                 {
                     current = state.player1lead;
@@ -139,8 +144,8 @@ public class MusicPlayer : MonoBehaviour
             // more fading here
             else if (current == state.transition1to2)
             {
-                musicPlayer2.volume += Time.deltaTime * deltaVolume;
-                musicPlayer1.volume -= Time.deltaTime * deltaVolume;
+                musicPlayer2.volume += Time.unscaledDeltaTime * deltaVolume;
+                musicPlayer1.volume -= Time.unscaledDeltaTime * deltaVolume;
                 if (musicPlayer1.volume <= 0 || musicPlayer2.volume >= volume)
                 {
                     current = state.player2lead;
@@ -152,54 +157,67 @@ public class MusicPlayer : MonoBehaviour
     }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // setup
-        string[] scenePath = scene.path.Split("/");
-
-        for (int i = 0; i < excludeScenes.Length; i++)
+        if (persistBetweenScenes)
         {
-            string excludeScene = $"{excludeScenes[i]}.unity";
+            // setup
+            string[] scenePath = scene.path.Split("/");
 
-            // stop if the scene is in the exclude scenes list
-            if (scenePath[scenePath.Length - 1] == excludeScene)
+            for (int i = 0; i < excludeScenes.Length; i++)
             {
-                if (musicPlayer1 != null) musicPlayer1.Stop();
-                if (musicPlayer2 != null) musicPlayer2.Stop();
-                lastScene = scenePath[scenePath.Length - 1];
-                return;
+                string excludeScene = $"{excludeScenes[i]}.unity";
+
+                // stop if the scene is in the exclude scenes list
+                if (scenePath[scenePath.Length - 1] == excludeScene)
+                {
+                    if (musicPlayer1 != null) musicPlayer1.Stop();
+                    if (musicPlayer2 != null) musicPlayer2.Stop();
+                    lastScene = scenePath[scenePath.Length - 1];
+                    return;
+                }
             }
-        }
-        // Restart music if the last scene was on the exclude list but the current one isn't
-        for (int i = 0; i < excludeScenes.Length;i++)
-        {
-            if (lastScene == $"{excludeScenes[i]}.unity")
+            // Restart music if the last scene was on the exclude list but the current one isn't
+            for (int i = 0; i < excludeScenes.Length; i++)
             {
-                StartMusic();
-                lastScene = scenePath[scenePath.Length - 1];
-                return;
+                if (lastScene == $"{excludeScenes[i]}.unity")
+                {
+                    StartMusic();
+                    lastScene = scenePath[scenePath.Length - 1];
+                    return;
+                }
             }
+            lastScene = scenePath[scenePath.Length - 1];
         }
-        lastScene = scenePath[scenePath.Length - 1];
     }
 
-    private void StartMusic()
+    public void StartMusic()
     {
+        current = state.player2lead;
         deltaVolume = volume / transitionTime;
         if (musicPlayer1 != null) musicPlayer1.volume = volume;
         if (musicPlayer2 != null) musicPlayer2.volume = volume;
-        if (loopx2 != null) musicPlayer2.clip = loopx2;
+        if (loopx2 != null && musicPlayer2 != null) musicPlayer2.clip = loopx2;
         else current = state.noLoop;
 
         // play the beginning first if there is one.
         if (beginning != null)
         {
             musicPlayer1.clip = beginning;
-            musicPlayer1.Play();
-            musicPlayer2.PlayDelayed(beginning.length + offset);
+            musicPlayer1.PlayDelayed(delay);
+            musicPlayer2.PlayDelayed(beginning.length + offset + delay);
         }
         else
         {
             musicPlayer1.clip = loopx2;
-            musicPlayer2.Play();
+            musicPlayer2.PlayDelayed(delay);
         }
+    }
+
+    /// <summary>
+    /// Stops the music being played.
+    /// </summary>
+    public void StopMusic()
+    {
+        if (musicPlayer1 != null) musicPlayer1.Stop();
+        if (musicPlayer2 != null) musicPlayer2.Stop();
     }
 }

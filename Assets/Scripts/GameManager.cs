@@ -1,3 +1,4 @@
+using Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Scene Names")]
     [SerializeField] private string titleSceneName = "TitleScreen";
+
+    [Header("Other Managers")]
+    [SerializeField] private MusicPlayer BattleTheme;
+    [SerializeField] private MusicPlayer MenuPiano;
 
     private bool gameEnded;
 
@@ -32,6 +37,13 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning(
                 "GameManager does not have a WinPanel assigned."
             );
+        }
+
+        // listen for network changes when we're not in the 1 player scene
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "Demo_LocalTwoPlayer")
+        {
+            Networking.stateChange += CheckNetworkChange;
         }
     }
 
@@ -74,6 +86,9 @@ public class GameManager : MonoBehaviour
 
         //Pauses gameplay while still allowing UI buttons to work.
         Time.timeScale = 0f;
+
+        BattleTheme.StopMusic();
+        MenuPiano.StartMusic();
     }
 
     public void PlayAgain()
@@ -82,11 +97,33 @@ public class GameManager : MonoBehaviour
 
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
+        if (Networking.CurrentState == state.connected)
+        {
+            Networking.SendSceneSwitch(currentScene.name);
+        }
     }
 
     public void ReturnToTitleScreen()
     {
+        if (Networking.CurrentState == state.connected)
+        {
+            Networking.SendSceneSwitch("Titlescreen");
+            Networking.CloseConnection();
+        }
         Time.timeScale = 1f;
         SceneManager.LoadScene(titleSceneName);
+    }
+
+    /// <summary>
+    /// Change to the titlescreen if a disconnect was detected midgame.
+    /// </summary>
+    /// <param name="state">State of the network manager.</param>
+    private void CheckNetworkChange(Network.state state)
+    {
+        if (state == state.disconnected)
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(titleSceneName);
+        }
     }
 }

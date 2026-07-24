@@ -28,6 +28,9 @@ public class CardSelectionManager : MonoBehaviour
 
     [SerializeField] private bool isLocalTesting = false;
 
+    [Header("Sound Effects")]
+    [SerializeField] private SFXManager sfxManager;
+
     private CardClickHandler selectedCardObject;
 
     public CardClickHandler SelectedCardObject
@@ -35,7 +38,7 @@ public class CardSelectionManager : MonoBehaviour
         get { return selectedCardObject; }
         set { selectedCardObject = value; }
     }
-
+    public SFXManager SfxManager { get { return sfxManager; } }
     public Player Player1 { get { return player1; } }
     public Player Player2 { get { return player2; } }
 
@@ -73,7 +76,7 @@ public class CardSelectionManager : MonoBehaviour
         if (Networking.P2CommanderName != "")
         {
             cardIndex.Index.AttachCommanderCard(player2CommanderSquare, Networking.P2CommanderName, player2Battleground);
-            Networking.P2CommanderName = "";
+            // Networking.P2CommanderName = "";
             if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
             { 
                 player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
