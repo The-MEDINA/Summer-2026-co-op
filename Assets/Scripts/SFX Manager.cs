@@ -177,6 +177,10 @@ public class SFXManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Play a sound on energy INCREASE.
+    /// </summary>
+    /// <param name="energy">New energy value.</param>
     private void EnergyChange(int energy)
     {
         if (energy >= 10)
@@ -189,9 +193,16 @@ public class SFXManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Play a sound on health change.
+    /// </summary>
+    /// <param name="health">New health value.</param>
     private void HealthChange(int health)
     {
-
+        if (health <= 0)
+        {
+            SetChannel(end, 0.25f);
+        }
     }
 
     /// <summary>

@@ -5,6 +5,7 @@ public class MusicPlayer : MonoBehaviour
 {
     enum state
     {
+        off,
         player1lead,
         transition1to2,
         player2lead,
@@ -13,6 +14,8 @@ public class MusicPlayer : MonoBehaviour
     }
 
     [SerializeField] private bool persistBetweenScenes = false;
+    [SerializeField] private bool playOnStart = true;
+    [SerializeField] private float delay = 0;
     [SerializeField] private string[] excludeScenes;
     [SerializeField] private string SourceScene = "TitleScreen";
     private string lastScene = "";
@@ -92,7 +95,14 @@ public class MusicPlayer : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(gameObject);
         }
-        StartMusic();
+        if (playOnStart && delay == 0)
+        {
+            StartMusic();
+        }
+        else
+        {
+            current = state.off;
+        }
     }
 
     // Update is called once per frame
@@ -179,8 +189,9 @@ public class MusicPlayer : MonoBehaviour
         }
     }
 
-    private void StartMusic()
+    public void StartMusic()
     {
+        current = state.player2lead;
         deltaVolume = volume / transitionTime;
         if (musicPlayer1 != null) musicPlayer1.volume = volume;
         if (musicPlayer2 != null) musicPlayer2.volume = volume;
@@ -191,13 +202,13 @@ public class MusicPlayer : MonoBehaviour
         if (beginning != null)
         {
             musicPlayer1.clip = beginning;
-            musicPlayer1.Play();
-            musicPlayer2.PlayDelayed(beginning.length + offset);
+            musicPlayer1.PlayDelayed(delay);
+            musicPlayer2.PlayDelayed(beginning.length + offset + delay);
         }
         else
         {
             musicPlayer1.clip = loopx2;
-            musicPlayer2.Play();
+            musicPlayer2.PlayDelayed(delay);
         }
     }
 
