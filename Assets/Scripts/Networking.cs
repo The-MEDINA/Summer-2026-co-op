@@ -170,6 +170,7 @@ namespace Network
         /// The values here are the default values for each variable. 
         /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
+        private static int requestCardInstantiation = -1;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
 
