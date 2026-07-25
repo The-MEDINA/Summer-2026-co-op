@@ -162,6 +162,7 @@ namespace Network
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
         private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
         private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
+        private static string p2CommanderName = "";
 
         /// <summary>
         /// These variables contain info that needs something else to do what it's asking.
@@ -178,7 +179,6 @@ namespace Network
         private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
-        private static string requestP2Commander = "";
         private static bool requestCommanderAbility = false;
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Network
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
         public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
         public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
-        public static string P2CommanderName { get { return requestP2Commander; } set { requestP2Commander = value; } }
+        public static string P2CommanderName { get { return p2CommanderName; } set { p2CommanderName = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -1473,9 +1473,9 @@ namespace Network
                     // rebuild and set the commander card from the info.
                     short indexOfCard = packet[2];
                     indexOfCard <<= 8;
-                        indexOfCard += packet[3];
+                    indexOfCard += packet[3];
                     string commanderName = cardIndex.Index.GetName(indexOfCard);
-                    requestP2Commander = commanderName;
+                    p2CommanderName = commanderName;
 
                     // New array to replace the old one.
                     List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
@@ -1498,6 +1498,14 @@ namespace Network
 
                     // replace the deck with this new one
                     p2InitialDeck = deck;
+
+                    // if we both sent or received loadouts
+                    if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
+                    {
+                        SendSceneSwitch("Demo_LocalTwoPlayer");
+                        SceneManager.LoadScene("Demo_LocalTwoPlayer");
+                        DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    }
                     break;
                 }
                 case ((byte) packetType.commanderAbility):
@@ -1577,7 +1585,9 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
 #endif
+                    //setup
                     byte[] packet = new byte[1024];
+                    bool close = false;
 
                     // (As far as I know) Make a task to check if this ever finishes on time.
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
@@ -1589,26 +1599,25 @@ namespace Network
                     // close the connection on timeout.
                     if (!result.IsCompleted)
                     {
-                        CloseConnection();
+                        close = true;
 #if DEBUG_MODE
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
                     }
-                    // close the connection if 0 was received.
+                    // Mark for closing the connection if 0 was received.
                     // 0 means the connection was closed cleanly on the other side. (I think?)
                     else if (result.Result == 0)
                     {
-                        CloseConnection();
+                        close = true;
                     }
-                    // decode the packet if one was received in time.
-                    /*else
-                    {
-                        await DecodePacket(packet);
-                    }*/
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
-                    // complete any requests that came from other threads like DecodePacket.
+                    // Decode the packet if we don't close the connection.
+                    if (close)
+                    {
+                        CloseConnection();
+                    }
                     await DecodePacket(packet);
                     CompleteRequests();
                 }
@@ -1623,7 +1632,9 @@ namespace Network
 #endif
                     // setup
                     byte[] packet = new byte[1024];
+                    bool close = false;
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
+
                     // Ok so... what this basically does is run 2 separate thread-like tasks.
                     // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
                     List<Task> connectionTasks = new List<Task>();
@@ -1646,10 +1657,10 @@ namespace Network
 #endif
                             CloseConnection();
                         }
-                        // Also close if connection was cleanly closed.
+                        // Also mark the connection for closing if connection was cleanly closed.
                         else if (result.Result == 0)
                         {
-                            CloseConnection();
+                            close = true;
                         }
                         // Decode the packet if one was found in time.
                         // also stop the keepalive packet from being sent if it's been less than 5 seconds.
@@ -1659,7 +1670,6 @@ namespace Network
                             Debug.Log($"found {result.Result} bytes.");
 #endif
                             receivedPacket.Cancel();
-                            // await DecodePacket(packet);
                         }
                     }));
 
@@ -1697,7 +1707,11 @@ namespace Network
                     // wait for both tasks to finish before doing it again, if there's still a connection.
                     await Task.WhenAll(connectionTasks);
 
-                    // complete any requests that came from other threads like DecodePacket.
+                    // Decode the packet if we don't close the connection.
+                    if (close)
+                    {
+                        CloseConnection();
+                    }
                     await DecodePacket(packet);
                     CompleteRequests();
                 }
@@ -1969,18 +1983,6 @@ namespace Network
                 CurrentState = state.connected;
                 SendPauseUnpause(false);
             }
-
-            // Loadout. (Tracked by p2's commander)
-            if (requestP2Commander != "")
-            {
-                // if we both sent or received loadouts
-                if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
-                {
-                    SendSceneSwitch("Demo_LocalTwoPlayer");
-                    SceneManager.LoadScene("Demo_LocalTwoPlayer");
-                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                }
-            }
         }
 
         /// <summary>
@@ -2028,6 +2030,7 @@ namespace Network
         /// </summary>
         public static void CloseConnection()
         {
+            p2InitialDeck = new List<NewVirtualCardParent>();
             try
             {
                 client.Client.Shutdown(SocketShutdown.Both);
