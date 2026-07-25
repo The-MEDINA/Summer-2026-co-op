@@ -170,10 +170,6 @@ namespace Network
         /// The values here are the default values for each variable. 
         /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
-        private static int requestCardInstantiation = -1;
-        private static NewVirtualCardParent[] requestAttack = { null, null };
-        private static bool requestSecondAttack = false;
-        private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
 
@@ -1301,10 +1297,13 @@ namespace Network
                 case ((byte) packetType.cardAttack):
                 {
 #if DEBUG_MODE
-                        Debug.Log("found cardAttack packet");
+                    Debug.Log("found cardAttack packet");
 #endif
+                    // setup
                     NewVirtualCardParent attacker = null;
                     NewVirtualCardParent target = null;
+                    bool secondAttack = false;
+                    if (packet[3] == 1) secondAttack = true;
 
                     // check for any overrides.
                     // hand override.
@@ -1389,21 +1388,54 @@ namespace Network
                         {
                             target = playerOne.InPlay[packet[2]];
                         }
-                        else if (packet[5] == 2)
-                        {
-                            requestPlayer = playerOne;
-                        }
 #if DEBUG_MODE
                         else
-                            {
-                                DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
-                            }
+                        {
+                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                        }
 #endif
                     }
-                    requestAttack[0] = attacker;
-                    requestAttack[1] = target;
-                    if (packet[3] == 1) requestSecondAttack = true;
-                    else requestSecondAttack = false;
+
+                    // store player 1's selection if one mas made.
+                    CardClickHandler previousSelection = null;
+                    if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                    // attack.
+                    if (attacker is MinionParent && target is MinionParent)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        CardSelectionManager.Instance.TryAttackTarget(target.UnityObject.GetComponent<CardClickHandler>(), secondAttack);
+                    }
+                    // Minion attacks player.
+                    else if (attacker is MinionParent && packet[5] == 2)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        CardSelectionManager.Instance.TryAttackPlayer(secondAttack);
+                    }
+                    // spell.
+                    else if (attacker is SpellParent)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        if (!secondAttack)
+                        {
+                            if (target != null)
+                            {
+                                CardSelectionManager.Instance.TrySpellTarget(target.UnityObject.GetComponent<CardClickHandler>());
+                            }
+                            else
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning("Target ended up as null! Ignoring spell.");
+#endif
+                            }
+                        }
+                        else
+                        {
+                            CardSelectionManager.Instance.TrySpellNoTarget();
+                        }
+                    }
+                    // restore player 1's selection if needed.
+                    if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
                     break;
                 }
                 case ((byte) packetType.cardDeath):
@@ -1748,73 +1780,6 @@ namespace Network
         /// </summary>
         private static void CompleteRequests()
         {
-            // attack.
-            if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
-            {
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                // action.
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>(), requestSecondAttack);
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
-            // minion attacks player.
-            else if (requestAttack[0] as MinionParent != null && requestPlayer != null)
-            {                
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackPlayer(requestSecondAttack);
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-                requestPlayer = null;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
-            // spell action.
-            else if (requestAttack[0] as SpellParent != null)
-            {
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                // action.
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                if (!requestSecondAttack)
-                {
-                    if (requestAttack[1] != null)
-                    {
-                        CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
-                    }
-                    else
-                    {
-#if DEBUG_MODE
-                        Debug.LogWarning($"Target ended up as null! Ignoring spell.");
-#endif
-                    }
-                }
-                else CardSelectionManager.Instance.TrySpellNoTarget();
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
             // inPlay cards.
             if (requestInplayCheck)
             {
