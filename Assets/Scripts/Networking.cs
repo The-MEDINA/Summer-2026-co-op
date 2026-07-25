@@ -1519,7 +1519,10 @@ namespace Network
                 }
                 case ((byte) packetType.commanderAbility):
                     {
-                        requestCommanderAbility = true;
+#if DEBUG_MODE
+                        Debug.Log("Found commander ability packet");
+#endif
+                        playerTwo.CommanderCard.PerformAbility();
                         break;
                     }
                 case ((byte) packetType.playerStatus):
@@ -1735,13 +1738,6 @@ namespace Network
         /// </summary>
         private static void CompleteRequests()
         {
-            // commander card ability.
-            if (requestCommanderAbility)
-            {
-                playerTwo.CommanderCard.PerformAbility();
-                requestCommanderAbility = false;
-            }
-
             // move to battleground.
             if (requestMoveToBattleground != null)
             {
