@@ -170,7 +170,6 @@ namespace Network
         /// The values here are the default values for each variable. 
         /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
-        private static string requestSceneChange = "";
         private static int requestCardInstantiation = -1;
         private static NewVirtualCardParent requestMoveToBattleground = null;
         private static NewVirtualCardParent[] requestAttack = { null, null };
@@ -1155,8 +1154,14 @@ namespace Network
                     }
                     string sceneName = Encoding.UTF8.GetString(stringAsBytes);
 
-                    // request a scene change.
-                    requestSceneChange = sceneName;
+                    // switch scene.
+                    SceneManager.LoadScene(sceneName);
+
+                    // prevent loading the scene twice (A bit of a band-aid fix)
+                    if (sceneName == "Demo_LocalTwoPlayer")
+                    {
+                        DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    }
                     break;
                 }
                 case ((byte) packetType.cardArray):
@@ -1723,18 +1728,6 @@ namespace Network
         /// </summary>
         private static void CompleteRequests()
         {
-            // scene change.
-            if (Networking.requestSceneChange != "")
-            {
-                SceneManager.LoadScene(Networking.requestSceneChange);
-                // prevent loading the scene twice
-                if (requestSceneChange == "Demo_LocalTwoPlayer")
-                {
-                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                }
-                Networking.requestSceneChange = "";
-            }
-
             // card instantiation.
             if (Networking.requestCardInstantiation == -2)
             {
