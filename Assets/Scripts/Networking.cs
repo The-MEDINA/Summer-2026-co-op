@@ -98,7 +98,7 @@ namespace Network
      * bytes 2 - 1023 are empty so we can use it later to store more info.
      * 
      * --- PLAYERSTATUS: ---
-     * byte 1 holds whether this is for player 1 or player 2. 
+     * byte 1 holds whether this is for player 1 or player 2.  
      * byte 2 holds whether to decode the player's health value. 1 means yes, 0 means no.
      * bytes 3 - 4 holds the player's health value.
      * byte 5 holds the player's energy. Ignore if it's 255.
@@ -180,7 +180,6 @@ namespace Network
         private static List<short> requestArray = null;
         private static string requestP2Commander = "";
         private static bool requestCommanderAbility = false;
-        private static int[] requestPlayerStatus = { -1, -1, -1 };
 
         /// <summary>
         /// delegates to set up events.
@@ -1508,24 +1507,35 @@ namespace Network
                     }
                 case ((byte) packetType.playerStatus):
                     {
+#if DEBUG_MODE
+                        Debug.Log("found player status packet");
+#endif
+                        Player targetPlayer = null;
                         if (packet[1] == 1)
                         {
-                            requestPlayerStatus[0] = 1;
+                            targetPlayer = playerOne;
                         }
                         else
                         {
-                            requestPlayerStatus[0] = 2;
+                            targetPlayer = playerTwo;
                         }
                         if (packet[2] == 1)
                         {
                             short health = packet[3];
                             health <<= 8;
                             health += packet[4];
-                            requestPlayerStatus[1] = health;
+                            if (targetPlayer.Health != health)
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning($"Player health ({targetPlayer.Health}) and incoming health ({health}) don't match! Setting health to incoming health.");
+#endif
+                                targetPlayer.Health = health;
+                            }
                         }
                         if (packet[5] != 255)
                         {
-                            requestPlayerStatus[2] = packet[5];
+                            targetPlayer.Energy = packet[5];
+                            targetPlayer.Timer = 0f;
                         }
                         break;
                     }
@@ -1591,14 +1601,15 @@ namespace Network
                         CloseConnection();
                     }
                     // decode the packet if one was received in time.
-                    else
+                    /*else
                     {
                         await DecodePacket(packet);
-                    }
+                    }*/
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
                     // complete any requests that came from other threads like DecodePacket.
+                    await DecodePacket(packet);
                     CompleteRequests();
                 }
             }
@@ -1648,7 +1659,7 @@ namespace Network
                             Debug.Log($"found {result.Result} bytes.");
 #endif
                             receivedPacket.Cancel();
-                            await DecodePacket(packet);
+                            // await DecodePacket(packet);
                         }
                     }));
 
@@ -1687,6 +1698,7 @@ namespace Network
                     await Task.WhenAll(connectionTasks);
 
                     // complete any requests that came from other threads like DecodePacket.
+                    await DecodePacket(packet);
                     CompleteRequests();
                 }
             }
@@ -1968,38 +1980,6 @@ namespace Network
                     SceneManager.LoadScene("Demo_LocalTwoPlayer");
                     DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
                 }
-            }
-
-            // player status.
-            if (requestPlayerStatus[0] != -1)
-            {
-                Player targetPlayer = null;
-                if (requestPlayerStatus[0] == 1)
-                {
-                    targetPlayer = playerOne;
-                }
-                else
-                {
-                    targetPlayer = playerTwo;
-                }
-                if (requestPlayerStatus[1] != -1)
-                {
-                    if (targetPlayer.Health != requestPlayerStatus[1])
-                    {
-#if DEBUG_MODE
-                        Debug.LogWarning($"player health ({targetPlayer.Health}) and incoming health ({requestPlayerStatus[1]}) don't match! Setting health to incoming health.");
-#endif
-                        targetPlayer.Health = requestPlayerStatus[1];
-                    }
-                }
-                if (requestPlayerStatus[2] != -1)
-                {
-                    targetPlayer.Energy = requestPlayerStatus[2];
-                    targetPlayer.Timer = 0f;
-                }
-                requestPlayerStatus[0] = -1;
-                requestPlayerStatus[1] = -1;
-                requestPlayerStatus[2] = -1;
             }
         }
 
