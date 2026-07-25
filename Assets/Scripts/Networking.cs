@@ -165,16 +165,6 @@ namespace Network
         private static string p2CommanderName = "";
 
         /// <summary>
-        /// These variables contain info that needs something else to do what it's asking.
-        /// Usually, these are updated by DecodePacket and taken care of in CompleteRequests.
-        /// The values here are the default values for each variable. 
-        /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
-        /// </summary>
-        private static int requestCardInstantiation = -1;
-        private static bool requestInplayCheck = false;
-        private static List<short> requestArray = null;
-
-        /// <summary>
         /// delegates to set up events.
         /// </summary>
         public delegate void StateChange(state newState);
@@ -1189,30 +1179,140 @@ namespace Network
                         {
                             case (NewVirtualCardParent.location.deck): 
                                 {
+                                    /*
                                     cardIndices.Insert(0, 0);
-                                    requestArray = cardIndices;
-                                    break;
-                                }
-                            case (NewVirtualCardParent.location.discard): { /* Not implemented, create a request for this */ break; }
-                            case (NewVirtualCardParent.location.hand):
-                                {                                     
-                                    // 1 means this array is for the hand
+                                    requestArray = cardIndices; */
+                                    // clear the deck
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        playerTwo.Deck.RemoveAt(0);
+                                    }
+                                    // add the new hand cards to deck
+                                    for (int i = 0; i < cards.Count; i++)
+                                    {
+                                        NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cards[i].CardName, NewVirtualCardParent.location.deck);
+                                        playerTwo.Deck.Add(fixedDeckCard);
+                                    }
+
+                                    // FINALLY unpause the game (if we were paused)
                                     if (CurrentState == state.paused)
                                     {
-                                        cardIndices.Insert(0, 1);
+                                        CurrentState = state.connected;
+                                        SendPauseUnpause(false);
                                     }
-                                    else
+                                    break;
+                                }
+                            case (NewVirtualCardParent.location.discard): { break; }
+                            case (NewVirtualCardParent.location.hand):
+                                {
+                                    // remove the old hand array
+                                    while (playerTwo.Hand.Count != 0)
                                     {
-                                        cardIndices.Insert(0, 2);
+                                        p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
+                                        playerTwo.Hand[0].UnityObject.SetActive(false);
+                                        playerTwo.Hand.RemoveAt(0);
                                     }
-                                    requestArray = cardIndices;
+                                    // clear the deck too
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        playerTwo.Deck.RemoveAt(0);
+                                    }
+                                    // add the new hand cards to deck first
+                                    for (int i = 0; i < cards.Count; i++)
+                                    {
+                                        NewVirtualCardParent fixedHandCard = cardIndex.Index.CreateCard(cards[i].CardName, NewVirtualCardParent.location.deck);
+                                        playerTwo.Deck.Add(fixedHandCard);
+                                    }
+                                    // play them to the hand
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        P2Battleground.DrawCardToHand();
+                                    }
+
+                                    // request the actual deck before unpausing if we're paused
+                                    if (CurrentState == state.paused)
+                                    {
+                                        SendRequest(packetType.cardArray, 0);
+                                    }
                                     break;
                                 }
                             case (NewVirtualCardParent.location.inPlay): 
                                 {
                                     AddToPreviousInplays(cards);
-                                    requestInplayCheck = true;
-                                    break; 
+                                    // requestInplayCheck = true;
+                                    int index = (previousInplay.Count < 8) ? previousInplay.Count - 1 : 7;
+                                    if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
+                                    {
+#if DEBUG_MODE
+                                        DesyncWarning("Player 2 in play arrays don't match! Attempting to resolve...");
+#endif
+                                        bool foundSolution = false;
+
+                                        // search for a deck that matches the old one
+                                        for (int i = previousInplay.Count - 1; i >= 0; i--)
+                                        {
+                                            if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
+                                            {
+#if DEBUG_MODE
+                                                Debug.Log("Found a previous array that matches the player's current array. Reverting");
+#endif
+                                                // swap out the current deck for an old one
+                                                while (playerTwo.InPlay.Count != 0)
+                                                {
+                                                    MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                                    killThis.IsDead = true;
+                                                    killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
+                                                    CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
+                                                    killThis.UnityObject.SetActive(false);
+                                                }
+                                                for (int j = 0; j < previousInplay[i].Count; j++)
+                                                {
+                                                    p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                                                }
+                                                CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
+                                                foundSolution = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!foundSolution)
+                                        {
+#if DEBUG_MODE
+                                            Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
+#endif
+                                            CurrentState = state.paused;
+                                            SendPauseUnpause(true);
+                                            // remove the current cards
+                                            while (playerTwo.InPlay.Count != 0)
+                                            {
+                                                if (playerTwo.InPlay[0] as MinionParent != null)
+                                                {
+                                                    MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                                    killThis.Death();
+                                                    killThis.UnityObject.SetActive(false);
+                                                }
+                                                // on the offchance a spell ends up in InPlay somehow remove it manually
+                                                else
+                                                {
+#if DEBUG_MODE
+                                                    Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
+#endif
+                                                    NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
+                                                    killThisInvalid.UnityObject.SetActive(false);
+                                                    playerTwo.InPlay.RemoveAt(0);
+                                                }
+                                            }
+                                            // repopulate the array with the one from the cardArray packet
+                                            for (int j = 0; j < previousInplay[index].Count; j++)
+                                            {
+                                                p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
+                                            }
+                                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
+
+                                            // request the peer's hand before unpausing
+                                            SendRequest(packetType.cardArray, 1);
+                                        }
+                                    }
+                                    break;
                                 }
                         }
                         break;
@@ -1291,7 +1391,7 @@ namespace Network
                                     p2Battleground.DrawCardToHand(); 
                                     break; 
                                 }
-                        case (NewVirtualCardParent.location.inPlay): { requestCardInstantiation = indexOfCard; break; }
+                        case (NewVirtualCardParent.location.inPlay): { /* requestCardInstantiation = indexOfCard; */ break; }
                     }
                     break;
                 }
@@ -1677,7 +1777,6 @@ namespace Network
                         CloseConnection();
                     }
                     await DecodePacket(packet);
-                    CompleteRequests();
                 }
             }
             // run in the background constantly listening as client.
@@ -1771,146 +1870,7 @@ namespace Network
                         CloseConnection();
                     }
                     await DecodePacket(packet);
-                    CompleteRequests();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Complete any requests that come from DecodePacket and all the 'request' variables.
-        /// </summary>
-        private static void CompleteRequests()
-        {
-            // inPlay cards.
-            if (requestInplayCheck)
-            {
-                int index = (previousInplay.Count < 8) ? previousInplay.Count - 1: 7;
-                if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
-                {
-#if DEBUG_MODE
-                    DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
-#endif
-                    bool foundSolution = false;
-                    // search for a previous deck that matches the old one
-                    for (int i = previousInplay.Count - 1; i >= 0; i--)
-                    {
-                        if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
-                        {
-#if DEBUG_MODE
-                            Debug.Log("Found a previous array that matches the player's current array. Reverting.");
-#endif
-                            // swap out the current deck for an old one
-                            while (playerTwo.InPlay.Count != 0)
-                            {
-                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.IsDead = true;
-                                killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
-                                CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
-                                killThis.UnityObject.SetActive(false);
-                            }
-                            for (int j = 0; j < previousInplay[i].Count; j++)
-                            {
-                                p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
-                            }
-                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
-                            foundSolution = true;
-                            break;
-                        }
-                    }
-                    if (!foundSolution)
-                    {
-#if DEBUG_MODE
-                        Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
-#endif
-                        CurrentState = state.paused;
-                        SendPauseUnpause(true);
-                        // remove the current cards
-                        while (playerTwo.InPlay.Count != 0)
-                        {
-                            if (playerTwo.InPlay[0] as MinionParent != null)
-                            {
-                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.Death();
-                                killThis.UnityObject.SetActive(false);
-                            }
-                            // on the offchance a spell ends up in InPlay somehow remove it manually
-                            else
-                            {
-#if DEBUG_MODE
-                                Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
-#endif
-                                NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
-                                killThisInvalid.UnityObject.SetActive(false);
-                                playerTwo.InPlay.RemoveAt(0);
-                            }
-                        }
-                        // repopulate the array with the one from the cardArray packet
-                        for (int j = 0; j < previousInplay[index].Count; j++)
-                        {
-                            p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
-                        }
-                        CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
-                        
-                        // request the peer's hand before unpausing
-                        SendRequest(packetType.cardArray, 1);
-                    }
-                }
-                requestInplayCheck = false;
-            }
-
-            // hand cards.
-            if (requestArray != null && (requestArray[0] == 1 || requestArray[0] == 2))
-            {
-                // remove the old hand array
-                while (playerTwo.Hand.Count != 0)
-                {
-                    p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
-                    playerTwo.Hand[0].UnityObject.SetActive(false);
-                    playerTwo.Hand.RemoveAt(0);
-                }
-                // clear the deck too
-                while (playerTwo.Deck.Count != 0)
-                {
-                    playerTwo.Deck.RemoveAt(0);
-                }
-                // add the new hand cards to deck first
-                for (int i = 1; i < requestArray.Count; i++)
-                {
-                    NewVirtualCardParent fixedHandCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
-                    playerTwo.Deck.Add(fixedHandCard);
-                }
-                // play them to the hand
-                while (playerTwo.Deck.Count != 0)
-                {
-                    P2Battleground.DrawCardToHand();
-                }
-                int request0 = requestArray[0];
-                requestArray = null;
-
-                // request the actual deck before unpausing if we're paused
-                if (request0 == 1)
-                {
-                    SendRequest(packetType.cardArray, 0);
-                }
-            }
-            if (requestArray != null && requestArray[0] == 0)
-            {
-                // clear the deck
-                while (playerTwo.Deck.Count != 0)
-                {
-                    playerTwo.Deck.RemoveAt(0);
-                }
-                // add the new hand cards to deck
-                for (int i = 1; i < requestArray.Count; i++)
-                {
-                    NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
-                    playerTwo.Deck.Add(fixedDeckCard);
-                }
-                requestArray = null;
-
-                // FINALLY unpause the game
-                CurrentState = state.connected;
-                SendPauseUnpause(false);
             }
         }
 
