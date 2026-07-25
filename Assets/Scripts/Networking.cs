@@ -171,14 +171,12 @@ namespace Network
         /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
         /// </summary>
         private static int requestCardInstantiation = -1;
-        private static NewVirtualCardParent requestMoveToBattleground = null;
         private static NewVirtualCardParent[] requestAttack = { null, null };
         private static bool requestSecondAttack = false;
         private static int[] requestKill = { -1, -1, -1 };
         private static Player requestPlayer = null;
         private static bool requestInplayCheck = false;
         private static List<short> requestArray = null;
-        private static bool requestCommanderAbility = false;
 
         /// <summary>
         /// delegates to set up events.
@@ -1257,7 +1255,7 @@ namespace Network
                     }
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
-                        requestMoveToBattleground = cardToMove;
+                        CardSelectionManager.Instance.PlayCardToBattleground(cardToMove.UnityObject.GetComponent<CardClickHandler>());
                     }
                     else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
                     {
@@ -1738,13 +1736,6 @@ namespace Network
         /// </summary>
         private static void CompleteRequests()
         {
-            // move to battleground.
-            if (requestMoveToBattleground != null)
-            {
-                CardSelectionManager.Instance.PlayCardToBattleground(requestMoveToBattleground.UnityObject.GetComponent<CardClickHandler>());
-                requestMoveToBattleground = null;
-            }
-
             // attack.
             if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
             {
