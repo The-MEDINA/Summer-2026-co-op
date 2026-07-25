@@ -1292,7 +1292,11 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { requestCardInstantiation = -2; break; }
+                        case (NewVirtualCardParent.location.hand): 
+                                {
+                                    p2Battleground.DrawCardToHand(); 
+                                    break; 
+                                }
                         case (NewVirtualCardParent.location.inPlay): { requestCardInstantiation = indexOfCard; break; }
                     }
                     break;
@@ -1568,7 +1572,10 @@ namespace Network
             // also only throw exceptions if there is not an active connection.
             if (brokenPacket && CurrentState == state.disconnected)
             {
-                throw e;
+                if (packet[0] != 0)
+                {
+                    throw e;
+                }
             }
 #if DEBUG_MODE
             else if (brokenPacket)
@@ -1728,13 +1735,6 @@ namespace Network
         /// </summary>
         private static void CompleteRequests()
         {
-            // card instantiation.
-            if (Networking.requestCardInstantiation == -2)
-            {
-                p2Battleground.DrawCardToHand();
-                Networking.requestCardInstantiation = -1;
-            }
-
             // commander card ability.
             if (requestCommanderAbility)
             {
