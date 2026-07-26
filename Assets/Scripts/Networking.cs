@@ -98,7 +98,7 @@ namespace Network
      * bytes 2 - 1023 are empty so we can use it later to store more info.
      * 
      * --- PLAYERSTATUS: ---
-     * byte 1 holds whether this is for player 1 or player 2. 
+     * byte 1 holds whether this is for player 1 or player 2.  
      * byte 2 holds whether to decode the player's health value. 1 means yes, 0 means no.
      * bytes 3 - 4 holds the player's health value.
      * byte 5 holds the player's energy. Ignore if it's 255.
@@ -162,25 +162,7 @@ namespace Network
         private static List<List<NewVirtualCardParent>> previousInplay = new List<List<NewVirtualCardParent>>();
         private static List<NewVirtualCardParent> p1InitialDeck = new List<NewVirtualCardParent>();
         private static List<NewVirtualCardParent> p2InitialDeck = new List<NewVirtualCardParent>();
-
-        /// <summary>
-        /// These variables contain info that needs something else to do what it's asking.
-        /// Usually, these are updated by DecodePacket and taken care of in CompleteRequests.
-        /// The values here are the default values for each variable. 
-        /// When they are checked, they need to be reset to these variables to prevent triggering multiple times.
-        /// </summary>
-        private static string requestSceneChange = "";
-        private static int requestCardInstantiation = -1;
-        private static NewVirtualCardParent requestMoveToBattleground = null;
-        private static NewVirtualCardParent[] requestAttack = { null, null };
-        private static bool requestSecondAttack = false;
-        private static int[] requestKill = { -1, -1, -1 };
-        private static Player requestPlayer = null;
-        private static bool requestInplayCheck = false;
-        private static List<short> requestArray = null;
-        private static string requestP2Commander = "";
-        private static bool requestCommanderAbility = false;
-        private static int[] requestPlayerStatus = { -1, -1, -1 };
+        private static string p2CommanderName = "";
 
         /// <summary>
         /// delegates to set up events.
@@ -201,7 +183,7 @@ namespace Network
         public static HandUIManager P2HandUI { get { return p2HandUI; } set { p2HandUI = value; } }
         public static List<NewVirtualCardParent> P1InitialDeck { get { return p1InitialDeck; } set { p1InitialDeck = value; } }
         public static List<NewVirtualCardParent> P2InitialDeck { get { return p2InitialDeck; } set { p2InitialDeck = value; } }
-        public static string P2CommanderName { get { return requestP2Commander; } set { requestP2Commander = value; } }
+        public static string P2CommanderName { get { return p2CommanderName; } set { p2CommanderName = value; } }
 
         /// <summary>
         /// get/set the current state of the network manager.
@@ -1156,8 +1138,14 @@ namespace Network
                     }
                     string sceneName = Encoding.UTF8.GetString(stringAsBytes);
 
-                    // request a scene change.
-                    requestSceneChange = sceneName;
+                    // switch scene.
+                    SceneManager.LoadScene(sceneName);
+
+                    // prevent loading the scene twice (A bit of a band-aid fix)
+                    if (sceneName == "Demo_LocalTwoPlayer")
+                    {
+                        DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    }
                     break;
                 }
                 case ((byte) packetType.cardArray):
@@ -1191,30 +1179,140 @@ namespace Network
                         {
                             case (NewVirtualCardParent.location.deck): 
                                 {
+                                    /*
                                     cardIndices.Insert(0, 0);
-                                    requestArray = cardIndices;
-                                    break;
-                                }
-                            case (NewVirtualCardParent.location.discard): { /* Not implemented, create a request for this */ break; }
-                            case (NewVirtualCardParent.location.hand):
-                                {                                     
-                                    // 1 means this array is for the hand
+                                    requestArray = cardIndices; */
+                                    // clear the deck
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        playerTwo.Deck.RemoveAt(0);
+                                    }
+                                    // add the new hand cards to deck
+                                    for (int i = 0; i < cards.Count; i++)
+                                    {
+                                        NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cards[i].CardName, NewVirtualCardParent.location.deck);
+                                        playerTwo.Deck.Add(fixedDeckCard);
+                                    }
+
+                                    // FINALLY unpause the game (if we were paused)
                                     if (CurrentState == state.paused)
                                     {
-                                        cardIndices.Insert(0, 1);
+                                        CurrentState = state.connected;
+                                        SendPauseUnpause(false);
                                     }
-                                    else
+                                    break;
+                                }
+                            case (NewVirtualCardParent.location.discard): { break; }
+                            case (NewVirtualCardParent.location.hand):
+                                {
+                                    // remove the old hand array
+                                    while (playerTwo.Hand.Count != 0)
                                     {
-                                        cardIndices.Insert(0, 2);
+                                        p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
+                                        playerTwo.Hand[0].UnityObject.SetActive(false);
+                                        playerTwo.Hand.RemoveAt(0);
                                     }
-                                    requestArray = cardIndices;
+                                    // clear the deck too
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        playerTwo.Deck.RemoveAt(0);
+                                    }
+                                    // add the new hand cards to deck first
+                                    for (int i = 0; i < cards.Count; i++)
+                                    {
+                                        NewVirtualCardParent fixedHandCard = cardIndex.Index.CreateCard(cards[i].CardName, NewVirtualCardParent.location.deck);
+                                        playerTwo.Deck.Add(fixedHandCard);
+                                    }
+                                    // play them to the hand
+                                    while (playerTwo.Deck.Count != 0)
+                                    {
+                                        P2Battleground.DrawCardToHand();
+                                    }
+
+                                    // request the actual deck before unpausing if we're paused
+                                    if (CurrentState == state.paused)
+                                    {
+                                        SendRequest(packetType.cardArray, 0);
+                                    }
                                     break;
                                 }
                             case (NewVirtualCardParent.location.inPlay): 
                                 {
                                     AddToPreviousInplays(cards);
-                                    requestInplayCheck = true;
-                                    break; 
+                                    // requestInplayCheck = true;
+                                    int index = (previousInplay.Count < 8) ? previousInplay.Count - 1 : 7;
+                                    if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
+                                    {
+#if DEBUG_MODE
+                                        DesyncWarning("Player 2 in play arrays don't match! Attempting to resolve...");
+#endif
+                                        bool foundSolution = false;
+
+                                        // search for a deck that matches the old one
+                                        for (int i = previousInplay.Count - 1; i >= 0; i--)
+                                        {
+                                            if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
+                                            {
+#if DEBUG_MODE
+                                                Debug.Log("Found a previous array that matches the player's current array. Reverting");
+#endif
+                                                // swap out the current deck for an old one
+                                                while (playerTwo.InPlay.Count != 0)
+                                                {
+                                                    MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                                    killThis.IsDead = true;
+                                                    killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
+                                                    CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
+                                                    killThis.UnityObject.SetActive(false);
+                                                }
+                                                for (int j = 0; j < previousInplay[i].Count; j++)
+                                                {
+                                                    p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
+                                                }
+                                                CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
+                                                foundSolution = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!foundSolution)
+                                        {
+#if DEBUG_MODE
+                                            Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
+#endif
+                                            CurrentState = state.paused;
+                                            SendPauseUnpause(true);
+                                            // remove the current cards
+                                            while (playerTwo.InPlay.Count != 0)
+                                            {
+                                                if (playerTwo.InPlay[0] as MinionParent != null)
+                                                {
+                                                    MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
+                                                    killThis.Death();
+                                                    killThis.UnityObject.SetActive(false);
+                                                }
+                                                // on the offchance a spell ends up in InPlay somehow remove it manually
+                                                else
+                                                {
+#if DEBUG_MODE
+                                                    Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
+#endif
+                                                    NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
+                                                    killThisInvalid.UnityObject.SetActive(false);
+                                                    playerTwo.InPlay.RemoveAt(0);
+                                                }
+                                            }
+                                            // repopulate the array with the one from the cardArray packet
+                                            for (int j = 0; j < previousInplay[index].Count; j++)
+                                            {
+                                                p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
+                                            }
+                                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
+
+                                            // request the peer's hand before unpausing
+                                            SendRequest(packetType.cardArray, 1);
+                                        }
+                                    }
+                                    break;
                                 }
                         }
                         break;
@@ -1253,7 +1351,7 @@ namespace Network
                     }
                     if (oldLocation == NewVirtualCardParent.location.hand && newLocation == NewVirtualCardParent.location.inPlay)
                     {
-                        requestMoveToBattleground = cardToMove;
+                        CardSelectionManager.Instance.PlayCardToBattleground(cardToMove.UnityObject.GetComponent<CardClickHandler>());
                     }
                     else if (oldLocation == NewVirtualCardParent.location.inPlay && newLocation == NewVirtualCardParent.location.discard)
                     {
@@ -1288,18 +1386,25 @@ namespace Network
                     {
                         case (NewVirtualCardParent.location.deck): { playerTwo.Deck.Add(card); break; }
                         case (NewVirtualCardParent.location.discard): { playerTwo.Discard.Add(card); break; }
-                        case (NewVirtualCardParent.location.hand): { requestCardInstantiation = -2; break; }
-                        case (NewVirtualCardParent.location.inPlay): { requestCardInstantiation = indexOfCard; break; }
+                        case (NewVirtualCardParent.location.hand): 
+                                {
+                                    p2Battleground.DrawCardToHand(); 
+                                    break; 
+                                }
+                        case (NewVirtualCardParent.location.inPlay): { /* requestCardInstantiation = indexOfCard; */ break; }
                     }
                     break;
                 }
                 case ((byte) packetType.cardAttack):
                 {
 #if DEBUG_MODE
-                        Debug.Log("found cardAttack packet");
+                    Debug.Log("found cardAttack packet");
 #endif
+                    // setup
                     NewVirtualCardParent attacker = null;
                     NewVirtualCardParent target = null;
+                    bool secondAttack = false;
+                    if (packet[3] == 1) secondAttack = true;
 
                     // check for any overrides.
                     // hand override.
@@ -1384,41 +1489,87 @@ namespace Network
                         {
                             target = playerOne.InPlay[packet[2]];
                         }
-                        else if (packet[5] == 2)
-                        {
-                            requestPlayer = playerOne;
-                        }
 #if DEBUG_MODE
                         else
-                            {
-                                DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
-                            }
+                        {
+                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                        }
 #endif
                     }
-                    requestAttack[0] = attacker;
-                    requestAttack[1] = target;
-                    if (packet[3] == 1) requestSecondAttack = true;
-                    else requestSecondAttack = false;
+
+                    // store player 1's selection if one mas made.
+                    CardClickHandler previousSelection = null;
+                    if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
+
+                    // attack.
+                    if (attacker is MinionParent && target is MinionParent)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        CardSelectionManager.Instance.TryAttackTarget(target.UnityObject.GetComponent<CardClickHandler>(), secondAttack);
+                    }
+                    // Minion attacks player.
+                    else if (attacker is MinionParent && packet[5] == 2)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        CardSelectionManager.Instance.TryAttackPlayer(secondAttack);
+                    }
+                    // spell.
+                    else if (attacker is SpellParent)
+                    {
+                        CardSelectionManager.Instance.SelectedCardObject = attacker.UnityObject.GetComponent<CardClickHandler>();
+                        if (!secondAttack)
+                        {
+                            if (target != null)
+                            {
+                                CardSelectionManager.Instance.TrySpellTarget(target.UnityObject.GetComponent<CardClickHandler>());
+                            }
+                            else
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning("Target ended up as null! Ignoring spell.");
+#endif
+                            }
+                        }
+                        else
+                        {
+                            CardSelectionManager.Instance.TrySpellNoTarget();
+                        }
+                    }
+                    // restore player 1's selection if needed.
+                    if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
                     break;
                 }
                 case ((byte) packetType.cardDeath):
                 {
 #if DEBUG_MODE
-                        Debug.Log("found cardDeath packet");
+                    Debug.Log("found cardDeath packet");
 #endif
+                    // setup
+                    int indexOfCard = packet[4];
+                    int inPlayCount = packet[5];
+                    short cardNameIndex = packet[2];
+                    Player targetPlayer = null;
+
                     // this is flipped since the peer's player 2 is us, player 1.
-                    if (packet[1] == 0) requestPlayer = playerTwo;
-                    else requestPlayer = playerOne;
+                    if (packet[1] == 0) targetPlayer = playerTwo;
+                    else targetPlayer = playerOne;
 
-                    // rebuild the card's index.
-                    short indexOfCard = packet[2];
-                    indexOfCard <<= 8;
-                    indexOfCard += packet[3];
+                    cardNameIndex <<= 8;
+                    cardNameIndex += packet[3];
 
-                    // prepare the request.
-                    requestKill[0] = indexOfCard;
-                    requestKill[1] = packet[4];
-                    requestKill[2] = packet[5];
+                    if (inPlayCount == targetPlayer.InPlay.Count && // these shouldn't be the same if the card died.
+                        targetPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex) // card shouldn't be found if it died.
+                    {
+#if DEBUG_MODE
+                        Debug.LogWarning("Found card that should've died. Attempting to kill manually.");
+#endif
+                        targetPlayer.InPlay[indexOfCard].UnityObject.SetActive(false);
+                        if (targetPlayer.InPlay[indexOfCard] is MinionParent)
+                        {
+                            MinionParent killThis = (MinionParent)targetPlayer.InPlay[indexOfCard];
+                            killThis.Death();
+                        }
+                    }
                     break;
                 }
                 case ((byte) packetType.pause_unpause):
@@ -1474,9 +1625,9 @@ namespace Network
                     // rebuild and set the commander card from the info.
                     short indexOfCard = packet[2];
                     indexOfCard <<= 8;
-                        indexOfCard += packet[3];
+                    indexOfCard += packet[3];
                     string commanderName = cardIndex.Index.GetName(indexOfCard);
-                    requestP2Commander = commanderName;
+                    p2CommanderName = commanderName;
 
                     // New array to replace the old one.
                     List<NewVirtualCardParent> deck = new List<NewVirtualCardParent>();
@@ -1499,33 +1650,55 @@ namespace Network
 
                     // replace the deck with this new one
                     p2InitialDeck = deck;
+
+                    // if we both sent or received loadouts
+                    if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
+                    {
+                        SendSceneSwitch("Demo_LocalTwoPlayer");
+                        SceneManager.LoadScene("Demo_LocalTwoPlayer");
+                        DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
+                    }
                     break;
                 }
                 case ((byte) packetType.commanderAbility):
                     {
-                        requestCommanderAbility = true;
+#if DEBUG_MODE
+                        Debug.Log("Found commander ability packet");
+#endif
+                        playerTwo.CommanderCard.PerformAbility();
                         break;
                     }
                 case ((byte) packetType.playerStatus):
                     {
+#if DEBUG_MODE
+                        Debug.Log("found player status packet");
+#endif
+                        Player targetPlayer = null;
                         if (packet[1] == 1)
                         {
-                            requestPlayerStatus[0] = 1;
+                            targetPlayer = playerOne;
                         }
                         else
                         {
-                            requestPlayerStatus[0] = 2;
+                            targetPlayer = playerTwo;
                         }
                         if (packet[2] == 1)
                         {
                             short health = packet[3];
                             health <<= 8;
                             health += packet[4];
-                            requestPlayerStatus[1] = health;
+                            if (targetPlayer.Health != health)
+                            {
+#if DEBUG_MODE
+                                Debug.LogWarning($"Player health ({targetPlayer.Health}) and incoming health ({health}) don't match! Setting health to incoming health.");
+#endif
+                                targetPlayer.Health = health;
+                            }
                         }
                         if (packet[5] != 255)
                         {
-                            requestPlayerStatus[2] = packet[5];
+                            targetPlayer.Energy = packet[5];
+                            targetPlayer.Timer = 0f;
                         }
                         break;
                     }
@@ -1545,7 +1718,10 @@ namespace Network
             // also only throw exceptions if there is not an active connection.
             if (brokenPacket && CurrentState == state.disconnected)
             {
-                throw e;
+                if (packet[0] != 0)
+                {
+                    throw e;
+                }
             }
 #if DEBUG_MODE
             else if (brokenPacket)
@@ -1567,7 +1743,9 @@ namespace Network
 #if DEBUG_MODE
                     Debug.Log("Host connection while loop");
 #endif
+                    //setup
                     byte[] packet = new byte[1024];
+                    bool close = false;
 
                     // (As far as I know) Make a task to check if this ever finishes on time.
                     Task<int> result = stream.ReadAsync(packet, 0, packet.Length);
@@ -1579,27 +1757,26 @@ namespace Network
                     // close the connection on timeout.
                     if (!result.IsCompleted)
                     {
-                        CloseConnection();
+                        close = true;
 #if DEBUG_MODE
                     Debug.LogWarning($"timeout on host, closing connection.");
 #endif
                     }
-                    // close the connection if 0 was received.
+                    // Mark for closing the connection if 0 was received.
                     // 0 means the connection was closed cleanly on the other side. (I think?)
                     else if (result.Result == 0)
                     {
-                        CloseConnection();
-                    }
-                    // decode the packet if one was received in time.
-                    else
-                    {
-                        await DecodePacket(packet);
+                        close = true;
                     }
 #if DEBUG_MODE
                     Debug.Log($"post read");
 #endif
-                    // complete any requests that came from other threads like DecodePacket.
-                    CompleteRequests();
+                    // Decode the packet if we don't close the connection.
+                    if (close)
+                    {
+                        CloseConnection();
+                    }
+                    await DecodePacket(packet);
                 }
             }
             // run in the background constantly listening as client.
@@ -1612,7 +1789,9 @@ namespace Network
 #endif
                     // setup
                     byte[] packet = new byte[1024];
+                    bool close = false;
                     CancellationTokenSource receivedPacket = new CancellationTokenSource();
+
                     // Ok so... what this basically does is run 2 separate thread-like tasks.
                     // The read and keepalive task run simultaneously and don't run again in the while loop until both are done.
                     List<Task> connectionTasks = new List<Task>();
@@ -1633,12 +1812,12 @@ namespace Network
 #if DEBUG_MODE
                             Debug.LogWarning($"timeout on client, closing connection.");
 #endif
-                            CloseConnection();
+                            close = true;
                         }
-                        // Also close if connection was cleanly closed.
+                        // Also mark the connection for closing if connection was cleanly closed.
                         else if (result.Result == 0)
                         {
-                            CloseConnection();
+                            close = true;
                         }
                         // Decode the packet if one was found in time.
                         // also stop the keepalive packet from being sent if it's been less than 5 seconds.
@@ -1648,7 +1827,6 @@ namespace Network
                             Debug.Log($"found {result.Result} bytes.");
 #endif
                             receivedPacket.Cancel();
-                            await DecodePacket(packet);
                         }
                     }));
 
@@ -1686,320 +1864,13 @@ namespace Network
                     // wait for both tasks to finish before doing it again, if there's still a connection.
                     await Task.WhenAll(connectionTasks);
 
-                    // complete any requests that came from other threads like DecodePacket.
-                    CompleteRequests();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Complete any requests that come from DecodePacket and all the 'request' variables.
-        /// </summary>
-        private static void CompleteRequests()
-        {
-            // scene change.
-            if (Networking.requestSceneChange != "")
-            {
-                SceneManager.LoadScene(Networking.requestSceneChange);
-                // prevent loading the scene twice
-                if (requestSceneChange == "Demo_LocalTwoPlayer")
-                {
-                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                }
-                Networking.requestSceneChange = "";
-            }
-
-            // card instantiation.
-            if (Networking.requestCardInstantiation == -2)
-            {
-                p2Battleground.DrawCardToHand();
-                Networking.requestCardInstantiation = -1;
-            }
-
-            // commander card ability.
-            if (requestCommanderAbility)
-            {
-                playerTwo.CommanderCard.PerformAbility();
-                requestCommanderAbility = false;
-            }
-
-            // move to battleground.
-            if (requestMoveToBattleground != null)
-            {
-                CardSelectionManager.Instance.PlayCardToBattleground(requestMoveToBattleground.UnityObject.GetComponent<CardClickHandler>());
-                requestMoveToBattleground = null;
-            }
-
-            // attack.
-            if (requestAttack[0] as MinionParent != null && requestAttack[1] as MinionParent != null)
-            {
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                // action.
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>(), requestSecondAttack);
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
-            // minion attacks player.
-            else if (requestAttack[0] as MinionParent != null && requestPlayer != null)
-            {                
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackPlayer(requestSecondAttack);
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-                requestPlayer = null;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
-            // spell action.
-            else if (requestAttack[0] as SpellParent != null)
-            {
-                // store player 1's selection if one was made.
-                CardClickHandler previousSelection = null;
-                if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
-
-                // action.
-                CardSelectionManager.Instance.SelectedCardObject = requestAttack[0].UnityObject.GetComponent<CardClickHandler>();
-                if (!requestSecondAttack)
-                {
-                    if (requestAttack[1] != null)
+                    // Decode the packet if we don't close the connection.
+                    if (close)
                     {
-                        CardSelectionManager.Instance.TrySpellTarget(requestAttack[1].UnityObject.GetComponent<CardClickHandler>());
+                        CloseConnection();
                     }
-                    else
-                    {
-#if DEBUG_MODE
-                        Debug.LogWarning($"Target ended up as null! Ignoring spell.");
-#endif
-                    }
+                    await DecodePacket(packet);
                 }
-                else CardSelectionManager.Instance.TrySpellNoTarget();
-                requestAttack[0] = null;
-                requestAttack[1] = null;
-                requestSecondAttack = false;
-
-                // restore player 1's selection if needed.
-                if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
-            }
-
-            // death.
-            if (requestPlayer != null && requestKill[0] != -1)
-            {
-                // setup
-                int cardNameIndex = requestKill[0];
-                int indexOfCard = requestKill[1];
-                int inplayCount = requestKill[2];
-                
-                // ONLY kill the card if it's not already dead.
-                if(inplayCount == requestPlayer.InPlay.Count && // these shouldn't be the same if the card died.
-                    requestPlayer.InPlay[indexOfCard].NameIndexPosition == cardNameIndex) // card shouldn't be found if it died.
-                {
-#if DEBUG_MODE
-                    Debug.LogWarning("Found card that should've died. Attempting to manually kill to avoid desync.");
-#endif
-                    requestPlayer.InPlay[indexOfCard].UnityObject.SetActive(false);
-                    if (requestPlayer.InPlay[indexOfCard] is MinionParent)
-                    {
-                        MinionParent killThis = (MinionParent) requestPlayer.InPlay[indexOfCard];
-                        killThis.Death();
-                    }
-                }
-                requestPlayer = null;
-                for (int i = 0; i < requestKill.Length; i++)
-                {
-                    requestKill[i] = -1;
-                }
-            }
-
-            // inPlay cards.
-            if (requestInplayCheck)
-            {
-                int index = (previousInplay.Count < 8) ? previousInplay.Count - 1: 7;
-                if (!SameCardArray(playerTwo.InPlay, previousInplay[index]))
-                {
-#if DEBUG_MODE
-                    DesyncWarning("Player 2 in play arrays don't match! attempting to resolve...");
-#endif
-                    bool foundSolution = false;
-                    // search for a previous deck that matches the old one
-                    for (int i = previousInplay.Count - 1; i >= 0; i--)
-                    {
-                        if (SameCardArray(playerTwo.InPlay, previousInplay[i]))
-                        {
-#if DEBUG_MODE
-                            Debug.Log("Found a previous array that matches the player's current array. Reverting.");
-#endif
-                            // swap out the current deck for an old one
-                            while (playerTwo.InPlay.Count != 0)
-                            {
-                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.IsDead = true;
-                                killThis.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(killThis);
-                                CardSelectionManager.Instance.SfxManager.UnregisterCard(killThis);
-                                killThis.UnityObject.SetActive(false);
-                            }
-                            for (int j = 0; j < previousInplay[i].Count; j++)
-                            {
-                                p2Battleground.SpawnCardToInPlay(previousInplay[i][j]);
-                            }
-                            CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
-                            foundSolution = true;
-                            break;
-                        }
-                    }
-                    if (!foundSolution)
-                    {
-#if DEBUG_MODE
-                        Debug.LogError("No previously stored array matches incoming array! Pausing connection and rebuilding deck.");
-#endif
-                        CurrentState = state.paused;
-                        SendPauseUnpause(true);
-                        // remove the current cards
-                        while (playerTwo.InPlay.Count != 0)
-                        {
-                            if (playerTwo.InPlay[0] as MinionParent != null)
-                            {
-                                MinionParent killThis = (MinionParent)playerTwo.InPlay[0];
-                                killThis.Death();
-                                killThis.UnityObject.SetActive(false);
-                            }
-                            // on the offchance a spell ends up in InPlay somehow remove it manually
-                            else
-                            {
-#if DEBUG_MODE
-                                Debug.LogWarning("Spell or card that cannot be cast to minion in InPlay! Attempting to manually remove...");
-#endif
-                                NewVirtualCardParent killThisInvalid = (NewVirtualCardParent)playerTwo.InPlay[0];
-                                killThisInvalid.UnityObject.SetActive(false);
-                                playerTwo.InPlay.RemoveAt(0);
-                            }
-                        }
-                        // repopulate the array with the one from the cardArray packet
-                        for (int j = 0; j < previousInplay[index].Count; j++)
-                        {
-                            p2Battleground.SpawnCardToInPlay(previousInplay[index][j]);
-                        }
-                        CardSelectionManager.Instance.RepositionInPlayCards(playerTwo);
-                        
-                        // request the peer's hand before unpausing
-                        SendRequest(packetType.cardArray, 1);
-                    }
-                }
-                requestInplayCheck = false;
-            }
-
-            // hand cards.
-            if (requestArray != null && (requestArray[0] == 1 || requestArray[0] == 2))
-            {
-                // remove the old hand array
-                while (playerTwo.Hand.Count != 0)
-                {
-                    p2HandUI.RemoveCardFromHand(playerTwo.Hand[0].UnityObject);
-                    playerTwo.Hand[0].UnityObject.SetActive(false);
-                    playerTwo.Hand.RemoveAt(0);
-                }
-                // clear the deck too
-                while (playerTwo.Deck.Count != 0)
-                {
-                    playerTwo.Deck.RemoveAt(0);
-                }
-                // add the new hand cards to deck first
-                for (int i = 1; i < requestArray.Count; i++)
-                {
-                    NewVirtualCardParent fixedHandCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
-                    playerTwo.Deck.Add(fixedHandCard);
-                }
-                // play them to the hand
-                while (playerTwo.Deck.Count != 0)
-                {
-                    P2Battleground.DrawCardToHand();
-                }
-                int request0 = requestArray[0];
-                requestArray = null;
-
-                // request the actual deck before unpausing if we're paused
-                if (request0 == 1)
-                {
-                    SendRequest(packetType.cardArray, 0);
-                }
-            }
-            if (requestArray != null && requestArray[0] == 0)
-            {
-                // clear the deck
-                while (playerTwo.Deck.Count != 0)
-                {
-                    playerTwo.Deck.RemoveAt(0);
-                }
-                // add the new hand cards to deck
-                for (int i = 1; i < requestArray.Count; i++)
-                {
-                    NewVirtualCardParent fixedDeckCard = cardIndex.Index.CreateCard(cardIndex.Index.GetName(requestArray[i]), NewVirtualCardParent.location.deck);
-                    playerTwo.Deck.Add(fixedDeckCard);
-                }
-                requestArray = null;
-
-                // FINALLY unpause the game
-                CurrentState = state.connected;
-                SendPauseUnpause(false);
-            }
-
-            // Loadout. (Tracked by p2's commander)
-            if (requestP2Commander != "")
-            {
-                // if we both sent or received loadouts
-                if (DeckInstanceDeckbuilderScript.instance.SentLoadout && p2InitialDeck.Count != 0)
-                {
-                    SendSceneSwitch("Demo_LocalTwoPlayer");
-                    SceneManager.LoadScene("Demo_LocalTwoPlayer");
-                    DeckInstanceDeckbuilderScript.instance.SentLoadout = false;
-                }
-            }
-
-            // player status.
-            if (requestPlayerStatus[0] != -1)
-            {
-                Player targetPlayer = null;
-                if (requestPlayerStatus[0] == 1)
-                {
-                    targetPlayer = playerOne;
-                }
-                else
-                {
-                    targetPlayer = playerTwo;
-                }
-                if (requestPlayerStatus[1] != -1)
-                {
-                    if (targetPlayer.Health != requestPlayerStatus[1])
-                    {
-#if DEBUG_MODE
-                        Debug.LogWarning($"player health ({targetPlayer.Health}) and incoming health ({requestPlayerStatus[1]}) don't match! Setting health to incoming health.");
-#endif
-                        targetPlayer.Health = requestPlayerStatus[1];
-                    }
-                }
-                if (requestPlayerStatus[2] != -1)
-                {
-                    targetPlayer.Energy = requestPlayerStatus[2];
-                    targetPlayer.Timer = 0f;
-                }
-                requestPlayerStatus[0] = -1;
-                requestPlayerStatus[1] = -1;
-                requestPlayerStatus[2] = -1;
             }
         }
 
@@ -2048,6 +1919,7 @@ namespace Network
         /// </summary>
         public static void CloseConnection()
         {
+            p2InitialDeck = new List<NewVirtualCardParent>();
             try
             {
                 client.Client.Shutdown(SocketShutdown.Both);
