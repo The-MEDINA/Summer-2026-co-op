@@ -30,7 +30,8 @@ public class MinionParent : NewVirtualCardParent
         healOnPlay,
         statsUp,
         gainEnergy,
-        mimic
+        mimic,
+        generateEnergy
     }
 
     public enum equipment //used to keep track of all the stat changes a card has recieved, so they can be changed/reused/displayed/etc
@@ -62,6 +63,7 @@ public class MinionParent : NewVirtualCardParent
     private List<equipment> equipmentList;
     private bool isHidden;
     private bool hasStatsUp;
+    private GeneratorScript generateAbility;
 
     public int Health { get { return health; } set { health = value; } }
     public int Damage { get { return damage; } set { damage = value; } }
@@ -101,6 +103,7 @@ public class MinionParent : NewVirtualCardParent
         this.startingDamage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
+        if(this.cardEffect == effect.generateEnergy) { generateAbility = new GeneratorScript(); }
         equipmentList = new List<equipment>();
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
@@ -130,6 +133,7 @@ public class MinionParent : NewVirtualCardParent
         }
         equipmentList = new List<equipment>();
         if (this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
+        if (this.cardEffect == effect.generateEnergy) { generateAbility = new GeneratorScript(); }
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
         if (cardEffect == effect.statsUp || cardDetails.secondAbility == effect.statsUp) { HasStatsUp = true; }
@@ -173,6 +177,10 @@ public class MinionParent : NewVirtualCardParent
             }
             TakeDamage(999);
             CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
+        }
+        if(CardEffect == effect.generateEnergy)
+        {
+            generateAbility.GenerateIsOn = true;
         }
         UnityObject.GetComponent<CardClickHandler>().ResetTimer();
     }

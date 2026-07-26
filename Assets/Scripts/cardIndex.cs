@@ -244,6 +244,19 @@ namespace cardIndex
                         }
                         break;
                     }
+
+                case ("Witchdoctor"):
+                    {
+                        obj.AddComponent<WitchdoctorScript>();
+                        obj.GetComponent<WitchdoctorScript>().Name = "Witchdoctor";
+                        if (battleground != null)
+                        {
+                            obj.GetComponent<WitchdoctorScript>().BG = battleground;
+                            battleground.P.CommanderCard = obj.GetComponent<WitchdoctorScript>();
+                        }
+                        break;
+                    }
+
                 // unimplemented commander card
                 default:
                     {
