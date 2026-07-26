@@ -156,12 +156,10 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     break;
                 }
         }
-        Debug.Log(currentSpeed);
     }
 
     public void SetSpeed(speed newSpeed)
     {
-        Debug.Log(currentSpeed);
         switch (newSpeed)
         {
             default:
@@ -195,8 +193,6 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
                     break;
                 }
         }
-        Debug.Log(currentSpeed);
-
     }
 
     public void ExtraChecks()

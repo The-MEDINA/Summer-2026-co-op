@@ -103,7 +103,9 @@ public class MinionParent : NewVirtualCardParent
         this.startingDamage = damage;
         this.cardEffect = cardEffect;
         if(this.cardEffect == effect.coordinate) { CoordinateAbility = new CoordinateAbilityScript(this.CardName); }
-        if(this.cardEffect == effect.generateEnergy) { generateAbility = new GeneratorScript(); }
+        if(this.cardEffect == effect.generateEnergy) { generateAbility = new GeneratorScript();
+            Debug.Log(generateAbility.GenerateIsOn);
+        }
         equipmentList = new List<equipment>();
         if (CardType == NewVirtualCardParent.type.token) { CardLocation = NewVirtualCardParent.location.inPlay; }
         if (cardEffect == effect.hidden) { IsHidden = true; }
@@ -180,7 +182,9 @@ public class MinionParent : NewVirtualCardParent
         }
         if(CardEffect == effect.generateEnergy)
         {
+            generateAbility.P = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer;
             generateAbility.GenerateIsOn = true;
+            Debug.Log(generateAbility.GenerateIsOn);
         }
         UnityObject.GetComponent<CardClickHandler>().ResetTimer();
     }

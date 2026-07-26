@@ -8,21 +8,24 @@ public class GeneratorScript : MonoBehaviour
     private Player p;
     private bool generateIsOn = false;
 
+    public Player P { get { return p; } set { p = value; } }
     public bool GenerateIsOn { get { return generateIsOn; } set { generateIsOn = value; }  }
 
     void Start()
     {
-        p = GetComponent<CardClickHandler>().OwnerPlayer;
         GenerateIsOn = false;
     }
 
     void Update()
     {
+        Debug.Log($"Update is firing on: {gameObject.name}"); 
         if (GenerateIsOn)
         {
+            Debug.Log("A");
             if (timer >= timeToEnergy)
             {
-                p.Energy++;
+                Debug.Log("Energy gained");
+                P.Energy++;
                 timer = 0;
             }
             else
