@@ -396,7 +396,9 @@ public class SpellParent : NewVirtualCardParent
                     {
                         case "Clone":
                             {
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(cardIndex.Index.CreateCard(target.CardName, location.inPlay));
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(
+                                    target.Cost, target.StartingHealth, target.Damage, target.CardName, NewVirtualCardParent.type.token,
+                                    target.CardEffect, location.deck));
                                 CardSelectionManager.Instance.RepositionInPlayCards(UnityObject.GetComponent<CardClickHandler>().OwnerPlayer);
                                 break;
                             }

@@ -113,7 +113,7 @@ public class SimpleAIScript : MonoBehaviour
             moveNum = rng.Next(0, player.Hand.Count);
             if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
             else { loopbreaker = false; }
-            if (tries >= 3) { return; }
+            //if (tries >= 3) { return; }
         }
 
         if (player.Hand[moveNum] is MinionParent)
@@ -133,6 +133,9 @@ public class SimpleAIScript : MonoBehaviour
 
             switch (aiSpell.Target)
             {
+                case SpellParent.spellTarget.inplay:
+                case SpellParent.spellTarget.allEnemies:
+                case SpellParent.spellTarget.any:
                 case SpellParent.spellTarget.enemyCards:
                     {
                         if (opponent.InPlay.Count == 0) { return; }
@@ -141,6 +144,7 @@ public class SimpleAIScript : MonoBehaviour
                         break;
                     }
 
+                case SpellParent.spellTarget.allAllies:
                 case SpellParent.spellTarget.allyCards:
                     {
                         if (player.InPlay.Count == 0) { return; }
@@ -149,6 +153,8 @@ public class SimpleAIScript : MonoBehaviour
                         break;
                     }
 
+                case SpellParent.spellTarget.opponent:
+                case SpellParent.spellTarget.owner:
                 case SpellParent.spellTarget.none:
                     {
                         CardSelectionManager.Instance.TrySpellNoTarget();
@@ -230,7 +236,7 @@ public class SimpleAIScript : MonoBehaviour
     {
         string[] startingDeck =
         {
-        "Spontaneous Combustion",
+        /*"Spontaneous Combustion",
         "Patch Up",
         "M16",
         "Conscript",
@@ -242,7 +248,8 @@ public class SimpleAIScript : MonoBehaviour
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
         "Exploding Cat",
-        "Night Vision Cat",
+        "Night Vision Cat",*/
+        "Duplicate"
         };
 
         for (int i = 0; i < startingDeck.Length; i++)
