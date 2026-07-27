@@ -113,7 +113,7 @@ public class SimpleAIScript : MonoBehaviour
             moveNum = rng.Next(0, player.Hand.Count);
             if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
             else { loopbreaker = false; }
-            //if (tries >= 3) { return; }
+            if (tries >= 3) { return; }
         }
 
         if (player.Hand[moveNum] is MinionParent)
@@ -248,7 +248,7 @@ public class SimpleAIScript : MonoBehaviour
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
         "Exploding Cat",
-        "Night Vision Cat",*/
+        "Night Vision Cat"*/
         "Duplicate"
         };
 
