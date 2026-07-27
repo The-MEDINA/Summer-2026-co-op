@@ -230,7 +230,7 @@ public class SimpleAIScript : MonoBehaviour
     {
         string[] startingDeck =
         {
-        /*"Spontaneous Combustion",
+        "Spontaneous Combustion",
         "Patch Up",
         "M16",
         "Conscript",
@@ -242,7 +242,7 @@ public class SimpleAIScript : MonoBehaviour
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
         "Exploding Cat",
-        "Night Vision Cat",*/
+        "Night Vision Cat",
         };
 
         for (int i = 0; i < startingDeck.Length; i++)
