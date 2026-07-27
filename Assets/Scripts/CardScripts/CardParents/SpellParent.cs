@@ -1,6 +1,7 @@
 using cardIndex;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class SpellParent : NewVirtualCardParent
 {
@@ -484,7 +485,18 @@ public class SpellParent : NewVirtualCardParent
         {
             case spellEffect.copy:
                 {//does not function
-                    UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, cardIndex.Index.CreateCard(target.CardName, location.deck));
+                    if(target is MinionParent)
+                    {
+                        MinionParent mp = (MinionParent)target;
+                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new MinionParent(mp.Cost,
+                        mp.StartingHealth, mp.Damage, mp.CardName, NewVirtualCardParent.type.token, mp.CardEffect, location.deck));
+                    }
+                    else
+                    {
+                        SpellParent sp = (SpellParent)target;
+                        UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.Deck.Insert(0, new SpellParent(sp.Effect, sp.Target,
+                            sp.Amount, sp.SecondEquipmentAmountAmount, sp.Cost, sp.CardName, type.token, location.deck));
+                    }
                     UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.DrawCardToHand();
                     break;
                 }
