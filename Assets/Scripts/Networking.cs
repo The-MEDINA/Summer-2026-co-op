@@ -1492,7 +1492,10 @@ namespace Network
 #if DEBUG_MODE
                         else
                         {
-                            DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                            if (packet[5] != 2)
+                            {
+                                DesyncWarning($"Minion is targetting a card at an invalid index! ({packet[2]}).");
+                            }
                         }
 #endif
                     }
@@ -2016,7 +2019,15 @@ namespace Network
             byte[] packet = EncodePacket(card, Oldlocation, oldLocationPosition, newLocation);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2034,7 +2045,15 @@ namespace Network
             byte[] packet = EncodePacket(card, location);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2058,7 +2077,15 @@ namespace Network
             byte[] packet = EncodePacket(attacker, target, isSecondAttack);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2082,7 +2109,15 @@ namespace Network
             byte[] packet = EncodePacket(attacker, player, isSecondAttack);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2105,7 +2140,15 @@ namespace Network
             byte[] packet = EncodePacket(isPlayerTwo, cardToDie); 
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2127,7 +2170,15 @@ namespace Network
             byte[] packet = EncodePacket(pause);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2150,7 +2201,15 @@ namespace Network
             byte[] packet = EncodePacket(packetToRequest, overrides);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2173,7 +2232,15 @@ namespace Network
             byte[] packet = EncodePacket(deck, commander);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2195,7 +2262,15 @@ namespace Network
             byte[] packet = EncodePacket(argCount);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
@@ -2219,7 +2294,15 @@ namespace Network
             byte[] packet = EncodePacket(player.IsPlayerTwo, encodeHealth, player.Health, (encodeEnergy)? player.Energy : 255);
             if (CurrentState != state.disconnected)
             {
-                stream.WriteAsync(packet);
+                try
+                {
+                    stream.WriteAsync(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Exception when sending packet! ({e.Message}) Closing connection.");
+                    CloseConnection();
+                }
             }
 #if DEBUG_MODE
             else
