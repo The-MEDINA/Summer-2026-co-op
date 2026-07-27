@@ -120,6 +120,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             {
                 CardData.UnityObject.GetComponent<CardUIManager>().AddProgress(0f);
             }
+
+            if (minion.CardEffect == MinionParent.effect.generateEnergy) minion.GenAbility.Update();
         }
     }
 

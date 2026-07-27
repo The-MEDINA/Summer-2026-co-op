@@ -77,6 +77,7 @@ public class MinionParent : NewVirtualCardParent
     public List<equipment> EquipmentList { get { return equipmentList; } set { equipmentList = value; } }
     public bool IsHidden { get { return isHidden; } set { isHidden = value; } }
     public bool HasStatsUp { get { return hasStatsUp; } set { hasStatsUp = value; }  }
+    public GeneratorScript GenAbility { get { return generateAbility; } }
 
     #region SFX_EVENTS
     public delegate void Action(effect cardEffect);
@@ -184,7 +185,6 @@ public class MinionParent : NewVirtualCardParent
         {
             generateAbility.P = UnityObject.GetComponent<CardClickHandler>().OwnerPlayer;
             generateAbility.GenerateIsOn = true;
-            Debug.Log(generateAbility.GenerateIsOn);
         }
         UnityObject.GetComponent<CardClickHandler>().ResetTimer();
     }

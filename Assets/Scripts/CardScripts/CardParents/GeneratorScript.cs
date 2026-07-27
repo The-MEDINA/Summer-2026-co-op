@@ -16,12 +16,10 @@ public class GeneratorScript : MonoBehaviour
         GenerateIsOn = false;
     }
 
-    void Update()
+    public void Update()
     {
-        Debug.Log($"Update is firing on: {gameObject.name}"); 
         if (GenerateIsOn)
         {
-            Debug.Log("A");
             if (timer >= timeToEnergy)
             {
                 Debug.Log("Energy gained");
@@ -30,7 +28,7 @@ public class GeneratorScript : MonoBehaviour
             }
             else
             {
-                timer++;
+                timer += Time.deltaTime;
             }
         }
     }

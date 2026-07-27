@@ -98,12 +98,12 @@ public class Player : MonoBehaviour
             // if (!isPlayerTwo) 
                 timer = 0f;
 
-            if(TimeForEnergy != 5f)
+            if(TimeForEnergy != 3f)
             {
                 timesWhereEnergyWasNotNormal++;
                 if(timesWhereEnergyWasNotNormal >= 5)
                 {
-                    TimeForEnergy = 5f;
+                    TimeForEnergy = 3f;
                     timesWhereEnergyWasNotNormal = 0;
                 }
             }
