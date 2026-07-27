@@ -5,10 +5,18 @@ using cardIndex;
 
 public class DeckInstanceDeckbuilderScript : MonoBehaviour
 {
+    public enum filter
+    {
+        none,
+        cost,
+        selected
+    }
+
     public static DeckInstanceDeckbuilderScript instance;
 
     [SerializeField] private GameObject prefab;
     [SerializeField] private int cardsInRow = 7;
+    [SerializeField] private int maxCardCount = 12;
     [SerializeField] private float cardSpacing = 2.3f;
     private float highYPos = -100;
     private float lowYPos = 100;
@@ -18,6 +26,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     private bool sentLoadout = false;
     private CommanderCardScript commanderInstance;
     private string currentFaction = "Cat";
+    private filter currentFilter = filter.none;
     private string titleScreenButtonPressed = "";
 
     public List<NewVirtualCardParent> Deck { get { return this.deck; } }
@@ -26,6 +35,9 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     public bool SentLoadout { get { return sentLoadout; } set { sentLoadout = value; } }
     public CommanderCardScript CommanderInstance { get { return commanderInstance; } set { commanderInstance = value; } }
     public string CurrentFaction { get { return currentFaction; } set { currentFaction = value; } }
+    public filter CurrentFilter { get { return currentFilter; } set { currentFilter = value; } }
+    public int MaxCardCount { get { return maxCardCount; } }
+    public int CardCount { get { return deck.Count; } }
     public string TitleScreenButtonPressed { get { return titleScreenButtonPressed; } set { titleScreenButtonPressed = value; } }
 
     private void Awake()
@@ -68,7 +80,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         {
             highYPos = -100;
             lowYPos = 100;
-            ChangeFactionCards("Cat");
+            ChangeFactionCards(currentFaction);
             sentLoadout = false;
         }
     }
@@ -98,7 +110,10 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
     {
         //deck at capacity
         //too many copies of that card
-
+        if (Deck.Count >= MaxCardCount)
+        {
+            return false;
+        }
         NewVirtualCardParent cardToAdd = cardIndex.Index.CreateCard(cardName, NewVirtualCardParent.location.deck);
         Deck.Add(cardToAdd);
         Network.Networking.P1InitialDeck.Add(cardToAdd);
@@ -197,6 +212,14 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         lowYPos = 100;
         int index = 0;
 
+        if (cardIndex.Index.GetDetails(commander).faction != faction && cardIndex.Index.GetDetails(commander).faction != "All")
+        {
+            commander = "";
+        }
+
+        // filter
+        FilterCards(factionCards);
+
         // remove any now invalid cards from deck
         for (int i = 0; i < deck.Count; i++)
         {
@@ -205,10 +228,6 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                 deck.RemoveAt(i);
                 i--;
             }
-        }
-        if (cardIndex.Index.GetDetails(commander).faction != faction || cardIndex.Index.GetDetails(commander).faction != "All")
-        {
-            commander = "";
         }
 
         // remove existing cards
@@ -250,6 +269,56 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                 }
                 index++;
             }
+        }
+    }
+
+    private void FilterCards(List<Details> unfilteredCards)
+    {
+        switch (currentFilter)
+        {
+            case filter.cost:
+                {
+                    List<Details> filteredCards = new List<Details>();
+                    for (int cost = 0; unfilteredCards.Count > 0; cost++)
+                    {
+                        for (int i = 0; i < unfilteredCards.Count; i++)
+                        {
+                            if (unfilteredCards[i].cost == cost)
+                            {
+                                filteredCards.Add(unfilteredCards[i]);
+                                unfilteredCards.RemoveAt(i);
+                                i--;
+                            }
+                        }
+                    }
+                    unfilteredCards.AddRange(filteredCards);
+                    break;
+                }
+            case filter.selected:
+                {
+                    List<Details> filteredCards = new List<Details>();
+                    while (unfilteredCards.Count > 0)
+                    {
+                        for (int i = 0; i < deck.Count; i++)
+                        {
+                            if (deck[i].CardName == unfilteredCards[0].name)
+                            {
+                                filteredCards.Add(unfilteredCards[0]);
+                                break;
+                            }
+                        }
+                        if (unfilteredCards[0].name == commander)
+                        {
+                            filteredCards.Add(unfilteredCards[0]);
+                        }
+                        unfilteredCards.RemoveAt(0);
+                    }
+                    unfilteredCards.AddRange(filteredCards);
+                    break;
+                }
+            case filter.none:
+            default:
+                break;
         }
     }
 }

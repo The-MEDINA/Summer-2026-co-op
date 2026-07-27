@@ -16,6 +16,10 @@ public class button : MonoBehaviour
     public TextMeshProUGUI IPtext;
     public TextMeshProUGUI statusText;
     public TextMeshProUGUI factionText;
+    [Header("Filter")]
+    public TextMeshProUGUI filterText;
+    [Header("Count")]
+    public TextMeshProUGUI countText;
     private bool showIP = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,6 +28,8 @@ public class button : MonoBehaviour
         Networking.SetLocalDetails();
         Networking.Details();
         if (hostname != null) hostname.text = $"Hostname: {Dns.GetHostName()}";
+        if (factionText != null) factionText.text = $"Faction: {DeckInstanceDeckbuilderScript.instance.CurrentFaction}";
+        if (filterText != null) filterText.text = $"Filter: {DeckInstanceDeckbuilderScript.instance.CurrentFilter}";
         Network.Networking.stateChange += status;
         Network.Networking.networkError += error;
     }
@@ -31,7 +37,7 @@ public class button : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (countText != null) countText.text = $"{DeckInstanceDeckbuilderScript.instance.CardCount} / {DeckInstanceDeckbuilderScript.instance.MaxCardCount}";
     }
     public void switchScene()
     {
@@ -134,6 +140,20 @@ public class button : MonoBehaviour
         if (DeckInstanceDeckbuilderScript.instance.CurrentFaction == "Cat") DeckInstanceDeckbuilderScript.instance.CurrentFaction = "Alien";
         else DeckInstanceDeckbuilderScript.instance.CurrentFaction = "Cat";
         DeckInstanceDeckbuilderScript.instance.ChangeFactionCards(DeckInstanceDeckbuilderScript.instance.CurrentFaction);
-        factionText.text = $"Current faction: {DeckInstanceDeckbuilderScript.instance.CurrentFaction}";
+        factionText.text = $"Faction: {DeckInstanceDeckbuilderScript.instance.CurrentFaction}";
+    }
+    
+    public void FilterChange()
+    {
+        if (DeckInstanceDeckbuilderScript.instance.CurrentFilter == DeckInstanceDeckbuilderScript.filter.selected)
+        {
+            DeckInstanceDeckbuilderScript.instance.CurrentFilter = DeckInstanceDeckbuilderScript.filter.none;
+        }
+        else
+        {
+            DeckInstanceDeckbuilderScript.instance.CurrentFilter = (DeckInstanceDeckbuilderScript.instance.CurrentFilter + 1);
+        }
+        filterText.text = $"Filter: {DeckInstanceDeckbuilderScript.instance.CurrentFilter}";
+        DeckInstanceDeckbuilderScript.instance.ChangeFactionCards(DeckInstanceDeckbuilderScript.instance.CurrentFaction);
     }
 }
