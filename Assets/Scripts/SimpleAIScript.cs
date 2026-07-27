@@ -19,7 +19,7 @@ public class SimpleAIScript : MonoBehaviour
     {
         PopulatePlayer();
         rng = new System.Random();
-        drawNum = 2;
+        drawNum = 0;
     }
 
     
@@ -230,9 +230,9 @@ public class SimpleAIScript : MonoBehaviour
     {
         string[] startingDeck =
         {
-        /*"Spontaneous Combustion",
+        "Spontaneous Combustion",
         "Patch Up",
-        "M16",
+        /*"M16",
         "Conscript",
         "Cat Demolition Crew",
         "Cat",
@@ -241,8 +241,8 @@ public class SimpleAIScript : MonoBehaviour
         "Scaredy Cat",
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
-        "Exploding Cat",
-        "Night Vision Cat",*/
+        "Exploding Cat",*/
+        "Night Vision Cat",
         };
 
         for (int i = 0; i < startingDeck.Length; i++)
