@@ -262,6 +262,7 @@ public class SimpleAIScript : MonoBehaviour
         "Smite",
         "Scaredy Cat",
         "Comically Large Spoon Cat",*/
+        "Repair Drone",
         "Ratta-tat-Cat",
         "Exploding Cat",
         "Night Vision Cat",
