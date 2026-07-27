@@ -12,6 +12,10 @@ public class SimpleAIScript : MonoBehaviour
     [SerializeField] private Battleground bg;
     [SerializeField] private Player opponent;
 
+    private bool saving;
+    private NewVirtualCardParent savingFor;
+    private int savingIndex = -1;
+
     /// <summary>
     /// menial set up for the bot
     /// </summary>
@@ -108,13 +112,23 @@ public class SimpleAIScript : MonoBehaviour
         int tries = 0;
         bool loopbreaker = true;
 
-        while (loopbreaker)
+        if (saving && !player.CanAfford(savingFor)) { return; }
+        else if (!saving)
         {
-            moveNum = rng.Next(0, player.Hand.Count);
-            if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
-            else { loopbreaker = false; }
-            if (tries >= 3) { return; }
+            while (loopbreaker)
+            {
+                moveNum = rng.Next(0, player.Hand.Count);
+                if (!player.CanAfford(player.Hand[moveNum])) { tries++; }
+                else { loopbreaker = false; }
+                if (tries >= 3)
+                {
+                    SaveForCard(player.Hand[moveNum]);
+                    savingIndex = moveNum;
+                    return;
+                }
+            }
         }
+        else { moveNum = savingIndex; }
 
         if (player.Hand[moveNum] is MinionParent)
         {
@@ -172,6 +186,8 @@ public class SimpleAIScript : MonoBehaviour
 
             Debug.Log("Spent " + aiSpell.Cost + " energy from " + aiSpell.CardName);
             player.SpendEnergy(aiSpell.Cost);
+            if(saving) { saving = false; }
+            Debug.Log(saving);
         }
     }
 
@@ -245,10 +261,10 @@ public class SimpleAIScript : MonoBehaviour
         "Magic Cat",
         "Smite",
         "Scaredy Cat",
-        "Comically Large Spoon Cat",
+        "Comically Large Spoon Cat",*/
         "Ratta-tat-Cat",
         "Exploding Cat",
-        "Night Vision Cat"*/
+        "Night Vision Cat",
         "Duplicate"
         };
 
@@ -256,5 +272,11 @@ public class SimpleAIScript : MonoBehaviour
         {
             player.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
         }
+    }
+
+    private void SaveForCard(NewVirtualCardParent saveTarget)
+    {
+        savingFor = saveTarget;
+        saving = true;
     }
 }
