@@ -70,8 +70,8 @@ public class SimpleAIScript : MonoBehaviour
             AttackSomething();
             return;
         }
-        //int moveNum = rng.Next(1, 7);
-        int moveNum = rng.Next(1, 6);
+        int moveNum = rng.Next(1, 7);
+        //int moveNum = rng.Next(1, 6);
         Debug.Log("Rolled a " + moveNum);
         switch (moveNum)
         {
@@ -232,7 +232,7 @@ public class SimpleAIScript : MonoBehaviour
         {
         "Spontaneous Combustion",
         "Patch Up",
-        /*"M16",
+        "M16",
         "Conscript",
         "Cat Demolition Crew",
         "Cat",
@@ -241,7 +241,7 @@ public class SimpleAIScript : MonoBehaviour
         "Scaredy Cat",
         "Comically Large Spoon Cat",
         "Ratta-tat-Cat",
-        "Exploding Cat",*/
+        "Exploding Cat",
         "Night Vision Cat",
         };
 
