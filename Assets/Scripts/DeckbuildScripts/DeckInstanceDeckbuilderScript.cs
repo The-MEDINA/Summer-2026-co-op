@@ -68,7 +68,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
         {
             highYPos = -100;
             lowYPos = 100;
-            ChangeFactionCards("Cat");
+            ChangeFactionCards(currentFaction);
             sentLoadout = false;
         }
     }

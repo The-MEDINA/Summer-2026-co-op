@@ -20,7 +20,7 @@
 
 // This #define enables console output, among other helpful debug code.
 // Comment it out to remove any debugging code.
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 using System;
 using System.Collections.Generic;

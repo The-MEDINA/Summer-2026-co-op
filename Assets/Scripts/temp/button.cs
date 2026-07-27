@@ -24,6 +24,7 @@ public class button : MonoBehaviour
         Networking.SetLocalDetails();
         Networking.Details();
         if (hostname != null) hostname.text = $"Hostname: {Dns.GetHostName()}";
+        if (factionText != null) factionText.text = $"Current faction: {DeckInstanceDeckbuilderScript.instance.CurrentFaction}";
         Network.Networking.stateChange += status;
         Network.Networking.networkError += error;
     }
