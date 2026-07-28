@@ -262,7 +262,7 @@ public class SimpleAIScript : MonoBehaviour
     private void UseCommanderCard()
     {
         Debug.Log("COMMANDER CARD USED");
-        bg.CommanderCard.PerformAbility();
+        player.CommanderCard.PerformAbility();
     }
 
     /// <summary>

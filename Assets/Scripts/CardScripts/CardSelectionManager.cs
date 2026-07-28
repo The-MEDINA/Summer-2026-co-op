@@ -84,8 +84,8 @@ public class CardSelectionManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No commander found for player 2, defaulting to Zoomie.");
-            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, "Sergeant Zoomie", player2Battleground);
+            Debug.LogWarning("No commander found for player 2, defaulting to Major Munchkin.");
+            cardIndex.Index.AttachCommanderCard(player2CommanderSquare, "Major Munchkin", player2Battleground);
             if (player2CommanderSquare.GetComponent<DeckbuilderCard>() != null) 
             { 
                 player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
