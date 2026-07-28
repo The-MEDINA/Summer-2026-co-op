@@ -7,7 +7,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
     //add/switch cards out of the deck here if you don't want to hardcode
     private string[] startingDeck =
     {
-        /*"Magic Cat",
+        "Magic Cat",
         "Duplicate",
         "Clone",
         "Reptoid",
@@ -24,7 +24,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
         "Cave Cat",
         "The Mad Catter",
         "Pspspsps!",
-        "Curse"*/
+        "Curse"
     };
 
     private Player p;
@@ -107,12 +107,7 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(cardIndex.Index.CreateCard("Barbed Wire", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Empower", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Magic Cat", NewVirtualCardParent.location.deck));
-
-            p.Deck.Add(cardIndex.Index.CreateCard("Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
-            p.Deck.Add(cardIndex.Index.CreateCard("Cool Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Empower", NewVirtualCardParent.location.deck));
         }
 
         Debug.Log(gameObject.name + " deck loaded with " + p.Deck.Count + " cards.");

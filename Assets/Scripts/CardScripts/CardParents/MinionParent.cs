@@ -1,7 +1,8 @@
 using cardIndex;
+using Network;
 using System.Collections.Generic;
 using UnityEngine;
-using Network;
+using static UnityEngine.GraphicsBuffer;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -361,7 +362,17 @@ public class MinionParent : NewVirtualCardParent
         }
         CardLocation = location.discard;
         CanAttack = false;
-        Health = cardIndex.Index.GetDetails(CardName).health;     
+        Health = cardIndex.Index.GetDetails(CardName).health;
+        Details cardDetails = cardIndex.Index.GetDetails(CardName);
+        Damage = cardDetails.damage;
+        Health = cardDetails.health;
+        if (CardEffect == effect.twoAttacks)
+        {
+            TwoAttackParent newTAP = (TwoAttackParent)this;
+            newTAP.FirstDamage = cardDetails.damage;
+            newTAP.SecondDamage = cardDetails.secondDamage;
+        }
+        EquipmentList.Clear();
         UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.MoveCardToDiscard(this);
         CardSelectionManager.Instance.SfxManager.UnregisterCard(this);
     }

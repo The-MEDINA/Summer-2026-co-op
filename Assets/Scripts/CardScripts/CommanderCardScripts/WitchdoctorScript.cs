@@ -49,8 +49,7 @@ public class WitchdoctorScript : CommanderCardScript, IPointerClickHandler
         // Don't run if network manager is trying to resolve a desync.
         if (Networking.CurrentState == state.paused) return;
 
-        bg.P.Deck.Insert(0, new SpellParent(SpellParent.spellEffect.equipment, SpellParent.spellTarget.allyCards, 1, 1, 0, "Worms",
-            NewVirtualCardParent.type.token, NewVirtualCardParent.location.deck));
+        bg.P.Deck.Insert(0, new MinionParent(0, 2, 0, "Totem", NewVirtualCardParent.type.token, MinionParent.effect.generateEnergy, NewVirtualCardParent.location.deck));
         bg.DrawCardToHand();
 
         if (!bg.P.IsPlayerTwo)
