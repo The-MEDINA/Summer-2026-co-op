@@ -278,7 +278,8 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     private void PopulatePlayer()
     {
-        int randDeckNum = rng.Next(1, 5);
+        //int randDeckNum = rng.Next(1, 5);
+        int randDeckNum = 1;
         switch(randDeckNum)
         {
             case 1:
@@ -298,6 +299,11 @@ public class SimpleAIScript : MonoBehaviour
                         "Night Vision Cat",
                         "Ninja Cat"
                     };
+
+                    for (int i = 0; i < mMDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(mMDeck[i], NewVirtualCardParent.location.deck));
+                    }
                     break;
                 }
 
@@ -318,16 +324,61 @@ public class SimpleAIScript : MonoBehaviour
                         "Roughly a Cat",
                         "Chef Cat"
                     };
+
+                    for (int i = 0; i < sZDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(sZDeck[i], NewVirtualCardParent.location.deck));
+                    }
                     break;
                 }
 
             case 3:
                 {
+                    string[] hMDeck =
+                    {
+                        "Slate Skate",
+                        "Brain Invaders",
+                        "Slime",
+                        "Star Child",
+                        "Extraterrestrial Invader",
+                        "Slate Skate",
+                        "Brain Invaders",
+                        "Repair Drone",
+                        "Abduction",
+                        "Genetic Engineering",
+                        "Spontaneous Combustion",
+                        "Sabotage"
+                    };
+
+                    for (int i = 0; i < hMDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(hMDeck[i], NewVirtualCardParent.location.deck));
+                    }
                     break;
                 }
 
             case 4:
                 {
+                    string[] wDDeck =
+                    {
+                        "Solar Panels",
+                        "Cover-Up",
+                        "Lost in Space",
+                        "Lost in Space",
+                        "Frostback",
+                        "Frostback",
+                        "Frozen Horror",
+                        "Mimic",
+                        "Digger",
+                        "Digger",
+                        "Nuclear Waste",
+                        "Hide"
+                    };
+
+                    for (int i = 0; i < wDDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(wDDeck[i], NewVirtualCardParent.location.deck));
+                    }
                     break;
                 }
         }
@@ -350,11 +401,6 @@ public class SimpleAIScript : MonoBehaviour
         "Night Vision Cat",
         "Duplicate"
         };
-
-        for (int i = 0; i < startingDeck.Length; i++)
-        {
-            player.Deck.Add(cardIndex.Index.CreateCard(startingDeck[i], NewVirtualCardParent.location.deck));
-        }
     }
 
     private void SaveForCard(NewVirtualCardParent saveTarget)
