@@ -521,6 +521,7 @@ public class SpellParent : NewVirtualCardParent
             case spellEffect.heal:
                 {
                     target.Health += amount;
+                    if (target.Health > 100) { target.Health = 100; }
                     break;
                 }
 
