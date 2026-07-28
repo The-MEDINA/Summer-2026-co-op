@@ -8,7 +8,6 @@ public class SFXManager : MonoBehaviour
     [Header("Generics")]
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip death;
-    [SerializeField] private AudioClip energyGain;
     [SerializeField] private AudioClip end;
     [Header("Specifics")]
     [SerializeField] private AudioClip energyMax;
@@ -186,10 +185,6 @@ public class SFXManager : MonoBehaviour
         if (energy >= 10)
         {
             SetChannel(energyMax, 0.25f);
-        }
-        else
-        {
-            SetChannel(energyGain, 0.15f);
         }
     }
 
