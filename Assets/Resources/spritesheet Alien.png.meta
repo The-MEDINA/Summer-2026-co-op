@@ -96,6 +96,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -235,8 +248,8 @@ TextureImporter:
       name: spritesheet Alien_6
       rect:
         serializedVersion: 2
-        x: 0
-        y: 480
+        x: 2880
+        y: 960
         width: 480
         height: 480
       alignment: 0
@@ -257,7 +270,7 @@ TextureImporter:
       name: spritesheet Alien_7
       rect:
         serializedVersion: 2
-        x: 480
+        x: 0
         y: 480
         width: 480
         height: 480
@@ -279,7 +292,7 @@ TextureImporter:
       name: spritesheet Alien_8
       rect:
         serializedVersion: 2
-        x: 960
+        x: 480
         y: 480
         width: 480
         height: 480
@@ -301,7 +314,7 @@ TextureImporter:
       name: spritesheet Alien_9
       rect:
         serializedVersion: 2
-        x: 1440
+        x: 960
         y: 480
         width: 480
         height: 480
@@ -323,7 +336,7 @@ TextureImporter:
       name: spritesheet Alien_10
       rect:
         serializedVersion: 2
-        x: 1920
+        x: 1440
         y: 480
         width: 480
         height: 480
@@ -345,7 +358,7 @@ TextureImporter:
       name: spritesheet Alien_11
       rect:
         serializedVersion: 2
-        x: 2400
+        x: 1920
         y: 480
         width: 480
         height: 480
@@ -367,8 +380,8 @@ TextureImporter:
       name: spritesheet Alien_12
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 2400
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -389,8 +402,8 @@ TextureImporter:
       name: spritesheet Alien_13
       rect:
         serializedVersion: 2
-        x: 480
-        y: 0
+        x: 2880
+        y: 480
         width: 480
         height: 480
       alignment: 0
@@ -411,7 +424,7 @@ TextureImporter:
       name: spritesheet Alien_14
       rect:
         serializedVersion: 2
-        x: 960
+        x: 0
         y: 0
         width: 480
         height: 480
@@ -433,7 +446,7 @@ TextureImporter:
       name: spritesheet Alien_15
       rect:
         serializedVersion: 2
-        x: 1440
+        x: 480
         y: 0
         width: 480
         height: 480
@@ -455,7 +468,7 @@ TextureImporter:
       name: spritesheet Alien_16
       rect:
         serializedVersion: 2
-        x: 1920
+        x: 960
         y: 0
         width: 480
         height: 480
@@ -477,7 +490,7 @@ TextureImporter:
       name: spritesheet Alien_17
       rect:
         serializedVersion: 2
-        x: 2400
+        x: 1440
         y: 0
         width: 480
         height: 480
@@ -491,6 +504,72 @@ TextureImporter:
       bones: []
       spriteID: a8e65d36cd5552f4488f3bd5fac825d1
       internalID: -1524129419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet Alien_18
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 480
+        height: 480
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 440c6be882e2a2741a38e0fbe9cf9184
+      internalID: 1849690807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet Alien_19
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 0
+        width: 480
+        height: 480
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c2fa221ce689954eaaf072c518d6f08
+      internalID: -829881484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet Alien_20
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 0
+        width: 480
+        height: 480
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17517149bdf16d04d80d15545ae80eb6
+      internalID: 1636466658
       vertices: []
       indices: 
       edges: []
@@ -509,7 +588,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":3.0},"gridSpriteSize":{"x":480.0,"y":480.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":3.0},"gridSpriteSize":{"x":480.0,"y":480.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       spritesheet Alien_0: -1295646605145848790
       spritesheet Alien_1: -1490252199
@@ -521,7 +600,10 @@ TextureImporter:
       spritesheet Alien_15: -1749003241
       spritesheet Alien_16: -357044697
       spritesheet Alien_17: -1524129419
+      spritesheet Alien_18: 1849690807
+      spritesheet Alien_19: -829881484
       spritesheet Alien_2: -197522963
+      spritesheet Alien_20: 1636466658
       spritesheet Alien_3: 1270712072
       spritesheet Alien_4: 228769008
       spritesheet Alien_5: 2006782984
