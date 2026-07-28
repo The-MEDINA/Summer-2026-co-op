@@ -196,32 +196,60 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     private void AttackSomething()
     {
-        if(opponent.InPlay.Count == 0) { return; }
-        int attackNum = rng.Next(0, player.InPlay.Count);
-        int targetNum = rng.Next(0, opponent.InPlay.Count);
+        int attackTarget = rng.Next(1, 5);
 
         // save the last selected card
         CardClickHandler previousSelection = null;
         if (CardSelectionManager.Instance.SelectedCardObject != null) previousSelection = CardSelectionManager.Instance.SelectedCardObject;
 
-        if (player.InPlay[attackNum] is TwoAttackParent)
+        if (attackTarget == 1 || opponent.InPlay.Count == 0)
         {
-            int randAttack = rng.Next(1, 3);
-            if (randAttack == 1)
+            int attackNum = rng.Next(0, player.InPlay.Count);
+
+            if (player.InPlay[attackNum] is TwoAttackParent)
+            {
+                int randAttack = rng.Next(1, 3);
+                if (randAttack == 1)
+                {
+                    CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
+                    CardSelectionManager.Instance.TryAttackPlayer(true);
+                }
+                else
+                {
+                    CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
+                    CardSelectionManager.Instance.TryAttackPlayer(false);
+                }
+            }
+            else
             {
                 CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
-                CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), true);
+                CardSelectionManager.Instance.TryAttackPlayer(false);
+            }
+        }
+        else
+        {
+            int attackNum = rng.Next(0, player.InPlay.Count);
+            int targetNum = rng.Next(0, opponent.InPlay.Count);
+
+            if (player.InPlay[attackNum] is TwoAttackParent)
+            {
+                int randAttack = rng.Next(1, 3);
+                if (randAttack == 1)
+                {
+                    CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
+                    CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), true);
+                }
+                else
+                {
+                    CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
+                    CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
+                }
             }
             else
             {
                 CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
                 CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
             }
-        }
-        else
-        {
-            CardSelectionManager.Instance.SelectedCardObject = player.InPlay[attackNum].UnityObject.GetComponent<CardClickHandler>();
-            CardSelectionManager.Instance.TryAttackTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>(), false);
         }
 
         // restore the previous selection if needed
