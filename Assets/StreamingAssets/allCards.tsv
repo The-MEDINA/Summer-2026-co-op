@@ -56,12 +56,12 @@ All	Spell	3	I'm Sure That Wasn't Important	Sends an inPlay minion back to the op
 All	Spell	3	Distraction	Adds guard to a minion	0	0	Equipment	"HAH! SAND IN THE EYE!!!"	equipment	allies
 All	Spell	3	Catnap	Adds 3/0 to a minion	3	0	Equipment	"He do be snoozin tho."	equipment	allies
 All	Spell	4	Hex	Set a minion's attack stat to 1	0	1	Equipment	"Why do we have so many magic and spell themed cards? Are we doing like a warlock faction at some point?"	equipment	enemies
-Cat	Spell	4	Cat Fusion	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."	unique	allies
+Cat	Spell	4	Cat Fusion	Combine all token cards on your side of the field into one minion (Tiger the Cat)	0	0	Unique	"There's no way that actually works..."	unique	none
 All	Spell	5	No Thoughts, Head Empty	Revert all stat changes to a minion			Unique	"Do da-do da da-do-do-do."	unique	allies
 All	Spell	5	Barbed Wire	Give Thorns 1 to a player	0	1	GiveAbility	"The dev team is sure this card will not cause annoyance in any way, shape, or form."	unique	owner
 All	Spell	6	Clone	Create a copy of an inPlay minion	0	0	Unique	"200,000 are ready, with more than a million well on the way."	unique	inplay
 Cat	Commander	NA	Sergeant Zoomie	Gives 2 energy every 30 seconds				"Eight more laps around the coffee table and you'll have enough energy for a Tank Cat."		
-Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."												
+Cat	Token	NA	Tiger the Cat	NA	X	X	None	"Looking at this thing just makes me uncomfortable."		
 Alien	Minion	1	Digger	Hidden	1	1	Hidden	"[Diggers] are highly territorial, and despite their herbivore ways, are surprisingly aggressive, to a seemingly unnatural degree."		
 Alien	Minion	1	Reptoid	Apoptosis	1	1	Apoptosis	"Pretty sure the lizard people invented, like, sliced bread or something."		
 Alien	Minion	2	Slate Skate	Lifelink 1	1	1	Lifelink	"Slate Skates strike a careful balance; they must fly high enough that their prey is unable to notice them yet low enough that their predators do not either."		
@@ -73,7 +73,7 @@ Alien	Minion	4	Body Snatchers	Lifelink 2	4	3	Lifelink	"They're the man in your m
 Alien	Minion	4	Mimic	Become a copy of the LAST minion played that is STILL ALIVE	X	X	ONPLAY	"Out here, you can't trust anyone. You don't know what lies beneath their skin..."		
 Alien	Minion	4	Living Planet	Hidden	3	6	Hidden	"For every world marked 'Do Not Land', there's at least one starship crew foolish enough to try..."		
 Alien	Minion	5	Slime	Split: ONDEATH spawn a pair minions with half health/damage and Split until 1/1	4	4	Split	"Best to cut this one into tiny little pieces..."		
-Alien	Minion	5	Blood Eater	Lifelink 2	5	5	Lifelink			
+Alien	Minion	5	Blood Eater	Lifelink 2	5	5	Lifelink	"'I drain your life force!' - Dave Medina, 2026 (Colorized)"		
 Alien	Minion	5	Spectral Beings	Explode 5	6	4	Explode	"Invisible, intangible, unknown..."		
 Alien	Minion	6	Star Child	- 4 damage to target / - create 2 energy	7	4/2	TwoAttacks/energy	"When you wish upon a star: if your wish is strong enough, if you want it bad enough, sometimes the stars will hear you - and answer..."		
 Alien	Minion	6	Extraterrestrial Invader	NA	10	8	None	"Where there's one, there's thousands to come..."		
@@ -92,5 +92,8 @@ All	Spell	5	Solar Panels	Your next five energy is gained in half the time	0	5	Un
 All	Spell	6	Unknown Virus	Remove Guard from all enemy minions	0	0	Unique	"No vaccine, no cure, no hope..."	unique	allenemies
 All	Spell	6	Genetic Engineering	Give one of your minions StatsUp	0	0	Equipment	"The future is now, old man!"	equipment	allies
 All	Spell	7	Cover-Up	Grant all of your minions Hidden	0	0	Equipment	"Nothing to see here."	equipment	allies
-Alien	Commander	NA	Hivemind	Give one of your minions +2/+1	NA	NA	NA	"One voice, one will, one goal."		
+Alien	Commander	NA	Hivemind	Create a 0 cost, +1/+1 token spell	NA	NA	NA	"One voice, one will, one goal."		
 Alien	Token	NA	Grey	NA	2	2	None	"What number kind are we on at this point?"		
+Alien	Token	0	Worms	Adds 1/1 to a minion	1	1	Equipment	"ONE OF US! ONE OF US!"		
+Alien	Commander	NA	Witchdoctor	Create a 0 cost, 2/0 token creature, Totem, which slowly generates energy	NA	NA	NA	"'Why didn't you mind your own business?'"		
+Alien	Token	0	Totem	GenerateEnergy every 10 seconds	2	0	GenerateEnergy			
