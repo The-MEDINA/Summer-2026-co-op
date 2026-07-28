@@ -370,6 +370,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
 
         if (CardSelectionManager.Instance != null)
         {
+            Debug.Log("Select card");
             CardSelectionManager.Instance.SelectCard(this, eventData);
         }
     }

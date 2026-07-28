@@ -41,7 +41,7 @@ public class WitchdoctorScript : CommanderCardScript, IPointerClickHandler
         if (!DeckbuilderOverride) // need this to prevent this method from activating in the deck builder
         {
             //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
-            if (!bg.P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
+            if ((bg.P.IsPlayerTwo && CardSelectionManager.Instance.IsLocalTesting) || !bg.P.IsPlayerTwo)
             {
                 if (canAttack) { PerformAbility(); }
             }

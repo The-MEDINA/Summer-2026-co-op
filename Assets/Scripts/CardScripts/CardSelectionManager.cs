@@ -159,6 +159,7 @@ public class CardSelectionManager : MonoBehaviour
                     {
                         Networking.SendCardArray(clickedCard.OwnerPlayer.InPlay, NewVirtualCardParent.location.inPlay);
                     }
+                    return;
                 }
             }
             else
@@ -169,7 +170,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         // when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
-        if (!clickedCard.OwnerPlayer.IsPlayerTwo || IsLocalTesting)
+        if ((clickedCard.OwnerPlayer.IsPlayerTwo && IsLocalTesting) || !clickedCard.OwnerPlayer.IsPlayerTwo)
         {
             SelectedCardObject = clickedCard;
             SelectedCardObject.SetSelectedVisual(true);

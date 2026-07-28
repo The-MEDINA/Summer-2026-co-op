@@ -41,7 +41,7 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         if (Networking.CurrentState == state.paused) return;
         
         //when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
-        if (!P.IsPlayerTwo || CardSelectionManager.Instance.IsLocalTesting)
+        if ((P.IsPlayerTwo && CardSelectionManager.Instance.IsLocalTesting) || !P.IsPlayerTwo)
         {
             Debug.Log("Clicked deck: " + gameObject.name);
             if (p.Deck.Count > 0) Networking.SendCardAdd(p.Deck[0], NewVirtualCardParent.location.hand);
