@@ -278,6 +278,60 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     private void PopulatePlayer()
     {
+        int randDeckNum = rng.Next(1, 5);
+        switch(randDeckNum)
+        {
+            case 1:
+                {
+                    string[] mMDeck =
+                    {
+                        "Cat",
+                        "Night Vision Cat",
+                        "Gold Miner Cat",
+                        "Ninja Cat",
+                        "Magic Cat",
+                        "Cat Demolition Crew",
+                        "M16",
+                        "Spontaneous Combustion",
+                        "Blizzard",
+                        "Cat",
+                        "Night Vision Cat",
+                        "Ninja Cat"
+                    };
+                    break;
+                }
+
+            case 2:
+                {
+                    string[] sZDeck =
+                    {
+                        "Roughly a Cat",
+                        "Chef Cat",
+                        "Bobby",
+                        "Slasher Cat",
+                        "Chonkmeister",
+                        "Empower",
+                        "Empower",
+                        "Distraction",
+                        "Macho Cat",
+                        "Clone",
+                        "Roughly a Cat",
+                        "Chef Cat"
+                    };
+                    break;
+                }
+
+            case 3:
+                {
+                    break;
+                }
+
+            case 4:
+                {
+                    break;
+                }
+        }
+
         string[] startingDeck =
         {
         /*"Spontaneous Combustion",
