@@ -24,6 +24,7 @@ public class GeneratorScript : MonoBehaviour
             {
                 Debug.Log("Energy gained");
                 P.Energy++;
+                if (P.Energy > 10) P.Energy = 10;
                 timer = 0;
             }
             else
