@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Network;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -285,5 +286,21 @@ public class Player : MonoBehaviour
             Discard[i].CardLocation = NewVirtualCardParent.location.deck;
         }
         Discard.Clear();
+    }
+
+    private void ScrambleDeck()
+    {
+        List<NewVirtualCardParent> tempDeck = Deck;
+        List<NewVirtualCardParent> scrambleTemp = new List<NewVirtualCardParent>();
+        System.Random rng = new System.Random();
+
+        for (int i = 0; i < tempDeck.Count; i++)
+        {
+            int randNum = rng.Next(0, tempDeck.Count);
+            scrambleTemp.Add(tempDeck[randNum]);
+            tempDeck.RemoveAt(randNum);
+        }
+
+        Deck = scrambleTemp;
     }
 }
