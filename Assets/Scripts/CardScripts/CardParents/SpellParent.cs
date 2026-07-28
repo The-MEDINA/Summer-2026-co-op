@@ -111,6 +111,11 @@ public class SpellParent : NewVirtualCardParent
                 {
                     switch (CardName)
                     {
+                        case "Sabotage":
+                            {
+                                CardSelectionManager.Instance.FreezeOpponentCommander(this);
+                                break;
+                            }
                         case "Barbed Wire":
                             {
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.PlayerGainThorns();
@@ -144,8 +149,12 @@ public class SpellParent : NewVirtualCardParent
                                         target.Death();
                                     }
                                 }
-                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(new MinionParent(
-                                    0, total, total, "Tiger the Cat", type.token, MinionParent.effect.none, location.inPlay));
+                                MinionParent TigerTheCat = (MinionParent)cardIndex.Index.CreateCard("Tiger the Cat", location.inPlay);
+                                TigerTheCat.StartingDamage = total;
+                                TigerTheCat.StartingHealth = total;
+                                TigerTheCat.Health = total;
+                                TigerTheCat.Damage = total;
+                                UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.CommanderCard.BG.SpawnCardToInPlay(TigerTheCat);
                                 break;
                             }
 

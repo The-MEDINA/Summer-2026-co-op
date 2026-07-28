@@ -74,6 +74,17 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     //Of all the methods to make public, this is high up the board for being completely fine lol I think we're good - Jake
     public void DrawCardToHand()
     {
+        // This is a quick band-aid fix to prevent some cards from activating after being clicked once, when they're drawn from the deck at least twice.
+        // I found a bug that seems to only activate in a VERY specific situation.
+        // When you only have ONE spell that targets none in your deck, the second time you add it to your hand and try to play it, it activates immediately.
+        // For some reason selectedCardObject in CardSelectionManager changes itself from null to the card???
+        // It doesn't seem to be a bug with our code exactly, because an additional OnClick event is being called when it shouldn't. I Have no idea how that's happening.
+        // So... This is a workaround to prevent that. Please leave this in here.
+        // I'm also tired and don't think I can spend any more time debugging this. It's 10:42 PM on a Monday.
+        // :<
+        // - Dave
+        CardSelectionManager.Instance.ClearSelection();
+
         if (p == null)
         {
             Debug.LogWarning(gameObject.name + " has no Player assigned.");

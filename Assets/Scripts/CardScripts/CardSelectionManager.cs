@@ -104,11 +104,11 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject != null && selectedCardObject != clickedCard)
+        if (SelectedCardObject != null && SelectedCardObject != clickedCard)
         {
-            if (selectedCardObject.CardData is MinionParent)
+            if (SelectedCardObject.CardData is MinionParent)
             {
-                MinionParent minion = (MinionParent)selectedCardObject.CardData;
+                MinionParent minion = (MinionParent)SelectedCardObject.CardData;
 
                 if (minion.CardEffect == MinionParent.effect.twoAttacks && eventData.button == PointerEventData.InputButton.Right)
                 {
@@ -119,9 +119,9 @@ public class CardSelectionManager : MonoBehaviour
                     TryAttackTarget(clickedCard, false);
                 }
             }
-            else if (selectedCardObject.CardData is SpellParent)
+            else if (SelectedCardObject.CardData is SpellParent)
             {
-                SpellParent spell = (SpellParent)selectedCardObject.CardData;
+                SpellParent spell = (SpellParent)SelectedCardObject.CardData;
 
                 if (spell.Target != SpellParent.spellTarget.none && (spell.Target != SpellParent.spellTarget.owner && spell.Target != SpellParent.spellTarget.opponent))
                 {
@@ -141,7 +141,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject == clickedCard)
+        if (SelectedCardObject == clickedCard)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
@@ -171,8 +171,8 @@ public class CardSelectionManager : MonoBehaviour
         // when testing locally, enable bool isLocalTesting in inspector on CardSelectionManager.Ins, when playing online, disable it - Jacob
         if (!clickedCard.OwnerPlayer.IsPlayerTwo || IsLocalTesting)
         {
-            selectedCardObject = clickedCard;
-            selectedCardObject.SetSelectedVisual(true);
+            SelectedCardObject = clickedCard;
+            SelectedCardObject.SetSelectedVisual(true);
             Debug.Log("Selected card: " + clickedCard.CardData.CardName);
         }
         else
@@ -373,9 +373,9 @@ public class CardSelectionManager : MonoBehaviour
 
     public void TryAttackTarget(CardClickHandler targetCard, bool wasSecondAttack)
     {
-        if (selectedCardObject == null || targetCard == null)
+        if (SelectedCardObject == null || targetCard == null)
         {
-            if (selectedCardObject != null && selectedCardObject.OwnerPlayer != null && selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject != null && SelectedCardObject.OwnerPlayer != null && SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two's attacking or target card was null");
             }
@@ -384,13 +384,13 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        Player attackingOwner = selectedCardObject.OwnerPlayer;
+        Player attackingOwner = SelectedCardObject.OwnerPlayer;
 
-        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        if (SelectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is attacking with card not in play");
             }
@@ -403,7 +403,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Target card must be in play.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is attacking a card that's not in play");
             }
@@ -412,7 +412,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        MinionParent attacker = SelectedCardObject.CardData as MinionParent;
         MinionParent target = targetCard.CardData as MinionParent;
 
         bool isThisMinionATwoAttackHealer = false;
@@ -421,7 +421,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Target card must not be hidden.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 //Networking.DesyncWarning("Player two is attacking a card that's not in play");
                 //I don't know if you need this, Dave - Jake
@@ -441,14 +441,14 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        if (selectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal && !isThisMinionATwoAttackHealer)
+        if (SelectedCardObject.OwnerPlayer == targetCard.OwnerPlayer && attacker.CardEffect != MinionParent.effect.heal && !isThisMinionATwoAttackHealer)
         {
             Debug.Log("You cannot attack your own card.");
             ClearSelection();
             return;
         }
 
-        if (selectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
+        if (SelectedCardObject.OwnerPlayer != targetCard.OwnerPlayer && attacker.CardEffect == MinionParent.effect.heal)
         {
             Debug.Log("You cannot heal your opponent's card.");
             ClearSelection();
@@ -459,7 +459,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Only minion cards can attack right now.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Only minion cards can attack right now for player two");
             }
@@ -468,7 +468,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        if (!SelectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttack(attacker, target, wasSecondAttack);
         }
@@ -477,8 +477,8 @@ public class CardSelectionManager : MonoBehaviour
         {
             TwoAttackParent twoAttackMinion = (TwoAttackParent)attacker;
 
-            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && ((targetCard.OwnerPlayer == selectedCardObject.OwnerPlayer &&
-                !wasSecondAttack) || (targetCard.OwnerPlayer != selectedCardObject.OwnerPlayer && wasSecondAttack)))
+            if (twoAttackMinion.SecondaryCardEffect == MinionParent.effect.heal && ((targetCard.OwnerPlayer == SelectedCardObject.OwnerPlayer &&
+                !wasSecondAttack) || (targetCard.OwnerPlayer != SelectedCardObject.OwnerPlayer && wasSecondAttack)))
             {
                 ClearSelection();
                 return;
@@ -512,8 +512,8 @@ public class CardSelectionManager : MonoBehaviour
             }
 
             Debug.Log("Attacked enemy card. Enemy health: " + target.Health);
-            selectedCardObject.OwnerPlayer.RegisterAction();
-            RefreshCardVisual(selectedCardObject);
+            SelectedCardObject.OwnerPlayer.RegisterAction();
+            RefreshCardVisual(SelectedCardObject);
             RefreshCardVisual(targetCard);
             ClearSelection();
             return;
@@ -522,14 +522,14 @@ public class CardSelectionManager : MonoBehaviour
         if (attacker.CardEffect == MinionParent.effect.aoe)
         {
             attacker.AOEAttack(targetCard.OwnerPlayer.InPlay, false);
-            selectedCardObject.OwnerPlayer.RegisterAction();
+            SelectedCardObject.OwnerPlayer.RegisterAction();
             
             for(int i =0; i < targetCard.OwnerPlayer.InPlay.Count; i++)
             {
                 RefreshCardVisual(targetCard.OwnerPlayer.InPlay[i].UnityObject.GetComponent<CardClickHandler>());
             }
 
-            RefreshCardVisual(selectedCardObject);
+            RefreshCardVisual(SelectedCardObject);
             RefreshCardVisual(targetCard);
             ClearSelection();
             return;
@@ -542,7 +542,7 @@ public class CardSelectionManager : MonoBehaviour
             attackingOwner.RegisterAction();
         }
 
-        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(SelectedCardObject);
         RefreshCardVisual(targetCard);
 
         Debug.Log(attacker.CardName + " attacked " + target.CardName + ". Target health: " + target.Health);
@@ -552,9 +552,9 @@ public class CardSelectionManager : MonoBehaviour
 
     public void TrySpellTarget(CardClickHandler targetCard)
     {
-        if (selectedCardObject == null || targetCard == null)
+        if (SelectedCardObject == null || targetCard == null)
         {
-            if (selectedCardObject != null && selectedCardObject.OwnerPlayer != null && selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject != null && SelectedCardObject.OwnerPlayer != null && SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two's attacking or target card was null");
             }
@@ -563,11 +563,11 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
+        if (SelectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
         {
             Debug.Log("Card must be in your hand before it can be played.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is playing card from hand");
             }
@@ -576,8 +576,8 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        SpellParent attacker = selectedCardObject.CardData as SpellParent;
-        Player owner = selectedCardObject.OwnerPlayer;
+        SpellParent attacker = SelectedCardObject.CardData as SpellParent;
+        Player owner = SelectedCardObject.OwnerPlayer;
         MinionParent target = targetCard.CardData as MinionParent;
         // SpellParent targetSpell = targetCard.CardData as SpellParent;
 
@@ -585,7 +585,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Target card must be in play.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is targetting card not in play");
             }
@@ -598,7 +598,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Only minion cards can attack right now.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Only minion cards can attack right now for player two");
             }
@@ -641,7 +641,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        if (!SelectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttack(attacker, targetCard.CardData, false);
         }
@@ -667,29 +667,29 @@ public class CardSelectionManager : MonoBehaviour
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
-        selectedCardObject.gameObject.SetActive(false);
+        SelectedCardObject.gameObject.SetActive(false);
 
-        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(SelectedCardObject);
         RefreshCardVisual(targetCard);
 
-        selectedCardObject.OwnerPlayer.RegisterAction();
+        SelectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();
     }
 
     public void TrySpellNoTarget()
     {
-        if (selectedCardObject == null)
+        if (SelectedCardObject == null)
         {
             ClearSelection();
             return;
         }
 
-        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
+        if (SelectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.hand)
         {
             Debug.Log("Card must be in your hand before it can be played.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is playing card from hand");
             }
@@ -698,14 +698,14 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        SpellParent attacker = selectedCardObject.CardData as SpellParent;
-        Player owner = selectedCardObject.OwnerPlayer;
+        SpellParent attacker = SelectedCardObject.CardData as SpellParent;
+        Player owner = SelectedCardObject.OwnerPlayer;
 
         if (attacker == null || (attacker.Target != SpellParent.spellTarget.none && (attacker.Target != SpellParent.spellTarget.owner && attacker.Target != SpellParent.spellTarget.opponent)))
         {
             Debug.Log("Only spell cards can be played this way.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Only spell cards can be played this way for player two");
             }
@@ -735,19 +735,19 @@ public class CardSelectionManager : MonoBehaviour
 
         attacker.OnPlay();
 
-        if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+        if (!SelectedCardObject.OwnerPlayer.IsPlayerTwo)
         {
             Networking.SendCardAttack(attacker, null, true);
         }
 
         RemoveSelectedCardFromHandUI(owner);
         owner.MoveCardToDiscard(attacker);
-        selectedCardObject.gameObject.SetActive(false);
+        SelectedCardObject.gameObject.SetActive(false);
 
-        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(SelectedCardObject);
 
         Debug.Log(attacker.CardName + " played");
-        selectedCardObject.OwnerPlayer.RegisterAction();
+        SelectedCardObject.OwnerPlayer.RegisterAction();
 
         ClearSelection();
     }
@@ -755,9 +755,9 @@ public class CardSelectionManager : MonoBehaviour
     public void TryAttackPlayer(bool wasSecondAttack)
     {
         // check that card exists.
-        if (selectedCardObject == null)
+        if (SelectedCardObject == null)
         {
-            if (selectedCardObject != null && selectedCardObject.OwnerPlayer != null && selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject != null && SelectedCardObject.OwnerPlayer != null && SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two's attacking or target card was null");
             }
@@ -767,7 +767,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         // grab players
-        Player attackingOwner = selectedCardObject.OwnerPlayer;
+        Player attackingOwner = SelectedCardObject.OwnerPlayer;
         if (attackingOwner == null)
         {
             Debug.Log("Attacking card has no owner.");
@@ -778,11 +778,11 @@ public class CardSelectionManager : MonoBehaviour
         else opposingPlayer = player2;
 
         // make sure card is in play.
-        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        if (SelectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Card must be in play before it can attack.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Player two is attacking with card not in play");
             }
@@ -792,7 +792,7 @@ public class CardSelectionManager : MonoBehaviour
         }
 
         // convert card to minion or twoattack
-        MinionParent attacker = selectedCardObject.CardData as MinionParent;
+        MinionParent attacker = SelectedCardObject.CardData as MinionParent;
         bool isThisMinionATwoAttackHealer = false;
 
         if (attacker is TwoAttackParent)
@@ -817,7 +817,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             Debug.Log("Only minion cards can attack right now.");
 
-            if (selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.DesyncWarning("Only minion cards can attack right now for player two");
             }
@@ -842,7 +842,7 @@ public class CardSelectionManager : MonoBehaviour
             /* TwoAttack AoE can be checked here if we want it to still hit cards when attacking player */
 
             // send this attack on player to peer
-            if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+            if (!SelectedCardObject.OwnerPlayer.IsPlayerTwo)
             {
                 Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
             }
@@ -860,14 +860,14 @@ public class CardSelectionManager : MonoBehaviour
                 twoAttackMinion.CanAttack = false;
                 twoAttackMinion.ForceActionSFX();
                 twoAttackMinion.CardEffect = MinionParent.effect.twoAttacks;
-                selectedCardObject.OwnerPlayer.RegisterAction();
+                SelectedCardObject.OwnerPlayer.RegisterAction();
             }
             else
             {
                 ClearSelection();
                 return;
             }
-            RefreshCardVisual(selectedCardObject);
+            RefreshCardVisual(SelectedCardObject);
             // ClearSelection();
             // Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
             /* AoE check can be done here if we want it to still hit cards when attacking player */
@@ -879,7 +879,7 @@ public class CardSelectionManager : MonoBehaviour
             if (attackingOwner != null && attacker.CanAttack)
             {
                 // send this attack on player to peer
-                if (!selectedCardObject.OwnerPlayer.IsPlayerTwo)
+                if (!SelectedCardObject.OwnerPlayer.IsPlayerTwo)
                 {
                     Networking.SendCardAttackPlayer(attacker, opposingPlayer, wasSecondAttack);
                 }
@@ -897,16 +897,31 @@ public class CardSelectionManager : MonoBehaviour
             }
         }
 
-        RefreshCardVisual(selectedCardObject);
+        RefreshCardVisual(SelectedCardObject);
 
         Debug.Log(attacker.CardName + " attacked other player. Target health: " + opposingPlayer.Health);
 
         ClearSelection();
     }
 
+    public void FreezeOpponentCommander(SpellParent spell)
+    {
+        Player targetPlayer = null;
+        if (spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+        {
+            targetPlayer = player1;
+        }
+        else
+        {
+            targetPlayer = player2;
+        }
+        targetPlayer.CommanderCard.FrozenTimeDelay = 10;
+        Debug.Log($"Froze enemy commander {targetPlayer.CommanderCard.Name} for 10 seconds.");
+    }
+
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
-        if (selectedCardObject == null || owner == null)
+        if (SelectedCardObject == null || owner == null)
         {
             return;
         }
@@ -915,14 +930,14 @@ public class CardSelectionManager : MonoBehaviour
         {
             if (player1HandUI != null)
             {
-                player1HandUI.RemoveCardFromHand(selectedCardObject.gameObject);
+                player1HandUI.RemoveCardFromHand(SelectedCardObject.gameObject);
             }
         }
         else if (owner == player2)
         {
             if (player2HandUI != null)
             {
-                player2HandUI.RemoveCardFromHand(selectedCardObject.gameObject);
+                player2HandUI.RemoveCardFromHand(SelectedCardObject.gameObject);
             }
         }
     }
@@ -944,13 +959,13 @@ public class CardSelectionManager : MonoBehaviour
 
     public void AttackOpposingTeamButton()
     {
-        if (selectedCardObject == null || selectedCardObject.CardData == null)
+        if (SelectedCardObject == null || SelectedCardObject.CardData == null)
         {
             Debug.Log("No card selected.");
             return;
         }
 
-        Player attackerOwner = selectedCardObject.OwnerPlayer;
+        Player attackerOwner = SelectedCardObject.OwnerPlayer;
 
         if (attackerOwner == null)
         {
@@ -959,7 +974,7 @@ public class CardSelectionManager : MonoBehaviour
             return;
         }
 
-        if (selectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
+        if (SelectedCardObject.CardData.CardLocation != NewVirtualCardParent.location.inPlay)
         {
             Debug.Log("Selected card must be in play before attacking.");
             ClearSelection();
@@ -989,11 +1004,11 @@ public class CardSelectionManager : MonoBehaviour
 
     public void ClearSelection()
     {
-        if (selectedCardObject != null)
+        if (SelectedCardObject != null)
         {
-            selectedCardObject.SetSelectedVisual(false);
+            SelectedCardObject.SetSelectedVisual(false);
         }
 
-        selectedCardObject = null;
+        SelectedCardObject = null;
     }
 }
