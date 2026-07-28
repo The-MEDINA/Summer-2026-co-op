@@ -904,6 +904,21 @@ public class CardSelectionManager : MonoBehaviour
         ClearSelection();
     }
 
+    public void FreezeOpponentCommander(SpellParent spell)
+    {
+        Player targetPlayer = null;
+        if (spell.UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.IsPlayerTwo)
+        {
+            targetPlayer = player1;
+        }
+        else
+        {
+            targetPlayer = player2;
+        }
+        targetPlayer.CommanderCard.FrozenTimeDelay = 10;
+        Debug.Log($"Froze enemy commander {targetPlayer.CommanderCard.Name} for 10 seconds.");
+    }
+
     private void RemoveSelectedCardFromHandUI(Player owner)
     {
         if (selectedCardObject == null || owner == null)

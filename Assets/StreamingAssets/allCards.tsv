@@ -80,7 +80,7 @@ Alien	Minion	6	Extraterrestrial Invader	NA	10	8	None	"Where there's one, there's
 Alien	Minion	7	Frozen Horror	Frozen / StatsUp: stat changes to this card are doubled - positive or negative	7	7	Frozen/StatsUp	"Some discoveries should remain undiscovered..."		
 All	Spell	1	Lost in Space	Freeze a single minion	0	0	Unique	"Patience is a virtue. Sometimes all you can do is wait..."	unique	enemies
 All	Spell	1	Decipher	Remove Hidden from target minion	0	0	Unique	"You ask the teacher when you're ever gonna use any of this and BOOM! Strange alien hieroglyphics, what now Bryce???"	unique	enemies
-All	Spell	2	Sabotage	Freeze a commander card	0	0	ONPLAY	"Moooooooom I need a new PC!"	unique	
+All	Spell	2	Sabotage	Freeze a commander card	0	0	unique	"Moooooooom I need a new PC!"	unique	none
 All	Spell	2	Hide	Give a minion Hidden	0	0	Equipment	"Whatever you do, don't lose track of it..."	equipment	allies
 All	Spell	2	Repair Drone	Heal player for 5 health	0	5	Heal	"Built to fix. Live to serve."	heal	owner
 All	Spell	3	Nuclear Waste	Deal 2 damage to all opposing minions	0	2	Damage	"Top tier advice: 'DO NOT TOUCH!'"	damage	allenemies

@@ -7,10 +7,12 @@ public class CommanderCardScript : MonoBehaviour
     [SerializeField] protected Battleground bg; //ALL COMMANDERS NEED THIS NO MATTER WHAT
     private string name = "";
     private bool deckbuilderOverride = false;
+    private float frozenTimeDelay = 0;
 
     public bool DeckbuilderOverride { get { return deckbuilderOverride; } set { deckbuilderOverride = value; } }
     public Battleground BG { get { return bg; } set { bg = value; } }
     public string Name { get { return name; } set { name = value; } }
+    public float FrozenTimeDelay { get { return frozenTimeDelay; } set { frozenTimeDelay = value; } }
 
     /// <summary>
     /// does whatever the Commander does

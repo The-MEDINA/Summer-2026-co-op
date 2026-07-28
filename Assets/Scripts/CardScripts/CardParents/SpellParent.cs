@@ -111,6 +111,11 @@ public class SpellParent : NewVirtualCardParent
                 {
                     switch (CardName)
                     {
+                        case "Sabotage":
+                            {
+                                CardSelectionManager.Instance.FreezeOpponentCommander(this);
+                                break;
+                            }
                         case "Barbed Wire":
                             {
                                 UnityObject.GetComponent<CardClickHandler>().OwnerPlayer.PlayerGainThorns();

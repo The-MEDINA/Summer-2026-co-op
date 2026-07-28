@@ -103,6 +103,7 @@ NewVirtualCardParent.type.spell, NewVirtualCardParent.location.deck));*/
             p.Deck.Add(new MinionParent(1, 1, 1, "generatorTest", NewVirtualCardParent.type.minion, MinionParent.effect.generateEnergy,
                 NewVirtualCardParent.location.hand));
             p.Deck.Add(cardIndex.Index.CreateCard("Ninja Cat", NewVirtualCardParent.location.deck));
+            p.Deck.Add(cardIndex.Index.CreateCard("Sabotage", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Frozen Horror", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Barbed Wire", NewVirtualCardParent.location.deck));
             p.Deck.Add(cardIndex.Index.CreateCard("Empower", NewVirtualCardParent.location.deck));

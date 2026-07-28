@@ -19,14 +19,19 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
     private void Update()
     {
         //controls effect timer
-        if (timer > timeToEffect)
+        if (timer > (timeToEffect + FrozenTimeDelay))
         {
             canAttack = true;
             timer = 0f;
+            FrozenTimeDelay = 0;
         }
-        else if (timer < timeToEffect && !canAttack)
+        else if (timer < (timeToEffect + FrozenTimeDelay) && !canAttack)
         {
             timer += Time.deltaTime;
+        }
+        if (FrozenTimeDelay != 0)
+        {
+            canAttack = false;
         }
     }
 
