@@ -21,8 +21,8 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     void Start()
     {
-        PopulatePlayer();
         rng = new System.Random();
+        PopulatePlayer();
         drawNum = 0;
     }
 
@@ -262,7 +262,7 @@ public class SimpleAIScript : MonoBehaviour
     private void UseCommanderCard()
     {
         Debug.Log("COMMANDER CARD USED");
-        bg.CommanderCard.PerformAbility();
+        player.CommanderCard.PerformAbility();
     }
 
     /// <summary>

@@ -43,7 +43,8 @@ namespace Network
      * byte 2 determines if it's a request or response.
      * bytes 3 - 39 store the handshakeContent variable.
      * bytes 40 - 43 hold the host system's IP Address.
-     * bytes 44 - 1023 are empty so we can use it later to send more info.
+     * byte 44 holds the build number.
+     * bytes 45 - 1023 are empty so we can use it later to send more info.
      * 
      * --- KEEPALIVE: ---
      * bytes 1 - 1023 are empty so we can use it later to send more info.
@@ -149,6 +150,7 @@ namespace Network
         /// All these variables are for the network manager to actually do the networking.
         /// </summary>
         private static int port = 6767;
+        private static byte buildNumber = 1;
         private static readonly string handshakeContent = "BLITZBURN HANDSHAKE";
         private static state currentState = state.disconnected;
         private static mode currentMode = mode.client;
@@ -827,6 +829,7 @@ namespace Network
                     {
                         packet[40 + i] = splitIPAddress[i];
                     }
+                    packet[44] = buildNumber;
                     break;
                 }
                 case (packetType.keepAlive):
@@ -1104,7 +1107,18 @@ namespace Network
                         rawChar += packet[3 + (2 * i)];
                         handshakeContentFromPacket += (char) rawChar;
                     }
-                    if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
+                    if (handshakeContentFromPacket != handshakeContent)
+                    {
+                        CurrentState = state.disconnected;
+                        brokenPacket = true;
+                    }
+
+                    // check the build number.
+                    if (packet[44] != buildNumber)
+                    {
+                        CurrentState = state.disconnected;
+                        brokenPacket = true;
+                    }
                     break;
                 }
                 case ((byte) packetType.keepAlive):
