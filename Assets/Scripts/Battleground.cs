@@ -83,7 +83,8 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         // I'm also tired and don't think I can spend any more time debugging this. It's 10:42 PM on a Monday.
         // :<
         // - Dave
-        CardSelectionManager.Instance.ClearSelection();
+        // Nevermind this caused more bugs GRRRRAHHHHHHHHH
+        // CardSelectionManager.Instance.ClearSelection();
 
         if (p == null)
         {
