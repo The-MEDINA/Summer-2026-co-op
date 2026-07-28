@@ -18,7 +18,7 @@ public class PlayerTimerUI : MonoBehaviour
 
         if (energyText != null)
         {
-            energyText.text = "Energy: " + player.Energy + " / " + player.MaxEnergy;
+            energyText.text = "" + player.Energy + " / " + player.MaxEnergy;
         }
 
         if (energyTimerText != null)

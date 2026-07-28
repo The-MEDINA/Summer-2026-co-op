@@ -21,8 +21,8 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     void Start()
     {
-        PopulatePlayer();
         rng = new System.Random();
+        PopulatePlayer();
         drawNum = 0;
     }
 
