@@ -1107,10 +1107,18 @@ namespace Network
                         rawChar += packet[3 + (2 * i)];
                         handshakeContentFromPacket += (char) rawChar;
                     }
-                    if (handshakeContentFromPacket != handshakeContent) brokenPacket = true;
+                    if (handshakeContentFromPacket != handshakeContent)
+                    {
+                        CurrentState = state.disconnected;
+                        brokenPacket = true;
+                    }
 
                     // check the build number.
-                    if (packet[44] != buildNumber) brokenPacket = true;
+                    if (packet[44] != buildNumber)
+                    {
+                        CurrentState = state.disconnected;
+                        brokenPacket = true;
+                    }
                     break;
                 }
                 case ((byte) packetType.keepAlive):
