@@ -30,6 +30,9 @@ public class CardSelectionManager : MonoBehaviour
     [Header("Sound Effects")]
     [SerializeField] private SFXManager sfxManager;
 
+    [Header("Player Damage Popup")]
+    [SerializeField] private GameObject damageText;
+
     private CardClickHandler selectedCardObject;
 
     public CardClickHandler SelectedCardObject
@@ -861,6 +864,9 @@ public class CardSelectionManager : MonoBehaviour
                 twoAttackMinion.ForceActionSFX();
                 twoAttackMinion.CardEffect = MinionParent.effect.twoAttacks;
                 SelectedCardObject.OwnerPlayer.RegisterAction();
+                GameObject damagePopup = Instantiate(damageText);
+                damagePopup.transform.position = (opposingPlayer.IsPlayerTwo) ? new Vector3(-1.5f, 0, 0) : new Vector3(2, 0, 0);
+                damagePopup.GetComponent<DamagePUTextScript>().SetNumber(damage);
             }
             else
             {
@@ -889,6 +895,9 @@ public class CardSelectionManager : MonoBehaviour
                 attacker.CanAttack = false;
                 attacker.ForceActionSFX();
                 attackingOwner.RegisterAction();
+                GameObject damagePopup = Instantiate(damageText);
+                damagePopup.transform.position = (opposingPlayer.IsPlayerTwo) ? new Vector3(-1.5f, 0, 0) : new Vector3(2, 0, 0);
+                damagePopup.GetComponent<DamagePUTextScript>().SetNumber(minionDamage);
             }
             else
             {

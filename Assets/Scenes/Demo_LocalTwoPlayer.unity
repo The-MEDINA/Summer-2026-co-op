@@ -4248,6 +4248,7 @@ MonoBehaviour:
   cardSpacing: 2
   isLocalTesting: 1
   sfxManager: {fileID: 8816554660379747904}
+  damageText: {fileID: 66256372836773535, guid: 03ac45cd83484024f90c2f1abdc71594, type: 3}
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
