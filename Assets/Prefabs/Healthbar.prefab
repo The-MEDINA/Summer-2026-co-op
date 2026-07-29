@@ -145,7 +145,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.433
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -199,3 +199,5 @@ MonoBehaviour:
   player: {fileID: 0}
   healthBackground: {fileID: 4885326999553362239}
   healthBar: {fileID: 8600952000997059694}
+  healthColor: {r: 1, g: 0.46666667, b: 0.46666667, a: 1}
+  overhealthColor: {r: 0, g: 0.7921569, b: 0.28627452, a: 1}
