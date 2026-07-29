@@ -226,9 +226,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 607779798}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -453.1, y: 26}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 178.9, y: 26}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &31641064
@@ -3113,6 +3113,18 @@ PrefabInstance:
       value: EnergyIndicatorPlayer2
       objectReference: {fileID: 0}
     - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8
       objectReference: {fileID: 0}
@@ -4420,9 +4432,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 607779798}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -456, y: -156.7}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 176, y: -156.7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &949914488
@@ -6351,6 +6363,18 @@ PrefabInstance:
     - target: {fileID: 5100734860085109696, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
       propertyPath: m_Name
       value: EnergyIndicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7640046956367876344, guid: 76f0ac1750cf28a49ac33d5560ec34ca, type: 3}
       propertyPath: m_LocalPosition.x
