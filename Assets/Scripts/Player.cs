@@ -295,7 +295,7 @@ public class Player : MonoBehaviour
         List<NewVirtualCardParent> scrambleTemp = new List<NewVirtualCardParent>();
         System.Random rng = new System.Random();
 
-        for (int i = 0; i < tempDeck.Count; i++)
+        while (tempDeck.Count != 0)
         {
             int randNum = rng.Next(0, tempDeck.Count);
             scrambleTemp.Add(tempDeck[randNum]);

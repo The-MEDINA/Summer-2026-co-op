@@ -73,7 +73,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
             resetDeck.Add(cardIndex.Index.CreateCard(deck[0].CardName, NewVirtualCardParent.location.deck));
             deck.RemoveAt(0);
         }
-        deck = resetDeck;
+        deck.AddRange(resetDeck);
 
         string[] name = scene.path.Split("/");
         if (name[name.Length - 1] == "DeckbuilderScene.unity")
