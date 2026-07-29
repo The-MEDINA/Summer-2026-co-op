@@ -4399,6 +4399,7 @@ MonoBehaviour:
   isLocalTesting: 0
   sfxManager: {fileID: 8816554660379747904}
   damageText: {fileID: 66256372836773535, guid: 03ac45cd83484024f90c2f1abdc71594, type: 3}
+  AttackButtonImg: {fileID: 1452391271}
 --- !u!4 &900427426
 Transform:
   m_ObjectHideFlags: 0
@@ -6970,7 +6971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

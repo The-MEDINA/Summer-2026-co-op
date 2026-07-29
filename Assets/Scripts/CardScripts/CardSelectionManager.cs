@@ -1,5 +1,6 @@
 using Network;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class CardSelectionManager : MonoBehaviour
@@ -32,6 +33,9 @@ public class CardSelectionManager : MonoBehaviour
 
     [Header("Player Damage Popup")]
     [SerializeField] private GameObject damageText;
+
+    [Header("Attack Player Button Image")]
+    [SerializeField] private Image AttackButtonImg;
 
     private CardClickHandler selectedCardObject;
 
@@ -92,6 +96,19 @@ public class CardSelectionManager : MonoBehaviour
             { 
                 player2CommanderSquare.GetComponent<DeckbuilderCard>().UpdateUI(); 
             }
+        }
+    }
+
+    private void Update()
+    {
+        // Check to update the attack button image
+        // This needs to run in Update to change the color when a card is selected, but not yet ready to play
+        if (SelectedCardObject != null && 
+            SelectedCardObject.CardData is MinionParent &&
+            SelectedCardObject.CardData.CardLocation == NewVirtualCardParent.location.inPlay &&
+            ((MinionParent)SelectedCardObject.CardData).CanAttack)
+        {
+            AttackButtonImg.color = Color.white;
         }
     }
 
@@ -176,6 +193,12 @@ public class CardSelectionManager : MonoBehaviour
         {
             SelectedCardObject = clickedCard;
             SelectedCardObject.SetSelectedVisual(true);
+            if (SelectedCardObject.CardData is MinionParent && 
+                SelectedCardObject.CardData.CardLocation == NewVirtualCardParent.location.inPlay && 
+                ((MinionParent)SelectedCardObject.CardData).CanAttack)
+            {
+                AttackButtonImg.color = Color.white;
+            }
             Debug.Log("Selected card: " + clickedCard.CardData.CardName);
         }
         else
@@ -1017,7 +1040,7 @@ public class CardSelectionManager : MonoBehaviour
         {
             SelectedCardObject.SetSelectedVisual(false);
         }
-
+        AttackButtonImg.color = Color.black;
         SelectedCardObject = null;
     }
 }
