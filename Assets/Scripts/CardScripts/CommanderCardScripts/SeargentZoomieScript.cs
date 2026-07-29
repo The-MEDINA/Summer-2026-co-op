@@ -30,6 +30,7 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
         {
             canAttack = false;
         }
+        Progressbar();
     }
 
     /// <summary>
@@ -71,5 +72,40 @@ public class SeargentZoomieScript : CommanderCardScript, IPointerClickHandler
         }
 
         canAttack = false;
+    }
+
+    public override void Progressbar()
+    {
+        if (ClickHandler != null)
+        {
+            // Frozen
+            if (FrozenTimeDelay != 0)
+            {
+                ClickHandler.AddProgress(5);
+            }
+            // Ready
+            else if (canAttack)
+            {
+                ClickHandler.AddProgress(4);
+            }
+            // Calculate the progress otherwise
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if ((timer / timeToEffect) >= ((float)i / 4))
+                    {
+                        ClickHandler.AddProgress(i);
+                    }
+                }
+            }
+        }
+
+        // find a deck card click handler if one wasn't already searched for
+        if (!SearchedForClickHandler)
+        {
+            ClickHandler = gameObject.GetComponent<DeckCardClickHandler>();
+            SearchedForClickHandler = true;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
@@ -8,6 +9,7 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
     [SerializeField] private float examineSizeIncrease = 2f;
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private bool overrideExamine = false;
+    [SerializeField] private Image attackTimerFill;
 
     private bool applyRotation = false;
     private Vector3 originalScale;
@@ -84,11 +86,6 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        //if (!hovering) transform.localScale = originalScale;
-        //else
-        //{
-        //    transform.localScale = hoverScale;
-        //}
         down = false;
     }
 
@@ -110,6 +107,65 @@ public class DeckCardClickHandler : MonoBehaviour, IPointerClickHandler, IPointe
         {
             transform.rotation = Quaternion.identity;
             transform.localScale = originalScale;
+        }
+    }
+
+    public void AddProgress(float fillProgress)
+    {
+        if (attackTimerFill != null)
+        {
+            switch (fillProgress)
+            {
+                case 0:
+                    {
+                        attackTimerFill.fillAmount = 0.0f;
+                        break;
+                    }
+
+                case 1:
+                    {
+                        attackTimerFill.fillAmount = 0.25f;
+                        attackTimerFill.color = Color.red;
+                        break;
+                    }
+
+                case 2:
+                    {
+                        attackTimerFill.fillAmount = 0.50f;
+                        attackTimerFill.color = Color.orange;
+                        break;
+                    }
+
+                case 3:
+                    {
+                        attackTimerFill.fillAmount = 0.75f;
+                        attackTimerFill.color = Color.yellow;
+                        break;
+                    }
+
+                case 4:
+                    {
+                        attackTimerFill.fillAmount = 100f;
+                        attackTimerFill.color = Color.green;
+                        break;
+                    }
+
+                case 5:
+                    {
+                        attackTimerFill.fillAmount = 100f;
+                        attackTimerFill.color = Color.lightSkyBlue;
+                        break;
+                    }
+            }
+        }
+    }
+
+    public void ResetProgress()
+    {
+        if (attackTimerFill != null)
+        {
+            attackTimerFill.fillAmount = 0f;
+            attackTimerFill.color = Color.gray;
         }
     }
 }
