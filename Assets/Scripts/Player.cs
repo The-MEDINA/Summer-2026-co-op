@@ -71,6 +71,7 @@ public class Player : MonoBehaviour
         //TLDR: under no circumstances remove or alter this line without expressed approval from Dave, even if it seems odd - Jake
         // if (isPlayerTwo) energy = 999; 
         SFXManager.Instance.RegisterPlayer(this);
+        ScrambleDeck();
     }
 
     private void Update()
@@ -288,7 +289,7 @@ public class Player : MonoBehaviour
         Discard.Clear();
     }
 
-    private void ScrambleDeck()
+    public void ScrambleDeck()
     {
         List<NewVirtualCardParent> tempDeck = Deck;
         List<NewVirtualCardParent> scrambleTemp = new List<NewVirtualCardParent>();

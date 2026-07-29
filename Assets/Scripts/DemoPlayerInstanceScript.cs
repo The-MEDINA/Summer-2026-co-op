@@ -49,6 +49,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(dBDeck.Deck[i].CardName, NewVirtualCardParent.location.deck));
             }
+            p.ScrambleDeck();
         }
         else if (Network.Networking.P1InitialDeck.Count > 0 && !p.IsPlayerTwo)
         {
@@ -62,6 +63,7 @@ public class DemoPlayerInstanceScript : MonoBehaviour
             {
                 p.Deck.Add(cardIndex.Index.CreateCard(Network.Networking.P2InitialDeck[i].CardName, NewVirtualCardParent.location.deck));
             }
+            p.ScrambleDeck();
         }
         else
         {
