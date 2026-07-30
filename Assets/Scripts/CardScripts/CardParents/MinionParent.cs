@@ -2,7 +2,6 @@ using cardIndex;
 using Network;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class MinionParent : NewVirtualCardParent
 {
@@ -17,21 +16,21 @@ public class MinionParent : NewVirtualCardParent
         twoAttacks,
         aoe,
         overkill,
-        duplicate,
+        duplicate, //u(nique)
         heal,
         thorns,
         spawnToken,
-        spwnTokOnPlay,
+        spwnTokOnPlay, //u
         guard,
         lifelink,
         frozen,
         apoptosis,
         hidden,
-        split,
-        healOnPlay,
+        split, //u
+        healOnPlay, //u
         statsUp,
-        gainEnergy,
-        mimic,
+        gainEnergy, //u
+        mimic, //u
         generateEnergy
     }
 
