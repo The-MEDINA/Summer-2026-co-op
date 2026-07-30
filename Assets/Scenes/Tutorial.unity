@@ -1834,15 +1834,19 @@ MonoBehaviour:
   - description: Click the bottom right button to draw cards to your hand. Your hand
       is shown in the green area on your side of the board.
     tutorialImage: {fileID: 466637148322928722, guid: a2c5b0833d2604a4fb3f0862f943d7dc, type: 3}
-  - description: Select a card from your hand and play it onto your battleground.
-      Cards require energy, so make sure you have enough energy before playing one.
-    tutorialImage: {fileID: 21300000, guid: b084fa576eb0046b3a82000a8aa4b7e6, type: 3}
-  - description: Select one of your cards in play, then select an opposing card to
-      attack it. The target loses health based on your card's attack damage.
-    tutorialImage: {fileID: 21300000, guid: 54c725c75092e4c9daa2cdf658fc1e2a, type: 3}
-  - description: Defeat opposing cards and reduce the enemy player's health. Protect
-      your own cards and manage your energy carefully to win the match.
-    tutorialImage: {fileID: 5733694361853659770, guid: 24d01aaea4a3e45cabdf76ad1babe245, type: 3}
+  - description: Double click minion cards to play them to the battlefield. Cards
+      require energy, so make sure you have enough energy before playing one.
+    tutorialImage: {fileID: -800068075355466663, guid: b683193efd4765249ac156c1dbdcaecd, type: 3}
+  - description: To attack the player, click a card and the attack player button.
+      You'll need to do this to win! If minions are bothering you, you can also click
+      your own card and an enemy card to kill it.
+    tutorialImage: {fileID: -6380088679316388736, guid: dfaa0d48e24106948aad8b65cff91527, type: 3}
+  - description: To spice things up, use your commander card! Clicking the card in
+      the bottom left will activate its ability.
+    tutorialImage: {fileID: -7232844185650680290, guid: 39304b463f560ae4e9cd24fcb51b161a, type: 3}
+  - description: 'Make sure to plan your strategies carefully to lower your opponent''s
+      health to 0 before they can beat you! '
+    tutorialImage: {fileID: 4846896553144377880, guid: e7e9ff983d01f3e46bfb7ef0bc39e5c6, type: 3}
   descriptionText: {fileID: 2038053585}
   pageNumberText: {fileID: 1624597317}
   tutorialImage: {fileID: 203806092}
