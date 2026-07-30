@@ -28,11 +28,6 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
             SceneManager.LoadScene("Demo_LocalTwoPlayer");
             return;
         }
-        else if (Networking.CurrentState == state.disconnected)
-        {
-            SceneManager.LoadScene("AITestScene");
-            return;
-        }
         if (DeckInstanceDeckbuilderScript.instance != null)
         {
             if (DeckInstanceDeckbuilderScript.instance.Commander == "" || DeckInstanceDeckbuilderScript.instance.Deck.Count == 0)
@@ -40,7 +35,13 @@ public class ToPlayButtonScript : MonoBehaviour, IPointerClickHandler
                 Debug.Log("You need at least 1 minion and a commander!");
                 return;
             }
-            if (!DeckInstanceDeckbuilderScript.instance.SentLoadout)
+
+            if (Networking.CurrentState == state.disconnected)
+            {
+                SceneManager.LoadScene("AITestScene");
+                return;
+            }
+            else if (!DeckInstanceDeckbuilderScript.instance.SentLoadout)
             {
                 Networking.SendLoadout(DeckInstanceDeckbuilderScript.instance.Deck, DeckInstanceDeckbuilderScript.instance.CommanderInstance);
                 DeckInstanceDeckbuilderScript.instance.SentLoadout = true;

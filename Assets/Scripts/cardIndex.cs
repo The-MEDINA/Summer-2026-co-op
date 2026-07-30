@@ -517,6 +517,12 @@ namespace cardIndex
                                 else _secondAbility = MinionParent.effect.statsUp;
                                 break;
                             }
+                        case ("spawntokonplay"):
+                            {
+                                if (j == 0) _ability = MinionParent.effect.spwnTokOnPlay;
+                                else _secondAbility = MinionParent.effect.spwnTokOnPlay;
+                                break;
+                            }
                         case ("apoptosis"):
                             {
                                 if (j == 0)

@@ -150,7 +150,7 @@ namespace Network
         /// All these variables are for the network manager to actually do the networking.
         /// </summary>
         private static int port = 6767;
-        private static byte buildNumber = 1;
+        private static byte buildNumber = 2;
         private static readonly string handshakeContent = "BLITZBURN HANDSHAKE";
         private static state currentState = state.disconnected;
         private static mode currentMode = mode.client;

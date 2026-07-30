@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 90995912}
   - component: {fileID: 90995911}
   - component: {fileID: 90995910}
+  - component: {fileID: 90995913}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -211,6 +212,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &90995913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90995909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &203806089
 GameObject:
   m_ObjectHideFlags: 0
@@ -1786,18 +1831,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
   pages:
-  - description: Cards are drawn from your deck and placed into your hand. Your hand
+  - description: Click the bottom right button to draw cards to your hand. Your hand
       is shown in the green area on your side of the board.
-    tutorialImage: {fileID: 21300000, guid: 579d3998c2049467ea980ceded7ec03f, type: 3}
-  - description: Select a card from your hand and play it onto your battleground.
-      Cards require energy, so make sure you have enough energy before playing one.
-    tutorialImage: {fileID: 21300000, guid: b084fa576eb0046b3a82000a8aa4b7e6, type: 3}
-  - description: Select one of your cards in play, then select an opposing card to
-      attack it. The target loses health based on your card's attack damage.
-    tutorialImage: {fileID: 21300000, guid: 54c725c75092e4c9daa2cdf658fc1e2a, type: 3}
-  - description: Defeat opposing cards and reduce the enemy player's health. Protect
-      your own cards and manage your energy carefully to win the match.
-    tutorialImage: {fileID: 5733694361853659770, guid: 24d01aaea4a3e45cabdf76ad1babe245, type: 3}
+    tutorialImage: {fileID: 466637148322928722, guid: a2c5b0833d2604a4fb3f0862f943d7dc, type: 3}
+  - description: Double click minion cards to play them to the battlefield. Cards
+      require energy, so make sure you have enough energy before playing one.
+    tutorialImage: {fileID: -800068075355466663, guid: b683193efd4765249ac156c1dbdcaecd, type: 3}
+  - description: To attack the player, click a card and the attack player button.
+      You'll need to do this to win! If minions are bothering you, you can also click
+      your own card and an enemy card to kill it.
+    tutorialImage: {fileID: -6380088679316388736, guid: dfaa0d48e24106948aad8b65cff91527, type: 3}
+  - description: To spice things up, use your commander card! Clicking the card in
+      the bottom left will activate its ability.
+    tutorialImage: {fileID: -7232844185650680290, guid: 39304b463f560ae4e9cd24fcb51b161a, type: 3}
+  - description: 'Make sure to plan your strategies carefully to lower your opponent''s
+      health to 0 before they can beat you! '
+    tutorialImage: {fileID: 4846896553144377880, guid: e7e9ff983d01f3e46bfb7ef0bc39e5c6, type: 3}
   descriptionText: {fileID: 2038053585}
   pageNumberText: {fileID: 1624597317}
   tutorialImage: {fileID: 203806092}
@@ -1805,7 +1854,7 @@ MonoBehaviour:
   nextButton: {fileID: 222499541}
   nextButtonText: {fileID: 1745418760}
   titleSceneName: TitleScreen
-  practiceSceneName: Demo_LocalTwoPlayer
+  practiceSceneName: AITestScene
 --- !u!4 &2021657937
 Transform:
   m_ObjectHideFlags: 0
