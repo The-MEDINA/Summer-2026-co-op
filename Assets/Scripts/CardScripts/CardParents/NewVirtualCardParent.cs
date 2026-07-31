@@ -19,6 +19,7 @@ public abstract class NewVirtualCardParent
         inPlay,
         discard
     }
+
     private int nameIndexPosition;
     private int cost;
     private type cardType;
@@ -27,6 +28,7 @@ public abstract class NewVirtualCardParent
     [SerializeField] private string cardName;
     private string flavorText;
     private string faction;
+    private int unlockNum;
 
     public int NameIndexPosition { get { return nameIndexPosition; } }
     public int Cost { get { return cost; } }
@@ -36,6 +38,7 @@ public abstract class NewVirtualCardParent
     public location CardLocation { get { return cardLocation; } set { cardLocation = value; } }
     public type CardType { get { return cardType; } }
     public GameObject UnityObject { get { return unityObject; } set { unityObject = value; } }
+    public int UnlockNum {  get { return unlockNum; } set { unlockNum = value; } }
 
     /// <summary>
     /// base constructor for all card scripts
