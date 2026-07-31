@@ -279,128 +279,159 @@ public class SimpleAIScript : MonoBehaviour
     private void PopulatePlayer()
     {
         //int randDeckNum = rng.Next(1, 5);
-        int randDeckNum = 1;
-        switch(randDeckNum)
+        int deckNum = 1;
+        switch(deckNum)
         {
-            case 1:
+            case 0:
                 {
-                    string[] mMDeck =
+                    string[] tutorialDeck =
                     {
                         "Cat",
-                        "Night Vision Cat",
-                        "Gold Miner Cat",
-                        "Ninja Cat",
-                        "Magic Cat",
-                        "Cat Demolition Crew",
-                        "M16",
-                        "Spontaneous Combustion",
-                        "Blizzard",
                         "Cat",
-                        "Night Vision Cat",
-                        "Ninja Cat"
+                        "Cool Cat",
+                        "Cool Cat",
+                        "Gold Miner Cat",
+                        "Cave Cat",
+                        "Tank Cat",
+                        "Spontaneous Combustion",
+                        "Spontaneous Combustion",
+                        "M16",
+                        "M16",
+                        "Terrorize"
                     };
 
-                    for (int i = 0; i < mMDeck.Length; i++)
+                    for (int i = 0; i < tutorialDeck.Length; i++)
                     {
-                        player.Deck.Add(cardIndex.Index.CreateCard(mMDeck[i], NewVirtualCardParent.location.deck));
+                        player.Deck.Add(cardIndex.Index.CreateCard(tutorialDeck[i], NewVirtualCardParent.location.deck));
+                    }
+                    break;
+                }
+
+            case 1:
+                {
+                    string[] firstDeck =
+                    {
+                        "Ninja Cat",
+                        "Ninja Cat",
+                        "Exploding Cat",
+                        "Mad Scientist Cat",
+                        "Astro Cat",
+                        "Night Vision Cat",
+                        "Cat Demolition Crew",
+                        "Patch Up",
+                        "Patch Up",
+                        "Hex",
+                        "Smite",
+                        "I Hungy!!!",
+                    };
+
+                    for (int i = 0; i < firstDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(firstDeck[i], NewVirtualCardParent.location.deck));
                     }
                     break;
                 }
 
             case 2:
                 {
-                    string[] sZDeck =
+                    string[] secondDeck =
                     {
-                        "Roughly a Cat",
-                        "Chef Cat",
-                        "Bobby",
-                        "Slasher Cat",
-                        "Chonkmeister",
-                        "Empower",
-                        "Empower",
-                        "Distraction",
-                        "Macho Cat",
-                        "Clone",
-                        "Roughly a Cat",
-                        "Chef Cat"
+                        "Mother Cat",
+                        "Mother Cat",
+                        "Ratta-tat-Cat",
+                        "Ratta-tat-Cat",
+                        "Cat Man",
+                        "Single-Celled Cat",
+                        "Vampire Cat",
+                        "Cat Fusion",
+                        "Conscript",
+                        "Blizzard",
+                        "Pspspsps!",
+                        "Pspspsps!"
                     };
 
-                    for (int i = 0; i < sZDeck.Length; i++)
+                    for (int i = 0; i < secondDeck.Length; i++)
                     {
-                        player.Deck.Add(cardIndex.Index.CreateCard(sZDeck[i], NewVirtualCardParent.location.deck));
+                        player.Deck.Add(cardIndex.Index.CreateCard(secondDeck[i], NewVirtualCardParent.location.deck));
                     }
                     break;
                 }
 
             case 3:
                 {
-                    string[] hMDeck =
+                    string[] thirdDeck =
                     {
-                        "Slate Skate",
-                        "Brain Invaders",
-                        "Slime",
-                        "Star Child",
-                        "Extraterrestrial Invader",
-                        "Slate Skate",
-                        "Brain Invaders",
-                        "Repair Drone",
-                        "Abduction",
-                        "Genetic Engineering",
-                        "Spontaneous Combustion",
-                        "Sabotage"
+                        "Nacho Cat",
+                        "Bobby",
+                        "Ice Cream Cat",
+                        "Chonkmeister",
+                        "The Mad Catter",
+                        "Viking Cat",
+                        "Doctor House(Cat)",
+                        "Roughly a Cat",
+                        "I'm Sure That Wasn't Important",
+                        "I'm Sure That Wasn't Important",
+                        "Distraction",
+                        "Duplicate"
                     };
 
-                    for (int i = 0; i < hMDeck.Length; i++)
+                    for (int i = 0; i < thirdDeck.Length; i++)
                     {
-                        player.Deck.Add(cardIndex.Index.CreateCard(hMDeck[i], NewVirtualCardParent.location.deck));
+                        player.Deck.Add(cardIndex.Index.CreateCard(thirdDeck[i], NewVirtualCardParent.location.deck));
                     }
                     break;
                 }
 
             case 4:
                 {
-                    string[] wDDeck =
+                    string[] fourthDeck =
                     {
-                        "Solar Panels",
-                        "Cover-Up",
-                        "Lost in Space",
-                        "Lost in Space",
-                        "Frostback",
-                        "Frostback",
+                        "Digger",
+                        "Digger",
+                        "Living Planet",
+                        "Slime",
                         "Frozen Horror",
-                        "Mimic",
-                        "Digger",
-                        "Digger",
-                        "Nuclear Waste",
-                        "Hide"
+                        "Frostback",
+                        "Lost in Space",
+                        "Lost in Space",
+                        "Hide",
+                        "Hide",
+                        "Genetic Engineering",
+                        "Sabotage"
                     };
 
-                    for (int i = 0; i < wDDeck.Length; i++)
+                    for (int i = 0; i < fourthDeck.Length; i++)
                     {
-                        player.Deck.Add(cardIndex.Index.CreateCard(wDDeck[i], NewVirtualCardParent.location.deck));
+                        player.Deck.Add(cardIndex.Index.CreateCard(fourthDeck[i], NewVirtualCardParent.location.deck));
+                    }
+                    break;
+                }
+
+            case 5:
+                {
+                    string[] fifthDeck =
+                    {
+                        "Reptoid",
+                        "Reptoid",
+                        "Slate Skate",
+                        "Slate Skate",
+                        "Uncanny Valley",
+                        "Mimic",
+                        "Blood Eater",
+                        "Solar Panels",
+                        "Solar Panels",
+                        "Nuclear Waste",
+                        "Abduction",
+                        "Parasite"
+                    };
+
+                    for (int i = 0; i < fifthDeck.Length; i++)
+                    {
+                        player.Deck.Add(cardIndex.Index.CreateCard(fifthDeck[i], NewVirtualCardParent.location.deck));
                     }
                     break;
                 }
         }
-
-        string[] startingDeck =
-        {
-        /*"Spontaneous Combustion",
-        "Patch Up",
-        "M16",
-        "Conscript",
-        "Cat Demolition Crew",
-        "Cat",
-        "Magic Cat",
-        "Smite",
-        "Scaredy Cat",
-        "Comically Large Spoon Cat",*/
-        "Repair Drone",
-        "Ratta-tat-Cat",
-        "Exploding Cat",
-        "Night Vision Cat",
-        "Duplicate"
-        };
     }
 
     private void SaveForCard(NewVirtualCardParent saveTarget)
