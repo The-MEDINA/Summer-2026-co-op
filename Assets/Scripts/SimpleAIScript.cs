@@ -15,6 +15,7 @@ public class SimpleAIScript : MonoBehaviour
     private bool saving;
     private NewVirtualCardParent savingFor;
     private int savingIndex = -1;
+    private bool notTriggered = true;
 
     /// <summary>
     /// menial set up for the bot
@@ -29,9 +30,10 @@ public class SimpleAIScript : MonoBehaviour
     
     void Update()
     {
-        if (player.Health <= 0)
+        if (player.Health <= 0 && notTriggered)
         {
             LoseBot();
+            notTriggered = false;
             return;
         }
 
@@ -453,7 +455,7 @@ public class SimpleAIScript : MonoBehaviour
     private void LoseBot()
     {
         float newUNum = PlayerPrefs.GetFloat("UnlockNum");
-        newUNum++;
+        newUNum += 1f;
         PlayerPrefs.SetFloat("UnlockNum", newUNum);
         PlayerPrefs.Save();
     }

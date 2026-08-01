@@ -1766,6 +1766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 231fbb930c0f8e744ab1eb250a8dc45b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartingUNSet
+  resetSetNum: 0
   setNum: 0
 --- !u!4 &938702399
 Transform:
