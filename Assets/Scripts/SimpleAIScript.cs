@@ -62,6 +62,7 @@ public class SimpleAIScript : MonoBehaviour
     /// </summary>
     private void Move()
     {
+        int moveNum = rng.Next(1, 7);
         Debug.Log($"Cards in Deck: {player.Deck.Count}, Cards in Hand: {player.Hand.Count}, Cards in Play: {player.InPlay.Count}");
         if((player.InPlay.Count == 0 || opponent.InPlay.Count == 0)&& player.Hand.Count == 0) { return; }
         else if(player.InPlay.Count == 0 || opponent.InPlay.Count < 0) 
@@ -74,7 +75,6 @@ public class SimpleAIScript : MonoBehaviour
             AttackSomething();
             return;
         }
-        int moveNum = rng.Next(1, 7);
         //int moveNum = rng.Next(1, 6);
         Debug.Log("Rolled a " + moveNum);
         switch (moveNum)
@@ -161,7 +161,7 @@ public class SimpleAIScript : MonoBehaviour
                 case SpellParent.spellTarget.allAllies:
                 case SpellParent.spellTarget.allyCards:
                     {
-                        if (player.InPlay.Count == 0) { if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection; return; }
+                        if (player.InPlay.Count == 0) { if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection; if (saving) { saving = false; } return; }
                         int targetNum = rng.Next(0, player.InPlay.Count);
                         CardSelectionManager.Instance.TrySpellTarget(player.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
                         break;
