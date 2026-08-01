@@ -55,6 +55,7 @@ public abstract class NewVirtualCardParent
         this.cardLocation = cardLocation;
         nameIndexPosition = cardIndex.Index.GetDetails(name).nameIndexPosition;
         faction = cardIndex.Index.GetDetails(name).faction;
+        this.unlockNum = cardIndex.Index.GetDetails(name).unlockNum;
     }
     /// <summary>
     /// Construct a card using only its name. It should be noted that this constructor will set any int value that's not defined as -1.
@@ -71,5 +72,6 @@ public abstract class NewVirtualCardParent
         cardType = cardDetails.type;
         this.cardLocation = cardLocation;
         faction = cardDetails.faction;
+        unlockNum = cardDetails.unlockNum;
     }
 }
