@@ -452,7 +452,9 @@ public class SimpleAIScript : MonoBehaviour
 
     private void LoseBot()
     {
-        PlayerPrefs.SetFloat("UnlockNum", 1);
+        float newUNum = PlayerPrefs.GetFloat("UnlockNum");
+        newUNum++;
+        PlayerPrefs.SetFloat("UnlockNum", newUNum);
         PlayerPrefs.Save();
     }
 }
