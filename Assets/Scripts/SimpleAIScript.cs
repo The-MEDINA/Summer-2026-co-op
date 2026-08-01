@@ -161,7 +161,7 @@ public class SimpleAIScript : MonoBehaviour
                 case SpellParent.spellTarget.allAllies:
                 case SpellParent.spellTarget.allyCards:
                     {
-                        if (player.InPlay.Count == 0) { return; }
+                        if (player.InPlay.Count == 0) { if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection; return; }
                         int targetNum = rng.Next(0, player.InPlay.Count);
                         CardSelectionManager.Instance.TrySpellTarget(player.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
                         break;
