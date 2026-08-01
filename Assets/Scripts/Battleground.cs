@@ -110,6 +110,13 @@ public class Battleground : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
             return;
         }
 
+        if(p.Energy == 0)
+        {
+            Debug.Log("No energy");
+            return;
+        }
+
+        p.Energy--;
         NewVirtualCardParent drawnCard = p.Deck[0];
 
         drawnCard.CardLocation = NewVirtualCardParent.location.hand;
