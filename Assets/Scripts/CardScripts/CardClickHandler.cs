@@ -21,7 +21,7 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
     private Player ownerPlayer;
 
     private float timer = 0f;
-    private float timeToAttack = 2f;
+    private float timeToAttack = 5f;
     private speed currentSpeed = speed.normal;
     private float freezeTimer = 0f;
     private float timeToUnfreeze = 10f;
@@ -167,19 +167,19 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDow
             default:
             case speed.normal:
                 {
-                    timeToAttack = 2f;
+                    timeToAttack = 5f;
                     break;
                 }
 
             case speed.haste:
                 {
-                    timeToAttack = 1f;
+                    timeToAttack = 3f;
                     break;
                 }
 
             case speed.sloth:
                 {
-                    timeToAttack = 4f;
+                    timeToAttack = 8f;
                     break;
                 }
 
