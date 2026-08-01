@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SimpleAIScript : MonoBehaviour
 {
@@ -31,8 +31,10 @@ public class SimpleAIScript : MonoBehaviour
     {
         if (player.Health <= 0)
         {
+            LoseBot();
             return;
         }
+
         //timer to make multiple moves after set amounts of time
         if (timer >= moveTime)
         {
@@ -64,7 +66,7 @@ public class SimpleAIScript : MonoBehaviour
     {
         Debug.Log($"Cards in Deck: {player.Deck.Count}, Cards in Hand: {player.Hand.Count}, Cards in Play: {player.InPlay.Count}");
         if((player.InPlay.Count == 0 || opponent.InPlay.Count == 0)&& player.Hand.Count == 0) { return; }
-        else if(player.InPlay.Count == 0 || opponent.InPlay.Count < 0) 
+        else if(player.InPlay.Count == 0 || opponent.InPlay.Count == 0) 
         {
             MoveCardToBattleground();
             return;
@@ -152,7 +154,11 @@ public class SimpleAIScript : MonoBehaviour
                 case SpellParent.spellTarget.any:
                 case SpellParent.spellTarget.enemyCards:
                     {
-                        if (opponent.InPlay.Count == 0) { return; }
+                        if (opponent.InPlay.Count == 0) 
+                        {
+                            if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
+                            if (saving) { saving = false; }
+                            return; }
                         int targetNum = rng.Next(0, opponent.InPlay.Count);
                         CardSelectionManager.Instance.TrySpellTarget(opponent.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
                         break;
@@ -161,7 +167,11 @@ public class SimpleAIScript : MonoBehaviour
                 case SpellParent.spellTarget.allAllies:
                 case SpellParent.spellTarget.allyCards:
                     {
-                        if (player.InPlay.Count == 0) { return; }
+                        if (player.InPlay.Count == 0) 
+                        {
+                            if (previousSelection != null) CardSelectionManager.Instance.SelectedCardObject = previousSelection;
+                            if (saving) { saving = false; }
+                            return; }
                         int targetNum = rng.Next(0, player.InPlay.Count);
                         CardSelectionManager.Instance.TrySpellTarget(player.InPlay[targetNum].UnityObject.GetComponent<CardClickHandler>());
                         break;
@@ -438,5 +448,11 @@ public class SimpleAIScript : MonoBehaviour
     {
         savingFor = saveTarget;
         saving = true;
+    }
+
+    private void LoseBot()
+    {
+        PlayerPrefs.SetFloat("UnlockNum", 1);
+        PlayerPrefs.Save();
     }
 }
