@@ -28,7 +28,7 @@ namespace cardIndex
     // the struct also shouldn't do anything.
     public struct Details
     {
-        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition, SpellParent.spellEffect _spellEffect, SpellParent.spellTarget _spellTarget, int _secondDamage, MinionParent.effect _secondAbility)
+        public Details(string _faction, int _cost, string _name, NewVirtualCardParent.type _type, string _text, int _health, int _damage, MinionParent.effect _ability, string _flavorText, int _nameIndexPosition, SpellParent.spellEffect _spellEffect, SpellParent.spellTarget _spellTarget, int _secondDamage, MinionParent.effect _secondAbility, int _unlockNum)
         {
             faction = _faction;
             cost = _cost;
@@ -44,6 +44,7 @@ namespace cardIndex
             spellTarget = _spellTarget;
             secondDamage = _secondDamage;
             secondAbility = _secondAbility;
+            unlockNum = _unlockNum;
         }
 
         public string faction;
@@ -60,6 +61,7 @@ namespace cardIndex
         public int nameIndexPosition;
         public SpellParent.spellEffect spellEffect;
         public SpellParent.spellTarget spellTarget;
+        public int unlockNum;
     }
 
     public struct Sprites
@@ -95,7 +97,6 @@ namespace cardIndex
     {
         // index of all cards.
         private static Dictionary<string, Details> index = new Dictionary<string, Details>();
-        private static Dictionary<string, CommanderDetails> commanderIndex = new Dictionary<string, CommanderDetails>();
         private static Dictionary<string, Sprites> spritesIndex = new Dictionary<string, Sprites>();
         private static List<string> nameIndex = new List<string>();
         private static List<Sprite> cardSprites = new List<Sprite>();
@@ -347,6 +348,7 @@ namespace cardIndex
                 int _health = -1;
                 int _damage = -1;
                 int _secondDamage = -1;
+                int _unlockNum = 0;
                 NewVirtualCardParent.type _type = NewVirtualCardParent.type.none;
                 MinionParent.effect _ability = MinionParent.effect.none;
                 MinionParent.effect _secondAbility = MinionParent.effect.none;
@@ -358,6 +360,8 @@ namespace cardIndex
                 int.TryParse(rawDetails[2], out _cost);
                 int.TryParse(rawDetails[5], out _health);
                 int.TryParse(rawDetails[6], out _damage);
+                int.TryParse(rawDetails[11], out _unlockNum);
+
                 // type of card
                 switch (rawDetails[1].Trim().ToLower())
                 {
@@ -745,7 +749,7 @@ namespace cardIndex
                         }
                 }
                 // create the struct and add.
-                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[3], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility);
+                Details cardToAdd = new Details(rawDetails[0], _cost, rawDetails[3], _type, rawDetails[4], _health, _damage, _ability, rawDetails[8], i, _spellEffect, _spellTarget, _secondDamage, _secondAbility, _unlockNum);
                 Sprites spritesToAdd = new Sprites(cardImage, descBackground);
                 spritesIndex.Add(rawDetails[3], spritesToAdd);
                 index.Add(rawDetails[3], cardToAdd);
