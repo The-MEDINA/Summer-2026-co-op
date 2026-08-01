@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class WitchdoctorScript : CommanderCardScript, IPointerClickHandler
 {
     private float timer = 0f;
-    [SerializeField] private float timeToEffect = 3f;
+    [SerializeField] private float timeToEffect = 8f;
     private bool canAttack = false;
 
     private void Start()

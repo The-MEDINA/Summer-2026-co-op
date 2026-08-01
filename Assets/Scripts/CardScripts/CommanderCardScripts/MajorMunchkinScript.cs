@@ -6,7 +6,7 @@ public class MajorMunchkinScript : CommanderCardScript, IPointerClickHandler
 {
     [SerializeField] private GameObject tokenPrefab; //cardPrefab
     private float timer = 0f;
-    [SerializeField] private float timeToEffect = 3f;
+    [SerializeField] private float timeToEffect = 10f;
     private bool canAttack = false;
 
     public GameObject TokenPrefab { get { return tokenPrefab; } set { tokenPrefab = value; } }

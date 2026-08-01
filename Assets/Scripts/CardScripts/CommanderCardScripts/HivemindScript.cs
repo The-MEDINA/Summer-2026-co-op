@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class HivemindScript : CommanderCardScript, IPointerClickHandler
 {
     private float timer = 0f;
-    [SerializeField] private float timeToEffect = 3f;
+    [SerializeField] private float timeToEffect = 10f;
     private bool canAttack = false;
 
     private void Start()

@@ -291,7 +291,7 @@ public class SimpleAIScript : MonoBehaviour
     private void PopulatePlayer()
     {
         //int randDeckNum = rng.Next(1, 5);
-        int deckNum = 1;
+        float deckNum = PlayerPrefs.GetFloat("UnlockNum") - 1;
         switch(deckNum)
         {
             case 0:
