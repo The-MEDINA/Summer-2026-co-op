@@ -291,7 +291,7 @@ public class SimpleAIScript : MonoBehaviour
     private void PopulatePlayer()
     {
         float deckNum = PlayerPrefs.GetFloat("UnlockNum") - 1;
-       // deckNum = 3;
+        deckNum = 3;
         switch(deckNum)
         {
             case 0:
@@ -391,6 +391,8 @@ public class SimpleAIScript : MonoBehaviour
                     {
                         player.Deck.Add(cardIndex.Index.CreateCard(thirdDeck[i], NewVirtualCardParent.location.deck));
                     }
+                    player.CommanderCard = new SeargentZoomieScript();
+
                     break;
                 }
 

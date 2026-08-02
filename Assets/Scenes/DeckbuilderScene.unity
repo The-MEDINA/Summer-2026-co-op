@@ -2112,6 +2112,7 @@ GameObject:
   - component: {fileID: 1489885853}
   - component: {fileID: 1489885855}
   - component: {fileID: 1489885856}
+  - component: {fileID: 1489885857}
   m_Layer: 0
   m_Name: PreBuiltDeckButton
   m_TagString: Untagged
@@ -2205,7 +2206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3092cb156756f7d4b954e909d2feda3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PreBuiltDeckButtonScript
-  deckNum: 0
+  deckNum: 5
 --- !u!61 &1489885856
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2252,6 +2253,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1489885857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489885852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a53f6716b22deac43bc8e1bea04c9ab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WitchdoctorScript
+  bg: {fileID: 0}
+  timeToEffect: 8
 --- !u!1 &2021158535
 GameObject:
   m_ObjectHideFlags: 0

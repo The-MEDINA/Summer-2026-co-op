@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -143,5 +142,6 @@ public class PreBuiltDeckButtonScript : MonoBehaviour, IPointerClickHandler
         {
             DeckInstanceDeckbuilderScript.instance.AddCard(deck[i]);
         }
+        DeckInstanceDeckbuilderScript.instance.AddCard(gameObject.GetComponent<CommanderCardScript>());
     }
 }
