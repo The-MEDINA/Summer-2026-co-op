@@ -291,7 +291,7 @@ public class SimpleAIScript : MonoBehaviour
     private void PopulatePlayer()
     {
         float deckNum = PlayerPrefs.GetFloat("UnlockNum") - 1;
-        deckNum = 3;
+        //deckNum = 3;
         switch(deckNum)
         {
             case 0:
