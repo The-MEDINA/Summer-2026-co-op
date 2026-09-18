@@ -306,14 +306,7 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                         {
                             if (unfilteredCards[i].cost == cost)
                             {
-                                if (unfilteredCards[i].type == NewVirtualCardParent.type.none)
-                                {
-                                    filteredCards.Insert(0, unfilteredCards[0]);
-                                }
-                                else
-                                {
-                                    filteredCards.Add(unfilteredCards[0]);
-                                }
+                                filteredCards.Add(unfilteredCards[i]);
                                 unfilteredCards.RemoveAt(i);
                                 i--;
                             }
