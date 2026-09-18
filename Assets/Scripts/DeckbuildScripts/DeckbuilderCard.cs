@@ -29,10 +29,10 @@ public class DeckbuilderCard : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(CardInstance.UnlockNum > PlayerPrefs.GetFloat("UnlockNum"))
+        /*if(CardInstance.UnlockNum > PlayerPrefs.GetFloat("UnlockNum"))
         {
             gameObject.SetActive(false);
-        }
+        }*/
     }
 
     // Update is called once per frame

@@ -274,6 +274,27 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
 
     private void FilterCards(List<Details> unfilteredCards)
     {
+        // remove locked cards
+        for (int i = 0; i < unfilteredCards.Count; i++)
+        {
+            if (unfilteredCards[i].unlockNum > PlayerPrefs.GetFloat("UnlockNum"))
+            {
+                unfilteredCards.RemoveAt(i);
+                i--;
+            }
+        }
+
+        // move commanders to the front
+        for (int i = 0; i < unfilteredCards.Count; i++)
+        {
+            if (unfilteredCards[i].type == NewVirtualCardParent.type.none)
+            {
+                Details details = unfilteredCards[i];
+                unfilteredCards.RemoveAt(i);
+                unfilteredCards.Insert(0, details);
+            }
+        }
+
         switch (currentFilter)
         {
             case filter.cost:
@@ -285,7 +306,14 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                         {
                             if (unfilteredCards[i].cost == cost)
                             {
-                                filteredCards.Add(unfilteredCards[i]);
+                                if (unfilteredCards[i].type == NewVirtualCardParent.type.none)
+                                {
+                                    filteredCards.Insert(0, unfilteredCards[0]);
+                                }
+                                else
+                                {
+                                    filteredCards.Add(unfilteredCards[0]);
+                                }
                                 unfilteredCards.RemoveAt(i);
                                 i--;
                             }
@@ -303,7 +331,14 @@ public class DeckInstanceDeckbuilderScript : MonoBehaviour
                         {
                             if (deck[i].CardName == unfilteredCards[0].name)
                             {
-                                filteredCards.Add(unfilteredCards[0]);
+                                if (deck[i].CardType == NewVirtualCardParent.type.none)
+                                {
+                                    filteredCards.Insert(0, unfilteredCards[0]);
+                                }
+                                else
+                                {
+                                    filteredCards.Add(unfilteredCards[0]);
+                                }
                                 break;
                             }
                         }
