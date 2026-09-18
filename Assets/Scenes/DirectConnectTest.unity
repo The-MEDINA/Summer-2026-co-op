@@ -317,6 +317,9 @@ MonoBehaviour:
   hostname: {fileID: 0}
   IPtext: {fileID: 1581789639}
   statusText: {fileID: 0}
+  factionText: {fileID: 0}
+  filterText: {fileID: 0}
+  countText: {fileID: 0}
 --- !u!1 &297168128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,6 +1086,9 @@ MonoBehaviour:
   hostname: {fileID: 0}
   IPtext: {fileID: 0}
   statusText: {fileID: 0}
+  factionText: {fileID: 0}
+  filterText: {fileID: 0}
+  countText: {fileID: 0}
 --- !u!1 &1076595913
 GameObject:
   m_ObjectHideFlags: 0
@@ -1504,8 +1510,8 @@ Camera:
   m_GameObject: {fileID: 1120669319}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0.23921569, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1758,6 +1764,9 @@ MonoBehaviour:
   hostname: {fileID: 630571620}
   IPtext: {fileID: 0}
   statusText: {fileID: 1076595915}
+  factionText: {fileID: 0}
+  filterText: {fileID: 0}
+  countText: {fileID: 0}
 --- !u!1 &1162674881
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,6 +1959,9 @@ MonoBehaviour:
   hostname: {fileID: 0}
   IPtext: {fileID: 0}
   statusText: {fileID: 0}
+  factionText: {fileID: 0}
+  filterText: {fileID: 0}
+  countText: {fileID: 0}
 --- !u!114 &1165554913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3181,6 +3193,9 @@ MonoBehaviour:
   hostname: {fileID: 0}
   IPtext: {fileID: 0}
   statusText: {fileID: 0}
+  factionText: {fileID: 0}
+  filterText: {fileID: 0}
+  countText: {fileID: 0}
 --- !u!1 &2135239380
 GameObject:
   m_ObjectHideFlags: 0

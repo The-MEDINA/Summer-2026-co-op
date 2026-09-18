@@ -1811,7 +1811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartingUNSet
   resetSetNum: 0
-  setNum: 0
+  setNum: 5
 --- !u!4 &938702399
 Transform:
   m_ObjectHideFlags: 0
