@@ -7,6 +7,7 @@ public class PreBuiltDeckButtonScript : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log("a");
         string[] deck = new string[12];
         switch (deckNum)
         {
@@ -133,6 +134,8 @@ public class PreBuiltDeckButtonScript : MonoBehaviour, IPointerClickHandler
                         "Abduction",
                         "Parasite"
                     };
+                    Debug.Log("b");
+
                     deck = fifthDeck;
                     break;
                 }
@@ -142,6 +145,8 @@ public class PreBuiltDeckButtonScript : MonoBehaviour, IPointerClickHandler
         {
             DeckInstanceDeckbuilderScript.instance.AddCard(deck[i]);
         }
+        Debug.Log("c");
+
         DeckInstanceDeckbuilderScript.instance.AddCard(gameObject.GetComponent<CommanderCardScript>());
     }
 }

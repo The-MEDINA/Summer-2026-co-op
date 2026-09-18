@@ -42,4 +42,9 @@ public class TitleScreenManager : MonoBehaviour
     {
         SceneManager.LoadScene("Tutorial");
     }
+
+    public void LoadSP()
+    {
+        SceneManager.LoadScene("SinglePlayerScene");
+    }
 }
